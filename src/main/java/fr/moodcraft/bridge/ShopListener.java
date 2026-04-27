@@ -1,30 +1,27 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import ch.njol.skript.variables.Variables;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import com.ghostchu.quickshop.api.event.economy.ShopSuccessPurchaseEvent;
-import com.ghostchu.quickshop.api.shop.Shop;
+public class PriceUpdater {
 
-public class ShopListener implements Listener {
+    private static JavaPlugin plugin;
 
-    @EventHandler
-    public void onPurchase(ShopSuccessPurchaseEvent event) {
+    public static void init(JavaPlugin pl) {
+        plugin = pl;
+    }
 
-        try {
-            Shop shop = event.getShop();
-            int amount = event.getAmount();
+    public static void sendToSkript(String item, int amount) {
 
-            String item = shop.getItem().getType().name().toLowerCase();
+        // 🔥 IMPORTANT : repasser en MAIN THREAD
+        Bukkit.getScheduler().runTask(plugin, () -> {
 
-            System.out.println("[Bridge] Achat -> " + item + " x" + amount);
+            Variables.setVariable("eco.last.item", item, null, false);
+            Variables.setVariable("eco.last.amount", amount, null, false);
 
-            // Envoi vers Skript
-            PriceUpdater.sendToSkript(item, amount);
+            System.out.println("[Bridge] Envoyé à Skript -> " + item + " x" + amount);
 
-        } catch (Exception e) {
-            System.out.println("[Bridge] ERREUR EVENT");
-            e.printStackTrace();
-        }
+        });
     }
 }

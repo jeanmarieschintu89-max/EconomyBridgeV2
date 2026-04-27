@@ -9,14 +9,14 @@ public class PriceUpdater {
         if (item == null || item.isEmpty()) return;
         if (amount <= 0) return;
 
-        item = item.replace("minecraft:", "").toLowerCase();
+        final String finalItem = item.replace("minecraft:", "").toLowerCase();
+        final int finalAmount = amount;
 
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
 
-            // 🔥 ON ENVOIE AU SKRIPT (inchangé)
             Bukkit.dispatchCommand(
                 Bukkit.getConsoleSender(),
-                "eco_buy " + item + " " + amount
+                "eco_buy " + finalItem + " " + finalAmount
             );
 
         });

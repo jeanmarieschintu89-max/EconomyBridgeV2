@@ -4,28 +4,24 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.ghostchu.quickshop.api.event.economy.ShopSuccessPurchaseEvent;
-import com.ghostchu.quickshop.api.shop.Shop;
 
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onPurchase(ShopSuccessPurchaseEvent event) {
+    public void onBuy(ShopSuccessPurchaseEvent event) {
+
+        if (event == null) return;
 
         try {
-            Shop shop = event.getShop();
-
-            if (shop == null) return;
-
+            String item = event.getShop().getItem().getType().name();
             int amount = event.getAmount();
 
-            String item = shop.getItem().getType().name().toLowerCase();
-
-            System.out.println("[Bridge] Achat -> " + item + " x" + amount);
+            // Debug console (optionnel)
+            System.out.println("[Bridge] Achat détecté: " + item + " x" + amount);
 
             PriceUpdater.sendToSkript(item, amount);
 
         } catch (Exception e) {
-            System.out.println("[Bridge] ERREUR EVENT");
             e.printStackTrace();
         }
     }

@@ -1,6 +1,7 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.plugin.java.JavaPlugin;
+
 import java.io.File;
 
 public class Main extends JavaPlugin {
@@ -8,15 +9,27 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        getLogger().info("EconomyBridgeV2 démarré ⚡");
+        getLogger().info("EconomyBridge activé");
 
-        // dossier prix
-        new File(getDataFolder(), "prices").mkdirs();
+        // crée dossier
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdirs();
+        }
 
-        // updater
-        new PriceUpdater(this).runTaskTimer(this, 0L, 20L * 30);
+        // crée fichier data.yml
+        File file = new File(getDataFolder(), "data.yml");
+        if (!file.exists()) {
+            saveResource("data.yml", false);
+        }
 
-        // listener
-        getServer().getPluginManager().registerEvents(new ShopListener(), this);
+        // listener achat
+        getServer().getPluginManager().registerEvents(new ShopListener(this), this);
+
+        getLogger().info("Bridge prêt");
+    }
+
+    @Override
+    public void onDisable() {
+        getLogger().info("EconomyBridge désactivé");
     }
 }

@@ -1,3 +1,2 @@
-# autoriser libs
-!libs/
-!libs/QuickShop.jar
+target/
+*.jar

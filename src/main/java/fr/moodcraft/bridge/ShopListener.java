@@ -1,27 +1,40 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import com.ghostchu.quickshop.api.event.ShopTransactionEvent;
+import java.io.File;
+import java.io.IOException;
+
+import com.ghostchu.quickshop.api.event.ShopSuccessPurchaseEvent;
 
 public class ShopListener implements Listener {
 
+    private final JavaPlugin plugin;
+
+    public ShopListener(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
-    public void onTransaction(ShopTransactionEvent e) {
+    public void onBuy(ShopSuccessPurchaseEvent e) {
 
-        // 🔎 Vérifie que c’est un achat (et pas une vente)
-        if (!e.getAction().name().equalsIgnoreCase("BUY")) return;
+        File file = new File(plugin.getDataFolder(), "data.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        Material mat = e.getShop().getItem().getType();
+        String item = e.getShop().getItem().getType().name();
         int amount = e.getAmount();
 
-        Bukkit.getLogger().info("Achat détecté: " + mat + " x" + amount);
+        config.set("last.item", item);
+        config.set("last.amount", amount);
+        config.set("last.time", System.currentTimeMillis());
 
-        // 👉 ici tu peux connecter ton économie
-        // exemple:
-        // add("diamond", amount);
+        try {
+            config.save(file);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

@@ -10,20 +10,20 @@ public class ShopListener implements Listener {
     @EventHandler
     public void onPurchase(ShopSuccessPurchaseEvent event) {
 
-        // joueur
-        String player = event.getPurchaser().getName();
+        try {
+            // Joueur qui achète
+            String player = event.getPurchaser().getName();
 
-        // item
-        String item = event.getShop().getItem().getType().name();
+            // Quantité achetée
+            int amount = event.getAmount();
 
-        // quantité
-        int amount = event.getAmount();
+            // Log simple (safe toutes versions)
+            System.out.println("[EconomyBridge] Achat détecté : "
+                    + player + " a acheté x" + amount);
 
-        // prix total
-        double price = event.getTotal();
-
-        System.out.println("[Bridge] Achat détecté : " 
-            + player + " a acheté " 
-            + amount + "x " + item + " pour " + price);
+        } catch (Exception e) {
+            System.out.println("[EconomyBridge] Erreur lors de la détection d'achat QuickShop");
+            e.printStackTrace();
+        }
     }
 }

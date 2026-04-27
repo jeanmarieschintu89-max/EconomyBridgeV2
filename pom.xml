@@ -1,16 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.moodcraft</groupId>
     <artifactId>EconomyBridgeV2</artifactId>
-    <version>2.0</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>EconomyBridgeV2</name>
 
+    <!-- 🔥 Java version -->
     <properties>
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,29 +25,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
-            </plugin>
-
-            <!-- 📦 Shade (optionnel mais propre) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
         </plugins>
@@ -53,22 +37,16 @@
 
     <repositories>
 
-        <!-- Paper / Spigot -->
+        <!-- Paper -->
         <repository>
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
 
-        <!-- Skript -->
-        <repository>
-            <id>skript-repo</id>
-            <url>https://repo.skriptlang.org/releases</url>
-        </repository>
-
         <!-- QuickShop -->
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <id>codemc</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
 
     </repositories>
@@ -83,19 +61,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- 🟡 Skript API (PAS inclus dans le jar) -->
-        <dependency>
-            <groupId>com.github.SkriptLang</groupId>
-            <artifactId>Skript</artifactId>
-            <version>2.7.0</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- 🛒 QuickShop-Hikari API -->
         <dependency>
-            <groupId>com.github.Ghost-chu</groupId>
-            <artifactId>QuickShop-Hikari</artifactId>
-            <version>5.1.2.6</version>
+            <groupId>com.ghostchu</groupId>
+            <artifactId>quickshop-api</artifactId>
+            <version>6.2.0.0</version>
             <scope>provided</scope>
         </dependency>
 

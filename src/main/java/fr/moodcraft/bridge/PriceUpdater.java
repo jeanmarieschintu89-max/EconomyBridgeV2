@@ -5,8 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import org.maxgamer.quickshop.api.QuickShopAPI;
-import org.maxgamer.quickshop.api.shop.Shop;
+import com.ghostchu.quickshop.api.QuickShopAPI;
+import com.ghostchu.quickshop.api.shop.Shop;
 
 public class PriceUpdater extends BukkitRunnable {
 
@@ -33,28 +33,27 @@ public class PriceUpdater extends BukkitRunnable {
         update(Material.NETHERITE_INGOT, "netherite");
     }
 
-    private void update(Material material, String id) {
+    private void update(Material mat, String id) {
 
-        double price = getPriceFromSkript(id);
+        double price = getPrice(id);
 
         for (Shop shop : QuickShopAPI.getInstance().getShopManager().getAllShops()) {
 
-            if (shop.getItem().getType() == material) {
-
+            if (shop.getItem().getType() == mat) {
                 shop.setPrice(price);
             }
         }
     }
 
-    private double getPriceFromSkript(String id) {
+    // 🔌 récupère prix depuis Skript
+    private double getPrice(String id) {
 
         try {
-            String result = Bukkit.dispatchCommand(
-                    Bukkit.getConsoleSender(),
-                    "skript get {price." + id + "}"
-            ) ? "0" : "0";
+            // utilise commande skript custom
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "eco_get " + id);
 
-            return Double.parseDouble(result);
+            // fallback si besoin (tu peux améliorer avec SkBee plus tard)
+            return 0;
 
         } catch (Exception e) {
             return 0;

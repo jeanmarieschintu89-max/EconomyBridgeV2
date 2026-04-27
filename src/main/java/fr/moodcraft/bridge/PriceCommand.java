@@ -27,5 +27,8 @@ for (Shop shop : plugin.getShopManager().getAllShops()) {
         shop.setPrice(price);
         shop.update();
 
+}
+}
+return true;
     }
 }

@@ -1,25 +1,29 @@
 name: Build Plugin
 
-on: [push]
+on:
+  push:
+    branches: [ "main" ]
+
+  workflow_dispatch: # 🔘 bouton manuel
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: 📥 Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: ☕ Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: temurin
 
-      - name: Verify files
+      - name: 📂 Verify files
         run: ls -R
 
-      - name: Install QuickShop locally
+      - name: 📦 Install QuickShop locally
         run: |
           mvn install:install-file \
             -Dfile=libs/QuickShop.jar \
@@ -28,5 +32,11 @@ jobs:
             -Dversion=1.0 \
             -Dpackaging=jar
 
-      - name: Build
+      - name: 🔨 Build plugin
         run: mvn clean package
+
+      - name: 📤 Upload .jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: EconomyBridgeV2
+          path: target/*.jar

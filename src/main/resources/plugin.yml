@@ -1,5 +1,0 @@
-name: EconomyBridgeV2
-version: 1.0
-main: fr.moodcraft.bridge.Main
-api-version: 1.20
-depend: [QuickShop]

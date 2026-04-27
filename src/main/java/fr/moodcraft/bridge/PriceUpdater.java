@@ -11,7 +11,7 @@ public class PriceUpdater {
 
         item = item.replace("minecraft:", "").toLowerCase();
 
-        Bukkit.getScheduler().runTask(Bukkit.getPluginManager().getPlugin("EconomyBridgeV2"), () -> {
+        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
 
             Bukkit.dispatchCommand(
                 Bukkit.getConsoleSender(),

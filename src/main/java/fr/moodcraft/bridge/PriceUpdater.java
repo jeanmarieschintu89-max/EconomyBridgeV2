@@ -1,12 +1,14 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.ghostchu.quickshop.api.QuickShopAPI;
 import com.ghostchu.quickshop.api.shop.Shop;
+
+import java.io.File;
+import java.nio.file.Files;
 
 public class PriceUpdater extends BukkitRunnable {
 
@@ -37,6 +39,8 @@ public class PriceUpdater extends BukkitRunnable {
 
         double price = getPrice(id);
 
+        if (price <= 0) return;
+
         for (Shop shop : QuickShopAPI.getInstance().getShopManager().getAllShops()) {
 
             if (shop.getItem().getType() == mat) {
@@ -45,15 +49,16 @@ public class PriceUpdater extends BukkitRunnable {
         }
     }
 
-    // 🔌 récupère prix depuis Skript
     private double getPrice(String id) {
 
         try {
-            // utilise commande skript custom
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "eco_get " + id);
+            File file = new File("plugins/EconomyBridge/prices/" + id + ".txt");
 
-            // fallback si besoin (tu peux améliorer avec SkBee plus tard)
-            return 0;
+            if (!file.exists()) return 0;
+
+            String content = new String(Files.readAllBytes(file.toPath())).trim();
+
+            return Double.parseDouble(content);
 
         } catch (Exception e) {
             return 0;

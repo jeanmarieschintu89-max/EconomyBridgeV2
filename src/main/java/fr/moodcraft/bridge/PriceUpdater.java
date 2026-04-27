@@ -1,41 +1,41 @@
 package fr.moodcraft.bridge;
 
+import ch.njol.skript.variables.Variables;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import com.ghostchu.quickshop.api.QuickShopAPI;
-import com.ghostchu.quickshop.api.shop.Shop;
+import java.util.UUID;
 
 public class PriceUpdater {
 
-    // 🔁 Plugin → Skript
-    public static void sendToSkript(String item, int amount) {
+    private static JavaPlugin plugin;
 
-        Bukkit.dispatchCommand(
-            Bukkit.getConsoleSender(),
-            "sk set {eco.last.item} to \"" + item + "\""
-        );
-
-        Bukkit.dispatchCommand(
-            Bukkit.getConsoleSender(),
-            "sk set {eco.last.amount} to " + amount
-        );
-
-        System.out.println("[Bridge] Sync Skript -> " + item + " x" + amount);
+    // 🔌 Initialisation depuis Main
+    public static void init(JavaPlugin pl) {
+        plugin = pl;
     }
 
-    // 🔁 Skript → QuickShop
-    public static void updateShopPrice(String item, double newPrice) {
+    // 📤 Envoi vers Skript (QUEUE SAFE)
+    public static void sendToSkript(String item, int amount) {
 
-        int updated = 0;
+        // ⚠️ Toujours sur le main thread (sinon Skript ignore)
+        Bukkit.getScheduler().runTask(plugin, () -> {
 
-        for (Shop shop : QuickShopAPI.getInstance().getShopManager().getAllShops()) {
+            try {
+                // 🧠 Génère un ID unique (évite les pertes)
+                String id = UUID.randomUUID().toString();
 
-            if (shop.getItem().getType().name().equalsIgnoreCase(item)) {
-                shop.setPrice(newPrice);
-                updated++;
+                // 📦 Queue Skript
+                Variables.setVariable("eco.queue." + id + ".item", item, null, false);
+                Variables.setVariable("eco.queue." + id + ".amount", amount, null, false);
+
+                System.out.println("[Bridge] Queue -> " + item + " x" + amount);
+
+            } catch (Exception e) {
+                System.out.println("[Bridge] ERREUR ENVOI SKRIPT");
+                e.printStackTrace();
             }
-        }
 
-        System.out.println("[Bridge] Shops update: " + item + " -> " + newPrice + " (" + updated + ")");
+        });
     }
 }

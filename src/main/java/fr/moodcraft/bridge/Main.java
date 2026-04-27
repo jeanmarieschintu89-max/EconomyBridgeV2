@@ -10,7 +10,7 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-PriceUpdater.init(this);
+        PriceUpdater.init(this);
 
         // Listener QuickShop
         getServer().getPluginManager().registerEvents(new ShopListener(), this);

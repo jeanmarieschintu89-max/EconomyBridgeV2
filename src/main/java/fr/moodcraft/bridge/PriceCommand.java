@@ -1,8 +1,12 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import com.ghostchu.quickshop.api.QuickShopAPI;
+import com.ghostchu.quickshop.api.shop.Shop;
 
 public class PriceCommand implements CommandExecutor {
 
@@ -15,20 +19,36 @@ public class PriceCommand implements CommandExecutor {
         }
 
         String item = args[0].toUpperCase();
-double price = Double.parseDouble(args[1]);
+        double price;
 
-for (Shop shop : plugin.getShopManager().getAllShops()) {
+        // 🔒 sécurité parsing
+        try {
+            price = Double.parseDouble(args[1]);
+        } catch (Exception e) {
+            sender.sendMessage("Prix invalide.");
+            return true;
+        }
 
-    String shopItem = shop.getItem().getType().name();
+        int updated = 0;
 
-    // 🔥 FIX : match large (corrige ton problème)
-    if (shopItem.contains(item)) {
+        QuickShopAPI api = QuickShopAPI.getInstance();
 
-        shop.setPrice(price);
-        shop.update();
+        for (Shop shop : api.getShopManager().getAllShops()) {
 
-}
-}
-return true;
+            String shopItem = shop.getItem().getType().name();
+
+            // 🔥 MATCH LARGE (corrige ton bug)
+            if (shopItem.contains(item)) {
+
+                shop.setPrice(price);
+                shop.update();
+
+                updated++;
+            }
+        }
+
+        Bukkit.getLogger().info("[Bridge] " + updated + " shops mis à jour pour " + item);
+
+        return true;
     }
 }

@@ -12,6 +12,7 @@
 
     <name>EconomyBridgeV2</name>
 
+    <!-- 🔌 Repo Paper -->
     <repositories>
         <repository>
             <id>papermc</id>
@@ -21,7 +22,7 @@
 
     <dependencies>
 
-        <!-- Paper -->
+        <!-- Paper API -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -29,19 +30,20 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop LOCAL -->
+        <!-- QuickShop (installé via GitHub Actions) -->
         <dependency>
-            <groupId>com.quickshop</groupId>
+            <groupId>com.ghostchu</groupId>
             <artifactId>quickshop</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/QuickShop.jar</systemPath>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
 
     <build>
         <plugins>
+
+            <!-- Java 21 -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.15.0</version>
@@ -50,6 +52,7 @@
                     <target>21</target>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

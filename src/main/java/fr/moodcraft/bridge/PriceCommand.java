@@ -11,16 +11,17 @@ public class PriceCommand implements CommandExecutor {
 
         if (args.length < 2) return false;
 
-        String item = args[0];
-        double price;
+        String item = args[0].toLowerCase();
 
         try {
-            price = Double.parseDouble(args[1]);
-        } catch (Exception e) {
-            return false;
-        }
+            double price = Double.parseDouble(args[1]);
 
-        PriceUpdater.updateItem(item, price);
+            // 🔄 update QuickShop
+            PriceUpdater.updateItem(item);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return true;
     }

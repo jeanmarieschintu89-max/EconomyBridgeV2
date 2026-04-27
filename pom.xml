@@ -9,25 +9,9 @@
     <artifactId>EconomyBridgeV2</artifactId>
     <version>1.0</version>
 
-    <repositories>
-
-        <!-- Paper -->
-        <repository>
-            <id>papermc</id>
-            <url>https://repo.papermc.io/repository/maven-public/</url>
-        </repository>
-
-        <!-- QuickShop officiel -->
-        <repository>
-            <id>codemc-repo</id>
-            <url>https://repo.codemc.io/repository/maven-public/</url>
-        </repository>
-
-    </repositories>
-
     <dependencies>
 
-        <!-- Paper API -->
+        <!-- Paper -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -35,12 +19,13 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop API (LA BONNE) -->
+        <!-- QuickShop LOCAL -->
         <dependency>
-            <groupId>com.ghostchu.quickshop</groupId>
-            <artifactId>quickshop-api</artifactId>
-            <version>6.0.0</version>
-            <scope>provided</scope>
+            <groupId>quickshop</groupId>
+            <artifactId>quickshop</artifactId>
+            <version>local</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/QuickShop.jar</systemPath>
         </dependency>
 
     </dependencies>

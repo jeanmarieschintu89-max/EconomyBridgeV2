@@ -27,30 +27,20 @@ public class ShopListener implements Listener {
             // 🏪 Shop
             Shop shop = event.getShop();
 
-            // 💰 PRIX (safe)
-            double price = 0;
-
-            try {
-                price = shop.getPrice();
-            } catch (Exception ignored) {
-                System.out.println("[EconomyBridge] Impossible de récupérer le prix");
-            }
-
-            double total = price * amount;
-
-            System.out.println("[EconomyBridge] Achat -> "
-                    + name + " x" + amount + " = " + total);
-
-            // 🔥 Ton système dynamique
+            // 📦 ITEM
             String item = shop.getItem().getType().name().toLowerCase();
 
-Bukkit.dispatchCommand(
-    Bukkit.getConsoleSender(),
-    "skript set eco " + item + " " + amount
-);
+            // 🔍 DEBUG console
+            Bukkit.getLogger().info("[Bridge] Achat -> " + name + " | " + item + " x" + amount);
+
+            // 📡 ENVOI AU SKRIPT
+            Bukkit.dispatchCommand(
+                    Bukkit.getConsoleSender(),
+                    "skriptseteco " + item + " " + amount
+            );
 
         } catch (Exception e) {
-            System.out.println("[EconomyBridge] ERREUR EVENT");
+            Bukkit.getLogger().severe("[Bridge] ERREUR EVENT");
             e.printStackTrace();
         }
     }

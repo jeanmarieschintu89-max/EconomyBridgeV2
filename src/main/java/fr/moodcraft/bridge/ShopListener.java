@@ -3,17 +3,22 @@ package fr.moodcraft.bridge;
 import com.ghostchu.quickshop.api.event.ShopPurchaseEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 
 public class ShopListener implements Listener {
 
     @EventHandler
     public void onBuy(ShopPurchaseEvent event) {
 
-        ItemStack item = event.getItemStack();
+        // 🔒 sécurité
+        if (event.getShop() == null) return;
+
+        // 📦 item du shop (plus fiable que ItemStack)
+        String id = event.getShop().getItem().getType().name().toLowerCase();
+
         int amount = event.getAmount();
 
-        String id = item.getType().name().toLowerCase();
+        // 🎯 NORMALISATION (clé pour ton eco)
+        id = normalize(id);
 
         // 🔌 Envoi vers Skript
         SkriptBridge.sendBuy(id, amount);
@@ -21,6 +26,30 @@ public class ShopListener implements Listener {
         // 🔄 Update prix direct
         PriceUpdater.updateItem(id);
 
-        System.out.println("[Bridge] Achat -> " + id + " x" + amount);
+        Main.getInstance().getLogger().info("[Bridge] Achat -> " + id + " x" + amount);
+    }
+
+    // 🧠 mapping vers ton moteur éco
+    private String normalize(String id) {
+
+        switch (id) {
+            case "iron_ingot": return "iron";
+            case "gold_ingot": return "gold";
+            case "copper_ingot": return "copper";
+            case "netherite_ingot": return "netherite";
+
+            case "lapis_lazuli": return "lapis";
+            case "redstone": return "redstone";
+            case "coal": return "coal";
+            case "diamond": return "diamond";
+            case "emerald": return "emerald";
+            case "quartz": return "quartz";
+
+            case "glowstone_dust": return "glowstone";
+            case "amethyst_shard": return "amethyst";
+
+            default:
+                return id; // fallback
+        }
     }
 }

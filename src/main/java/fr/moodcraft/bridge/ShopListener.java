@@ -15,32 +15,22 @@ public class ShopListener implements Listener {
     public void onPurchase(ShopSuccessPurchaseEvent event) {
 
         try {
-            // 👤 Joueur
             QUser user = event.getPurchaser();
             Player player = Bukkit.getPlayer(user.getUniqueId());
 
-            String name = (player != null) ? player.getName() : "Unknown";
-
-            // 📦 Quantité
             int amount = event.getAmount();
-
-            // 🏪 Shop
             Shop shop = event.getShop();
 
-            // 📦 ITEM
+            // 🔥 Récupération item propre
             String item = shop.getItem().getType().name().toLowerCase();
 
-            // 🔍 DEBUG console
-            Bukkit.getLogger().info("[Bridge] Achat -> " + name + " | " + item + " x" + amount);
+            System.out.println("[Bridge] Achat -> " + item + " x" + amount);
 
-            // 📡 ENVOI AU SKRIPT
-            Bukkit.dispatchCommand(
-                    Bukkit.getConsoleSender(),
-                    "skriptseteco " + item + " " + amount
-            );
+            // 🔥 Envoi vers Skript
+            PriceUpdater.update(item, amount);
 
         } catch (Exception e) {
-            Bukkit.getLogger().severe("[Bridge] ERREUR EVENT");
+            System.out.println("[EconomyBridge] ERREUR EVENT");
             e.printStackTrace();
         }
     }

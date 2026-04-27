@@ -3,15 +3,16 @@ package fr.moodcraft.bridge;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import com.ghostchu.quickshop.api.event.ShopPurchaseEvent;
 import org.bukkit.inventory.ItemStack;
-import org.maxgamer.quickshop.api.event.ShopPurchaseEvent;
 
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onPurchase(ShopPurchaseEvent e) {
+    public void onBuy(ShopPurchaseEvent e) {
 
-        ItemStack item = e.getItem();
+        ItemStack item = e.getShop().getItem();
         int amount = e.getAmount();
 
         if (item == null) return;

@@ -10,15 +10,8 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        saveDefaultConfig();
-
-        // 🔗 Listener QuickShop
+        // Listener QuickShop
         getServer().getPluginManager().registerEvents(new ShopListener(), this);
-
-        // ✅ ENREGISTRE LA COMMANDE priceupdate
-        if (this.getCommand("priceupdate") != null) {
-            this.getCommand("priceupdate").setExecutor(new PriceCommand());
-        }
 
         getLogger().info("EconomyBridgeV2 activé !");
     }

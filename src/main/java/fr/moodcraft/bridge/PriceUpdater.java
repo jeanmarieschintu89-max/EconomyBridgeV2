@@ -1,11 +1,18 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
+
 public class PriceUpdater {
 
-    public static void update(double price) {
+    public static void update(String item, double price) {
 
-        // Ici tu brancheras ton système Skript / économie dynamique
-        System.out.println("[EconomyBridge] Update prix : " + price);
+        // 🔍 DEBUG
+        Bukkit.getLogger().info("[Bridge] Update prix -> " + item + " = " + price);
 
+        // 📡 Envoi commande (si tu veux sync QuickShop via Java)
+        Bukkit.dispatchCommand(
+                Bukkit.getConsoleSender(),
+                "priceupdate " + item + " " + price
+        );
     }
 }

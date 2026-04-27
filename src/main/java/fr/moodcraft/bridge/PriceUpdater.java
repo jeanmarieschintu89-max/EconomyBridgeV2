@@ -9,16 +9,20 @@ public class PriceUpdater {
         if (item == null || item.isEmpty()) return;
         if (amount <= 0) return;
 
+        // ✅ On crée des variables finales
         final String finalItem = item.replace("minecraft:", "").toLowerCase();
         final int finalAmount = amount;
 
-        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+        Bukkit.getScheduler().runTask(Main.getInstance(), new Runnable() {
+            @Override
+            public void run() {
 
-            Bukkit.dispatchCommand(
-                Bukkit.getConsoleSender(),
-                "eco_buy " + finalItem + " " + finalAmount
-            );
+                Bukkit.dispatchCommand(
+                    Bukkit.getConsoleSender(),
+                    "eco_buy " + finalItem + " " + finalAmount
+                );
 
+            }
         });
     }
 }

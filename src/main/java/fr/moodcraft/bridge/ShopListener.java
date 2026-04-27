@@ -1,6 +1,7 @@
 package fr.moodcraft.bridge;
 
-import com.ghostchu.quickshop.api.event.ShopPurchaseEvent;
+import com.ghostchu.quickshop.api.event.economy.ShopSuccessPurchaseEvent;
+import com.ghostchu.quickshop.api.shop.Shop;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,34 +9,24 @@ import org.bukkit.event.Listener;
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onBuy(ShopPurchaseEvent event) {
+    public void onBuy(ShopSuccessPurchaseEvent event) {
 
-        if (event.getShop() == null) return;
-
-        String id = event.getShop().getItem().getType().name().toLowerCase();
+        Shop shop = event.getShop();
         int amount = event.getAmount();
 
-        id = normalize(id);
+        String id = shop.getItem().getType().name().toLowerCase();
 
-        // 🔌 envoi vers ton moteur économique (Skript)
-        Bukkit.dispatchCommand(
+        // 🔌 vers Skript
+        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+            Bukkit.dispatchCommand(
                 Bukkit.getConsoleSender(),
                 "eco_buy " + id + " " + amount
-        );
+            );
+        });
+
+        // 🔄 update prix
+        PriceUpdater.updateItem(id);
 
         Main.getInstance().getLogger().info("[Bridge] Achat -> " + id + " x" + amount);
-    }
-
-    private String normalize(String id) {
-        switch (id) {
-            case "iron_ingot": return "iron";
-            case "gold_ingot": return "gold";
-            case "copper_ingot": return "copper";
-            case "netherite_ingot": return "netherite";
-            case "lapis_lazuli": return "lapis";
-            case "glowstone_dust": return "glowstone";
-            case "amethyst_shard": return "amethyst";
-            default: return id;
-        }
     }
 }

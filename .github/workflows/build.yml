@@ -1,25 +1,41 @@
-name: Build EconomyBridgeV2
+name: Build Plugin
 
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
 
-      - run: mvn clean package
+      # 🔥 On installe ton QuickShop.jar dans Maven
+      - name: Install QuickShop locally
+        run: |
+          mvn install:install-file \
+            -Dfile=libs/QuickShop.jar \
+            -DgroupId=com.ghostchu \
+            -DartifactId=quickshop \
+            -Dversion=1.0 \
+            -Dpackaging=jar
 
-      - uses: actions/upload-artifact@v4
+      # 🔨 Build du plugin
+      - name: Build with Maven
+        run: mvn clean package
+
+      # 📦 Upload du jar compilé
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: plugin
+          name: EconomyBridgeV2
           path: target/*.jar

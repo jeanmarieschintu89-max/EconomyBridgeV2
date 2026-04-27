@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -10,23 +11,27 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        // 🎧 Listener QuickShop (achat détecté)
-        getServer().getPluginManager().registerEvents(new ShopListener(), this);
+        getLogger().info("EconomyBridgeV2 démarrage...");
 
-        // 🏷️ Commande pour MAJ des prix (pancartes)
-        if (getCommand("priceupdate") != null) {
-            getCommand("priceupdate").setExecutor(new PriceCommand());
-        }
+        // Attendre que QuickShop soit prêt
+        Bukkit.getScheduler().runTaskLater(this, () -> {
 
-        getLogger().info("EconomyBridgeV2 activé !");
+            if (Bukkit.getPluginManager().getPlugin("QuickShop-Hikari") == null) {
+                getLogger().severe("❌ QuickShop-Hikari introuvable !");
+                return;
+            }
+
+            getLogger().info("✅ Hook QuickShop OK");
+
+            // Enregistrement listener APRÈS chargement
+            Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
+
+        }, 40L); // 2 secondes
+
+        // Commande
+        this.getCommand("priceupdate").setExecutor(new PriceCommand());
     }
 
-    @Override
-    public void onDisable() {
-        getLogger().info("EconomyBridgeV2 désactivé !");
-    }
-
-    // 🔌 Accès global (utilisé par PriceUpdater)
     public static Main getInstance() {
         return instance;
     }

@@ -13,6 +13,11 @@ public class Main extends JavaPlugin {
         // Listener QuickShop
         getServer().getPluginManager().registerEvents(new ShopListener(), this);
 
+        // Commande pour MAJ des prix QuickShop
+        if (getCommand("priceupdate") != null) {
+            getCommand("priceupdate").setExecutor(new PriceCommand());
+        }
+
         getLogger().info("EconomyBridgeV2 activé !");
     }
 

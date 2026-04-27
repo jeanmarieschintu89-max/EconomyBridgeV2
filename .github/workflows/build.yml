@@ -11,19 +11,19 @@ jobs:
 
     steps:
 
-      # 📥 Clone du repo
-      - name: 📥 Checkout repository
+      # 📥 Clone repo
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # ☕ Setup Java 17
-      - name: ☕ Setup Java
+      # ☕ Java
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # 📦 Cache Maven (accélère)
-      - name: ⚡ Cache Maven
+      # ⚡ Cache Maven
+      - name: Cache Maven
         uses: actions/cache@v4
         with:
           path: ~/.m2
@@ -31,12 +31,22 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}
 
-      # 🔨 Build plugin
-      - name: 🔨 Build with Maven
+      # 🔥 Installer QuickShop local
+      - name: Install QuickShop locally
+        run: |
+          mvn install:install-file \
+            -Dfile=libs/QuickShop.jar \
+            -DgroupId=com.quickshop \
+            -DartifactId=quickshop \
+            -Dversion=6.2.0.11 \
+            -Dpackaging=jar
+
+      # 🔨 Build
+      - name: Build with Maven
         run: mvn clean package
 
-      # 📤 Upload du .jar
-      - name: 📤 Upload artifact
+      # 📤 Upload du jar
+      - name: Upload plugin
         uses: actions/upload-artifact@v4
         with:
           name: EconomyBridgeV2

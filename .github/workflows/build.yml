@@ -3,33 +3,23 @@ name: Build EconomyBridgeV2
 on:
   push:
     branches: [ "main" ]
-
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Nom du build (optionnel)"
-        required: false
-        default: "manual"
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Clone repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: ☕ Setup Java 17
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
-      - name: 🔧 Build Maven
-        run: mvn clean package
+      - run: mvn clean package
 
-      - name: 📦 Upload JAR
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: EconomyBridgeV2-${{ github.event.inputs.version }}
+          name: plugin
           path: target/*.jar

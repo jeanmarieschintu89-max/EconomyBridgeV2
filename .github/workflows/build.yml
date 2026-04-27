@@ -3,7 +3,6 @@ name: Build Plugin
 on:
   push:
     branches: [ "main" ]
-  pull_request:
 
 jobs:
   build:
@@ -13,13 +12,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Show files (DEBUG)
+        run: ls -R
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
 
-      # 🔥 On installe ton QuickShop.jar dans Maven
       - name: Install QuickShop locally
         run: |
           mvn install:install-file \
@@ -29,13 +30,5 @@ jobs:
             -Dversion=1.0 \
             -Dpackaging=jar
 
-      # 🔨 Build du plugin
-      - name: Build with Maven
+      - name: Build
         run: mvn clean package
-
-      # 📦 Upload du jar compilé
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: EconomyBridgeV2
-          path: target/*.jar

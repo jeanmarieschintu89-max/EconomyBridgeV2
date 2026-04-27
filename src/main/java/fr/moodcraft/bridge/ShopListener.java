@@ -1,9 +1,12 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.ghostchu.quickshop.api.event.economy.ShopSuccessPurchaseEvent;
+import com.ghostchu.quickshop.api.obj.QUser;
 
 public class ShopListener implements Listener {
 
@@ -11,17 +14,23 @@ public class ShopListener implements Listener {
     public void onPurchase(ShopSuccessPurchaseEvent event) {
 
         try {
-            String player = event.getPurchaser().getName();
+            QUser user = event.getPurchaser();
+
+            // 🔑 récupérer le joueur Bukkit
+            Player player = Bukkit.getPlayer(user.getUniqueId());
+
+            String playerName = (player != null) ? player.getName() : "Unknown";
+
             int amount = event.getAmount();
-            double price = event.getTotalPrice();
+            double price = event.getPrice() * amount;
 
             System.out.println("[EconomyBridge] Achat : "
-                    + player + " x" + amount + " pour " + price);
+                    + playerName + " x" + amount + " pour " + price);
 
             PriceUpdater.update(price);
 
         } catch (Exception e) {
-            System.out.println("[EconomyBridge] Erreur");
+            System.out.println("[EconomyBridge] Erreur QuickShop");
             e.printStackTrace();
         }
     }

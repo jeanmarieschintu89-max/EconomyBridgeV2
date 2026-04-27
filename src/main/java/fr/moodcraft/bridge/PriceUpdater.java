@@ -2,11 +2,14 @@ package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
 
+import com.ghostchu.quickshop.api.QuickShopAPI;
+import com.ghostchu.quickshop.api.shop.Shop;
+
 public class PriceUpdater {
 
-    public static void update(String item, int amount) {
+    // 🔁 Plugin → Skript
+    public static void sendToSkript(String item, int amount) {
 
-        // Envoie vers Skript
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
             "sk set {eco.last.item} to \"" + item + "\""
@@ -17,6 +20,22 @@ public class PriceUpdater {
             "sk set {eco.last.amount} to " + amount
         );
 
-        System.out.println("[EconomyBridge] Sync -> " + item + " x" + amount);
+        System.out.println("[Bridge] Sync Skript -> " + item + " x" + amount);
+    }
+
+    // 🔁 Skript → QuickShop
+    public static void updateShopPrice(String item, double newPrice) {
+
+        int updated = 0;
+
+        for (Shop shop : QuickShopAPI.getInstance().getShopManager().getAllShops()) {
+
+            if (shop.getItem().getType().name().equalsIgnoreCase(item)) {
+                shop.setPrice(newPrice);
+                updated++;
+            }
+        }
+
+        System.out.println("[Bridge] Shops update: " + item + " -> " + newPrice + " (" + updated + ")");
     }
 }

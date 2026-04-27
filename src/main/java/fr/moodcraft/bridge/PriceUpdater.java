@@ -6,7 +6,7 @@ public class PriceUpdater {
 
     public static void update(String item, int amount) {
 
-        // 🔥 Envoie vers Skript
+        // Envoie vers Skript
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
             "sk set {eco.last.item} to \"" + item + "\""

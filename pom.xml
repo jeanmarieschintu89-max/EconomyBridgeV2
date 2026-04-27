@@ -8,55 +8,47 @@
     <groupId>fr.moodcraft</groupId>
     <artifactId>EconomyBridgeV2</artifactId>
     <version>1.0</version>
-    <packaging>jar</packaging>
 
-    <name>EconomyBridgeV2</name>
-
-    <!-- 🔗 REPOSITORIES -->
     <repositories>
 
-        <!-- Spigot API -->
+        <!-- Paper -->
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
 
-        <!-- JitPack (QuickShop) -->
+        <!-- QuickShop officiel -->
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
 
     </repositories>
 
-    <!-- 📦 DEPENDENCIES -->
     <dependencies>
 
-        <!-- Paper / Spigot -->
+        <!-- Paper API -->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.20.1-R0.1-SNAPSHOT</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.20.6-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop Hikari (VERSION EXISTANTE SUR JITPACK) -->
+        <!-- QuickShop API (LA BONNE) -->
         <dependency>
-            <groupId>com.github.QuickShop-Community</groupId>
-            <artifactId>QuickShop-Hikari</artifactId>
-            <version>v6.1.0</version>
+            <groupId>com.ghostchu.quickshop</groupId>
+            <artifactId>quickshop-api</artifactId>
+            <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
 
     </dependencies>
 
-    <!-- ⚙️ BUILD -->
     <build>
         <finalName>EconomyBridgeV2</finalName>
 
         <plugins>
-
-            <!-- Java 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -66,9 +58,7 @@
                     <target>17</target>
                 </configuration>
             </plugin>
-
         </plugins>
-
     </build>
 
 </project>

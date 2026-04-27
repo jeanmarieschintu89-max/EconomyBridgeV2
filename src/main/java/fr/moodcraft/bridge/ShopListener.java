@@ -16,15 +16,15 @@ public class ShopListener implements Listener {
 
         String id = shop.getItem().getType().name().toLowerCase();
 
-        // 🔌 vers Skript
+        // 🔌 envoi vers Skript
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
             Bukkit.dispatchCommand(
-                Bukkit.getConsoleSender(),
-                "eco_buy " + id + " " + amount
+                    Bukkit.getConsoleSender(),
+                    "eco_buy " + id + " " + amount
             );
         });
 
-        // 🔄 update prix
+        // 🔄 update prix immédiat
         PriceUpdater.updateItem(id);
 
         Main.getInstance().getLogger().info("[Bridge] Achat -> " + id + " x" + amount);

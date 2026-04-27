@@ -42,7 +42,12 @@ public class ShopListener implements Listener {
                     + name + " x" + amount + " = " + total);
 
             // 🔥 Ton système dynamique
-            PriceUpdater.update(total);
+            String item = shop.getItem().getType().name().toLowerCase();
+
+Bukkit.dispatchCommand(
+    Bukkit.getConsoleSender(),
+    "skript set eco " + item + " " + amount
+);
 
         } catch (Exception e) {
             System.out.println("[EconomyBridge] ERREUR EVENT");

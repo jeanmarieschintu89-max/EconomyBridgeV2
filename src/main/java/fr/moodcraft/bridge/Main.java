@@ -1,37 +1,24 @@
-package fr.moodcraft.bridge;
+@Override
+public void onEnable() {
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+    instance = this;
 
-public class Main extends JavaPlugin {
+    getLogger().info("⏳ Démarrage bridge...");
 
-    private static Main instance;
+    // attendre QuickShop
+    getServer().getScheduler().runTaskLater(this, () -> {
 
-    @Override
-    public void onEnable() {
-        instance = this;
+        if (getServer().getPluginManager().getPlugin("QuickShop-Hikari") == null) {
+            getLogger().severe("❌ QuickShop-Hikari introuvable !");
+            return;
+        }
 
-        getLogger().info("⏳ Démarrage du bridge...");
+        getServer().getPluginManager().registerEvents(new ShopListener(), this);
 
-        // ⏱ On attend que QuickShop soit chargé
-        Bukkit.getScheduler().runTaskLater(this, () -> {
+        getCommand("priceupdate").setExecutor(new PriceCommand());
 
-            if (Bukkit.getPluginManager().getPlugin("QuickShop-Hikari") == null) {
-                getLogger().severe("❌ QuickShop-Hikari introuvable !");
-                return;
-            }
+        getLogger().info("✅ Hook QuickShop OK");
+        getLogger().info("💰 Bridge prêt (Eco <-> QS)");
 
-            // ✅ Enregistrement du listener APRÈS chargement
-            Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
-
-            getLogger().info("✅ Hook QuickShop OK");
-            getLogger().info("💰 EconomyBridgeV2 prêt");
-
-        }, 40L); // 2 secondes
-
-    }
-
-    public static Main getInstance() {
-        return instance;
-    }
+    }, 40L);
 }

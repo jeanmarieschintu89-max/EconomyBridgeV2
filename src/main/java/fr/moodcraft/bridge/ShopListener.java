@@ -1,22 +1,29 @@
 package fr.moodcraft.bridge;
 
-import com.ghostchu.quickshop.api.event.ShopSuccessPurchaseEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import com.ghostchu.quickshop.api.event.economy.ShopSuccessPurchaseEvent;
 
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onShopBuy(ShopSuccessPurchaseEvent event) {
+    public void onPurchase(ShopSuccessPurchaseEvent event) {
 
-        if (event.isCancelled()) return;
+        // joueur
+        String player = event.getPurchaser().getName();
 
-        double amount = event.getAmount();
+        // item
         String item = event.getShop().getItem().getType().name();
-        String buyer = event.getBuyer().getName();
 
-        System.out.println("[MoodCraft] Achat détecté: " + buyer + " a acheté " + amount + "x " + item);
+        // quantité
+        int amount = event.getAmount();
 
-        // 👉 Ici tu peux connecter ton système de prix dynamique
+        // prix total
+        double price = event.getTotal();
+
+        System.out.println("[Bridge] Achat détecté : " 
+            + player + " a acheté " 
+            + amount + "x " + item + " pour " + price);
     }
 }

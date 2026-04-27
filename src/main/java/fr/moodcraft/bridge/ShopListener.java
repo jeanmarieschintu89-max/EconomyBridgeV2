@@ -1,28 +1,26 @@
 package fr.moodcraft.bridge;
 
+import com.ghostchu.quickshop.api.event.ShopPurchaseEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import com.ghostchu.quickshop.api.event.economy.ShopSuccessPurchaseEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onBuy(ShopSuccessPurchaseEvent event) {
+    public void onBuy(ShopPurchaseEvent event) {
 
-        if (event == null) return;
+        ItemStack item = event.getItemStack();
+        int amount = event.getAmount();
 
-        try {
-            String item = event.getShop().getItem().getType().name();
-            int amount = event.getAmount();
+        String id = item.getType().name().toLowerCase();
 
-            // Debug console (optionnel)
-            System.out.println("[Bridge] Achat détecté: " + item + " x" + amount);
+        // 🔌 Envoi vers Skript
+        SkriptBridge.sendBuy(id, amount);
 
-            PriceUpdater.sendToSkript(item, amount);
+        // 🔄 Update prix direct
+        PriceUpdater.updateItem(id);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println("[Bridge] Achat -> " + id + " x" + amount);
     }
 }

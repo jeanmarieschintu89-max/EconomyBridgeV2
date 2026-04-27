@@ -1,11 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.moodcraft</groupId>
     <artifactId>EconomyBridgeV2</artifactId>
     <version>1.0</version>
+    <packaging>jar</packaging>
 
-    <!-- 🔥 LA PARTIE QUI MANQUE -->
+    <name>EconomyBridgeV2</name>
+
     <repositories>
         <repository>
             <id>papermc</id>
@@ -13,14 +19,9 @@
         </repository>
     </repositories>
 
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-    </properties>
-
     <dependencies>
 
-        <!-- Paper API -->
+        <!-- Paper -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -28,15 +29,28 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop local -->
+        <!-- QuickShop LOCAL -->
         <dependency>
-            <groupId>local</groupId>
+            <groupId>com.quickshop</groupId>
             <artifactId>quickshop</artifactId>
-            <version>1</version>
+            <version>1.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/QuickShop.jar</systemPath>
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.15.0</version>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -12,19 +12,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Show files (DEBUG)
-        run: ls -R
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Verify files
+        run: |
+          echo "=== ROOT ==="
+          ls
+          echo "=== LIBS ==="
+          ls libs
+
       - name: Install QuickShop locally
         run: |
           mvn install:install-file \
-            -Dfile=libs/QuickShop.jar \
+            -Dfile=./libs/QuickShop.jar \
             -DgroupId=com.ghostchu \
             -DartifactId=quickshop \
             -Dversion=1.0 \

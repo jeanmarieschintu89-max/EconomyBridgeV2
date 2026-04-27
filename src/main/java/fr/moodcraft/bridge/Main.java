@@ -4,14 +4,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
-    @Override
-    public void onEnable() {
-        getServer().getPluginManager().registerEvents(new ShopListener(), this);
-        getLogger().info("EconomyBridge activé !");
-    }
+    private static Main instance;
 
     @Override
-    public void onDisable() {
-        getLogger().info("EconomyBridge désactivé !");
+    public void onEnable() {
+        instance = this;
+
+        saveDefaultConfig();
+
+        getServer().getPluginManager().registerEvents(new ShopListener(), this);
+
+        getLogger().info("EconomyBridgeV2 activé !");
+    }
+
+    public static Main getInstance() {
+        return instance;
     }
 }

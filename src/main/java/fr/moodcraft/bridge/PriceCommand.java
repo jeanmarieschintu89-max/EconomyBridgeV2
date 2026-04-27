@@ -14,18 +14,18 @@ public class PriceCommand implements CommandExecutor {
             return true;
         }
 
-        String item = args[0];
-        double price;
+        String item = args[0].toUpperCase();
+double price = Double.parseDouble(args[1]);
 
-        try {
-            price = Double.parseDouble(args[1]);
-        } catch (Exception e) {
-            sender.sendMessage("Prix invalide");
-            return true;
-        }
+for (Shop shop : plugin.getShopManager().getAllShops()) {
 
-        PriceUpdater.updateShopPrice(item, price);
+    String shopItem = shop.getItem().getType().name();
 
-        return true;
+    // 🔥 FIX : match large (corrige ton problème)
+    if (shopItem.contains(item)) {
+
+        shop.setPrice(price);
+        shop.update();
+
     }
 }

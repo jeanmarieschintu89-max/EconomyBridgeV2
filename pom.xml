@@ -8,10 +8,22 @@
     <groupId>fr.moodcraft</groupId>
     <artifactId>EconomyBridgeV2</artifactId>
     <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <name>EconomyBridgeV2</name>
+
+    <!-- ⚠️ IMPORTANT -->
+    <repositories>
+        <!-- PaperMC -->
+        <repository>
+            <id>papermc-repo</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
 
-        <!-- Paper -->
+        <!-- Paper API -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -19,21 +31,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop LOCAL -->
-        <dependency>
-            <groupId>quickshop</groupId>
-            <artifactId>quickshop</artifactId>
-            <version>local</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/QuickShop.jar</systemPath>
-        </dependency>
-
     </dependencies>
 
     <build>
-        <finalName>EconomyBridgeV2</finalName>
-
         <plugins>
+
+            <!-- Java version -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -43,6 +46,7 @@
                     <target>17</target>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

@@ -1,3 +1,4 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
@@ -12,27 +13,23 @@
 
     <name>EconomyBridgeV2</name>
 
-    <!-- 🔗 REPOSITORIES -->
+    <!-- 🔗 REPOS -->
     <repositories>
-
-        <!-- Spigot -->
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
 
-        <!-- JitPack (QuickShop) -->
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-
     </repositories>
 
     <!-- 📦 DEPENDENCIES -->
     <dependencies>
 
-        <!-- API Spigot / Paper -->
+        <!-- Paper / Spigot -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -40,7 +37,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop Hikari (VERSION VALIDE) -->
+        <!-- QuickShop Hikari (VERSION QUI EXISTE) -->
         <dependency>
             <groupId>com.github.QuickShop-Community</groupId>
             <artifactId>QuickShop-Hikari</artifactId>
@@ -52,13 +49,9 @@
 
     <!-- ⚙️ BUILD -->
     <build>
-
-        <!-- Nom du jar -->
         <finalName>EconomyBridgeV2</finalName>
 
         <plugins>
-
-            <!-- Java 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -68,9 +61,7 @@
                     <target>17</target>
                 </configuration>
             </plugin>
-
         </plugins>
-
     </build>
 
 </project>

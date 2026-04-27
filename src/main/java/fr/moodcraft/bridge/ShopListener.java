@@ -11,14 +11,15 @@ public class ShopListener implements Listener {
     public void onTransaction(EconomyTransactionEvent event) {
 
         try {
-            // Vérifie que c’est un achat (pas une vente)
+            // ✅ On prend uniquement les achats
             if (!event.isPurchase()) return;
 
             String item = event.getItem().getType().name().toLowerCase();
             int amount = event.getAmount();
 
-            System.out.println("[Bridge] Transaction détectée -> " + item + " x" + amount);
+            System.out.println("[Bridge] Achat détecté -> " + item + " x" + amount);
 
+            // 👉 On envoie au Skript (COMME AVANT)
             PriceUpdater.sendToSkript(item, amount);
 
         } catch (Exception e) {

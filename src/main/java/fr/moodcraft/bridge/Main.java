@@ -9,12 +9,11 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
         instance = this;
 
-        getLogger().info("⏳ Démarrage bridge...");
+        getLogger().info("⏳ Démarrage du bridge...");
 
-        // ⏱ attendre QuickShop
+        // ⏱ attendre que QuickShop soit chargé
         Bukkit.getScheduler().runTaskLater(this, () -> {
 
             if (Bukkit.getPluginManager().getPlugin("QuickShop-Hikari") == null) {
@@ -25,13 +24,15 @@ public class Main extends JavaPlugin {
             // 🔌 Listener achats
             Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
 
-            // 💰 Commande priceupdate
-            getCommand("priceupdate").setExecutor(new PriceCommand());
+            // ⚙️ Commande priceupdate
+            if (getCommand("priceupdate") != null) {
+                getCommand("priceupdate").setExecutor(new PriceCommand());
+            }
 
             getLogger().info("✅ Hook QuickShop OK");
-            getLogger().info("💰 Bridge prêt");
+            getLogger().info("💰 EconomyBridgeV2 prêt");
 
-        }, 40L);
+        }, 40L); // 2 sec
     }
 
     public static Main getInstance() {

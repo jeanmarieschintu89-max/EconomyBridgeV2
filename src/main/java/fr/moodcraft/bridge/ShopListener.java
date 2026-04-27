@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 
 import com.ghostchu.quickshop.api.event.economy.ShopSuccessPurchaseEvent;
 import com.ghostchu.quickshop.api.obj.QUser;
+import com.ghostchu.quickshop.api.shop.Shop;
 
 public class ShopListener implements Listener {
 
@@ -14,23 +15,37 @@ public class ShopListener implements Listener {
     public void onPurchase(ShopSuccessPurchaseEvent event) {
 
         try {
+            // 👤 Joueur
             QUser user = event.getPurchaser();
-
-            // 🔑 récupérer le joueur Bukkit
             Player player = Bukkit.getPlayer(user.getUniqueId());
 
-            String playerName = (player != null) ? player.getName() : "Unknown";
+            String name = (player != null) ? player.getName() : "Unknown";
 
+            // 📦 Quantité
             int amount = event.getAmount();
-            double price = event.getPrice() * amount;
 
-            System.out.println("[EconomyBridge] Achat : "
-                    + playerName + " x" + amount + " pour " + price);
+            // 🏪 Shop
+            Shop shop = event.getShop();
 
-            PriceUpdater.update(price);
+            // 💰 PRIX (safe)
+            double price = 0;
+
+            try {
+                price = shop.getPrice();
+            } catch (Exception ignored) {
+                System.out.println("[EconomyBridge] Impossible de récupérer le prix");
+            }
+
+            double total = price * amount;
+
+            System.out.println("[EconomyBridge] Achat -> "
+                    + name + " x" + amount + " = " + total);
+
+            // 🔥 Ton système dynamique
+            PriceUpdater.update(total);
 
         } catch (Exception e) {
-            System.out.println("[EconomyBridge] Erreur QuickShop");
+            System.out.println("[EconomyBridge] ERREUR EVENT");
             e.printStackTrace();
         }
     }

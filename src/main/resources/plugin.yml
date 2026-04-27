@@ -1,10 +1,5 @@
 name: EconomyBridgeV2
-version: 1.0
+version: 2.0
 main: fr.moodcraft.bridge.Main
 api-version: 1.20
-depend: [QuickShop-Hikari]
-
-commands:
-  priceupdate:
-    description: Update QuickShop prices
-    usage: /priceupdate <item> <price>
+depend: [QuickShop-Hikari, Skript]

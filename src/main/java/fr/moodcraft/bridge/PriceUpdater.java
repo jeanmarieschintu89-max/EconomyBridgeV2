@@ -13,6 +13,7 @@ public class PriceUpdater {
 
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
 
+            // 🔥 ON ENVOIE AU SKRIPT (inchangé)
             Bukkit.dispatchCommand(
                 Bukkit.getConsoleSender(),
                 "eco_buy " + item + " " + amount

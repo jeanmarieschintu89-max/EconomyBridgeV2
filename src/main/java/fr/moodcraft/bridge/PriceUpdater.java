@@ -1,39 +1,22 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 
-public class PriceCommand implements CommandExecutor {
+public class PriceUpdater {
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public static void update(String item, int amount) {
 
-        if (args.length < 2) {
-            return false;
-        }
-
-        String item = args[0];
-        double price;
-
-        try {
-            price = Double.parseDouble(args[1]);
-        } catch (Exception e) {
-            return false;
-        }
-
-        // 🔍 DEBUG
-        Bukkit.getLogger().info("[Bridge] Update reçu -> " + item + " = " + price);
-
-        // 🧠 ICI TU METS LA MISE À JOUR QUICKSHOP
-        // ⚠️ À adapter selon ton API QuickShop
-
+        // 🔥 Envoie vers Skript
         Bukkit.dispatchCommand(
-                Bukkit.getConsoleSender(),
-                "qs price " + item + " " + price
+            Bukkit.getConsoleSender(),
+            "sk set {eco.last.item} to \"" + item + "\""
         );
 
-        return true;
+        Bukkit.dispatchCommand(
+            Bukkit.getConsoleSender(),
+            "sk set {eco.last.amount} to " + amount
+        );
+
+        System.out.println("[EconomyBridge] Sync -> " + item + " x" + amount);
     }
 }

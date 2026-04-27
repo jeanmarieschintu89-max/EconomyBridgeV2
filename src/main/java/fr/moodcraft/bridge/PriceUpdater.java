@@ -1,7 +1,3 @@
-package fr.moodcraft.bridge;
-
-import org.bukkit.Bukkit;
-
 public class PriceUpdater {
 
     public static void sendToSkript(String item, int amount) {

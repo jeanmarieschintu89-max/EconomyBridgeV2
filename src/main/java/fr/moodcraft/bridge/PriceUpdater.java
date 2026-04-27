@@ -25,20 +25,11 @@ public class PriceUpdater extends BukkitRunnable {
         update(Material.IRON_INGOT, "iron");
         update(Material.GOLD_INGOT, "gold");
         update(Material.EMERALD, "emerald");
-        update(Material.COPPER_INGOT, "copper");
-        update(Material.REDSTONE, "redstone");
-        update(Material.LAPIS_LAZULI, "lapis");
-        update(Material.COAL, "coal");
-        update(Material.QUARTZ, "quartz");
-        update(Material.GLOWSTONE_DUST, "glowstone");
-        update(Material.AMETHYST_SHARD, "amethyst");
-        update(Material.NETHERITE_INGOT, "netherite");
     }
 
     private void update(Material mat, String id) {
 
         double price = getPrice(id);
-
         if (price <= 0) return;
 
         for (Shop shop : QuickShopAPI.getInstance().getShopManager().getAllShops()) {
@@ -52,12 +43,11 @@ public class PriceUpdater extends BukkitRunnable {
     private double getPrice(String id) {
 
         try {
-            File file = new File("plugins/EconomyBridge/prices/" + id + ".txt");
+            File file = new File("plugins/EconomyBridgeV2/prices/" + id + ".txt");
 
             if (!file.exists()) return 0;
 
             String content = new String(Files.readAllBytes(file.toPath())).trim();
-
             return Double.parseDouble(content);
 
         } catch (Exception e) {

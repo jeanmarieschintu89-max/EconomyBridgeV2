@@ -12,17 +12,21 @@
 
     <name>EconomyBridgeV2</name>
 
-    <!-- 🔗 REPOS -->
+    <!-- 🔗 REPOSITORIES -->
     <repositories>
+
+        <!-- Spigot API -->
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
 
+        <!-- JitPack (QuickShop) -->
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+
     </repositories>
 
     <!-- 📦 DEPENDENCIES -->
@@ -36,7 +40,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop Hikari (VERSION QUI EXISTE) -->
+        <!-- QuickShop Hikari (VERSION EXISTANTE SUR JITPACK) -->
         <dependency>
             <groupId>com.github.QuickShop-Community</groupId>
             <artifactId>QuickShop-Hikari</artifactId>
@@ -51,6 +55,8 @@
         <finalName>EconomyBridgeV2</finalName>
 
         <plugins>
+
+            <!-- Java 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -60,7 +66,9 @@
                     <target>17</target>
                 </configuration>
             </plugin>
+
         </plugins>
+
     </build>
 
 </project>

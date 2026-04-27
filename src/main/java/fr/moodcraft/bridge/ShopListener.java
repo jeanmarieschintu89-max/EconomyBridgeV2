@@ -3,23 +3,25 @@ package fr.moodcraft.bridge;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import com.ghostchu.quickshop.api.event.economy.EconomyTransactionEvent;
+import com.ghostchu.quickshop.api.event.economy.ShopSuccessPurchaseEvent;
+import com.ghostchu.quickshop.api.shop.Shop;
 
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onTransaction(EconomyTransactionEvent event) {
+    public void onPurchase(ShopSuccessPurchaseEvent event) {
 
         try {
-            // ✅ On prend uniquement les achats
-            if (!event.isPurchase()) return;
+            Shop shop = event.getShop();
 
-            String item = event.getItem().getType().name().toLowerCase();
+            if (shop == null) return;
+
             int amount = event.getAmount();
 
-            System.out.println("[Bridge] Achat détecté -> " + item + " x" + amount);
+            String item = shop.getItem().getType().name().toLowerCase();
 
-            // 👉 On envoie au Skript (COMME AVANT)
+            System.out.println("[Bridge] Achat -> " + item + " x" + amount);
+
             PriceUpdater.sendToSkript(item, amount);
 
         } catch (Exception e) {

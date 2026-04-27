@@ -1,6 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://www.m...">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -11,77 +12,85 @@
 
     <name>EconomyBridgeV2</name>
 
-    <!-- 🔥 Java version -->
+    <!-- 🔧 Java -->
     <properties>
         <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <!-- 📦 REPOSITORIES -->
+    <!-- 📚 Repos -->
     <repositories>
-
-        <!-- Paper -->
         <repository>
-            <id>papermc-repo</id>
+            <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
-
-        <!-- JitPack (QuickShop) -->
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-
     </repositories>
 
-    <!-- 📚 DEPENDENCIES -->
+    <!-- 📦 Dépendances -->
     <dependencies>
 
         <!-- Paper API -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.20.1-R0.1-SNAPSHOT</version>
+            <version>1.20.6-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop-Hikari API -->
+        <!-- QuickShop LOCAL -->
         <dependency>
-            <groupId>com.github.QuickShop-Community</groupId>
-            <artifactId>QuickShop-Hikari</artifactId>
-            <version>6.0.0</version>
+            <groupId>com.quickshop</groupId>
+            <artifactId>quickshop</artifactId>
+            <version>6.2.0.11</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Skript (juste pour compile, pas embarqué) -->
+        <dependency>
+            <groupId>com.github.SkriptLang</groupId>
+            <artifactId>Skript</artifactId>
+            <version>2.8.0</version>
             <scope>provided</scope>
         </dependency>
 
     </dependencies>
 
-    <!-- ⚙️ BUILD -->
+    <!-- ⚙️ Build -->
     <build>
         <plugins>
 
-            <!-- Java compiler -->
+            <!-- 🔥 Installer QuickShop local -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>install-quickshop</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.basedir}/libs/QuickShop-Hikari-6.2.0.11.jar</file>
+                            <groupId>com.quickshop</groupId>
+                            <artifactId>quickshop</artifactId>
+                            <version>6.2.0.11</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
-            </plugin>
-
-            <!-- Shade (optionnel, propre) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
         </plugins>

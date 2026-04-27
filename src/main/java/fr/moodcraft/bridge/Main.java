@@ -6,10 +6,13 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("EconomyBridgeV2 PRO activé ⚡");
 
+        getLogger().info("EconomyBridgeV2 chargé ⚡");
+
+        // Listener achats
         getServer().getPluginManager().registerEvents(new ShopListener(), this);
 
+        // Update des prix toutes les 30s
         new PriceUpdater(this).runTaskTimer(this, 20L, 600L);
     }
 }

@@ -1,20 +1,25 @@
+package fr.moodcraft.bridge;
+
+import com.ghostchu.quickshop.api.QuickShopAPI;
+import com.ghostchu.quickshop.api.shop.Shop;
+
+import java.util.Collection;
+
 public class PriceUpdater {
 
-    public static void sendToSkript(String item, int amount) {
+    public static void updateItem(String item) {
 
-        if (item == null || item.isEmpty()) return;
-        if (amount <= 0) return;
+        Double price = (Double) ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
 
-        final String finalItem = item.replace("minecraft:", "").toLowerCase();
-        final int finalAmount = amount;
+        if (price == null) return;
 
-        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+        Collection<Shop> shops = QuickShopAPI.getInstance().getShopManager().getAllShops();
 
-            Bukkit.dispatchCommand(
-                Bukkit.getConsoleSender(),
-                "eco_buy " + finalItem + " " + finalAmount
-            );
+        for (Shop shop : shops) {
 
-        });
+            if (shop.getItem().getType().name().equalsIgnoreCase(item)) {
+                shop.setPrice(price);
+            }
+        }
     }
 }

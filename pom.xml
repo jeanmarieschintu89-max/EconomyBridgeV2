@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
@@ -10,24 +10,28 @@
     <version>2.0</version>
     <packaging>jar</packaging>
 
+    <name>EconomyBridgeV2</name>
+
+    <!-- ⚙️ Java -->
     <properties>
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!-- 📦 REPOS -->
     <repositories>
         <repository>
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
 
-        <!-- Skript repo -->
         <repository>
             <id>skriptlang</id>
             <url>https://repo.skriptlang.org/releases</url>
         </repository>
     </repositories>
 
+    <!-- 📚 DEPENDENCIES -->
     <dependencies>
 
         <!-- Paper -->
@@ -38,12 +42,13 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop local -->
+        <!-- QuickShop LOCAL (FIX FINAL) -->
         <dependency>
             <groupId>com.quickshop</groupId>
             <artifactId>quickshop</artifactId>
             <version>6.2.0.11</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/QuickShop.jar</systemPath>
         </dependency>
 
         <!-- Skript -->
@@ -56,33 +61,11 @@
 
     </dependencies>
 
+    <!-- ⚙️ BUILD -->
     <build>
         <plugins>
 
-            <!-- Installer QuickShop -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <id>install-quickshop</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <file>${project.basedir}/libs/QuickShop.jar</file>
-                            <groupId>com.quickshop</groupId>
-                            <artifactId>quickshop</artifactId>
-                            <version>6.2.0.11</version>
-                            <packaging>jar</packaging>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Compiler Java 21 -->
+            <!-- Java 21 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

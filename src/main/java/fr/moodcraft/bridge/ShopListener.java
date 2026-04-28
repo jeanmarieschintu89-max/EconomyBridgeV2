@@ -14,14 +14,36 @@ public class ShopListener implements Listener {
         String raw = event.getShop().getItem().getType().name().toLowerCase();
         int amount = event.getAmount();
 
-        String item = ShopIndex.normalize(raw);
+        if (amount <= 0) return;
 
-        Main.getInstance().getLogger().info("Achat: " + item + " x" + amount);
+        String item = normalize(raw);
 
-        // feed Skript
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "eco_buy " + item + " " + amount);
+        Bukkit.getLogger().info("[Bridge] Achat: " + raw + " -> " + item + " x" + amount);
 
-        // sync instant du shop utilisé
-        PriceUpdater.updateSingle(event.getShop(), item);
+        // 🔒 Toujours main thread
+        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+            Bukkit.dispatchCommand(
+                    Bukkit.getConsoleSender(),
+                    "eco_buy " + item + " " + amount
+            );
+        });
+    }
+
+    private String normalize(String mat) {
+
+        if (mat.contains("diamond")) return "diamond";
+        if (mat.contains("emerald")) return "emerald";
+        if (mat.contains("gold")) return "gold";
+        if (mat.contains("iron")) return "iron";
+        if (mat.contains("copper")) return "copper";
+        if (mat.contains("coal") || mat.contains("charcoal")) return "coal";
+        if (mat.contains("lapis")) return "lapis";
+        if (mat.contains("redstone")) return "redstone";
+        if (mat.contains("quartz")) return "quartz";
+        if (mat.contains("amethyst")) return "amethyst";
+        if (mat.contains("netherite")) return "netherite";
+        if (mat.contains("glowstone")) return "glowstone";
+
+        return mat;
     }
 }

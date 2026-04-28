@@ -14,12 +14,16 @@ public class PriceCommand implements CommandExecutor {
         String item = args[0].toLowerCase();
 
         try {
-            Double.parseDouble(args[1]);
+            double price = Double.parseDouble(args[1]);
+
+            ch.njol.skript.variables.Variables.setVariable("price." + item, price, null, false);
 
             PriceUpdater.updateItem(item);
 
+            sender.sendMessage("§aPrix mis à jour: " + item + " = " + price);
+
         } catch (Exception e) {
-            e.printStackTrace();
+            sender.sendMessage("§cErreur prix");
         }
 
         return true;

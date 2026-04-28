@@ -1,38 +1,42 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import com.ghostchu.quickshop.api.event.ShopSuccessPurchaseEvent;
+import com.ghostchu.quickshop.api.event.economy.ShopPurchaseEvent;
 
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onBuy(ShopSuccessPurchaseEvent e) {
+    public void onBuy(ShopPurchaseEvent event) {
 
-        String item = e.getShop().getItem().getType().name().toLowerCase();
-        int amount = e.getAmount();
+        String raw = event.getShop().getItem().getType().name();
+        int amount = event.getAmount();
 
-        // 🔄 NORMALISATION
-        if (item.contains("iron")) item = "iron";
-        else if (item.contains("gold")) item = "gold";
-        else if (item.contains("copper")) item = "copper";
-        else if (item.contains("lapis")) item = "lapis";
-        else if (item.contains("redstone")) item = "redstone";
-        else if (item.contains("coal")) item = "coal";
-        else if (item.contains("quartz")) item = "quartz";
-        else if (item.contains("diamond")) item = "diamond";
-        else if (item.contains("emerald")) item = "emerald";
-        else if (item.contains("amethyst")) item = "amethyst";
-        else if (item.contains("netherite")) item = "netherite";
-        else if (item.contains("glowstone")) item = "glowstone";
+        String item = normalize(raw);
 
-        Bukkit.getLogger().info("[Bridge] Achat -> " + item + " x" + amount);
+        System.out.println("[Bridge] Achat: " + raw + " -> " + item + " x" + amount);
 
-        Bukkit.dispatchCommand(
-                Bukkit.getConsoleSender(),
-                "eco_buy " + item + " " + amount
-        );
+        PriceUpdater.updateItem(item);
+    }
+
+    // 🔥 NORMALISATION DES ITEMS (clé du problème)
+    private String normalize(String mat) {
+
+        mat = mat.toLowerCase();
+
+        if (mat.contains("diamond")) return "diamond";
+        if (mat.contains("emerald")) return "emerald";
+        if (mat.contains("gold")) return "gold";
+        if (mat.contains("iron")) return "iron";
+        if (mat.contains("copper")) return "copper";
+        if (mat.contains("coal") || mat.contains("charcoal")) return "coal";
+        if (mat.contains("lapis")) return "lapis";
+        if (mat.contains("redstone")) return "redstone";
+        if (mat.contains("quartz")) return "quartz";
+        if (mat.contains("amethyst")) return "amethyst";
+        if (mat.contains("netherite")) return "netherite";
+
+        return mat; // fallback
     }
 }

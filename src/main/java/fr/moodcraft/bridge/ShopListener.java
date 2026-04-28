@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -10,19 +11,21 @@ public class ShopListener implements Listener {
     @EventHandler
     public void onBuy(ShopPurchaseEvent event) {
 
-        String raw = event.getShop().getItem().getType().name();
+        String raw = event.getShop().getItem().getType().name().toLowerCase();
         int amount = event.getAmount();
 
         String item = normalize(raw);
 
-        System.out.println("[Bridge] Achat: " + raw + " -> " + item + " x" + amount);
+        Bukkit.getLogger().info("[Bridge] Achat: " + raw + " -> " + item + " x" + amount);
 
-        PriceUpdater.updateItem(item);
+        // 🔥 LIAISON VERS TON SKRIPT
+        Bukkit.dispatchCommand(
+                Bukkit.getConsoleSender(),
+                "eco_buy " + item + " " + amount
+        );
     }
 
     private String normalize(String mat) {
-
-        mat = mat.toLowerCase();
 
         if (mat.contains("diamond")) return "diamond";
         if (mat.contains("emerald")) return "emerald";
@@ -35,6 +38,7 @@ public class ShopListener implements Listener {
         if (mat.contains("quartz")) return "quartz";
         if (mat.contains("amethyst")) return "amethyst";
         if (mat.contains("netherite")) return "netherite";
+        if (mat.contains("glowstone")) return "glowstone";
 
         return mat;
     }

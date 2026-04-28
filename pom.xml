@@ -10,25 +10,20 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>EconomyBridgeV2</name>
-
     <properties>
         <java.version>17</java.version>
     </properties>
 
     <repositories>
-
-        <!-- Paper -->
         <repository>
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
-
     </repositories>
 
     <dependencies>
 
-        <!-- Paper API -->
+        <!-- Paper -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -36,16 +31,16 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop LOCAL (IMPORTANT) -->
+        <!-- QuickShop LOCAL -->
         <dependency>
             <groupId>com.ghostchu</groupId>
             <artifactId>quickshop</artifactId>
             <version>local</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/QuickShop-Hikari.jar</systemPath>
+            <systemPath>${project.basedir}/libs/QuickShop.jar</systemPath>
         </dependency>
 
-        <!-- Skript API (pour Variables) -->
+        <!-- Skript -->
         <dependency>
             <groupId>com.github.SkriptLang</groupId>
             <artifactId>Skript</artifactId>
@@ -58,7 +53,6 @@
     <build>
         <plugins>
 
-            <!-- Java 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

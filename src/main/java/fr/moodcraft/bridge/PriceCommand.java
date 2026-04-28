@@ -14,9 +14,8 @@ public class PriceCommand implements CommandExecutor {
         String item = args[0].toLowerCase();
 
         try {
-            double price = Double.parseDouble(args[1]);
+            Double.parseDouble(args[1]);
 
-            // 🔄 update QuickShop
             PriceUpdater.updateItem(item);
 
         } catch (Exception e) {

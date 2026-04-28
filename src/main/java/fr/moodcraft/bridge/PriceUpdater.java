@@ -1,67 +1,63 @@
 package fr.moodcraft.bridge;
 
-import com.ghostchu.quickshop.api.QuickShopAPI;
 import com.ghostchu.quickshop.api.shop.Shop;
 import org.bukkit.Bukkit;
 
-import java.util.Collection;
+import java.util.Set;
 
-public class PriceUpdater {
+public final class PriceUpdater {
 
-    // 🔥 Update TOUS les shops (appelé par /priceupdate)
+    private PriceUpdater() {}
+
     public static void updateItem(String item) {
+        Object v = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
+        if (!(v instanceof Number n)) return;
 
-        Object value = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
-        if (!(value instanceof Number)) return;
+        double target = n.doubleValue();
 
-        double price = ((Number) value).doubleValue();
+        // 🔒 garde-fou anti spike (ex: 60 → 600 en un tick)
+        double base = getDouble("base." + item, target);
+        double maxStep = base * 0.25; // max +25% par tick d’update
+        double clamped = clampStep(item, target, maxStep);
 
-        Collection<Shop> shops = QuickShopAPI.getInstance().getShopManager().getAllShops();
-
-        for (Shop shop : shops) {
-
-            String shopItem = normalize(shop.getItem().getType().name().toLowerCase());
-
-            if (!shopItem.equals(item)) continue;
-
-            // ⚡ anti-spam update
-            if (Math.abs(shop.getPrice() - price) < 0.1) continue;
-
-            shop.setPrice(price);
+        Set<Shop> shops = ShopIndex.get(item);
+        for (Shop s : shops) {
+            if (Math.abs(s.getPrice() - clamped) < 0.1) continue;
+            s.setPrice(clamped);
         }
 
-        Bukkit.getPluginManager().getPlugin("EconomyBridgeV2")
-                .getLogger().info("Sync: " + item + " -> " + price);
+        Main.getInstance().getLogger().info("Sync: " + item + " -> " + clamped + " (" + shops.size() + " shops)");
     }
 
-    // ⚡ UPDATE SEULEMENT LE SHOP UTILISÉ (instant)
-    public static void updateSingle(Shop shop, String item) {
+    // update instant du shop utilisé
+    public static void updateSingle(Shop s, String item) {
+        Object v = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
+        if (!(v instanceof Number n)) return;
 
-        Object value = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
-        if (!(value instanceof Number)) return;
+        double target = n.doubleValue();
+        double base = getDouble("base." + item, target);
+        double maxStep = base * 0.25;
 
-        double price = ((Number) value).doubleValue();
+        double clamped = clampStep(item, target, maxStep);
 
-        if (Math.abs(shop.getPrice() - price) < 0.1) return;
-
-        shop.setPrice(price);
+        if (Math.abs(s.getPrice() - clamped) < 0.1) return;
+        s.setPrice(clamped);
     }
 
-    private static String normalize(String mat) {
+    private static double getDouble(String path, double def) {
+        Object v = ch.njol.skript.variables.Variables.getVariable(path, null, false);
+        return (v instanceof Number n) ? n.doubleValue() : def;
+    }
 
-        if (mat.contains("diamond")) return "diamond";
-        if (mat.contains("emerald")) return "emerald";
-        if (mat.contains("gold")) return "gold";
-        if (mat.contains("iron")) return "iron";
-        if (mat.contains("copper")) return "copper";
-        if (mat.contains("coal") || mat.contains("charcoal")) return "coal";
-        if (mat.contains("lapis")) return "lapis";
-        if (mat.contains("redstone")) return "redstone";
-        if (mat.contains("quartz")) return "quartz";
-        if (mat.contains("amethyst")) return "amethyst";
-        if (mat.contains("netherite")) return "netherite";
-        if (mat.contains("glowstone")) return "glowstone";
+    // limite la variation entre deux updates successifs
+    private static double clampStep(String item, double target, double maxStep) {
+        double last = getDouble("bridge.last." + item, target);
+        double diff = target - last;
 
-        return mat;
+        if (diff > maxStep) target = last + maxStep;
+        else if (diff < -maxStep) target = last - maxStep;
+
+        ch.njol.skript.variables.Variables.setVariable("bridge.last." + item, target, null, false);
+        return target;
     }
 }

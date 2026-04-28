@@ -18,15 +18,18 @@ public class ShopListener implements Listener {
 
         String item = normalize(raw);
 
-        Bukkit.getLogger().info("[Bridge] Achat: " + raw + " -> " + item + " x" + amount);
+        Bukkit.getLogger().info("[Bridge] Achat: " + item + " x" + amount);
 
-        // 🔒 Toujours main thread
+        // 🔒 main thread obligatoire
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
             Bukkit.dispatchCommand(
                     Bukkit.getConsoleSender(),
                     "eco_buy " + item + " " + amount
             );
         });
+
+        // ⚡ sync instant du shop utilisé
+        PriceUpdater.updateSingle(event.getShop(), item);
     }
 
     private String normalize(String mat) {

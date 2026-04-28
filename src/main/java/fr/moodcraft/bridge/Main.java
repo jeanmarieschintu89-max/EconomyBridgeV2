@@ -21,17 +21,20 @@ public class Main extends JavaPlugin {
                 return;
             }
 
-            // ✅ UNIQUEMENT CE LISTENER
+            // 🔌 Listener achat uniquement
             Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
 
-            // ❌ SUPPRIMÉ (important)
-            // Bukkit.getPluginManager().registerEvents(new ShopLifecycleListener(), this);
-
+            // 🔌 Commande sync
             if (getCommand("priceupdate") == null) {
                 getLogger().severe("❌ Commande priceupdate manquante !");
             } else {
                 getCommand("priceupdate").setExecutor(new PriceCommand());
             }
+
+            // 🔄 Rebuild index toutes les 60s
+            Bukkit.getScheduler().runTaskTimer(this, () -> {
+                ShopIndex.rebuild();
+            }, 20L * 60, 20L * 60);
 
             getLogger().info("✅ Hook QuickShop OK");
             getLogger().info("💰 EconomyBridgeV2 prêt");

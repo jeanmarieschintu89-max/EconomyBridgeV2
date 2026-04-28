@@ -21,7 +21,11 @@ public class Main extends JavaPlugin {
                 return;
             }
 
+            // ✅ UNIQUEMENT CE LISTENER
             Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
+
+            // ❌ SUPPRIMÉ (important)
+            // Bukkit.getPluginManager().registerEvents(new ShopLifecycleListener(), this);
 
             if (getCommand("priceupdate") == null) {
                 getLogger().severe("❌ Commande priceupdate manquante !");

@@ -20,7 +20,6 @@ public class ShopListener implements Listener {
         PriceUpdater.updateItem(item);
     }
 
-    // 🔥 NORMALISATION DES ITEMS (clé du problème)
     private String normalize(String mat) {
 
         mat = mat.toLowerCase();
@@ -37,6 +36,6 @@ public class ShopListener implements Listener {
         if (mat.contains("amethyst")) return "amethyst";
         if (mat.contains("netherite")) return "netherite";
 
-        return mat; // fallback
+        return mat;
     }
 }

@@ -16,13 +16,18 @@ public class ShopListener implements Listener {
 
         String item = normalize(raw);
 
-        Bukkit.getLogger().info("[Bridge] Achat: " + raw + " -> " + item + " x" + amount);
+        // LOG PROPRE
+        Bukkit.getPluginManager().getPlugin("EconomyBridgeV2")
+                .getLogger().info("Achat: " + item + " x" + amount);
 
-        // 🔥 LIAISON VERS TON SKRIPT
+        // ➜ Envoi vers Skript
         Bukkit.dispatchCommand(
                 Bukkit.getConsoleSender(),
                 "eco_buy " + item + " " + amount
         );
+
+        // ➜ Sync instant du shop utilisé
+        PriceUpdater.updateSingle(event.getShop(), item);
     }
 
     private String normalize(String mat) {

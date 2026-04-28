@@ -17,15 +17,12 @@ public final class PriceUpdater {
         double target = n.doubleValue();
 
         double base = getDouble("base." + item, target);
-
-        // 🔥 variation contrôlée
         double maxStep = Math.max(2, base * 0.10);
         double clamped = clampStep(item, target, maxStep);
 
         Set<Shop> shops = ShopIndex.get(item);
         if (shops == null || shops.isEmpty()) return;
 
-        // 🔒 MAIN THREAD OBLIGATOIRE
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
 
             for (Shop s : shops) {
@@ -36,7 +33,7 @@ public final class PriceUpdater {
             }
         });
 
-        Main.getInstance().getLogger().info("Sync: " + item + " -> " + clamped + " (" + shops.size() + " shops)");
+        Main.getInstance().getLogger().info("Sync: " + item + " -> " + clamped);
     }
 
     public static void updateSingle(Shop s, String item) {
@@ -45,9 +42,9 @@ public final class PriceUpdater {
         if (!(v instanceof Number n)) return;
 
         double target = n.doubleValue();
+
         double base = getDouble("base." + item, target);
         double maxStep = Math.max(2, base * 0.10);
-
         double clamped = clampStep(item, target, maxStep);
 
         if (Math.abs(s.getPrice() - clamped) < 0.1) return;

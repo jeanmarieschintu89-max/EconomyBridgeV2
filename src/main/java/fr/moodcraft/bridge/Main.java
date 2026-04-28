@@ -10,34 +10,38 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
         instance = this;
 
         getLogger().info("🚀 EconomyBridgeV2 démarrage...");
 
-        // ⏳ petit délai pour laisser charger QuickShop
         Bukkit.getScheduler().runTaskLater(this, () -> {
 
             Plugin qs = Bukkit.getPluginManager().getPlugin("QuickShop-Hikari");
-
             if (qs == null || !qs.isEnabled()) {
                 getLogger().severe("❌ QuickShop-Hikari introuvable ou désactivé !");
                 getServer().getPluginManager().disablePlugin(this);
                 return;
             }
 
-            // 🔌 REGISTER EVENTS
-            Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
+            // Index initial (O(n) une fois)
+            ShopIndex.rebuild();
 
-            // 🔌 REGISTER COMMAND
+            Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
+            Bukkit.getPluginManager().registerEvents(new ShopLifecycleListener(), this);
+
             if (getCommand("priceupdate") != null) {
-                getCommand("priceupdate").setExecutor(new PriceCommand());
+                getCommand("priceupdate").setExecutor((sender, cmd, label, args) -> {
+                    if (args.length < 1) return false;
+                    String item = args[0];
+                    PriceUpdater.updateItem(item);
+                    return true;
+                });
             } else {
-                getLogger().warning("⚠ Commande priceupdate non trouvée dans plugin.yml");
+                getLogger().warning("⚠ Commande priceupdate absente dans plugin.yml");
             }
 
             getLogger().info("✅ Hook QuickShop OK");
-            getLogger().info("💰 EconomyBridgeV2 prêt (mode sync instant)");
+            getLogger().info("💰 Bridge prêt (index + sync ciblée)");
 
         }, 40L);
     }

@@ -12,12 +12,10 @@
 
     <name>EconomyBridgeV2</name>
 
-    <!-- ⚙️ VERSION JAVA -->
     <properties>
         <java.version>17</java.version>
     </properties>
 
-    <!-- 📚 REPOS -->
     <repositories>
 
         <!-- Paper -->
@@ -26,39 +24,41 @@
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
 
-        <!-- QuickShop -->
-        <repository>
-            <id>codemc</id>
-            <url>https://repo.codemc.io/repository/maven-public/</url>
-        </repository>
-
     </repositories>
 
-    <!-- 📦 DEPENDANCES -->
     <dependencies>
 
-        <!-- API PAPER -->
+        <!-- Paper API -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.20.1-R0.1-SNAPSHOT</version>
+            <version>1.20.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- QUICKSHOP API -->
+        <!-- QuickShop LOCAL (IMPORTANT) -->
         <dependency>
             <groupId>com.ghostchu</groupId>
-            <artifactId>quickshop-api</artifactId>
-            <version>6.2.0</version>
+            <artifactId>quickshop</artifactId>
+            <version>local</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/QuickShop-Hikari.jar</systemPath>
+        </dependency>
+
+        <!-- Skript API (pour Variables) -->
+        <dependency>
+            <groupId>com.github.SkriptLang</groupId>
+            <artifactId>Skript</artifactId>
+            <version>2.7.3</version>
             <scope>provided</scope>
         </dependency>
 
     </dependencies>
 
-    <!-- ⚙️ COMPILATION -->
     <build>
         <plugins>
 
+            <!-- Java 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

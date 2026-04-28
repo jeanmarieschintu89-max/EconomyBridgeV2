@@ -9,9 +9,10 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         instance = this;
 
-        getLogger().info("⏳ Démarrage du bridge...");
+        getLogger().info("🚀 EconomyBridgeV2 démarrage...");
 
         Bukkit.getScheduler().runTaskLater(this, () -> {
 

@@ -8,17 +8,25 @@
     <groupId>fr.moodcraft</groupId>
     <artifactId>EconomyBridgeV2</artifactId>
     <version>1.0</version>
-    <packaging>jar</packaging>
 
     <properties>
         <java.version>17</java.version>
     </properties>
 
     <repositories>
+
+        <!-- Paper -->
         <repository>
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
+
+        <!-- Skript -->
+        <repository>
+            <id>skript-repo</id>
+            <url>https://repo.skriptlang.org/releases</url>
+        </repository>
+
     </repositories>
 
     <dependencies>
@@ -31,7 +39,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop LOCAL -->
+        <!-- QuickShop local -->
         <dependency>
             <groupId>com.ghostchu</groupId>
             <artifactId>quickshop</artifactId>

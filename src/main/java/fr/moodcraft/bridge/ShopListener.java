@@ -1,76 +1,38 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import com.ghostchu.quickshop.api.event.ShopPurchaseEvent;
+import com.ghostchu.quickshop.api.event.ShopSuccessPurchaseEvent;
 
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onBuy(ShopPurchaseEvent e) {
+    public void onBuy(ShopSuccessPurchaseEvent e) {
 
-        Material mat = e.getShop().getItem().getType();
+        String item = e.getShop().getItem().getType().name().toLowerCase();
         int amount = e.getAmount();
 
-        String id = convert(mat);
+        // 🔄 NORMALISATION
+        if (item.contains("iron")) item = "iron";
+        else if (item.contains("gold")) item = "gold";
+        else if (item.contains("copper")) item = "copper";
+        else if (item.contains("lapis")) item = "lapis";
+        else if (item.contains("redstone")) item = "redstone";
+        else if (item.contains("coal")) item = "coal";
+        else if (item.contains("quartz")) item = "quartz";
+        else if (item.contains("diamond")) item = "diamond";
+        else if (item.contains("emerald")) item = "emerald";
+        else if (item.contains("amethyst")) item = "amethyst";
+        else if (item.contains("netherite")) item = "netherite";
+        else if (item.contains("glowstone")) item = "glowstone";
 
-        if (id == null) {
-            Bukkit.getLogger().warning("[EcoBridge] Item ignoré: " + mat.name());
-            return;
-        }
-
-        Bukkit.getLogger().info("[EcoBridge] eco_buy " + id + " " + amount);
+        Bukkit.getLogger().info("[Bridge] Achat -> " + item + " x" + amount);
 
         Bukkit.dispatchCommand(
                 Bukkit.getConsoleSender(),
-                "eco_buy " + id + " " + amount
+                "eco_buy " + item + " " + amount
         );
-    }
-
-    // 🔥 CONVERTISSEUR CENTRAL (FIABLE)
-    private String convert(Material mat) {
-
-        switch (mat) {
-
-            case DIAMOND: return "diamond";
-            case EMERALD: return "emerald";
-            case REDSTONE: return "redstone";
-            case QUARTZ: return "quartz";
-
-            case IRON_INGOT:
-            case RAW_IRON:
-                return "iron";
-
-            case GOLD_INGOT:
-            case RAW_GOLD:
-                return "gold";
-
-            case COPPER_INGOT:
-            case RAW_COPPER:
-                return "copper";
-
-            case LAPIS_LAZULI:
-                return "lapis";
-
-            case COAL:
-            case CHARCOAL:
-                return "coal";
-
-            case GLOWSTONE_DUST:
-            case GLOWSTONE:
-                return "glowstone";
-
-            case AMETHYST_SHARD:
-                return "amethyst";
-
-            case NETHERITE_INGOT:
-                return "netherite";
-
-            default:
-                return null;
-        }
     }
 }

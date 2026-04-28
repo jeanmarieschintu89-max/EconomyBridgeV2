@@ -13,7 +13,6 @@ public class Main extends JavaPlugin {
 
         getLogger().info("⏳ Démarrage du bridge...");
 
-        // ⏱ attendre que QuickShop soit chargé
         Bukkit.getScheduler().runTaskLater(this, () -> {
 
             if (Bukkit.getPluginManager().getPlugin("QuickShop-Hikari") == null) {
@@ -21,10 +20,8 @@ public class Main extends JavaPlugin {
                 return;
             }
 
-            // 🔌 Listener achats
             Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
 
-            // ⚙️ Commande priceupdate
             if (getCommand("priceupdate") != null) {
                 getCommand("priceupdate").setExecutor(new PriceCommand());
             }
@@ -32,7 +29,7 @@ public class Main extends JavaPlugin {
             getLogger().info("✅ Hook QuickShop OK");
             getLogger().info("💰 EconomyBridgeV2 prêt");
 
-        }, 40L); // 2 sec
+        }, 40L);
     }
 
     public static Main getInstance() {

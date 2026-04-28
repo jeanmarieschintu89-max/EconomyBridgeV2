@@ -14,7 +14,6 @@ public class PriceCommand implements CommandExecutor {
 
         String item = args[0];
 
-        // 🔒 main thread
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
             PriceUpdater.updateItem(item);
         });

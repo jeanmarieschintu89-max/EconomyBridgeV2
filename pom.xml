@@ -22,10 +22,13 @@
         </repository>
 
         <!-- Skript -->
-        <repository>
-            <id>skript-repo</id>
-            <url>https://repo.skriptlang.org/releases</url>
-        </repository>
+        <dependency>
+    <groupId>skript</groupId>
+    <artifactId>skript</artifactId>
+    <version>local</version>
+    <scope>system</scope>
+    <systemPath>${project.basedir}/libs/Skript.jar</systemPath>
+</dependency>
 
     </repositories>
 

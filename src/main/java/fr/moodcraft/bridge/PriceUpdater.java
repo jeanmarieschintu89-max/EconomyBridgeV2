@@ -21,60 +21,31 @@ public class PriceUpdater {
         for (Shop shop : shops) {
 
             Material mat = shop.getItem().getType();
+            String name = mat.name().toLowerCase();
 
-            String converted = convert(mat);
+            String converted = null;
 
-            if (converted == null) continue;
+            if (name.contains("iron")) converted = "iron";
+            else if (name.contains("gold")) converted = "gold";
+            else if (name.contains("copper")) converted = "copper";
+            else if (name.contains("lapis")) converted = "lapis";
+            else if (name.contains("redstone")) converted = "redstone";
+            else if (name.contains("coal")) converted = "coal";
+            else if (name.contains("quartz")) converted = "quartz";
+            else if (name.contains("diamond")) converted = "diamond";
+            else if (name.contains("emerald")) converted = "emerald";
+            else if (name.contains("amethyst")) converted = "amethyst";
+            else if (name.contains("netherite")) converted = "netherite";
+            else if (name.contains("glowstone")) converted = "glowstone";
 
-            if (converted.equalsIgnoreCase(item)) {
+            // 🧪 DEBUG
+            Bukkit.getLogger().info("[CHECK] " + name + " -> " + converted);
+
+            if (converted != null && converted.equalsIgnoreCase(item)) {
                 shop.setPrice(price);
             }
         }
 
         Bukkit.getLogger().info("[Bridge] Prix update -> " + item + " = " + price);
-    }
-
-    // 🔥 CONVERSION IDENTIQUE AU LISTENER
-    private static String convert(Material mat) {
-
-        switch (mat) {
-
-            case DIAMOND: return "diamond";
-            case EMERALD: return "emerald";
-            case REDSTONE: return "redstone";
-            case QUARTZ: return "quartz";
-
-            case IRON_INGOT:
-            case RAW_IRON:
-                return "iron";
-
-            case GOLD_INGOT:
-            case RAW_GOLD:
-                return "gold";
-
-            case COPPER_INGOT:
-            case RAW_COPPER:
-                return "copper";
-
-            case LAPIS_LAZULI:
-                return "lapis";
-
-            case COAL:
-            case CHARCOAL:
-                return "coal";
-
-            case GLOWSTONE_DUST:
-            case GLOWSTONE:
-                return "glowstone";
-
-            case AMETHYST_SHARD:
-                return "amethyst";
-
-            case NETHERITE_INGOT:
-                return "netherite";
-
-            default:
-                return null;
-        }
     }
 }

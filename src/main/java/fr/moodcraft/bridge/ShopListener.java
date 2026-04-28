@@ -1,32 +1,35 @@
 package fr.moodcraft.bridge;
 
-import com.ghostchu.quickshop.api.event.economy.ShopSuccessPurchaseEvent;
-import com.ghostchu.quickshop.api.shop.Shop;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import com.ghostchu.quickshop.api.event.ShopPurchaseEvent;
+
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onBuy(ShopSuccessPurchaseEvent event) {
+    public void onBuy(ShopPurchaseEvent e) {
 
-        Shop shop = event.getShop();
-        int amount = event.getAmount();
+        String item = e.getItem().getType().name().toLowerCase();
+        int amount = e.getAmount();
 
-        String id = shop.getItem().getType().name().toLowerCase();
+        // 🔄 conversion noms Minecraft → ton système
+        if (item.equals("iron_ingot")) item = "iron";
+        if (item.equals("gold_ingot")) item = "gold";
+        if (item.equals("copper_ingot")) item = "copper";
+        if (item.equals("lapis_lazuli")) item = "lapis";
+        if (item.equals("glowstone_dust")) item = "glowstone";
+        if (item.equals("amethyst_shard")) item = "amethyst";
+        if (item.equals("netherite_ingot")) item = "netherite";
 
-        // 🔌 envoi vers Skript
-        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-            Bukkit.dispatchCommand(
-                    Bukkit.getConsoleSender(),
-                    "eco_buy " + id + " " + amount
-            );
-        });
+        // 🧪 DEBUG
+        Bukkit.getLogger().info("[EcoBridge] eco_buy " + item + " " + amount);
 
-        // 🔄 update prix immédiat
-        PriceUpdater.updateItem(id);
-
-        Main.getInstance().getLogger().info("[Bridge] Achat -> " + id + " x" + amount);
+        // ⚡ envoi vers Skript
+        Bukkit.dispatchCommand(
+            Bukkit.getConsoleSender(),
+            "eco_buy " + item + " " + amount
+        );
     }
 }

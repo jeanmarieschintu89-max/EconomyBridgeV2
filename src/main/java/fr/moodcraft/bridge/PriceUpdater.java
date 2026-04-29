@@ -9,7 +9,17 @@ public final class PriceUpdater {
 
     private PriceUpdater() {}
 
+    // 🔒 WHITELIST (TES ITEMS ECO)
+    public static final Set<String> ALLOWED = Set.of(
+            "diamond","iron","gold","emerald","copper",
+            "redstone","lapis","coal","quartz",
+            "netherite","amethyst","glowstone"
+    );
+
     public static void updateItem(String item) {
+
+        // 🛑 BLOQUE ITEMS HORS ECO
+        if (!ALLOWED.contains(item)) return;
 
         Object v = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
         if (!(v instanceof Number n)) return;
@@ -37,6 +47,9 @@ public final class PriceUpdater {
     }
 
     public static void updateSingle(Shop s, String item) {
+
+        // 🛑 BLOQUE ITEMS HORS ECO
+        if (!ALLOWED.contains(item)) return;
 
         Object v = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
         if (!(v instanceof Number n)) return;

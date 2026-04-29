@@ -30,7 +30,9 @@ public final class PriceUpdater {
 
         double base = getDouble("base." + item, target);
         double maxStep = Math.max(2, base * 0.10);
-        double clamped = clampStep(item, target, maxStep);
+
+        // ✅ ARRONDI ICI (IMPORTANT)
+        double clamped = Math.round(clampStep(item, target, maxStep) * 10.0) / 10.0;
 
         // 🔥 ANTI-SPAM
         double lastSend = getDouble("bridge.lastsend." + item, 0);
@@ -80,7 +82,9 @@ public final class PriceUpdater {
 
         double base = getDouble("base." + item, target);
         double maxStep = Math.max(2, base * 0.10);
-        double clamped = clampStep(item, target, maxStep);
+
+        // ✅ ARRONDI ICI AUSSI
+        double clamped = Math.round(clampStep(item, target, maxStep) * 10.0) / 10.0;
 
         if (Math.abs(s.getPrice() - clamped) < 0.1) return;
 

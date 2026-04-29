@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class ShopIndex {
 
-    // item normalisé -> shops
     private static final Map<String, Set<Shop>> INDEX = new ConcurrentHashMap<>();
 
     private ShopIndex() {}
@@ -21,7 +20,7 @@ public final class ShopIndex {
 
             String key = normalize(s.getItem().getType().name().toLowerCase());
 
-            // 🛑 FILTRE ULTRA IMPORTANT (ANTI 0.10)
+            // 🛑 FILTRE ULTRA IMPORTANT
             if (!PriceUpdater.ALLOWED.contains(key)) {
                 continue;
             }
@@ -37,7 +36,6 @@ public final class ShopIndex {
     public static void add(Shop s) {
         String key = normalize(s.getItem().getType().name().toLowerCase());
 
-        // 🛑 FILTRE
         if (!PriceUpdater.ALLOWED.contains(key)) return;
 
         INDEX.computeIfAbsent(key, k -> ConcurrentHashMap.newKeySet()).add(s);
@@ -49,7 +47,8 @@ public final class ShopIndex {
         if (set != null) set.remove(s);
     }
 
-    private String normalize(String mat) {
+    // 🔥 IMPORTANT : static
+    private static String normalize(String mat) {
 
         switch (mat) {
             case "diamond": return "diamond";

@@ -49,19 +49,23 @@ public final class ShopIndex {
         if (set != null) set.remove(s);
     }
 
-    public static String normalize(String mat) {
-        if (mat.contains("diamond")) return "diamond";
-        if (mat.contains("emerald")) return "emerald";
-        if (mat.contains("gold")) return "gold";
-        if (mat.contains("iron")) return "iron";
-        if (mat.contains("copper")) return "copper";
-        if (mat.contains("coal") || mat.contains("charcoal")) return "coal";
-        if (mat.contains("lapis")) return "lapis";
-        if (mat.contains("redstone")) return "redstone";
-        if (mat.contains("quartz")) return "quartz";
-        if (mat.contains("amethyst")) return "amethyst";
-        if (mat.contains("netherite")) return "netherite";
-        if (mat.contains("glowstone")) return "glowstone";
-        return mat;
+    private String normalize(String mat) {
+
+    switch (mat) {
+        case "diamond": return "diamond";
+        case "emerald": return "emerald";
+        case "gold_ingot": return "gold";
+        case "iron_ingot": return "iron";
+        case "copper_ingot": return "copper";
+        case "coal":
+        case "charcoal": return "coal";
+        case "lapis_lazuli": return "lapis";
+        case "redstone": return "redstone";
+        case "quartz": return "quartz";
+        case "amethyst_shard": return "amethyst";
+        case "netherite_ingot": return "netherite";
+        case "glowstone_dust": return "glowstone";
     }
+
+    return mat;
 }

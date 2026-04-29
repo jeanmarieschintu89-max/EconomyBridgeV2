@@ -18,7 +18,14 @@ public final class ShopIndex {
         Collection<Shop> shops = QuickShopAPI.getInstance().getShopManager().getAllShops();
 
         for (Shop s : shops) {
+
             String key = normalize(s.getItem().getType().name().toLowerCase());
+
+            // 🛑 FILTRE ULTRA IMPORTANT (ANTI 0.10)
+            if (!PriceUpdater.ALLOWED.contains(key)) {
+                continue;
+            }
+
             INDEX.computeIfAbsent(key, k -> ConcurrentHashMap.newKeySet()).add(s);
         }
     }
@@ -29,6 +36,10 @@ public final class ShopIndex {
 
     public static void add(Shop s) {
         String key = normalize(s.getItem().getType().name().toLowerCase());
+
+        // 🛑 FILTRE
+        if (!PriceUpdater.ALLOWED.contains(key)) return;
+
         INDEX.computeIfAbsent(key, k -> ConcurrentHashMap.newKeySet()).add(s);
     }
 

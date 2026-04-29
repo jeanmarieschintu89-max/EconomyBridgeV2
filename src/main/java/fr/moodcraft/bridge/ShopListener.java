@@ -18,9 +18,14 @@ public class ShopListener implements Listener {
 
         String item = normalize(raw);
 
+        // 🛑 BLOQUE ITEMS HORS ECO
+        if (!PriceUpdater.ALLOWED.contains(item)) {
+            Bukkit.getLogger().info("[BLOCKED BUY] " + item);
+            return;
+        }
+
         Bukkit.getLogger().info("[Bridge] Achat: " + item + " x" + amount);
 
-        // 🔒 main thread obligatoire
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
             Bukkit.dispatchCommand(
                     Bukkit.getConsoleSender(),
@@ -28,7 +33,6 @@ public class ShopListener implements Listener {
             );
         });
 
-        // ⚡ sync instant du shop utilisé
         PriceUpdater.updateSingle(event.getShop(), item);
     }
 

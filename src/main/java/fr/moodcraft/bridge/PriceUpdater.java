@@ -2,7 +2,9 @@ package fr.moodcraft.bridge;
 
 import com.ghostchu.quickshop.api.shop.Shop;
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Iterator;
 import java.util.Set;
 
 public final class PriceUpdater {
@@ -30,18 +32,38 @@ public final class PriceUpdater {
         double maxStep = Math.max(2, base * 0.10);
         double clamped = clampStep(item, target, maxStep);
 
+        // 🔥 ANTI-SPAM
+        double lastSend = getDouble("bridge.lastsend." + item, 0);
+        if (Math.abs(lastSend - clamped) < 0.1) return;
+        ch.njol.skript.variables.Variables.setVariable("bridge.lastsend." + item, clamped, null, false);
+
         Set<Shop> shops = ShopIndex.get(item);
         if (shops == null || shops.isEmpty()) return;
 
-        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+        Iterator<Shop> it = shops.iterator();
 
-            for (Shop s : shops) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
 
-                if (Math.abs(s.getPrice() - clamped) < 0.1) continue;
+                int count = 0;
 
-                s.setPrice(clamped);
+                while (it.hasNext() && count < 10) { // ⚡ 10 shops par tick
+                    Shop s = it.next();
+
+                    if (Math.abs(s.getPrice() - clamped) >= 0.1) {
+                        s.setPrice(clamped);
+                    }
+
+                    count++;
+                }
+
+                // ✅ stop propre
+                if (!it.hasNext()) {
+                    cancel();
+                }
             }
-        });
+        }.runTaskTimer(Main.getInstance(), 0L, 1L);
 
         Main.getInstance().getLogger().info("Sync: " + item + " -> " + clamped);
     }

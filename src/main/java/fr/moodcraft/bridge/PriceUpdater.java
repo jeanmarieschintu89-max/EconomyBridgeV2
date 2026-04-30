@@ -4,6 +4,8 @@ import com.ghostchu.quickshop.api.shop.Shop;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -29,11 +31,11 @@ public final class PriceUpdater {
         double base = getDouble("base." + item, target);
         double maxStep = Math.max(2, base * 0.10);
 
-        // ✅ ARRONDI FIX (2 décimales)
-        double clamped = Math.round(clampStep(item, target, maxStep) * 100.0) / 100.0;
+        double raw = clampStep(item, target, maxStep);
+        double clamped = round2(raw);
 
         double lastSend = getDouble("bridge.lastsend." + item, 0);
-        if (Math.abs(lastSend - clamped) < 0.01) return;
+        if (Math.abs(lastSend - clamped) < 0.009) return;
 
         ch.njol.skript.variables.Variables.setVariable("bridge.lastsend." + item, clamped, null, false);
 
@@ -51,7 +53,7 @@ public final class PriceUpdater {
                 while (it.hasNext() && count < 10) {
                     Shop s = it.next();
 
-                    if (Math.abs(s.getPrice() - clamped) >= 0.01) {
+                    if (Math.abs(s.getPrice() - clamped) >= 0.009) {
                         s.setPrice(clamped);
                     }
 
@@ -79,10 +81,10 @@ public final class PriceUpdater {
         double base = getDouble("base." + item, target);
         double maxStep = Math.max(2, base * 0.10);
 
-        // ✅ ARRONDI FIX (2 décimales)
-        double clamped = Math.round(clampStep(item, target, maxStep) * 100.0) / 100.0;
+        double raw = clampStep(item, target, maxStep);
+        double clamped = round2(raw);
 
-        if (Math.abs(s.getPrice() - clamped) < 0.01) return;
+        if (Math.abs(s.getPrice() - clamped) < 0.009) return;
 
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
             s.setPrice(clamped);
@@ -105,5 +107,12 @@ public final class PriceUpdater {
         ch.njol.skript.variables.Variables.setVariable("bridge.last." + item, target, null, false);
 
         return target;
+    }
+
+    // 💎 ARRONDI PROPRE (ANTI BUG 0.10)
+    private static double round2(double value) {
+        return new BigDecimal(value)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 }

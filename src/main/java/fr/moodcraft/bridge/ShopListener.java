@@ -18,10 +18,10 @@ public class ShopListener implements Listener {
 
         String item = normalize(raw);
 
-        // 🛑 BLOQUE ITEMS HORS ECO
+        // 🔁 On ignore les items hors économie AU LIEU de bloquer
         if (!PriceUpdater.ALLOWED.contains(item)) {
-            Bukkit.getLogger().info("[BLOCKED BUY] " + item);
-            event.setCancelled(true);
+            // Log optionnel (tu peux le garder ou supprimer)
+            Bukkit.getLogger().info("[IGNORED BUY] " + item);
             return;
         }
 

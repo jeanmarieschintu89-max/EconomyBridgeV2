@@ -11,7 +11,6 @@ public final class PriceUpdater {
 
     private PriceUpdater() {}
 
-    // 🔒 WHITELIST (TES ITEMS ECO)
     public static final Set<String> ALLOWED = Set.of(
             "diamond","iron","gold","emerald","copper",
             "redstone","lapis","coal","quartz",
@@ -20,7 +19,6 @@ public final class PriceUpdater {
 
     public static void updateItem(String item) {
 
-        // 🛑 BLOQUE ITEMS HORS ECO
         if (!ALLOWED.contains(item)) return;
 
         Object v = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
@@ -31,12 +29,12 @@ public final class PriceUpdater {
         double base = getDouble("base." + item, target);
         double maxStep = Math.max(2, base * 0.10);
 
-        // ✅ ARRONDI ICI (IMPORTANT)
-        double clamped = Math.round(clampStep(item, target, maxStep) * 10.0) / 10.0;
+        // ✅ ARRONDI FIX (2 décimales)
+        double clamped = Math.round(clampStep(item, target, maxStep) * 100.0) / 100.0;
 
-        // 🔥 ANTI-SPAM
         double lastSend = getDouble("bridge.lastsend." + item, 0);
-        if (Math.abs(lastSend - clamped) < 0.1) return;
+        if (Math.abs(lastSend - clamped) < 0.01) return;
+
         ch.njol.skript.variables.Variables.setVariable("bridge.lastsend." + item, clamped, null, false);
 
         Set<Shop> shops = ShopIndex.get(item);
@@ -50,17 +48,16 @@ public final class PriceUpdater {
 
                 int count = 0;
 
-                while (it.hasNext() && count < 10) { // ⚡ 10 shops par tick
+                while (it.hasNext() && count < 10) {
                     Shop s = it.next();
 
-                    if (Math.abs(s.getPrice() - clamped) >= 0.1) {
+                    if (Math.abs(s.getPrice() - clamped) >= 0.01) {
                         s.setPrice(clamped);
                     }
 
                     count++;
                 }
 
-                // ✅ stop propre
                 if (!it.hasNext()) {
                     cancel();
                 }
@@ -72,7 +69,6 @@ public final class PriceUpdater {
 
     public static void updateSingle(Shop s, String item) {
 
-        // 🛑 BLOQUE ITEMS HORS ECO
         if (!ALLOWED.contains(item)) return;
 
         Object v = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
@@ -83,10 +79,10 @@ public final class PriceUpdater {
         double base = getDouble("base." + item, target);
         double maxStep = Math.max(2, base * 0.10);
 
-        // ✅ ARRONDI ICI AUSSI
-        double clamped = Math.round(clampStep(item, target, maxStep) * 10.0) / 10.0;
+        // ✅ ARRONDI FIX (2 décimales)
+        double clamped = Math.round(clampStep(item, target, maxStep) * 100.0) / 100.0;
 
-        if (Math.abs(s.getPrice() - clamped) < 0.1) return;
+        if (Math.abs(s.getPrice() - clamped) < 0.01) return;
 
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
             s.setPrice(clamped);

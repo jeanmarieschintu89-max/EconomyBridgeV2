@@ -14,13 +14,36 @@ public class ContractGUIListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
+        // 🔒 Vérifie GUI
         if (!e.getView().getTitle().equals("§6📄 Contrats")) return;
+
+        // 🔒 Clique uniquement dans le menu
+        if (e.getClickedInventory() == null) return;
+        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
         e.setCancelled(true);
 
+        // 🔒 joueur uniquement
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getCurrentItem() == null) return;
 
+        // 🔒 item valide
+        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
+
+        int slot = e.getSlot();
+
+        // =========================
+        // ➕ CREER CONTRAT
+        // =========================
+        if (slot == 22) {
+            p.closeInventory();
+            p.sendMessage("§e✏ Création de contrat:");
+            p.sendMessage("§7/contrat create <joueur> <item> <quantité> <prix>");
+            return;
+        }
+
+        // =========================
+        // 📄 LISTE CONTRATS
+        // =========================
         List<UUID> list = new ArrayList<>();
 
         for (UUID id : ContractManager.contracts.keySet()) {
@@ -30,8 +53,7 @@ public class ContractGUIListener implements Listener {
             }
         }
 
-        int slot = e.getSlot();
-
+        // 🔒 sécurité slot
         if (slot < 0 || slot >= list.size()) return;
 
         UUID id = list.get(slot);
@@ -41,22 +63,18 @@ public class ContractGUIListener implements Listener {
 
         // ✔ ACCEPT
         if (e.isLeftClick()) {
-
             c.accepted = true;
-
             p.sendMessage("§a✔ Contrat accepté");
         }
 
         // ❌ REFUSE
         if (e.isRightClick()) {
-
             ContractManager.contracts.remove(id);
-
             ReputationManager.add(c.from, -1);
-
             p.sendMessage("§c❌ Contrat refusé");
         }
 
+        // 🔄 refresh GUI
         ContractGUI.open(p);
     }
 }

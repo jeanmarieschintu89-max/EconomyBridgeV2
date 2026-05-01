@@ -1,6 +1,5 @@
 package fr.moodcraft.bridge;
 
-import fr.moodcraft.bridge.commands.GetTrendCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,10 +35,6 @@ public class Main extends JavaPlugin {
                     sender.sendMessage("§a✔ Config rechargée !");
                     return true;
                 });
-            }
-
-            if (getCommand("gettrend") != null) {
-                getCommand("gettrend").setExecutor(new GetTrendCommand());
             }
 
             // 🔄 rebuild index

@@ -35,6 +35,8 @@ public class Main extends JavaPlugin {
         // 🔥 AJOUT GUI BANQUE
         Bukkit.getPluginManager().registerEvents(new BanqueAdminListener(), this);
 
+Bukkit.getPluginManager().registerEvents(new BanqueConfigListener(), this);
+
         // 📜 commandes
         getCommand("prix").setExecutor(new PrixCommand());
         getCommand("syncprix").setExecutor(new SyncCommand());

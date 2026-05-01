@@ -2,6 +2,18 @@ package fr.moodcraft.bridge;
 
 public final class MarketEngine {
 
+    public static double getPrice(String item) {
+        return MarketState.getPrice(item);
+    }
+
+    public static void applyBuy(String item, int amount) {
+        MarketState.buy.merge(item, (double) amount, Double::sum);
+    }
+
+    public static void applySell(String item, int amount) {
+        MarketState.sell.merge(item, (double) amount, Double::sum);
+    }
+
     public static void tick() {
 
         for (String item : PriceUpdater.ALLOWED) {
@@ -12,7 +24,6 @@ public final class MarketEngine {
             double buy = MarketState.buy.getOrDefault(item, 0.0);
             double sell = MarketState.sell.getOrDefault(item, 0.0);
 
-            // 📉 activité
             double activity = Math.sqrt(stock) * 0.002;
 
             if (buy > 0 || sell > 0) {
@@ -21,14 +32,11 @@ public final class MarketEngine {
                 price += base * 0.001;
             }
 
-            // 📈 impact
             double impact = (buy - sell) * 0.05 - stock * 0.00015;
             price += impact;
 
-            // 🔄 retour vers base
             price += (base - price) * 0.006;
 
-            // 🧊 limites
             double min = base * 0.5;
             double max = base * 2.5;
 
@@ -38,14 +46,11 @@ public final class MarketEngine {
             price = round(price);
 
             MarketState.setPrice(item, price);
-
             TrendManager.updateTrend(item, price);
 
-            // reset
             MarketState.buy.put(item, 0.0);
             MarketState.sell.put(item, 0.0);
 
-            // sync shop
             PriceUpdater.updateItem(item);
         }
     }

@@ -3,14 +3,28 @@ package fr.moodcraft.bridge;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Map;
+
 public class Main extends JavaPlugin {
 
     private static Main instance;
+
+    public static Main getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
 
         instance = this;
+
+        saveDefaultConfig();
+
+        loadBase();
+        loadSection("activity", MarketState.activity);
+        loadSection("impact", MarketState.impact);
+        loadSection("rarity", MarketState.rarity);
+        loadSection("weight", MarketState.weight);
 
         Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
         Bukkit.getPluginManager().registerEvents(new MineListener(), this);
@@ -20,33 +34,32 @@ public class Main extends JavaPlugin {
         getCommand("syncprix").setExecutor(new SyncCommand());
         getCommand("trend").setExecutor(new GetTrendCommand());
 
-        initBase();
+        // 🔁 boucle marché (comme ton every 45 seconds)
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            MarketEngine.tick();
+        }, 20L, 20L * 45);
 
-        Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20*45, 20*45);
-
-        ShopIndex.rebuild();
+        getLogger().info("✅ EconomyBridge chargé (FULL JAVA)");
     }
 
-    private void initBase() {
+    private void loadBase() {
+        for (String key : getConfig().getConfigurationSection("base").getKeys(false)) {
 
-        MarketState.base.put("diamond", 2800.0);
-        MarketState.base.put("emerald", 15000.0);
-        MarketState.base.put("netherite", 32000.0);
+            double value = getConfig().getDouble("base." + key);
 
-        MarketState.base.put("gold", 120.0);
-        MarketState.base.put("iron", 80.0);
-        MarketState.base.put("copper", 12.0);
-
-        MarketState.base.put("redstone", 20.0);
-        MarketState.base.put("lapis", 20.0);
-        MarketState.base.put("coal", 8.0);
-        MarketState.base.put("quartz", 25.0);
-
-        MarketState.base.put("glowstone", 15.0);
-        MarketState.base.put("amethyst", 6.0);
+            MarketState.base.put(key, value);
+            MarketState.price.put(key, value);
+            MarketState.stock.put(key, 0.0);
+            MarketState.buy.put(key, 0.0);
+            MarketState.sell.put(key, 0.0);
+        }
     }
 
-    public static Main getInstance() {
-        return instance;
+    private void loadSection(String path, Map<String, Double> map) {
+        if (getConfig().getConfigurationSection(path) == null) return;
+
+        for (String key : getConfig().getConfigurationSection(path).getKeys(false)) {
+            map.put(key, getConfig().getDouble(path + "." + key));
+        }
     }
 }

@@ -16,10 +16,17 @@ public class Main extends JavaPlugin {
 
         saveDefaultConfig();
 
+        // 🧠 Init marché
         MarketEngine.init(getConfig());
 
+        // 🔌 Listeners
         Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
+        Bukkit.getPluginManager().registerEvents(new MineListener(), this);
 
+        // 🔄 INDEX IMMÉDIAT (FIX IMPORTANT)
+        ShopIndex.rebuild();
+
+        // 🔄 Rebuild toutes les 60s
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
 
         getLogger().info("✅ Marché chargé (FULL JAVA)");

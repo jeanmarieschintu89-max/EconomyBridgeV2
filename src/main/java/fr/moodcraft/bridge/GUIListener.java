@@ -1,5 +1,7 @@
 package fr.moodcraft.bridge;
 
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +11,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class GUIListener implements Listener {
+
+    private static Economy econ;
+
+    public GUIListener() {
+        if (econ == null) {
+            econ = Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
+        }
+    }
 
     @EventHandler
     public void click(InventoryClickEvent e) {
@@ -42,29 +52,34 @@ public class GUIListener implements Listener {
             double price = MarketEngine.getPrice(id);
             double gain = amount * price;
 
-            // 🆕 anti whale
+            // anti whale
             double mult = 1;
             if (amount > 512) mult = 0.6;
             else if (amount > 256) mult = 0.8;
 
             gain *= mult;
 
-            // 🆕 taxe config
             double taxRate = Main.getInstance().getConfig().getDouble("tax", 20);
             double tax = gain * taxRate / 100;
             double finalGain = gain - tax;
 
+            double brut = round(gain);
+            double taxe = round(tax);
+            double net = round(finalGain);
+
+            // retirer items
             p.getInventory().removeItem(new ItemStack(mat, amount));
 
-            p.sendMessage("§a✔ Vente réussie");
-            p.sendMessage("§6💰 Brut: " + gain);
-            p.sendMessage("§cTaxe: -" + tax);
-            p.sendMessage("§aNet: " + finalGain);
+            // 💰 GIVE SANS MESSAGE VAULT
+            econ.depositPlayer(p, net);
 
-            p.getServer().dispatchCommand(
-                    p.getServer().getConsoleSender(),
-                    "eco give " + p.getName() + " " + finalGain
-            );
+            // 📩 MESSAGE PROPRE
+            p.sendMessage("§8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
+            p.sendMessage("§a✔ Vente réussie");
+            p.sendMessage("§7• Brut: §f" + brut + "€");
+            p.sendMessage("§7• Taxe: §c-" + taxe + "€");
+            p.sendMessage("§7• Gain: §a+" + net + "€");
+            p.sendMessage("§8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 
             MarketEngine.applySell(id, amount);
             PriceUpdater.updateItem(id);
@@ -78,17 +93,15 @@ public class GUIListener implements Listener {
             int amount = 64;
 
             double price = MarketEngine.getPrice(id);
-            double cost = price * amount;
+            double cost = round(price * amount);
 
-            p.getServer().dispatchCommand(
-                    p.getServer().getConsoleSender(),
-                    "eco take " + p.getName() + " " + cost
-            );
+            // 💰 TAKE SANS MESSAGE VAULT
+            econ.withdrawPlayer(p, cost);
 
             p.getInventory().addItem(new ItemStack(mat, amount));
 
             p.sendMessage("§a✔ Achat réussi");
-            p.sendMessage("§cCoût: -" + cost);
+            p.sendMessage("§cCoût: -" + cost + "€");
 
             MarketEngine.applyBuy(id, amount);
             PriceUpdater.updateItem(id);
@@ -121,5 +134,9 @@ public class GUIListener implements Listener {
             case GLOWSTONE_DUST: return "glowstone";
         }
         return null;
+    }
+
+    private double round(double v) {
+        return Math.round(v * 100.0) / 100.0;
     }
 }

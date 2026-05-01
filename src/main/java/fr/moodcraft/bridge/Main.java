@@ -40,6 +40,7 @@ public class Main extends JavaPlugin {
         getCommand("syncprix").setExecutor(new SyncCommand());
         getCommand("trend").setExecutor(new GetTrendCommand());
         getCommand("ecoreset").setExecutor(new EcoResetCommand());
+        getCommand("ecotest").setExecutor(new EcoTestCommand());
 
         // 🔥 AJOUT COMMANDE BANQUE
         getCommand("banqueadmin").setExecutor(new BanqueAdminCommand());

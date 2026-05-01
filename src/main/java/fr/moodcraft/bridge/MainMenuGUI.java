@@ -8,7 +8,6 @@ import org.bukkit.inventory.Inventory;
 import net.milkbowl.vault.economy.Economy;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
 public class MainMenuGUI {
 
@@ -95,24 +94,13 @@ public class MainMenuGUI {
                 "§8Clique pour ouvrir"));
 
         // =========================
-        // 🏦 BANQUE + HISTORIQUE
+        // 🏦 BANQUE (SANS HISTORIQUE)
         // =========================
-        List<String> history = TransactionLogger.getLast(p.getName(), 3);
-
-        if (history.isEmpty()) {
-            history.add("§8Aucune transaction");
-        }
-
         inv.setItem(14, ItemBuilder.of(Material.ENDER_CHEST, "§b🏦 Compte en banque",
                 "§7Gérer ton compte en banque",
                 "",
                 "§7💵 Portefeuille: §a" + money + "€",
                 "§7🏦 Banque: §b" + bankMoney + "€",
-                "",
-                "§6📄 Dernières transactions:",
-                history.get(0),
-                history.size() > 1 ? history.get(1) : "§8-",
-                history.size() > 2 ? history.get(2) : "§8-",
                 "",
                 "§8Clique pour ouvrir"));
 

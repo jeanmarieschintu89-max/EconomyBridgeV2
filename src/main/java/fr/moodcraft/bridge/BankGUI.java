@@ -8,7 +8,6 @@ import org.bukkit.inventory.Inventory;
 import net.milkbowl.vault.economy.Economy;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
 public class BankGUI {
 
@@ -21,53 +20,42 @@ public class BankGUI {
         double bank = BankStorage.get(id);
         String iban = BankStorage.getIban(id);
 
-        // 🎯 FORMAT PRO
+        // 🎯 FORMAT ARGENT
         DecimalFormat df = new DecimalFormat("#,##0.00");
 
         String money = df.format(balance).replace(",", " ");
         String bankMoney = df.format(bank).replace(",", " ");
 
-        Inventory inv = Bukkit.createInventory(null, 9, "§6Banque");
+        Inventory inv = Bukkit.createInventory(null, 9, "§6🏦 Banque");
 
-        // 📤 Envoyer IBAN
-        inv.setItem(1, ItemBuilder.of(Material.NAME_TAG, "§b📤 Envoyer IBAN",
-                "§7Clique pour afficher ton IBAN",
-                "§7dans le chat"));
+        // 📤 IBAN
+        inv.setItem(1, ItemBuilder.of(Material.NAME_TAG, "§b📤 Voir mon IBAN",
+                "§7Afficher ton IBAN dans le chat"));
 
-        // ➖ Retirer
+        // ➖ RETRAIT
         inv.setItem(2, ItemBuilder.of(Material.REDSTONE, "§cRetirer 1000€",
-                "§7Banque → Joueur"));
+                "§7Banque → Portefeuille"));
 
-        // 🏦 Compte bancaire
+        // 🏦 COMPTE
         inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§e🏦 Compte bancaire",
                 "§7IBAN: §b" + iban,
                 "",
-                "§7Argent: §a" + money + "€",
-                "§7Banque: §b" + bankMoney + "€"));
+                "§7💵 Portefeuille: §a" + money + "€",
+                "§7🏦 Banque: §b" + bankMoney + "€"));
 
-        // ➕ Déposer
+        // ➕ DÉPÔT
         inv.setItem(6, ItemBuilder.of(Material.EMERALD, "§aDéposer 1000€",
-                "§7Joueur → Banque"));
+                "§7Portefeuille → Banque"));
 
-        // =========================
-        // 📄 RELEVÉ DE COMPTE
-        // =========================
-        List<String> history = TransactionLogger.getLast(p.getName(), 5);
+        // 📄 HISTORIQUE
+        inv.setItem(7, ItemBuilder.of(Material.PAPER, "§6📄 Historique complet",
+                "§7Voir toutes tes transactions",
+                "",
+                "§8Clique pour ouvrir"));
 
-        if (history.isEmpty()) {
-            history.add("§8Aucune transaction");
-        }
-
-        inv.setItem(7, ItemBuilder.of(Material.PAPER, "§6📄 Relevé de compte",
-                history.get(0),
-                history.size() > 1 ? history.get(1) : "§8-",
-                history.size() > 2 ? history.get(2) : "§8-",
-                history.size() > 3 ? history.get(3) : "§8-",
-                history.size() > 4 ? history.get(4) : "§8-"));
-
-        // 🔄 Refresh
+        // 🔄 REFRESH
         inv.setItem(8, ItemBuilder.of(Material.BARRIER, "§7Rafraîchir",
-                "§8Met à jour les valeurs"));
+                "§8Met à jour les données"));
 
         p.openInventory(inv);
     }

@@ -11,7 +11,7 @@ public class MenuCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (!(sender instanceof Player p)) {
-            sender.sendMessage("Commande joueur uniquement.");
+            sender.sendMessage("§cCommande joueur uniquement.");
             return true;
         }
 

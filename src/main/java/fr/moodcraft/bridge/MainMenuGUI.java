@@ -7,10 +7,6 @@ import org.bukkit.inventory.Inventory;
 
 import net.milkbowl.vault.economy.Economy;
 
-// 🔥 Towny
-import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.object.Town;
-
 public class MainMenuGUI {
 
     public static void open(Player p) {
@@ -27,20 +23,31 @@ public class MainMenuGUI {
         double bank = BankStorage.get(id);
 
         // =========================
-        // 🏙️ VILLE
+        // 🏙️ VILLE (SAFE MODE)
         // =========================
         String townName = "Aucune";
         double townBalance = 0;
 
         try {
-            Town town = TownyAPI.getInstance().getTown(p);
+            // Vérifie si Towny existe
+            Class<?> apiClass = Class.forName("com.palmergames.bukkit.towny.TownyAPI");
 
-            if (town != null && town.getAccount() != null) {
-                townName = town.getName();
-                townBalance = town.getAccount().getHoldingBalance();
+            Object api = apiClass.getMethod("getInstance").invoke(null);
+            Object town = apiClass.getMethod("getTown", Player.class).invoke(api, p);
+
+            if (town != null) {
+
+                Object account = town.getClass().getMethod("getAccount").invoke(town);
+
+                if (account != null) {
+                    townName = (String) town.getClass().getMethod("getName").invoke(town);
+                    townBalance = (double) account.getClass().getMethod("getHoldingBalance").invoke(account);
+                }
             }
 
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            // Towny absent → aucun crash
+        }
 
         // =========================
         // 💰 COMPTES
@@ -66,7 +73,7 @@ public class MainMenuGUI {
                 "§8Clique pour ouvrir"));
 
         // =========================
-        // 🏙️ Ville (🔥 BRICKS)
+        // 🏙️ Ville
         // =========================
         inv.setItem(11, ItemBuilder.of(Material.BRICKS, "§a🏙️ Ville",
                 "§7Gestion Towny",

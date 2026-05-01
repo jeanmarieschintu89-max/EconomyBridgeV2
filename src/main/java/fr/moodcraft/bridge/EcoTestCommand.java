@@ -10,14 +10,14 @@ public class EcoTestCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (args.length < 3) {
-            sender.sendMessage("§cUsage: /ecotest <buy|sell> <item> <amount>");
+            sender.sendMessage("§cUsage: /ecotest <buy/sell> <item> <amount>");
             return true;
         }
 
-        String type = args[0];
-        String item = args[1];
-
+        String type = args[0].toLowerCase();
+        String item = args[1].toLowerCase();
         int amount;
+
         try {
             amount = Integer.parseInt(args[2]);
         } catch (Exception e) {
@@ -30,19 +30,14 @@ public class EcoTestCommand implements CommandExecutor {
             return true;
         }
 
-        if (type.equalsIgnoreCase("buy")) {
-            MarketState.buy.put(item, MarketState.buy.getOrDefault(item, 0.0) + amount);
-            sender.sendMessage("§aTest BUY " + item + " +" + amount);
-        }
-
-        else if (type.equalsIgnoreCase("sell")) {
-            MarketState.sell.put(item, MarketState.sell.getOrDefault(item, 0.0) + amount);
-            sender.sendMessage("§cTest SELL " + item + " +" + amount);
-        }
-
-        else {
+        if (type.equals("sell")) {
+            MarketEngine.applySell(item, amount);
+            sender.sendMessage("§cTest SELL: " + item + " x" + amount);
+        } else if (type.equals("buy")) {
+            MarketEngine.applyBuy(item, amount);
+            sender.sendMessage("§aTest BUY: " + item + " x" + amount);
+        } else {
             sender.sendMessage("§cType invalide (buy/sell)");
-            return true;
         }
 
         return true;

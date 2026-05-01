@@ -5,11 +5,22 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import net.milkbowl.vault.economy.Economy;
+
 public class MainMenuGUI {
 
     public static void open(Player p) {
 
         Inventory inv = Bukkit.createInventory(null, 27, "§6Menu Principal");
+
+        Economy eco = VaultHook.getEconomy();
+        double balance = eco != null ? eco.getBalance(p) : 0;
+
+        // 💰 INFO JOUEUR
+        inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§e💰 Ton Argent",
+                "§7Solde: §a" + balance + "€",
+                "",
+                "§8Gagne avec jobs et quêtes"));
 
         // 📊 Marché
         inv.setItem(10, ItemBuilder.of(Material.GOLD_INGOT, "§6📊 Marché",
@@ -22,14 +33,14 @@ public class MainMenuGUI {
         // 🏙️ Ville
         inv.setItem(11, ItemBuilder.of(Material.EMERALD_BLOCK, "§a🏙️ Ville",
                 "§7Gestion Towny",
-                "§7Ta ville influence l'économie",
+                "§7Influence l'économie",
                 "",
                 "§8Clique pour ouvrir"));
 
         // ⚒️ Jobs
         inv.setItem(12, ItemBuilder.of(Material.IRON_PICKAXE, "§7⚒️ Jobs",
                 "§7Travaille pour gagner de l'argent",
-                "§7et influencer le marché",
+                "§7Impacte le marché",
                 "",
                 "§8Clique pour ouvrir"));
 
@@ -39,16 +50,26 @@ public class MainMenuGUI {
                 "",
                 "§8Clique pour ouvrir"));
 
-        // 💰 Banque
+        // 💰 Banque joueur
         inv.setItem(14, ItemBuilder.of(Material.CHEST, "§b💰 Banque",
-                "§7Gestion économique avancée",
+                "§7Déposer / retirer de l'argent",
                 "",
                 "§8Clique pour ouvrir"));
 
         // ℹ️ Infos
         inv.setItem(16, ItemBuilder.of(Material.BOOK, "§dℹ️ Infos",
-                "§7Astuce:",
-                "§7Achète bas, vends haut 😏"));
+                "§7💡 Astuce:",
+                "§7Achète bas, vends haut",
+                "",
+                "§8Surveille les tendances"));
+
+        // 🔥 ADMIN (visible uniquement si permission)
+        if (p.hasPermission("econ.admin")) {
+            inv.setItem(22, ItemBuilder.of(Material.BEACON, "§c⚙️ Admin",
+                    "§7Contrôle économie",
+                    "",
+                    "§8Clique pour ouvrir"));
+        }
 
         p.openInventory(inv);
     }

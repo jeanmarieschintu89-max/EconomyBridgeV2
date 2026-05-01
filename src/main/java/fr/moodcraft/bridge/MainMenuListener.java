@@ -77,6 +77,12 @@ public class MainMenuListener implements Listener {
                 p.sendMessage("§7💡 Astuce: achète bas, vends haut !");
             }
 
+            // 📄 CONTRATS (AJOUT 🔥)
+            case 17 -> {
+                p.closeInventory();
+                p.performCommand("contrats");
+            }
+
             // 🔥 Admin
             case 22 -> {
                 if (p.hasPermission("econ.admin")) {

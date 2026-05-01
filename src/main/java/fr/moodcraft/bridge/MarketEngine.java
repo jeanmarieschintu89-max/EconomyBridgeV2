@@ -23,6 +23,7 @@ public final class MarketEngine {
         }
 
         start();
+        startPassiveRegen(); // 🆕 remontée auto
     }
 
     public static double getPrice(String item) {
@@ -34,8 +35,11 @@ public final class MarketEngine {
     }
 
     public static void applySell(String item, int amount) {
+
+        double weight = cfg.getDouble("weight." + item, 1);
+
         MarketState.sell.merge(item, (double) amount, Double::sum);
-        MarketState.stock.merge(item, (double) amount, Double::sum);
+        MarketState.stock.merge(item, amount * weight, Double::sum); // 🆕 pondéré
     }
 
     private static void start() {
@@ -51,7 +55,6 @@ public final class MarketEngine {
                     double before = price;
                     double stock = MarketState.stock.get(item);
 
-                    // 📉 ACTIVITÉ
                     double coef = cfg.getDouble("activity." + item, 0.001);
                     double activity = Math.sqrt(stock) * coef;
 
@@ -65,37 +68,31 @@ public final class MarketEngine {
                     if (active) price -= activity;
                     else price += base * 0.001;
 
-                    // 🌟 RARETÉ
                     double rarity = cfg.getDouble("rarity." + item, 10);
                     if (stock < rarity) {
                         price += base * 0.002;
                     }
 
-                    // 📈 IMPACT
                     double impact =
                             (MarketState.buy.get(item) * 0.06)
-                          - (MarketState.sell.get(item) * 0.06)
-                          - (stock * 0.00015);
+                                    - (MarketState.sell.get(item) * 0.06)
+                                    - (stock * 0.00015);
 
                     impact = clamp(impact, -1, 1);
 
                     price += impact / cfg.getDouble("impact." + item, 40);
 
-                    // 🧊 LIMIT VARIATION
                     double diff = price - before;
                     double limit = before * 0.05;
 
                     if (diff > limit) price = before + limit;
                     if (diff < -limit) price = before - limit;
 
-                    // 🔄 RETOUR BASE
                     price += (base - price) * 0.006;
 
-                    // 🧹 STOCK DECAY
                     stock *= 0.85;
                     if (stock > 10000) stock = 10000;
 
-                    // 🛑 SAFE
                     if (price < 1) price = 1;
                     price = clamp(price, base * 0.5, base * 2.5);
 
@@ -105,16 +102,37 @@ public final class MarketEngine {
                     MarketState.stock.put(item, stock);
 
                     TrendManager.updateTrend(item, price);
-
                     PriceUpdater.updateItem(item);
 
-                    // ✅ FIX MAJEUR → reset activity
+                    // 🆕 reset activité
                     MarketState.buy.put(item, 0.0);
                     MarketState.sell.put(item, 0.0);
                 }
 
             }
         }.runTaskTimer(Main.getInstance(), 20L * 45, 20L * 45);
+    }
+
+    // 🆕 remontée auto
+    private static void startPassiveRegen() {
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+
+                for (String item : MarketState.price.keySet()) {
+
+                    double base = MarketState.base.get(item);
+                    double price = MarketState.price.get(item);
+
+                    price += base * 0.002;
+
+                    MarketState.price.put(item, round(price));
+                    PriceUpdater.updateItem(item);
+                }
+
+            }
+        }.runTaskTimer(Main.getInstance(), 20L * 300, 20L * 300);
     }
 
     private static double clamp(double v, double min, double max) {

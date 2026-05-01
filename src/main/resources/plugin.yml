@@ -1,11 +1,13 @@
 name: EconomyBridgeV2
-version: 1.0
 main: fr.moodcraft.bridge.Main
+version: 1.0
 api-version: 1.20
-
-depend: [QuickShop-Hikari]
-softdepend: [Skript]
 
 commands:
   priceupdate:
-    description: Update price
+    description: Sync un prix
+    usage: /priceupdate <item>
+
+  ecoreload:
+    description: Reload config économie
+    usage: /ecoreload

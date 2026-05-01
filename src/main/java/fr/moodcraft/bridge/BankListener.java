@@ -24,24 +24,49 @@ public class BankListener implements Listener {
         Economy eco = VaultHook.getEconomy();
         if (eco == null) return;
 
+        String id = p.getUniqueId().toString();
+
         switch (e.getSlot()) {
 
+            // ➖ RETIRER (banque → joueur)
             case 2 -> {
-                eco.depositPlayer(p, 1000);
-                p.sendMessage("§a✔ +1000€ ajouté");
+
+                double bank = BankStorage.get(id);
+
+                if (bank >= 1000) {
+
+                    BankStorage.set(id, bank - 1000);
+                    eco.depositPlayer(p, 1000);
+
+                    p.sendMessage("§a✔ +1000€ retiré de la banque");
+
+                } else {
+                    p.sendMessage("§c❌ Pas assez d'argent en banque");
+                }
+
                 BankGUI.open(p);
             }
 
+            // ➕ DEPOSER (joueur → banque)
             case 6 -> {
+
                 if (eco.getBalance(p) >= 1000) {
+
                     eco.withdrawPlayer(p, 1000);
-                    p.sendMessage("§c✔ -1000€ retiré");
+
+                    double bank = BankStorage.get(id);
+                    BankStorage.set(id, bank + 1000);
+
+                    p.sendMessage("§b✔ 1000€ déposé en banque");
+
                 } else {
                     p.sendMessage("§c❌ Pas assez d'argent");
                 }
+
                 BankGUI.open(p);
             }
 
+            // 🔄 REFRESH
             case 8 -> BankGUI.open(p);
         }
     }

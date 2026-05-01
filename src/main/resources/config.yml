@@ -27,8 +27,8 @@ weight:
   glowstone: 0.7
 
 impact:
-  netherite: 20
-  emerald: 25
+  netherite: 18
+  emerald: 22
   diamond: 20
   gold: 90
   iron: 110
@@ -36,23 +36,23 @@ impact:
   quartz: 140
   redstone: 160
   lapis: 160
-  coal: 280
+  coal: 300
   amethyst: 160
   glowstone: 160
 
 activity:
-  netherite: 0.0006
-  emerald: 0.0008
-  diamond: 0.001
-  gold: 0.0015
-  iron: 0.002
-  copper: 0.0022
-  quartz: 0.002
-  redstone: 0.0025
-  lapis: 0.0025
-  coal: 0.0012
-  amethyst: 0.0022
-  glowstone: 0.0022
+  netherite: 0.0005
+  emerald: 0.0007
+  diamond: 0.0009
+  gold: 0.0013
+  iron: 0.0018
+  copper: 0.002
+  quartz: 0.0018
+  redstone: 0.0022
+  lapis: 0.0022
+  coal: 0.001
+  amethyst: 0.002
+  glowstone: 0.002
 
 rarity:
   netherite: 1
@@ -67,3 +67,14 @@ rarity:
   coal: 10
   amethyst: 9
   glowstone: 9
+
+engine:
+  base_return: 0.006
+  max_change: 0.15
+  rarity_boost: 0.002
+  activity_cap: 0.02
+
+  min_price_factor: 0.5
+  max_price_factor: 2.5
+
+  stock_decay: 0.85

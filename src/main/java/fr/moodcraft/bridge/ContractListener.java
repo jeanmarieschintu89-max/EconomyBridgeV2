@@ -3,17 +3,14 @@ package fr.moodcraft.bridge;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class ContractListener implements Listener {
+public class ContractListener implements org.bukkit.event.Listener {
 
-    @EventHandler
-    public void onClick(InventoryClickEvent e) {
+    @org.bukkit.event.EventHandler
+    public void onClick(org.bukkit.event.inventory.InventoryClickEvent e) {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
@@ -25,7 +22,6 @@ public class ContractListener implements Listener {
         Economy eco = VaultHook.getEconomy();
         if (eco == null) return;
 
-        // 🔒 copie pour éviter ConcurrentModificationException
         List<UUID> toRemove = new ArrayList<>();
 
         for (Map.Entry<UUID, ContractManager.Contract> entry : ContractManager.contracts.entrySet()) {
@@ -59,22 +55,45 @@ public class ContractListener implements Listener {
                         "Contrat " + c.item + " x" + c.amount,
                         c.price);
 
-                // ⭐ RÉPUTATION (AJOUT IMPORTANT)
+                // ⭐ réputation
                 ReputationManager.add(c.from, +1);
 
-                // 📩 MESSAGE
+                // 📜 SUPPRESSION LIVRE
+                removeContractBook(p, id);
+
+                Player from = org.bukkit.Bukkit.getPlayerExact(c.from);
+                if (from != null) {
+                    removeContractBook(from, id);
+                }
+
+                // 📩 message
                 p.sendMessage("§a✔ Contrat complété !");
                 p.sendMessage("§7Objet: §f" + c.item + " x" + c.amount);
                 p.sendMessage("§7Paiement reçu: §a+" + c.price + "€");
 
-                // 🗑 suppression après boucle
                 toRemove.add(id);
             }
         }
 
-        // 🔥 suppression propre après boucle
         for (UUID id : toRemove) {
             ContractManager.contracts.remove(id);
+        }
+    }
+
+    private static void removeContractBook(Player p, UUID id) {
+
+        for (ItemStack item : p.getInventory()) {
+
+            if (item == null) continue;
+            if (item.getType() != Material.WRITTEN_BOOK) continue;
+            if (!item.hasItemMeta()) continue;
+
+            var meta = item.getItemMeta();
+
+            if (meta.getLore() != null && meta.getLore().contains("§8ID: " + id.toString())) {
+                p.getInventory().remove(item);
+                break;
+            }
         }
     }
 

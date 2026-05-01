@@ -30,14 +30,31 @@ public class TransactionLogger {
         config = YamlConfiguration.loadConfiguration(file);
     }
 
+    // =========================
+    // 📄 LOG TRANSACTION
+    // =========================
     public static void log(String player, String type, double amount) {
 
         List<String> logs = config.getStringList(player);
 
         String date = format.format(new Date());
-        String symbol = type.equalsIgnoreCase("Dépôt") ? "§a+" : "§c-";
 
-        String line = "§7[" + date + "] " + symbol + amount + "€ §8• §f" + type;
+        String symbol = type.toLowerCase().contains("vente") ||
+                        type.toLowerCase().contains("reçu") ||
+                        type.toLowerCase().contains("dépôt")
+                ? "§a+"
+                : "§c-";
+
+        String color =
+                type.toLowerCase().contains("vente") ? "§a" :
+                type.toLowerCase().contains("achat") ? "§c" :
+                type.toLowerCase().contains("virement") ? "§b" :
+                type.toLowerCase().contains("dépôt") ? "§a" :
+                type.toLowerCase().contains("retrait") ? "§c" :
+                type.toLowerCase().contains("paiement") ? "§e" :
+                "§7";
+
+        String line = "§8[" + date + "] " + symbol + amount + "€ §8• " + color + type;
 
         logs.add(line);
 
@@ -45,6 +62,9 @@ public class TransactionLogger {
         save();
     }
 
+    // =========================
+    // 📄 DERNIERS LOGS
+    // =========================
     public static List<String> getLast(String player, int limit) {
 
         List<String> logs = config.getStringList(player);
@@ -62,10 +82,16 @@ public class TransactionLogger {
         return result;
     }
 
+    // =========================
+    // 📄 TOUS LES LOGS
+    // =========================
     public static List<String> getAll(String player) {
         return config.getStringList(player);
     }
 
+    // =========================
+    // 💾 SAVE
+    // =========================
     public static void save() {
         try {
             config.save(file);

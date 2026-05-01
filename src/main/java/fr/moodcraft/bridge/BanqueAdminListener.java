@@ -10,13 +10,23 @@ public class BanqueAdminListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
 
+        // 🔒 vérifie le bon GUI
         if (!e.getView().getTitle().equals("§6Banque Admin")) return;
+
+        // 🔒 ignore clic hors GUI (inventaire joueur)
+        if (e.getClickedInventory() == null) return;
+        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
         e.setCancelled(true);
 
+        // 🔒 sécurité item vide
+        if (e.getCurrentItem() == null) return;
+
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        switch (e.getSlot()) {
+        int slot = e.getSlot();
+
+        switch (slot) {
 
             case 1: // inflation
                 for (String item : MarketState.base.keySet()) {

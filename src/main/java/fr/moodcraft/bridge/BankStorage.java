@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 public class BankStorage {
 
@@ -26,15 +27,53 @@ public class BankStorage {
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-    public static double get(String player) {
-        return config.getDouble(player, 0.0);
+    // =========================
+    // 💰 GET BALANCE
+    // =========================
+    public static double get(String uuid) {
+        return config.getDouble(uuid + ".balance", 0.0);
     }
 
-    public static void set(String player, double value) {
-        config.set(player, value);
+    // =========================
+    // 💰 SET BALANCE
+    // =========================
+    public static void set(String uuid, double value) {
+        config.set(uuid + ".balance", value);
         save();
     }
 
+    // =========================
+    // 🏦 GET IBAN
+    // =========================
+    public static String getIban(String uuid) {
+
+        String iban = config.getString(uuid + ".iban");
+
+        if (iban == null) {
+            iban = generateIban();
+            config.set(uuid + ".iban", iban);
+            save();
+        }
+
+        return iban;
+    }
+
+    // =========================
+    // 🔢 GENERATE IBAN
+    // =========================
+    private static String generateIban() {
+
+        Random r = new Random();
+
+        int part1 = 1000 + r.nextInt(9000);
+        int part2 = 1000 + r.nextInt(9000);
+
+        return "MC-" + part1 + "-" + part2;
+    }
+
+    // =========================
+    // 💾 SAVE
+    // =========================
     public static void save() {
         try {
             config.save(file);

@@ -23,28 +23,32 @@ public class BanqueConfigGUI {
         Inventory inv = Bukkit.createInventory(null, 9, "§dConfig Marché");
 
         // BUY
-        inv.setItem(1, item(Material.EMERALD, "§aBuy +0.1",
+        inv.setItem(0, item(Material.EMERALD, "§aBuy +0.1",
                 "§7Actuel: §a" + buy));
-
-        inv.setItem(2, item(Material.REDSTONE, "§cBuy -0.1",
+        inv.setItem(1, item(Material.REDSTONE, "§cBuy -0.1",
                 "§7Actuel: §a" + buy));
 
         // SELL
-        inv.setItem(3, item(Material.DIAMOND, "§bSell +0.1",
+        inv.setItem(2, item(Material.DIAMOND, "§bSell +0.1",
                 "§7Actuel: §c" + sell));
-
-        inv.setItem(4, item(Material.COAL, "§7Sell -0.1",
+        inv.setItem(3, item(Material.COAL, "§7Sell -0.1",
                 "§7Actuel: §c" + sell));
 
         // RARETÉ
-        inv.setItem(5, item(Material.GOLD_INGOT, "§6Rareté +10%",
+        inv.setItem(4, item(Material.GOLD_INGOT, "§6Rareté +10%",
+                "§7Actuel: §e" + rarity));
+        inv.setItem(5, item(Material.IRON_INGOT, "§eRareté -10%",
                 "§7Actuel: §e" + rarity));
 
-        inv.setItem(6, item(Material.IRON_INGOT, "§eRareté -10%",
-                "§7Actuel: §e" + rarity));
+        // IMPACT (global)
+        inv.setItem(6, item(Material.BLAZE_POWDER, "§6Impact +10%",
+                "§7Rend le marché plus stable"));
+        inv.setItem(7, item(Material.GUNPOWDER, "§cImpact -10%",
+                "§7Rend le marché plus volatile"));
 
-        // RETOUR
-        inv.setItem(8, item(Material.BARRIER, "§4Retour"));
+        // RESET CONFIG
+        inv.setItem(8, item(Material.TNT, "§4Reset Config",
+                "§7Remet les valeurs par défaut"));
 
         p.openInventory(inv);
     }

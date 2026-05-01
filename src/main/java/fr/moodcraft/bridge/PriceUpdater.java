@@ -12,6 +12,7 @@ public final class PriceUpdater {
             "netherite","amethyst","glowstone"
     );
 
+    // ⚡ UPDATE GLOBAL (instant)
     public static void updateItem(String item) {
 
         if (!ALLOWED.contains(item)) return;
@@ -21,17 +22,18 @@ public final class PriceUpdater {
         Set<Shop> shops = ShopIndex.get(item);
         if (shops == null || shops.isEmpty()) return;
 
-        // ⚡ UPDATE INSTANTANÉ
         for (Shop shop : shops) {
 
             if (shop == null) continue;
 
+            // évite spam inutile
             if (Math.abs(shop.getPrice() - price) > 0.01) {
                 shop.setPrice(price);
             }
         }
     }
 
+    // ⚡ UPDATE UN SEUL SHOP
     public static void updateSingle(Shop shop, String item) {
 
         if (!ALLOWED.contains(item)) return;

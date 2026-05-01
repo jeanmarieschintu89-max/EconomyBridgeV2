@@ -53,6 +53,7 @@ public class Main extends JavaPlugin {
                 new MainMenuListener(),
                 new BankListener(),
                 new TeleportListener(),
+                new PayListener(),
                 new BankHistoryListener() // ✅ plus de virgule ici
         );
 

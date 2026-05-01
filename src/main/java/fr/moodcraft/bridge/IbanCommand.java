@@ -14,19 +14,26 @@ public class IbanCommand implements CommandExecutor {
             return true;
         }
 
+        // =========================
         // 👤 /iban
+        // =========================
         if (args.length == 0) {
 
             String id = p.getUniqueId().toString();
             String iban = BankStorage.getIban(id);
 
-            p.sendMessage("§6🏦 Ton IBAN:");
-            p.sendMessage("§b" + iban);
+            p.sendMessage("§8━━━━━━━━━━━━━━━━━━");
+            p.sendMessage("§e🏦 Banque MoodCraft");
+            p.sendMessage("§7Titulaire: §e" + p.getName());
+            p.sendMessage("§7IBAN: §b" + iban);
+            p.sendMessage("§8━━━━━━━━━━━━━━━━━━");
 
             return true;
         }
 
-        // 👑 /iban <joueur> (admin)
+        // =========================
+        // 👑 /iban <joueur>
+        // =========================
         if (args.length == 1) {
 
             if (!p.hasPermission("econ.admin")) {
@@ -44,8 +51,11 @@ public class IbanCommand implements CommandExecutor {
             String id = target.getUniqueId().toString();
             String iban = BankStorage.getIban(id);
 
-            p.sendMessage("§6🏦 IBAN de §e" + target.getName() + "§6:");
-            p.sendMessage("§b" + iban);
+            p.sendMessage("§8━━━━━━━━━━━━━━━━━━");
+            p.sendMessage("§e🏦 Banque MoodCraft");
+            p.sendMessage("§7Titulaire: §e" + target.getName());
+            p.sendMessage("§7IBAN: §b" + iban);
+            p.sendMessage("§8━━━━━━━━━━━━━━━━━━");
 
             return true;
         }

@@ -1,16 +1,18 @@
 package fr.moodcraft.bridge;
 
 import com.ghostchu.quickshop.api.event.economy.ShopPurchaseEvent;
+import com.ghostchu.quickshop.api.event.shop.ShopCreateEvent;
+import com.ghostchu.quickshop.api.event.shop.ShopDeleteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class ShopListener implements Listener {
 
+    // 💰 ACHAT PLAYER → SHOP
     @EventHandler
     public void onBuy(ShopPurchaseEvent event) {
 
-        // 🔒 sécurité basique
         if (event == null || event.getShop() == null || event.getShop().getItem() == null) {
             return;
         }
@@ -18,28 +20,33 @@ public class ShopListener implements Listener {
         int amount = event.getAmount();
         if (amount <= 0) return;
 
-        // 🔄 NORMALISATION ITEM
         String item = ItemNormalizer.normalize(event.getShop().getItem().getType());
 
-        if (item == null) {
-            Bukkit.getLogger().info("[Bridge] Item inconnu ignoré");
-            return;
-        }
+        if (item == null) return;
+        if (!PriceUpdater.ALLOWED.contains(item)) return;
 
-        // 🛑 filtre économie
-        if (!PriceUpdater.ALLOWED.contains(item)) {
-            return;
-        }
+        Bukkit.getLogger().info("[Market] Achat: " + item + " x" + amount);
 
-        Bukkit.getLogger().info("[Bridge] Achat détecté: " + item + " x" + amount);
-
-        // 📊 IMPACT MARCHÉ (JAVA)
+        // 📊 impact marché
         MarketEngine.applyBuy(item, amount);
 
-        // 📦 STOCK (équivalent skript)
-        MarketState.stock.merge(item, (double) amount, Double::sum);
+        // 📦 stock (comme Skript)
+        double weight = MarketState.weight.getOrDefault(item, 1.0);
+        MarketState.stock.merge(item, weight * amount, Double::sum);
 
-        // 🔄 SYNC PRIX DIRECT (ce shop)
+        // ⚡ update instant du shop
         PriceUpdater.updateSingle(event.getShop(), item);
+    }
+
+    // ➕ SHOP CREATE
+    @EventHandler
+    public void onCreate(ShopCreateEvent e) {
+        ShopIndex.add(e.getShop());
+    }
+
+    // ➖ SHOP DELETE
+    @EventHandler
+    public void onDelete(ShopDeleteEvent e) {
+        ShopIndex.remove(e.getShop());
     }
 }

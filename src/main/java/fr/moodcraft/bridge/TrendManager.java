@@ -10,7 +10,6 @@ public class TrendManager {
         double old = MarketState.lastPrice.getOrDefault(item, newPrice);
 
         double diff = newPrice - old;
-
         double percent = (old == 0) ? 0 : (diff / old) * 100;
 
         diff = round(diff);
@@ -19,21 +18,9 @@ public class TrendManager {
         String result;
 
         if (diff > 0) {
-
-            if (percent > 5) {
-                result = "§2⬆ +" + percent + "%";
-            } else {
-                result = "§a⬆ +" + percent + "%";
-            }
-
+            result = percent > 5 ? "§2⬆ +" + percent + "%" : "§a⬆ +" + percent + "%";
         } else if (diff < 0) {
-
-            if (percent < -5) {
-                result = "§4⬇ " + percent + "%";
-            } else {
-                result = "§c⬇ " + percent + "%";
-            }
-
+            result = percent < -5 ? "§4⬇ " + percent + "%" : "§c⬇ " + percent + "%";
         } else {
             result = "§7➡ stable";
         }

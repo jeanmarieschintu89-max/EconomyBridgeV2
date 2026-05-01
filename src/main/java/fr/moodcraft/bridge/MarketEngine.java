@@ -24,23 +24,21 @@ public final class MarketEngine {
             double buy = MarketState.buy.getOrDefault(item, 0.0);
             double sell = MarketState.sell.getOrDefault(item, 0.0);
 
-            double before = price;
-
             // =========================
-            // 📉 ACTIVITY (CONFIG)
+            // 📉 / 📈 ACTIVITY FIX
             // =========================
             double coef = MarketState.activity.getOrDefault(item, 0.001);
-            double activity = Math.sqrt(stock) * coef;
+            double activity = Math.sqrt(stock + 1) * coef;
 
-            double maxDrop = price * 0.01;
-            if (maxDrop < 0.05) maxDrop = 0.05;
+            double maxActivity = price * 0.02;
+            if (activity > maxActivity) activity = maxActivity;
 
-            if (activity > maxDrop) activity = maxDrop;
-
-            if (buy > 0 || sell > 0) {
+            if (sell > 0) {
                 price -= activity;
-            } else {
-                price += base * 0.001;
+            }
+
+            if (buy > 0) {
+                price += activity;
             }
 
             // =========================
@@ -53,16 +51,18 @@ public final class MarketEngine {
             }
 
             // =========================
-            // 📈 IMPACT
+            // 💥 IMPACT (FIX MAJEUR)
             // =========================
-            double impact = (buy * 0.06) - (sell * 0.06) - (stock * 0.00015);
+            double div = MarketState.impact.getOrDefault(item, 20.0);
 
-            if (impact > 1) impact = 1;
-            if (impact < -1) impact = -1;
+            double delta = (buy - sell) / div;
 
-            double div = MarketState.impact.getOrDefault(item, 40.0);
+            double maxChange = price * 0.15;
 
-            price += impact / div;
+            if (delta > maxChange) delta = maxChange;
+            if (delta < -maxChange) delta = -maxChange;
+
+            price += delta;
 
             // =========================
             // 🔄 RETOUR BASE

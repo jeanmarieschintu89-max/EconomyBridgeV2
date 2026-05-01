@@ -7,6 +7,8 @@ import org.bukkit.inventory.Inventory;
 
 import net.milkbowl.vault.economy.Economy;
 
+import java.text.DecimalFormat;
+
 public class BankGUI {
 
     public static void open(Player p) {
@@ -17,6 +19,12 @@ public class BankGUI {
         String id = p.getUniqueId().toString();
         double bank = BankStorage.get(id);
         String iban = BankStorage.getIban(id);
+
+        // 🎯 FORMAT PRO
+        DecimalFormat df = new DecimalFormat("#,##0.00");
+
+        String money = df.format(balance).replace(",", " ");
+        String bankMoney = df.format(bank).replace(",", " ");
 
         Inventory inv = Bukkit.createInventory(null, 9, "§6Banque");
 
@@ -29,8 +37,8 @@ public class BankGUI {
         inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§e🏦 Compte bancaire",
                 "§7IBAN: §b" + iban,
                 "",
-                "§7Argent: §a" + balance + "€",
-                "§7Banque: §b" + bank + "€"));
+                "§7Argent: §a" + money + "€",
+                "§7Banque: §b" + bankMoney + "€"));
 
         // ➖ Retirer
         inv.setItem(2, ItemBuilder.of(Material.REDSTONE, "§cRetirer 1000€",

@@ -31,7 +31,12 @@ public class ReputationManager {
         save();
     }
 
-    // 🔥 BADGE RP
+    // 🔥 RESET
+    public static void reset(String player) {
+        config.set(player.toLowerCase(), 0);
+        save();
+    }
+
     public static String getBadge(String player) {
 
         int rep = get(player);

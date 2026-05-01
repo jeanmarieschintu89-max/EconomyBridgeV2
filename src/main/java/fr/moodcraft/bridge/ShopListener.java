@@ -18,33 +18,32 @@ public class ShopListener implements Listener {
         if (amount <= 0) return;
 
         String item = ItemNormalizer.normalize(event.getShop().getItem().getType());
+
         if (item == null) return;
         if (!PriceUpdater.ALLOWED.contains(item)) return;
 
-        String player = event.getPlayer().getName();
+        // ✅ FIX API QUICKSHOP
+        String player = event.getPurchaser().getName();
 
-        double unit = event.getShop().getPrice();
-        double total = unit * amount;
+        double price = event.getShop().getPrice();
+        double total = price * amount;
 
-        // 🔐 Format parsable
-        // TYPE|item|amount|unit|total
+        // 📄 LOG SIMPLE
         if (event.getShop().isBuying()) {
-            TransactionLogger.log(player,
-                    "VENTE|" + item + "|" + amount + "|" + unit + "|" + total,
-                    total);
+            TransactionLogger.log(player, "Vente " + item + " x" + amount, total);
         } else {
-            TransactionLogger.log(player,
-                    "ACHAT|" + item + "|" + amount + "|" + unit + "|" + total,
-                    total);
+            TransactionLogger.log(player, "Achat " + item + " x" + amount, total);
         }
 
         Bukkit.getLogger().info("[Market] " + player + " " +
                 (event.getShop().isBuying() ? "vend" : "achète") +
                 " " + item + " x" + amount + " (" + total + "€)");
 
+        // 📈 BOOST
         int boosted = amount * 3;
         MarketEngine.applyBuy(item, boosted);
 
+        // 📦 STOCK
         double weight = MarketState.weight.getOrDefault(item, 1.0);
         MarketState.stock.merge(item, -weight * amount, Double::sum);
 
@@ -52,6 +51,7 @@ public class ShopListener implements Listener {
             MarketState.stock.put(item, -10000.0);
         }
 
+        // ⚡ UPDATE
         PriceUpdater.updateSingle(event.getShop(), item);
     }
 }

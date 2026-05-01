@@ -51,6 +51,7 @@ public final class MarketEngine {
                     double before = price;
                     double stock = MarketState.stock.get(item);
 
+                    // 📉 ACTIVITÉ
                     double coef = cfg.getDouble("activity." + item, 0.001);
                     double activity = Math.sqrt(stock) * coef;
 
@@ -64,12 +65,13 @@ public final class MarketEngine {
                     if (active) price -= activity;
                     else price += base * 0.001;
 
+                    // 🌟 RARETÉ
                     double rarity = cfg.getDouble("rarity." + item, 10);
-
                     if (stock < rarity) {
                         price += base * 0.002;
                     }
 
+                    // 📈 IMPACT
                     double impact =
                             (MarketState.buy.get(item) * 0.06)
                           - (MarketState.sell.get(item) * 0.06)
@@ -79,19 +81,22 @@ public final class MarketEngine {
 
                     price += impact / cfg.getDouble("impact." + item, 40);
 
+                    // 🧊 LIMIT VARIATION
                     double diff = price - before;
                     double limit = before * 0.05;
 
                     if (diff > limit) price = before + limit;
                     if (diff < -limit) price = before - limit;
 
+                    // 🔄 RETOUR BASE
                     price += (base - price) * 0.006;
 
+                    // 🧹 STOCK DECAY
                     stock *= 0.85;
                     if (stock > 10000) stock = 10000;
 
+                    // 🛑 SAFE
                     if (price < 1) price = 1;
-
                     price = clamp(price, base * 0.5, base * 2.5);
 
                     price = round(price);
@@ -102,6 +107,10 @@ public final class MarketEngine {
                     TrendManager.updateTrend(item, price);
 
                     PriceUpdater.updateItem(item);
+
+                    // ✅ FIX MAJEUR → reset activity
+                    MarketState.buy.put(item, 0.0);
+                    MarketState.sell.put(item, 0.0);
                 }
 
             }

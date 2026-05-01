@@ -1,20 +1,16 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-
-import java.util.UUID;
+import org.bukkit.entity.Player;
 
 public class ContractCreateListener implements Listener {
 
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().equals("§6✏ Création contrat")) return;
+        if (!e.getView().getTitle().equals("§6✏ Création de contrat")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -22,67 +18,62 @@ public class ContractCreateListener implements Listener {
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
+        if (e.getCurrentItem() == null) return;
 
-        var b = ContractCreateGUI.builders.get(p.getUniqueId());
-        if (b == null) return;
+        ContractBuilder builder = ContractBuilder.get(p);
 
-        switch (e.getSlot()) {
+        int slot = e.getSlot();
 
-            // 👤 joueur
-            case 10 -> {
-                if (!Bukkit.getOnlinePlayers().isEmpty()) {
-                    b.target = Bukkit.getOnlinePlayers().iterator().next().getName();
-                    p.sendMessage("§aJoueur sélectionné: " + b.target);
-                }
-            }
-
-            // 📦 item
-            case 11 -> {
-                var item = p.getInventory().getItemInMainHand();
-                if (item.getType() != Material.AIR) {
-                    b.item = item.getType().name().toLowerCase();
-                    p.sendMessage("§aItem: " + b.item);
-                }
-            }
-
-            // 🔢 quantité
-            case 12 -> {
-                if (e.isLeftClick()) b.amount++;
-                if (e.isRightClick() && b.amount > 1) b.amount--;
-            }
-
-            // 💰 prix
-            case 13 -> {
-                if (e.isLeftClick()) b.price += 100;
-                if (e.isRightClick() && b.price > 100) b.price -= 100;
-            }
-
-            // ✔ valider
-            case 16 -> {
-
-                if (b.target == null || b.item == null) {
-                    p.sendMessage("§c❌ Remplis tout");
-                    return;
-                }
-
-                UUID id = UUID.randomUUID();
-
-                ContractManager.Contract c = new ContractManager.Contract(
-                        p.getName(),
-                        b.target,
-                        b.item,
-                        b.amount,
-                        b.price
-                );
-
-                ContractManager.contracts.put(id, c);
-
-                p.sendMessage("§a✔ Contrat créé");
-
-                p.closeInventory();
-            }
+        // =========================
+        // ➕ AUGMENTER PRIX
+        // =========================
+        if (slot == 24) {
+            builder.price += 100;
+            p.sendMessage("§aPrix: " + builder.price + "€");
+            ContractCreateGUI.open(p);
+            return;
         }
 
-        ContractCreateGUI.open(p);
+        // =========================
+        // ➖ DIMINUER PRIX
+        // =========================
+        if (slot == 20) {
+            builder.price = Math.max(0, builder.price - 100);
+            p.sendMessage("§cPrix: " + builder.price + "€");
+            ContractCreateGUI.open(p);
+            return;
+        }
+
+        // =========================
+        // ✔ CREER CONTRAT
+        // =========================
+        if (slot == 26) {
+
+            if (builder.target == null || builder.item == null) {
+                p.sendMessage("§c❌ Données incomplètes");
+                return;
+            }
+
+            var id = ContractManager.create(
+                    p.getName(),
+                    builder.target,
+                    builder.item,
+                    builder.amount,
+                    builder.price
+            );
+
+            p.sendMessage("§a✔ Contrat créé !");
+            p.closeInventory();
+
+            return;
+        }
+
+        // =========================
+        // ❌ ANNULER
+        // =========================
+        if (slot == 18) {
+            p.closeInventory();
+            p.sendMessage("§cContrat annulé");
+        }
     }
 }

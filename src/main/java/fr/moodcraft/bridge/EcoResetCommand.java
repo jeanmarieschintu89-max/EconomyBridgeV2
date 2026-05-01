@@ -24,12 +24,20 @@ public class EcoResetCommand implements CommandExecutor {
 
             double base = MarketState.base.get(item);
 
+            // 💰 prix
             MarketState.price.put(item, base);
-            MarketState.stock.put(item, 0.0);
+
+            // 📦 FIX PRINCIPAL → éviter rareté instant
+            double rarity = MarketState.rarity.getOrDefault(item, 5.0);
+
+            // 👉 stock équilibré (pas 0 !)
+            MarketState.stock.put(item, Math.max(20, rarity * 2));
+
+            // 📊 reset activité
             MarketState.buy.put(item, 0.0);
             MarketState.sell.put(item, 0.0);
 
-            // ⚡ sync shop direct
+            // 🔄 sync shop
             PriceUpdater.updateItem(item);
         }
 

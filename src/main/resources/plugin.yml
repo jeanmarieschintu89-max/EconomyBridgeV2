@@ -6,8 +6,6 @@ api-version: 1.20
 commands:
   priceupdate:
     description: Sync un prix
-    usage: /priceupdate <item>
 
   ecoreload:
-    description: Reload config économie
-    usage: /ecoreload
+    description: Reload config

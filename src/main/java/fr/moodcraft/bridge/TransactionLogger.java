@@ -20,83 +20,32 @@ public class TransactionLogger {
         file = new File(Main.getInstance().getDataFolder(), "transactions.yml");
 
         if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            try { file.createNewFile(); } catch (IOException e) { e.printStackTrace(); }
         }
 
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-    // =========================
-    // 📄 LOG TRANSACTION
-    // =========================
-    public static void log(String player, String type, double amount) {
+    public static void log(String player, String payload, double amount) {
 
         List<String> logs = config.getStringList(player);
 
         String date = format.format(new Date());
 
-        String symbol = type.toLowerCase().contains("vente") ||
-                        type.toLowerCase().contains("reçu") ||
-                        type.toLowerCase().contains("dépôt")
-                ? "§a+"
-                : "§c-";
-
-        String color =
-                type.toLowerCase().contains("vente") ? "§a" :
-                type.toLowerCase().contains("achat") ? "§c" :
-                type.toLowerCase().contains("virement") ? "§b" :
-                type.toLowerCase().contains("dépôt") ? "§a" :
-                type.toLowerCase().contains("retrait") ? "§c" :
-                type.toLowerCase().contains("paiement") ? "§e" :
-                "§7";
-
-        String line = "§8[" + date + "] " + symbol + amount + "€ §8• " + color + type;
+        // On stocke brut pour parser ensuite
+        // date||payload||amount
+        String line = date + "||" + payload + "||" + amount;
 
         logs.add(line);
-
         config.set(player, logs);
         save();
     }
 
-    // =========================
-    // 📄 DERNIERS LOGS
-    // =========================
-    public static List<String> getLast(String player, int limit) {
-
-        List<String> logs = config.getStringList(player);
-
-        if (logs == null || logs.isEmpty()) return new ArrayList<>();
-
-        List<String> result = new ArrayList<>();
-
-        int start = Math.max(0, logs.size() - limit);
-
-        for (int i = logs.size() - 1; i >= start; i--) {
-            result.add(logs.get(i));
-        }
-
-        return result;
-    }
-
-    // =========================
-    // 📄 TOUS LES LOGS
-    // =========================
     public static List<String> getAll(String player) {
         return config.getStringList(player);
     }
 
-    // =========================
-    // 💾 SAVE
-    // =========================
     public static void save() {
-        try {
-            config.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        try { config.save(file); } catch (IOException e) { e.printStackTrace(); }
     }
 }

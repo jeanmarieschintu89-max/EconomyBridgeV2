@@ -28,7 +28,8 @@ public class Main extends JavaPlugin {
         // =========================
         BankStorage.init();
         TransactionLogger.init();
-        ReputationManager.init(); // ⭐ AJOUT IMPORTANT
+        ReputationManager.init();
+        ContractManager.init(); // 🔥 AJOUT IMPORTANT (LOAD contrats)
 
         // =========================
         // 🔄 LOAD DATA
@@ -58,7 +59,7 @@ public class Main extends JavaPlugin {
                 new ContractListener(),
                 new ContractSignListener(),
                 new ContractCreateListener(),
-                new ContractGUIListener(), // 📄 GUI CONTRATS
+                new ContractGUIListener(),
                 new BankHistoryListener()
         );
 
@@ -79,7 +80,7 @@ public class Main extends JavaPlugin {
 
         // 📄 CONTRATS
         registerCommand("contrataccept", new ContractAcceptCommand());
-        registerCommand("contrats", new ContractMenuCommand()); // ⭐ GUI
+        registerCommand("contrats", new ContractMenuCommand());
 
         // =========================
         // 🔁 INIT MARKET
@@ -99,7 +100,8 @@ public class Main extends JavaPlugin {
         // 💾 SAVE DATA
         // =========================
         BankStorage.save();
-        ReputationManager.save(); // ⭐ AJOUT IMPORTANT
+        ReputationManager.save();
+        ContractManager.save(); // 🔥 AJOUT IMPORTANT (SAVE contrats)
 
         getLogger().info("💾 Données sauvegardées correctement");
     }

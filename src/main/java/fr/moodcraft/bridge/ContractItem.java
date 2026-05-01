@@ -18,6 +18,16 @@ public class ContractItem {
         meta.setTitle("Contrat #" + id.toString().substring(0, 6));
         meta.setAuthor(c.from);
 
+        // 📌 statut dynamique
+        String status;
+        if (!c.accepted) {
+            status = "§cEn attente";
+        } else if (!c.signed) {
+            status = "§eÀ signer\n§7➡ Clique avec le livre en main";
+        } else {
+            status = "§a✔ Signé";
+        }
+
         // 📌 contenu
         meta.addPage(
                 "§l📄 CONTRAT\n\n" +
@@ -25,10 +35,10 @@ public class ContractItem {
                 "§0Client: §1" + c.to + "\n\n" +
                 "§0Objet:\n§2" + c.item + " x" + c.amount + "\n\n" +
                 "§0Paiement:\n§6" + c.price + "€\n\n" +
-                "§0Statut:\n" + (c.accepted ? "§aAccepté" : "§cEn attente")
+                "§0Statut:\n" + status
         );
 
-        // 📌 ID caché (IMPORTANT pour suppression)
+        // 📌 nom + ID (important pour tracking)
         meta.setDisplayName("§6Contrat #" + id.toString().substring(0, 6));
         meta.setLore(List.of("§8ID: " + id.toString()));
 

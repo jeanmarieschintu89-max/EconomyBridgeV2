@@ -79,7 +79,7 @@ public class BankListener implements Listener {
 
             case 7 -> {
                 p.closeInventory();
-                BankHistoryGUI.open(p, 0);
+                BankHistoryGUI.open(p, 0, "ALL");
             }
 
             case 8 -> BankGUI.open(p);

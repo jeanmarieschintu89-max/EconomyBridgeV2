@@ -28,7 +28,7 @@ public class GUIListener implements Listener {
         ClickType click = e.getClick();
 
         // =========================
-        // 🟢 VENTE (clic gauche)
+        // 🟢 VENTE
         // =========================
         if (click.isLeftClick()) {
 
@@ -42,7 +42,16 @@ public class GUIListener implements Listener {
             double price = MarketEngine.getPrice(id);
             double gain = amount * price;
 
-            double tax = gain * 0.20;
+            // 🆕 anti whale
+            double mult = 1;
+            if (amount > 512) mult = 0.6;
+            else if (amount > 256) mult = 0.8;
+
+            gain *= mult;
+
+            // 🆕 taxe config
+            double taxRate = Main.getInstance().getConfig().getDouble("tax", 20);
+            double tax = gain * taxRate / 100;
             double finalGain = gain - tax;
 
             p.getInventory().removeItem(new ItemStack(mat, amount));
@@ -52,7 +61,6 @@ public class GUIListener implements Listener {
             p.sendMessage("§cTaxe: -" + tax);
             p.sendMessage("§aNet: " + finalGain);
 
-            // ⚡ ECONOMIE
             p.getServer().dispatchCommand(
                     p.getServer().getConsoleSender(),
                     "eco give " + p.getName() + " " + finalGain
@@ -63,29 +71,20 @@ public class GUIListener implements Listener {
         }
 
         // =========================
-        // 🔵 ACHAT (clic droit)
+        // 🔵 ACHAT
         // =========================
         if (click.isRightClick()) {
 
-            int amount = 64; // stack par défaut
+            int amount = 64;
 
             double price = MarketEngine.getPrice(id);
             double cost = price * amount;
 
-            double balance = getBalance(p);
-
-            if (balance < cost) {
-                p.sendMessage("§c❌ Pas assez d'argent");
-                return;
-            }
-
-            // 💸 paiement
             p.getServer().dispatchCommand(
                     p.getServer().getConsoleSender(),
                     "eco take " + p.getName() + " " + cost
             );
 
-            // 📦 donner items
             p.getInventory().addItem(new ItemStack(mat, amount));
 
             p.sendMessage("§a✔ Achat réussi");
@@ -93,20 +92,6 @@ public class GUIListener implements Listener {
 
             MarketEngine.applyBuy(id, amount);
             PriceUpdater.updateItem(id);
-        }
-    }
-
-    private double getBalance(Player p) {
-        // compatible EssentialsX
-        try {
-            return Double.parseDouble(
-                    p.getServer().dispatchCommand(
-                            p.getServer().getConsoleSender(),
-                            "eco balance " + p.getName()
-                    ) + ""
-            );
-        } catch (Exception e) {
-            return 0;
         }
     }
 

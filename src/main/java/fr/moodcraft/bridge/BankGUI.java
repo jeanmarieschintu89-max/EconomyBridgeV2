@@ -14,19 +14,22 @@ public class BankGUI {
         Economy eco = VaultHook.getEconomy();
         double balance = eco != null ? eco.getBalance(p) : 0;
 
+        double bank = BankStorage.get(p.getUniqueId().toString());
+
         Inventory inv = Bukkit.createInventory(null, 9, "§6Banque");
 
-        // 💰 Solde
-        inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§e💰 Ton Argent",
-                "§7Solde: §a" + balance + "€"));
+        // 💰 Comptes
+        inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§e💰 Comptes",
+                "§7Argent: §a" + balance + "€",
+                "§7Banque: §b" + bank + "€"));
 
-        // ➕ Dépôt
-        inv.setItem(2, ItemBuilder.of(Material.EMERALD, "§aDéposer 1000€",
-                "§7Ajoute de l'argent"));
+        // ➖ Retirer (banque → joueur)
+        inv.setItem(2, ItemBuilder.of(Material.REDSTONE, "§cRetirer 1000€",
+                "§7Prend depuis la banque"));
 
-        // ➖ Retrait
-        inv.setItem(6, ItemBuilder.of(Material.REDSTONE, "§cRetirer 1000€",
-                "§7Retire de l'argent"));
+        // ➕ Déposer (joueur → banque)
+        inv.setItem(6, ItemBuilder.of(Material.EMERALD, "§aDéposer 1000€",
+                "§7Ajoute à la banque"));
 
         // 🔄 Refresh
         inv.setItem(8, ItemBuilder.of(Material.BARRIER, "§7Rafraîchir"));

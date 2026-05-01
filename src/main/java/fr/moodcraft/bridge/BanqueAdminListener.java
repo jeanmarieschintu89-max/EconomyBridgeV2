@@ -24,27 +24,33 @@ public class BanqueAdminListener implements Listener {
 
         switch (slot) {
 
-            case 1: // inflation
+            case 0: // inflation
                 for (String item : MarketState.base.keySet()) {
                     double price = MarketState.getPrice(item) * 1.05;
                     MarketState.setPrice(item, round(price));
                     PriceUpdater.updateItem(item);
                 }
                 p.sendMessage("§a✔ Inflation +5%");
+                applyLive();
                 p.closeInventory();
                 break;
 
-            case 3: // déflation
+            case 1: // déflation
                 for (String item : MarketState.base.keySet()) {
                     double price = MarketState.getPrice(item) * 0.95;
                     MarketState.setPrice(item, round(price));
                     PriceUpdater.updateItem(item);
                 }
                 p.sendMessage("§c✔ Déflation -5%");
+                applyLive();
                 p.closeInventory();
                 break;
 
-            case 4: // reload
+            case 2: // 📦 CONFIG ITEMS
+                BanqueItemListGUI.open(p);
+                break;
+
+            case 3: // reload
 
                 Main plugin = Main.getInstance();
 
@@ -78,36 +84,44 @@ public class BanqueAdminListener implements Listener {
                 loadSection(plugin, "weight", MarketState.weight);
 
                 ShopIndex.rebuild();
-                MarketEngine.tick();
-
-                for (String item : MarketState.base.keySet()) {
-                    PriceUpdater.updateItem(item);
-                }
+                applyLive();
 
                 p.sendMessage("§b✔ Économie rechargée");
                 p.closeInventory();
                 break;
 
-            case 5: // sync
+            case 4: // sync
                 for (String item : MarketState.base.keySet()) {
                     PriceUpdater.updateItem(item);
                 }
                 p.sendMessage("§e✔ Sync effectuée");
                 break;
 
-            case 6: // sous-menu
+            case 6: // ⚙️ CONFIG GLOBALE
                 BanqueConfigGUI.open(p);
                 break;
 
-            case 7: // reset
+            case 8: // reset
                 for (String item : MarketState.base.keySet()) {
                     double base = MarketState.base.get(item);
                     MarketState.setPrice(item, base);
                     PriceUpdater.updateItem(item);
                 }
                 p.sendMessage("§4✔ Économie reset");
+                applyLive();
                 p.closeInventory();
                 break;
+        }
+    }
+
+    // =========================
+    // 🔥 APPLY LIVE
+    // =========================
+    private void applyLive() {
+        MarketEngine.tick();
+
+        for (String item : MarketState.base.keySet()) {
+            PriceUpdater.updateItem(item);
         }
     }
 

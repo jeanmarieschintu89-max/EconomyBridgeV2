@@ -1,73 +1,69 @@
 name: Build Plugin
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-
-  # 🔴 BOUTON MANUEL
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Version du build (optionnel)"
-        required: false
-        default: "manual"
+  push:
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 📥 Checkout
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # ☕ Java 17
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'maven'
 
-      # 📦 Install QuickShop
-      - name: Install QuickShop jar
+      # 🔐 Auth GitHub Packages
+      - name: Setup Maven auth
         run: |
-          mvn install:install-file \
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings>
+            <servers>
+              <server>
+                <id>github</id>
+                <username>${{ github.actor }}</username>
+                <password>${{ secrets.GITHUB_TOKEN }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
+      # 📦 DEPLOY QuickShop
+      - name: Deploy QuickShop
+        run: |
+          mvn deploy:deploy-file \
           -Dfile=libs/QuickShop-Hikari.jar \
           -DgroupId=com.quickshop \
           -DartifactId=quickshop \
           -Dversion=1.0 \
-          -Dpackaging=jar
+          -Dpackaging=jar \
+          -DrepositoryId=github \
+          -Durl=https://maven.pkg.github.com/${{ github.repository }}
 
-      # 📦 Install Skript
-      - name: Install Skript jar
+      # 📦 DEPLOY Skript
+      - name: Deploy Skript
         run: |
-          mvn install:install-file \
+          mvn deploy:deploy-file \
           -Dfile=libs/Skript.jar \
           -DgroupId=com.skript \
           -DartifactId=skript \
           -Dversion=1.0 \
-          -Dpackaging=jar
+          -Dpackaging=jar \
+          -DrepositoryId=github \
+          -Durl=https://maven.pkg.github.com/${{ github.repository }}
 
-      # 🔨 Build
-      - name: Build with Maven
+      # 🔨 BUILD
+      - name: Build
         run: mvn clean package
 
-      # 📦 Upload artifact
-      - name: Upload jar
-        uses: actions/upload-artifact@v4
+      # 📦 Artifact
+      - uses: actions/upload-artifact@v4
         with:
-          name: EconomyBridgeV2
+          name: plugin
           path: target/*.jar
-
-      # 🚀 Release automatique (push main OU bouton)
-      - name: Create Release
-        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: Build ${{ github.run_number }} (${{ github.event.inputs.version }})
-          files: target/*.jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

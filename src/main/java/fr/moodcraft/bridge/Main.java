@@ -12,6 +12,9 @@ public class Main extends JavaPlugin {
 
         instance = this;
 
+        // 📁 CONFIG AUTO
+        saveDefaultConfig();
+
         getLogger().info("🚀 EconomyBridgeV2 démarrage...");
 
         Bukkit.getScheduler().runTaskLater(this, () -> {
@@ -21,14 +24,23 @@ public class Main extends JavaPlugin {
                 return;
             }
 
-            // 🔌 Listener achat uniquement
+            // 🔌 Listener
             Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
 
-            // 🔌 Commande sync
+            // 🔌 Commande priceupdate
             if (getCommand("priceupdate") == null) {
                 getLogger().severe("❌ Commande priceupdate manquante !");
             } else {
                 getCommand("priceupdate").setExecutor(new PriceCommand());
+            }
+
+            // 🔄 Commande reload config
+            if (getCommand("ecoreload") != null) {
+                getCommand("ecoreload").setExecutor((sender, command, label, args) -> {
+                    reloadConfig();
+                    sender.sendMessage("§a✔ Config rechargée !");
+                    return true;
+                });
             }
 
             // 🔄 Rebuild index toutes les 60s

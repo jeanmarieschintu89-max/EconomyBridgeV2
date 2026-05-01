@@ -12,7 +12,7 @@ commands:
 
   syncprix:
     description: Sync tous les shops
-    permission: op
+    permission: econ.admin
 
   trend:
     description: Voir tendance
@@ -20,12 +20,21 @@ commands:
 
   ecoreset:
     description: Reset complet de l'économie
-    permission: op
+    permission: econ.admin
 
   banqueadmin:
     description: Banque admin
-    permission: op
+    permission: econ.admin
 
   ecotest:
     description: Test economie
-    permission: op
+    permission: econ.admin
+
+permissions:
+  econ.admin:
+    description: Accès total à l'économie
+    default: op
+
+  econ.use:
+    description: Utiliser le marché
+    default: true

@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -12,10 +13,20 @@ public class WelcomeListener implements Listener {
 
         Player p = e.getPlayer();
 
-        // petit délai pour éviter bug ouverture
-        org.bukkit.Bukkit.getScheduler().runTaskLater(
+        // 👇 seulement première connexion
+        if (p.hasPlayedBefore()) return;
+
+        // ⏳ délai (chargement joueur)
+        Bukkit.getScheduler().runTaskLater(
                 Main.getInstance(),
-                () -> WelcomeGUI.open(p),
+                () -> {
+
+                    // 🔒 sécurité si joueur déco
+                    if (!p.isOnline()) return;
+
+                    WelcomeGUI.open(p);
+
+                },
                 40L // 2 secondes
         );
     }

@@ -71,6 +71,7 @@ public class Main extends JavaPlugin {
         registerCommand("transactions", new TransactionsCommand());
         registerCommand("iban", new IbanCommand());
         registerCommand("ibanpay", new IbanPayCommand()); // 💸 virement
+        registerCommand("contrataccept", new ContractAcceptCommand());
 
         // =========================
         // 🔁 INIT MARKET

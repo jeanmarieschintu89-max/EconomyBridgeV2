@@ -29,7 +29,8 @@ public class Main extends JavaPlugin {
         BankStorage.init();
         TransactionLogger.init();
         ReputationManager.init();
-        ContractManager.init(); // 🔥 AJOUT IMPORTANT (LOAD contrats)
+        ContractManager.init();
+        ContractHistoryManager.init(); // 🔥 AJOUT HISTORIQUE
 
         // =========================
         // 🔄 LOAD DATA
@@ -56,7 +57,7 @@ public class Main extends JavaPlugin {
                 new BankListener(),
                 new TeleportListener(),
                 new PayListener(),
-                new ChatListener(),
+                new ChatListener(), // 💬 réputation chat
                 new ContractListener(),
                 new ContractSignListener(),
                 new ContractCreateListener(),
@@ -78,12 +79,15 @@ public class Main extends JavaPlugin {
         registerCommand("transactions", new TransactionsCommand());
         registerCommand("iban", new IbanCommand());
         registerCommand("ibanpay", new IbanPayCommand());
+
+        // 🔥 RÉPUTATION
         registerCommand("resetrep", new ReputationResetCommand());
 
         // 📄 CONTRATS
         registerCommand("contrataccept", new ContractAcceptCommand());
         registerCommand("contrats", new ContractMenuCommand());
         registerCommand("delcontrat", new ContractDeleteCommand());
+        registerCommand("contractlog", new ContractLogCommand()); // 🔥 HISTORIQUE
 
         // =========================
         // 🔁 INIT MARKET
@@ -93,7 +97,7 @@ public class Main extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
         Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20L, 20L * 45);
 
-        getLogger().info("✅ EconomyBridge chargé avec banque + logs + contrats + réputation + TP + IBAN");
+        getLogger().info("✅ EconomyBridge chargé avec économie + contrats + réputation + historique + TP + IBAN");
     }
 
     @Override
@@ -104,7 +108,7 @@ public class Main extends JavaPlugin {
         // =========================
         BankStorage.save();
         ReputationManager.save();
-        ContractManager.save(); // 🔥 AJOUT IMPORTANT (SAVE contrats)
+        ContractManager.save();
 
         getLogger().info("💾 Données sauvegardées correctement");
     }

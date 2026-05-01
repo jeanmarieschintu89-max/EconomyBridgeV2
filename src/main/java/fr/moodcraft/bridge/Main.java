@@ -52,7 +52,7 @@ public class Main extends JavaPlugin {
                 new BanqueItemListener(),
                 new MainMenuListener(),
                 new BankListener(),
-                new TeleportListener() // ✅ FIX
+                new TeleportListener(),
                 new BankHistoryListener(),
         );
 

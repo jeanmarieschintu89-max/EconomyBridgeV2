@@ -11,39 +11,35 @@ public class WelcomeGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6Bienvenue sur MoodCraft");
+        // 🔥 titre plus court (important Bedrock)
+        Inventory inv = Bukkit.createInventory(null, 27, "§6Bienvenue");
 
         Economy eco = VaultHook.getEconomy();
         double balance = eco != null ? eco.getBalance(p) : 0;
 
-        // 💰 Argent joueur
-        inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§e💰 Ton Argent",
+        // 💰 Argent
+        inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§eArgent",
                 "§7Solde: §a" + balance + "€"));
 
         // 📊 Économie
-        inv.setItem(10, ItemBuilder.of(Material.GOLD_INGOT, "§6💰 Économie",
-                "§7Marché dynamique",
-                "§aAcheter = prix ↑",
-                "§cVendre = prix ↓"));
+        inv.setItem(10, ItemBuilder.of(Material.GOLD_INGOT, "§6Économie",
+                "§7Marché dynamique"));
 
         // ⚒️ Jobs
-        inv.setItem(12, ItemBuilder.of(Material.IRON_PICKAXE, "§7⚒️ Jobs",
-                "§7Travaille pour gagner de l'argent",
-                "§7Impacte le marché"));
+        inv.setItem(12, ItemBuilder.of(Material.IRON_PICKAXE, "§7Jobs",
+                "§7Gagne de l'argent"));
 
         // 📜 Quêtes
-        inv.setItem(14, ItemBuilder.of(Material.MAP, "§e📜 Quêtes",
-                "§7Accomplis des missions",
-                "§7Gagne des récompenses"));
+        inv.setItem(14, ItemBuilder.of(Material.MAP, "§eQuêtes",
+                "§7Missions"));
 
         // 🏙️ Villes
-        inv.setItem(16, ItemBuilder.of(Material.EMERALD_BLOCK, "§a🏙️ Villes",
-                "§7Développe ta ville",
-                "§7Influence l'économie"));
+        inv.setItem(16, ItemBuilder.of(Material.EMERALD_BLOCK, "§aVilles",
+                "§7Développe ta ville"));
 
-        // 🎮 Accès menu
-        inv.setItem(22, ItemBuilder.of(Material.NETHER_STAR, "§bOuvrir le Menu",
-                "§7Accès à toutes les fonctionnalités"));
+        // 🎮 Menu
+        inv.setItem(22, ItemBuilder.of(Material.NETHER_STAR, "§bMenu",
+                "§7Clique pour ouvrir"));
 
         // ❌ Fermer
         inv.setItem(26, ItemBuilder.of(Material.BARRIER, "§cFermer"));

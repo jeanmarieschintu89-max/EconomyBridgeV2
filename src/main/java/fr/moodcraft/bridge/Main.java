@@ -64,6 +64,7 @@ public class Main extends JavaPlugin {
         registerCommand("ecoreload", new EcoReloadCommand());
         registerCommand("banqueadmin", new BanqueAdminCommand());
         registerCommand("menu", new MenuCommand());
+        registerCommand("transactions", new TransactionsCommand());
 
         // =========================
         // 🔁 INIT MARKET

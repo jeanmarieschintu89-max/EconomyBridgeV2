@@ -18,53 +18,40 @@ public class ShopListener implements Listener {
         if (amount <= 0) return;
 
         String item = ItemNormalizer.normalize(event.getShop().getItem().getType());
-
         if (item == null) return;
         if (!PriceUpdater.ALLOWED.contains(item)) return;
 
         String player = event.getPlayer().getName();
 
-        // 💰 PRIX TOTAL
-        double pricePerItem = event.getShop().getPrice();
-        double total = pricePerItem * amount;
+        double unit = event.getShop().getPrice();
+        double total = unit * amount;
 
-        // =========================
-        // 📄 LOG TRANSACTION (DETAIL RP)
-        // =========================
+        // 🔐 Format parsable
+        // TYPE|item|amount|unit|total
         if (event.getShop().isBuying()) {
-            // joueur vend
             TransactionLogger.log(player,
-                    "Vente (" + item + " x" + amount + ")", total);
+                    "VENTE|" + item + "|" + amount + "|" + unit + "|" + total,
+                    total);
         } else {
-            // joueur achète
             TransactionLogger.log(player,
-                    "Achat (" + item + " x" + amount + ")", total);
+                    "ACHAT|" + item + "|" + amount + "|" + unit + "|" + total,
+                    total);
         }
 
         Bukkit.getLogger().info("[Market] " + player + " " +
                 (event.getShop().isBuying() ? "vend" : "achète") +
                 " " + item + " x" + amount + " (" + total + "€)");
 
-        // =========================
-        // 📈 BOOST ACHAT
-        // =========================
         int boosted = amount * 3;
         MarketEngine.applyBuy(item, boosted);
 
-        // =========================
-        // 📦 STOCK
-        // =========================
         double weight = MarketState.weight.getOrDefault(item, 1.0);
-
         MarketState.stock.merge(item, -weight * amount, Double::sum);
 
         if (MarketState.stock.get(item) < -10000) {
             MarketState.stock.put(item, -10000.0);
         }
 
-        // =========================
-        // ⚡ UPDATE SHOP
-        // =========================
         PriceUpdater.updateSingle(event.getShop(), item);
     }
 }

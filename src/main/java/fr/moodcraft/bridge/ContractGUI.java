@@ -22,9 +22,9 @@ public class ContractGUI {
 
             if (!c.to.equalsIgnoreCase(p.getName())) continue;
 
-            int rep = ReputationManager.get(c.from);
-
             if (slot >= 21) break;
+
+            int rep = ReputationManager.get(c.from);
 
             inv.setItem(slot, ItemBuilder.of(Material.PAPER,
                     "§eContrat de " + c.from,
@@ -40,6 +40,21 @@ public class ContractGUI {
 
             slot++;
         }
+
+        // =========================
+        // ➕ CREER CONTRAT
+        // =========================
+        inv.setItem(22, ItemBuilder.of(Material.EMERALD_BLOCK, "§a➕ Créer un contrat",
+                "§7Créer un accord avec un joueur",
+                "",
+                "§7Commande:",
+                "§e/contrat create <joueur> <item> <quantité> <prix>",
+                "",
+                "§8Clique pour voir"));
+
+        // 🧱 déco
+        inv.setItem(18, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
+        inv.setItem(26, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
 
         p.openInventory(inv);
     }

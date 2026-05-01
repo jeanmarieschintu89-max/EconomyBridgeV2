@@ -1,6 +1,7 @@
 package fr.moodcraft.bridge;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -29,10 +30,20 @@ public class ContractListener implements org.bukkit.event.Listener {
             UUID id = entry.getKey();
             var c = entry.getValue();
 
-            // 🔒 CONDITIONS IMPORTANTES
-            if (c == null) continue;
-            if (!c.accepted) continue;
-            if (!c.signed) continue; // 🔥 SIGNATURE OBLIGATOIRE
+            // ⏳ EXPIRATION
+            if (System.currentTimeMillis() > c.expireAt) {
+
+                Player from = Bukkit.getPlayerExact(c.from);
+                Player to = Bukkit.getPlayerExact(c.to);
+
+                if (from != null) from.sendMessage("§c⏳ Contrat expiré");
+                if (to != null) to.sendMessage("§c⏳ Contrat expiré");
+
+                toRemove.add(id);
+                continue;
+            }
+
+            if (c == null || !c.accepted) continue;
             if (!c.to.equalsIgnoreCase(p.getName())) continue;
 
             Material mat;
@@ -47,48 +58,33 @@ public class ContractListener implements org.bukkit.event.Listener {
 
             if (total >= c.amount) {
 
-                // 📦 retrait items
                 remove(p, mat, c.amount);
-
-                // 💰 paiement
                 eco.depositPlayer(p, c.price);
 
-                // 📄 LOG
                 TransactionLogger.log(p.getName(),
                         "Contrat " + c.item + " x" + c.amount,
                         c.price);
 
-                // ⭐ réputation
                 ReputationManager.add(c.from, +1);
 
-                // 📜 SUPPRESSION LIVRE (joueur)
                 removeContractBook(p, id);
 
-                // 📜 SUPPRESSION LIVRE (créateur)
-                Player from = org.bukkit.Bukkit.getPlayerExact(c.from);
+                Player from = Bukkit.getPlayerExact(c.from);
                 if (from != null) {
                     removeContractBook(from, id);
                 }
 
-                // 📩 message
                 p.sendMessage("§a✔ Contrat complété !");
-                p.sendMessage("§7Objet: §f" + c.item + " x" + c.amount);
-                p.sendMessage("§7Paiement reçu: §a+" + c.price + "€");
-
                 toRemove.add(id);
             }
         }
 
-        // 🔥 suppression propre
         for (UUID id : toRemove) {
             ContractManager.contracts.remove(id);
         }
     }
 
-    // =========================
-    // 📜 SUPPRESSION LIVRE
-    // =========================
-    private static void removeContractBook(Player p, UUID id) {
+    public static void removeContractBook(Player p, UUID id) {
 
         for (ItemStack item : p.getInventory()) {
 
@@ -105,9 +101,6 @@ public class ContractListener implements org.bukkit.event.Listener {
         }
     }
 
-    // =========================
-    // 📦 COUNT
-    // =========================
     private static int count(Player p, Material mat) {
         int total = 0;
         for (ItemStack item : p.getInventory()) {
@@ -118,9 +111,6 @@ public class ContractListener implements org.bukkit.event.Listener {
         return total;
     }
 
-    // =========================
-    // 📦 REMOVE
-    // =========================
     private static void remove(Player p, Material mat, int amount) {
         p.getInventory().removeItem(new ItemStack(mat, amount));
     }

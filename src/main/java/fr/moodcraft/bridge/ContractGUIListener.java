@@ -15,35 +15,26 @@ public class ContractGUIListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        // 🔒 Vérifie GUI
         if (!e.getView().getTitle().equals("§6📄 Contrats")) return;
 
-        // 🔒 Clique uniquement dans le menu
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
+        if (e.getCurrentItem() == null) return;
 
         int slot = e.getSlot();
 
-        // =========================
-        // ➕ CREER CONTRAT (GUI)
-        // =========================
-        if (slot == 22) {
+        // ➕ CREATION
+        if (slot == 49) {
             p.closeInventory();
-
-            // 🔥 NOUVEAU : ouvre GUI création
             ContractCreateGUI.open(p);
-
             return;
         }
 
-        // =========================
-        // 📄 LISTE CONTRATS
-        // =========================
+        // 🔁 reconstruire liste
         List<UUID> list = new ArrayList<>();
 
         for (UUID id : ContractManager.contracts.keySet()) {
@@ -53,27 +44,26 @@ public class ContractGUIListener implements Listener {
             }
         }
 
-        if (slot < 0 || slot >= list.size()) return;
+        // 📌 calcul index
+        int baseSlot = slot % 9;
+        int row = slot / 9;
 
-        UUID id = list.get(slot);
+        if (baseSlot >= list.size()) return;
+
+        UUID id = list.get(baseSlot);
         var c = ContractManager.contracts.get(id);
 
         if (c == null) return;
 
-        // =========================
-        // ✔ ACCEPT
-        // =========================
-        if (e.isLeftClick()) {
+        // ✔ ACCEPTER (ligne 2)
+        if (row == 1) {
 
             c.accepted = true;
 
-            // 📜 LIVRE CONTRAT
             var book = ContractItem.create(id, c);
 
-            // donner au joueur
             p.getInventory().addItem(book.clone());
 
-            // donner au créateur
             Player from = Bukkit.getPlayerExact(c.from);
             if (from != null) {
                 from.getInventory().addItem(book.clone());
@@ -82,16 +72,15 @@ public class ContractGUIListener implements Listener {
             p.sendMessage("§a✔ Contrat accepté");
         }
 
-        // =========================
-        // ❌ REFUSE
-        // =========================
-        if (e.isRightClick()) {
+        // ❌ REFUSER (ligne 3)
+        if (row == 2) {
+
             ContractManager.contracts.remove(id);
             ReputationManager.add(c.from, -1);
+
             p.sendMessage("§c❌ Contrat refusé");
         }
 
-        // 🔄 refresh GUI
         ContractGUI.open(p);
     }
 }

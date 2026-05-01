@@ -8,6 +8,10 @@ commands:
     description: Ouvre le marché
     usage: /prix
 
+  syncprix:
+    description: Synchronise tous les prix avec les shops
+    usage: /syncprix
+
   trend:
     description: Voir la tendance d'un item
     usage: /trend <item>

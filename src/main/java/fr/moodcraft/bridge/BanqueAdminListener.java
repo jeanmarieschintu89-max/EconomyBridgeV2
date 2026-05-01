@@ -10,10 +10,8 @@ public class BanqueAdminListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
 
-        // 🔒 vérifie le bon GUI
         if (!e.getView().getTitle().equals("§6Banque Admin")) return;
 
-        // 🔒 ignore clic hors GUI
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
@@ -33,6 +31,7 @@ public class BanqueAdminListener implements Listener {
                     PriceUpdater.updateItem(item);
                 }
                 p.sendMessage("§a✔ Inflation +5%");
+                p.closeInventory();
                 break;
 
             case 3: // déflation
@@ -42,9 +41,10 @@ public class BanqueAdminListener implements Listener {
                     PriceUpdater.updateItem(item);
                 }
                 p.sendMessage("§c✔ Déflation -5%");
+                p.closeInventory();
                 break;
 
-            case 4: // 🔵 RELOAD ÉCONOMIE
+            case 4: // reload
 
                 Main plugin = Main.getInstance();
 
@@ -60,14 +60,16 @@ public class BanqueAdminListener implements Listener {
                 MarketState.rarity.clear();
                 MarketState.weight.clear();
 
-                for (String key : plugin.getConfig().getConfigurationSection("base").getKeys(false)) {
-                    double value = plugin.getConfig().getDouble("base." + key);
+                if (plugin.getConfig().getConfigurationSection("base") != null) {
+                    for (String key : plugin.getConfig().getConfigurationSection("base").getKeys(false)) {
+                        double value = plugin.getConfig().getDouble("base." + key);
 
-                    MarketState.base.put(key, value);
-                    MarketState.price.put(key, value);
-                    MarketState.stock.put(key, 0.0);
-                    MarketState.buy.put(key, 0.0);
-                    MarketState.sell.put(key, 0.0);
+                        MarketState.base.put(key, value);
+                        MarketState.price.put(key, value);
+                        MarketState.stock.put(key, 0.0);
+                        MarketState.buy.put(key, 0.0);
+                        MarketState.sell.put(key, 0.0);
+                    }
                 }
 
                 loadSection(plugin, "activity", MarketState.activity);
@@ -83,6 +85,7 @@ public class BanqueAdminListener implements Listener {
                 }
 
                 p.sendMessage("§b✔ Économie rechargée");
+                p.closeInventory();
                 break;
 
             case 5: // sync
@@ -92,7 +95,7 @@ public class BanqueAdminListener implements Listener {
                 p.sendMessage("§e✔ Sync effectuée");
                 break;
 
-            case 6: // ⚙️ SOUS-MENU CONFIG
+            case 6: // sous-menu
                 BanqueConfigGUI.open(p);
                 break;
 
@@ -103,6 +106,7 @@ public class BanqueAdminListener implements Listener {
                     PriceUpdater.updateItem(item);
                 }
                 p.sendMessage("§4✔ Économie reset");
+                p.closeInventory();
                 break;
         }
     }

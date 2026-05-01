@@ -2,11 +2,9 @@ package fr.moodcraft.bridge;
 
 import com.ghostchu.quickshop.api.shop.Shop;
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Iterator;
 import java.util.Set;
 
 public final class PriceUpdater {
@@ -32,7 +30,7 @@ public final class PriceUpdater {
         double maxStep = Math.max(2, base * 0.10);
 
         double raw = clampStep(item, target, maxStep);
-        double clamped = round2(raw);
+        double clamped = round2(raw); // 💎 ARRONDI 0.01
 
         double lastSend = getDouble("bridge.lastsend." + item, 0);
         if (Math.abs(lastSend - clamped) < 0.009) return;
@@ -42,31 +40,16 @@ public final class PriceUpdater {
         Set<Shop> shops = ShopIndex.get(item);
         if (shops == null || shops.isEmpty()) return;
 
-        Iterator<Shop> it = shops.iterator();
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-
-                int count = 0;
-
-                while (it.hasNext() && count < 10) {
-                    Shop s = it.next();
-
-                    if (Math.abs(s.getPrice() - clamped) >= 0.009) {
-                        s.setPrice(clamped);
-                    }
-
-                    count++;
-                }
-
-                if (!it.hasNext()) {
-                    cancel();
+        // ⚡ UPDATE INSTANT (plus de batch)
+        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+            for (Shop s : shops) {
+                if (Math.abs(s.getPrice() - clamped) >= 0.009) {
+                    s.setPrice(clamped);
                 }
             }
-        }.runTaskTimer(Main.getInstance(), 0L, 1L);
+        });
 
-        Main.getInstance().getLogger().info("Sync: " + item + " -> " + clamped);
+        Main.getInstance().getLogger().info("⚡ Sync instant: " + item + " -> " + clamped);
     }
 
     public static void updateSingle(Shop s, String item) {
@@ -109,7 +92,7 @@ public final class PriceUpdater {
         return target;
     }
 
-    // 💎 ARRONDI PROPRE (ANTI BUG 0.10)
+    // 💎 ARRONDI À 0.01 (2 décimales max)
     private static double round2(double value) {
         return new BigDecimal(value)
                 .setScale(2, RoundingMode.HALF_UP)

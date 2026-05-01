@@ -16,7 +16,10 @@ public class GUIListener implements Listener {
 
     public GUIListener() {
         if (econ == null) {
-            econ = Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
+            var rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
+            if (rsp != null) {
+                econ = rsp.getProvider();
+            }
         }
     }
 
@@ -29,6 +32,18 @@ public class GUIListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getCurrentItem() == null) return;
+
+        // 🔐 permission marché
+        if (!p.hasPermission("econ.use")) {
+            p.sendMessage("§c❌ Accès refusé.");
+            return;
+        }
+
+        // ⚠️ sécurité Vault
+        if (econ == null) {
+            p.sendMessage("§c❌ Erreur économie (Vault manquant)");
+            return;
+        }
 
         Material mat = e.getCurrentItem().getType();
         String id = map(mat);
@@ -70,10 +85,10 @@ public class GUIListener implements Listener {
             // retirer items
             p.getInventory().removeItem(new ItemStack(mat, amount));
 
-            // 💰 GIVE SANS MESSAGE VAULT
+            // 💰 GIVE sans message Vault
             econ.depositPlayer(p, net);
 
-            // 📩 MESSAGE PROPRE
+            // 📩 message clean
             p.sendMessage("§8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
             p.sendMessage("§a✔ Vente réussie");
             p.sendMessage("§7• Brut: §f" + brut + "€");
@@ -95,7 +110,13 @@ public class GUIListener implements Listener {
             double price = MarketEngine.getPrice(id);
             double cost = round(price * amount);
 
-            // 💰 TAKE SANS MESSAGE VAULT
+            // 🔒 check argent
+            if (econ.getBalance(p) < cost) {
+                p.sendMessage("§c❌ Pas assez d'argent");
+                return;
+            }
+
+            // 💰 TAKE sans message Vault
             econ.withdrawPlayer(p, cost);
 
             p.getInventory().addItem(new ItemStack(mat, amount));

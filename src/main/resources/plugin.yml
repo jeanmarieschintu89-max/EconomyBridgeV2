@@ -12,13 +12,14 @@ commands:
     permission: econ.use
 
   syncprix:
-    description: Sync tous les shops
+    description: Synchronise tous les shops
     usage: /syncprix
     permission: econ.admin
 
   trend:
-    description: Voir tendance
+    description: Voir tendance d'un item
     usage: /trend <item>
+    permission: econ.use
 
   ecoreset:
     description: Reset complet de l'économie
@@ -26,17 +27,17 @@ commands:
     permission: econ.admin
 
   banqueadmin:
-    description: Banque admin
+    description: Ouvre la banque admin
     usage: /banqueadmin
     permission: econ.admin
 
   ecotest:
-    description: Test economie
+    description: Test économie
     usage: /ecotest
     permission: econ.admin
 
   ecoreload:
-    description: Recharge complète de l'économie
+    description: Recharge la config économie
     usage: /ecoreload
     permission: econ.admin
 
@@ -51,5 +52,5 @@ permissions:
     default: op
 
   econ.use:
-    description: Utiliser le marché
+    description: Accès aux fonctionnalités joueur
     default: true

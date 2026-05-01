@@ -9,6 +9,3 @@ commands:
 
   ecoreload:
     description: Reload config
-
-  gettrend:
-    description: Get trend d'un item

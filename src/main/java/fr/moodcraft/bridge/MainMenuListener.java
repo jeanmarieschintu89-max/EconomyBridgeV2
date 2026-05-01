@@ -35,7 +35,7 @@ public class MainMenuListener implements Listener {
 
             case 11 -> { // 🏙️ Ville
                 p.closeInventory();
-                p.performCommand("town menu");
+                p.performCommand("tm");
             }
 
             case 12 -> { // ⚒️ Jobs

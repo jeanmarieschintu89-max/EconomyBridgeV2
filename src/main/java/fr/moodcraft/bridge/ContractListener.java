@@ -1,7 +1,6 @@
 package fr.moodcraft.bridge;
 
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.UUID;
+import java.util.*;
 
 public class ContractListener implements Listener {
 
@@ -26,9 +25,13 @@ public class ContractListener implements Listener {
         Economy eco = VaultHook.getEconomy();
         if (eco == null) return;
 
-        for (UUID id : ContractManager.contracts.keySet()) {
+        // 🔒 copie pour éviter ConcurrentModificationException
+        List<UUID> toRemove = new ArrayList<>();
 
-            var c = ContractManager.contracts.get(id);
+        for (Map.Entry<UUID, ContractManager.Contract> entry : ContractManager.contracts.entrySet()) {
+
+            UUID id = entry.getKey();
+            var c = entry.getValue();
 
             if (c == null || !c.accepted) continue;
             if (!c.to.equalsIgnoreCase(p.getName())) continue;
@@ -45,20 +48,33 @@ public class ContractListener implements Listener {
 
             if (total >= c.amount) {
 
+                // 📦 retrait items
                 remove(p, mat, c.amount);
 
+                // 💰 paiement
                 eco.depositPlayer(p, c.price);
 
+                // 📄 LOG
                 TransactionLogger.log(p.getName(),
                         "Contrat " + c.item + " x" + c.amount,
                         c.price);
 
+                // ⭐ RÉPUTATION (AJOUT IMPORTANT)
+                ReputationManager.add(c.from, +1);
+
+                // 📩 MESSAGE
                 p.sendMessage("§a✔ Contrat complété !");
+                p.sendMessage("§7Objet: §f" + c.item + " x" + c.amount);
                 p.sendMessage("§7Paiement reçu: §a+" + c.price + "€");
 
-                ContractManager.contracts.remove(id);
-                break;
+                // 🗑 suppression après boucle
+                toRemove.add(id);
             }
+        }
+
+        // 🔥 suppression propre après boucle
+        for (UUID id : toRemove) {
+            ContractManager.contracts.remove(id);
         }
     }
 

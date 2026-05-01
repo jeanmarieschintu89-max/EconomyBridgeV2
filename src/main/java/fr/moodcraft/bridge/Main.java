@@ -27,7 +27,7 @@ public class Main extends JavaPlugin {
         // 💾 STOCKAGE
         // =========================
         BankStorage.init();
-        TransactionLogger.init(); // 🔥 logs activés
+        TransactionLogger.init();
 
         // =========================
         // 🔄 LOAD DATA
@@ -46,6 +46,7 @@ public class Main extends JavaPlugin {
                 new MineListener(),
                 new GUIListener(),
                 new WelcomeListener(),
+                new WelcomeClickListener(), // 🔥 AJOUT IMPORTANT
                 new BanqueAdminListener(),
                 new BanqueConfigListener(),
                 new BanqueItemListener(),
@@ -74,7 +75,7 @@ public class Main extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
         Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20L, 20L * 45);
 
-        getLogger().info("✅ EconomyBridge chargé avec banque + logs actifs");
+        getLogger().info("✅ EconomyBridge chargé avec banque + logs + welcome GUI");
     }
 
     @Override

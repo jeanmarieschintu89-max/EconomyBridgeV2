@@ -5,20 +5,29 @@ on:
   push:
     branches: ["main"]
 
+# 🔥 FIX 403 (OBLIGATOIRE)
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # 📥 Clone repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      # ☕ Java 17
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'maven'
 
-      # 🔐 Auth GitHub Packages
+      # 🔐 Auth Maven GitHub Packages
       - name: Setup Maven auth
         run: |
           mkdir -p ~/.m2
@@ -34,7 +43,11 @@ jobs:
           </settings>
           EOF
 
-      # 📦 DEPLOY QuickShop
+      # 🧪 DEBUG (à laisser au début si besoin)
+      - name: Debug files
+        run: ls -R
+
+      # 📦 Upload QuickShop vers GitHub Packages
       - name: Deploy QuickShop
         run: |
           mvn deploy:deploy-file \
@@ -46,7 +59,7 @@ jobs:
           -DrepositoryId=github \
           -Durl=https://maven.pkg.github.com/${{ github.repository }}
 
-      # 📦 DEPLOY Skript
+      # 📦 Upload Skript vers GitHub Packages
       - name: Deploy Skript
         run: |
           mvn deploy:deploy-file \
@@ -58,12 +71,13 @@ jobs:
           -DrepositoryId=github \
           -Durl=https://maven.pkg.github.com/${{ github.repository }}
 
-      # 🔨 BUILD
-      - name: Build
+      # 🔨 Build plugin
+      - name: Build with Maven
         run: mvn clean package
 
-      # 📦 Artifact
-      - uses: actions/upload-artifact@v4
+      # 📦 Upload artifact
+      - name: Upload plugin jar
+        uses: actions/upload-artifact@v4
         with:
-          name: plugin
+          name: EconomyBridgeV2
           path: target/*.jar

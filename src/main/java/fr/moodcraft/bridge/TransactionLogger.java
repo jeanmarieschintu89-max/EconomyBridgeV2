@@ -13,7 +13,6 @@ public class TransactionLogger {
     private static File file;
     private static FileConfiguration config;
 
-    // 📅 FORMAT DATE
     private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM HH:mm");
 
     public static void init() {
@@ -31,15 +30,11 @@ public class TransactionLogger {
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-    // =========================
-    // ➕ AJOUT LOG
-    // =========================
     public static void log(String player, String type, double amount) {
 
         List<String> logs = config.getStringList(player);
 
         String date = format.format(new Date());
-
         String symbol = type.equalsIgnoreCase("Dépôt") ? "§a+" : "§c-";
 
         String line = "§7[" + date + "] " + symbol + amount + "€ §8• §f" + type;
@@ -50,16 +45,11 @@ public class TransactionLogger {
         save();
     }
 
-    // =========================
-    // 📄 DERNIERS LOGS
-    // =========================
     public static List<String> getLast(String player, int limit) {
 
         List<String> logs = config.getStringList(player);
 
-        if (logs == null || logs.isEmpty()) {
-            return new ArrayList<>();
-        }
+        if (logs == null || logs.isEmpty()) return new ArrayList<>();
 
         List<String> result = new ArrayList<>();
 
@@ -72,16 +62,10 @@ public class TransactionLogger {
         return result;
     }
 
-    // =========================
-    // 📄 TOUS LES LOGS
-    // =========================
     public static List<String> getAll(String player) {
         return config.getStringList(player);
     }
 
-    // =========================
-    // 💾 SAVE
-    // =========================
     public static void save() {
         try {
             config.save(file);

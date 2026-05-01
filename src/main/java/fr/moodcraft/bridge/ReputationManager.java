@@ -23,11 +23,11 @@ public class ReputationManager {
     }
 
     public static int get(String player) {
-        return config.getInt(player, 0);
+        return config.getInt(player.toLowerCase(), 0);
     }
 
     public static void add(String player, int value) {
-        config.set(player, get(player) + value);
+        config.set(player.toLowerCase(), get(player) + value);
         save();
     }
 

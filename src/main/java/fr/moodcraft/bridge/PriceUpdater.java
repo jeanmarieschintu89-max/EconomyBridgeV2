@@ -5,6 +5,8 @@ import org.bukkit.Bukkit;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public final class PriceUpdater {
@@ -17,20 +19,36 @@ public final class PriceUpdater {
             "netherite","amethyst","glowstone"
     );
 
+    // ⚡ Anti-spam intelligent
+    private static final Map<String, Long> cooldown = new HashMap<>();
+
     public static void updateItem(String item) {
 
         if (!ALLOWED.contains(item)) return;
+
+        long now = System.currentTimeMillis();
+
+        // ⏱️ cooldown configurable
+        long cd = Main.getInstance().getConfig().getLong("sync.cooldown-ms", 200);
+
+        if (cooldown.containsKey(item)) {
+            if (now - cooldown.get(item) < cd) return;
+        }
+
+        cooldown.put(item, now);
 
         Object v = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
         if (!(v instanceof Number n)) return;
 
         double target = n.doubleValue();
 
-        double base = getDouble("base." + item, target);
+        var config = Main.getInstance().getConfig();
+
+        double base = config.getDouble("prices.base." + item, target);
         double maxStep = Math.max(2, base * 0.10);
 
         double raw = clampStep(item, target, maxStep);
-        double clamped = round2(raw); // 💎 ARRONDI 0.01
+        double clamped = round2(raw);
 
         double lastSend = getDouble("bridge.lastsend." + item, 0);
         if (Math.abs(lastSend - clamped) < 0.009) return;
@@ -40,13 +58,15 @@ public final class PriceUpdater {
         Set<Shop> shops = ShopIndex.get(item);
         if (shops == null || shops.isEmpty()) return;
 
-        // ⚡ UPDATE INSTANT (plus de batch)
+        // ⚡ UPDATE INSTANT SAFE
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+
             for (Shop s : shops) {
                 if (Math.abs(s.getPrice() - clamped) >= 0.009) {
                     s.setPrice(clamped);
                 }
             }
+
         });
 
         Main.getInstance().getLogger().info("⚡ Sync instant: " + item + " -> " + clamped);
@@ -61,7 +81,9 @@ public final class PriceUpdater {
 
         double target = n.doubleValue();
 
-        double base = getDouble("base." + item, target);
+        var config = Main.getInstance().getConfig();
+
+        double base = config.getDouble("prices.base." + item, target);
         double maxStep = Math.max(2, base * 0.10);
 
         double raw = clampStep(item, target, maxStep);
@@ -92,7 +114,7 @@ public final class PriceUpdater {
         return target;
     }
 
-    // 💎 ARRONDI À 0.01 (2 décimales max)
+    // 💎 ARRONDI À 0.01
     private static double round2(double value) {
         return new BigDecimal(value)
                 .setScale(2, RoundingMode.HALF_UP)

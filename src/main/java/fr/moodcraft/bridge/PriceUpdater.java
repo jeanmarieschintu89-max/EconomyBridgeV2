@@ -8,11 +8,9 @@ import java.util.Set;
 
 public final class PriceUpdater {
 
-    public static final Set<String> ALLOWED = Set.of(
-            "diamond","iron","gold","emerald","copper",
-            "redstone","lapis","coal","quartz",
-            "netherite","amethyst","glowstone"
-    );
+    public static Set<String> getAllowed() {
+        return MarketState.price.keySet();
+    }
 
     public static void updateItem(String item) {
 
@@ -28,8 +26,7 @@ public final class PriceUpdater {
                 int count = 0;
 
                 while (it.hasNext() && count < 30) {
-                    Shop s = it.next();
-                    s.setPrice(price);
+                    it.next().setPrice(price);
                     count++;
                 }
 

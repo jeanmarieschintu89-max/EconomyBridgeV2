@@ -7,23 +7,22 @@ import com.ghostchu.quickshop.api.event.economy.ShopPurchaseEvent;
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onTrade(ShopPurchaseEvent event) {
+    public void onBuy(ShopPurchaseEvent e) {
 
         String item = ItemNormalizer.normalize(
-                event.getShop().getItem().getType().name().toLowerCase()
+                e.getShop().getItem().getType().name().toLowerCase()
         );
 
-        int amount = event.getAmount();
+        int amount = e.getAmount();
 
-        if (!PriceUpdater.ALLOWED.contains(item)) return;
+        if (!MarketState.price.containsKey(item)) return;
 
-        if (event.getShop().isBuying()) {
+        if (e.getShop().isBuying()) {
             MarketEngine.applySell(item, amount);
         } else {
             MarketEngine.applyBuy(item, amount);
         }
 
-        PriceUpdater.updateSingle(event.getShop(), item);
-        PriceUpdater.updateItem(item);
+        PriceUpdater.updateSingle(e.getShop(), item);
     }
 }

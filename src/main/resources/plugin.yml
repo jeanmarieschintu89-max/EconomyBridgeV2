@@ -10,7 +10,7 @@ commands:
 
   syncprix:
     description: Sync tous les shops
-    usage: /syncprix
+    permission: op
 
   trend:
     description: Voir tendance
@@ -23,3 +23,7 @@ commands:
   banqueadmin:
     description: Banque admin
     permission: op
+  
+  ecotest:
+    description: Test economie
+    permission op

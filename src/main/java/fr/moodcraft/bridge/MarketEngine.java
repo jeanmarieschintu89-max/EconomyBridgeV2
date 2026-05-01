@@ -52,7 +52,7 @@ public final class MarketEngine {
             if (buy > 0) price += activity;
 
             // =========================
-            // 🌟 RARITY CONFIG
+            // 🌟 RARITY PAR ITEM (CONFIG)
             // =========================
             if (rarityEnabled) {
 
@@ -60,12 +60,26 @@ public final class MarketEngine {
 
                 if (stock < rare) {
 
+                    // 🎯 valeurs globales
+                    double boost = rarityBoost;
+                    double exponent = rarityExp;
+                    double maxBoost = rarityMax;
+
+                    // 🔥 override par item
+                    String path = "rarity_settings." + item;
+
+                    if (cfg.contains(path)) {
+                        boost = cfg.getDouble(path + ".boost", boost);
+                        exponent = cfg.getDouble(path + ".exponent", exponent);
+                        maxBoost = cfg.getDouble(path + ".max_boost", maxBoost);
+                    }
+
                     double ratio = (rare - stock) / rare;
-                    double boost = Math.pow(ratio, rarityExp) * rarityBoost;
+                    double calc = Math.pow(ratio, exponent) * boost;
 
-                    if (boost > rarityMax) boost = rarityMax;
+                    if (calc > maxBoost) calc = maxBoost;
 
-                    price += base * boost;
+                    price += base * calc;
                 }
             }
 

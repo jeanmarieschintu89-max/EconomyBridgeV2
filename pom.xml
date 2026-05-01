@@ -12,7 +12,7 @@
 
     <name>EconomyBridgeV2</name>
 
-    <!-- 🔥 Java propre -->
+    <!-- ⚙️ JAVA -->
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -26,13 +26,13 @@
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
 
-        <!-- Skript -->
+        <!-- Skript repo -->
         <repository>
             <id>skript-repo</id>
             <url>https://repo.skriptlang.org/releases</url>
         </repository>
 
-        <!-- PlaceholderAPI / autres -->
+        <!-- CodeMC -->
         <repository>
             <id>codemc</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
@@ -43,7 +43,7 @@
     <!-- 📚 DEPENDENCIES -->
     <dependencies>
 
-        <!-- Paper API -->
+        <!-- Paper -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -51,19 +51,19 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Skript -->
+        <!-- Skript (local install) -->
         <dependency>
-            <groupId>com.github.SkriptLang</groupId>
-            <artifactId>Skript</artifactId>
-            <version>2.7.3</version>
+            <groupId>com.skript</groupId>
+            <artifactId>skript</artifactId>
+            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop (API uniquement) -->
+        <!-- QuickShop (local install) -->
         <dependency>
-            <groupId>com.ghostchu</groupId>
-            <artifactId>quickshop-api</artifactId>
-            <version>6.2.0.0</version>
+            <groupId>com.quickshop</groupId>
+            <artifactId>quickshop</artifactId>
+            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -73,7 +73,7 @@
     <build>
         <plugins>
 
-            <!-- Java -->
+            <!-- Java compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

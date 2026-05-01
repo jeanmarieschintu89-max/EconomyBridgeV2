@@ -13,20 +13,18 @@ public class WelcomeListener implements Listener {
 
         Player p = e.getPlayer();
 
-        // 🔒 ouvre seulement première fois OU admin (test)
-        if (p.hasPlayedBefore() && !p.hasPermission("econ.admin")) return;
-
-        // ⏳ délai pour éviter bug ouverture
+        // ⏳ délai plus long pour être sûr (important)
         Bukkit.getScheduler().runTaskLater(
                 Main.getInstance(),
                 () -> {
 
                     if (!p.isOnline()) return;
 
+                    // 🔥 ouvre TOUJOURS
                     WelcomeGUI.open(p);
 
                 },
-                40L // 2 secondes
+                100L // ✅ 5 secondes (safe)
         );
     }
 }

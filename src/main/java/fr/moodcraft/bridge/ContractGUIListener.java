@@ -15,8 +15,10 @@ public class ContractGUIListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
+        // 🔒 Vérifie GUI
         if (!e.getView().getTitle().equals("§6📄 Contrats")) return;
 
+        // 🔒 Clique uniquement dans le menu
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
@@ -28,12 +30,14 @@ public class ContractGUIListener implements Listener {
         int slot = e.getSlot();
 
         // =========================
-        // ➕ CREER CONTRAT
+        // ➕ CREER CONTRAT (GUI)
         // =========================
         if (slot == 22) {
             p.closeInventory();
-            p.sendMessage("§e✏ Création de contrat:");
-            p.sendMessage("§7/contrat create <joueur> <item> <quantité> <prix>");
+
+            // 🔥 NOUVEAU : ouvre GUI création
+            ContractCreateGUI.open(p);
+
             return;
         }
 
@@ -56,7 +60,9 @@ public class ContractGUIListener implements Listener {
 
         if (c == null) return;
 
+        // =========================
         // ✔ ACCEPT
+        // =========================
         if (e.isLeftClick()) {
 
             c.accepted = true;
@@ -76,13 +82,16 @@ public class ContractGUIListener implements Listener {
             p.sendMessage("§a✔ Contrat accepté");
         }
 
+        // =========================
         // ❌ REFUSE
+        // =========================
         if (e.isRightClick()) {
             ContractManager.contracts.remove(id);
             ReputationManager.add(c.from, -1);
             p.sendMessage("§c❌ Contrat refusé");
         }
 
+        // 🔄 refresh GUI
         ContractGUI.open(p);
     }
 }

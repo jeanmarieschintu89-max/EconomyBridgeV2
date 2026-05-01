@@ -1,142 +1,53 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scheduler.BukkitRunnable;
-
 public final class MarketEngine {
 
-    private static FileConfiguration cfg;
+    public static void tick() {
 
-    public static void init(FileConfiguration config) {
+        for (String item : PriceUpdater.ALLOWED) {
 
-        cfg = config;
+            double price = MarketState.getPrice(item);
+            double base = MarketState.base.getOrDefault(item, price);
+            double stock = MarketState.stock.getOrDefault(item, 0.0);
+            double buy = MarketState.buy.getOrDefault(item, 0.0);
+            double sell = MarketState.sell.getOrDefault(item, 0.0);
 
-        for (String item : cfg.getConfigurationSection("base").getKeys(false)) {
+            // 📉 activité
+            double activity = Math.sqrt(stock) * 0.002;
 
-            double base = cfg.getDouble("base." + item);
+            if (buy > 0 || sell > 0) {
+                price -= activity;
+            } else {
+                price += base * 0.001;
+            }
 
-            MarketState.base.put(item, base);
-            MarketState.price.put(item, base);
-            MarketState.stock.put(item, 0.0);
+            // 📈 impact
+            double impact = (buy - sell) * 0.05 - stock * 0.00015;
+            price += impact;
+
+            // 🔄 retour vers base
+            price += (base - price) * 0.006;
+
+            // 🧊 limites
+            double min = base * 0.5;
+            double max = base * 2.5;
+
+            if (price < min) price = min;
+            if (price > max) price = max;
+
+            price = round(price);
+
+            MarketState.setPrice(item, price);
+
+            TrendManager.updateTrend(item, price);
+
+            // reset
             MarketState.buy.put(item, 0.0);
             MarketState.sell.put(item, 0.0);
+
+            // sync shop
+            PriceUpdater.updateItem(item);
         }
-
-        start();
-        startPassiveRegen(); // 🆕 remontée auto
-    }
-
-    public static double getPrice(String item) {
-        return MarketState.price.getOrDefault(item, 1.0);
-    }
-
-    public static void applyBuy(String item, int amount) {
-        MarketState.buy.merge(item, (double) amount, Double::sum);
-    }
-
-    public static void applySell(String item, int amount) {
-
-        double weight = cfg.getDouble("weight." + item, 1);
-
-        MarketState.sell.merge(item, (double) amount, Double::sum);
-        MarketState.stock.merge(item, amount * weight, Double::sum); // 🆕 pondéré
-    }
-
-    private static void start() {
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-
-                for (String item : MarketState.price.keySet()) {
-
-                    double price = getPrice(item);
-                    double base = MarketState.base.get(item);
-                    double before = price;
-                    double stock = MarketState.stock.get(item);
-
-                    double coef = cfg.getDouble("activity." + item, 0.001);
-                    double activity = Math.sqrt(stock) * coef;
-
-                    double maxDrop = Math.max(price * 0.01, 0.05);
-                    activity = Math.min(activity, maxDrop);
-
-                    boolean active =
-                            MarketState.buy.get(item) > 0 ||
-                            MarketState.sell.get(item) > 0;
-
-                    if (active) price -= activity;
-                    else price += base * 0.001;
-
-                    double rarity = cfg.getDouble("rarity." + item, 10);
-                    if (stock < rarity) {
-                        price += base * 0.002;
-                    }
-
-                    double impact =
-                            (MarketState.buy.get(item) * 0.06)
-                                    - (MarketState.sell.get(item) * 0.06)
-                                    - (stock * 0.00015);
-
-                    impact = clamp(impact, -1, 1);
-
-                    price += impact / cfg.getDouble("impact." + item, 40);
-
-                    double diff = price - before;
-                    double limit = before * 0.05;
-
-                    if (diff > limit) price = before + limit;
-                    if (diff < -limit) price = before - limit;
-
-                    price += (base - price) * 0.006;
-
-                    stock *= 0.85;
-                    if (stock > 10000) stock = 10000;
-
-                    if (price < 1) price = 1;
-                    price = clamp(price, base * 0.5, base * 2.5);
-
-                    price = round(price);
-
-                    MarketState.price.put(item, price);
-                    MarketState.stock.put(item, stock);
-
-                    TrendManager.updateTrend(item, price);
-                    PriceUpdater.updateItem(item);
-
-                    // 🆕 reset activité
-                    MarketState.buy.put(item, 0.0);
-                    MarketState.sell.put(item, 0.0);
-                }
-
-            }
-        }.runTaskTimer(Main.getInstance(), 20L * 45, 20L * 45);
-    }
-
-    // 🆕 remontée auto
-    private static void startPassiveRegen() {
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-
-                for (String item : MarketState.price.keySet()) {
-
-                    double base = MarketState.base.get(item);
-                    double price = MarketState.price.get(item);
-
-                    price += base * 0.002;
-
-                    MarketState.price.put(item, round(price));
-                    PriceUpdater.updateItem(item);
-                }
-
-            }
-        }.runTaskTimer(Main.getInstance(), 20L * 300, 20L * 300);
-    }
-
-    private static double clamp(double v, double min, double max) {
-        return Math.max(min, Math.min(max, v));
     }
 
     private static double round(double v) {

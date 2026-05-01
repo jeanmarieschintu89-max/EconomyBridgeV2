@@ -12,49 +12,43 @@ public class ContractGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6📄 Contrats");
+        Inventory inv = Bukkit.createInventory(null, 54, "§6📄 Contrats");
 
         int slot = 0;
 
         for (Map.Entry<UUID, ContractManager.Contract> entry : ContractManager.contracts.entrySet()) {
 
+            UUID id = entry.getKey();
             var c = entry.getValue();
 
             if (!c.to.equalsIgnoreCase(p.getName())) continue;
 
-            if (slot >= 21) break;
+            if (slot >= 45) break;
 
             int rep = ReputationManager.get(c.from);
 
+            // 📄 CONTRAT
             inv.setItem(slot, ItemBuilder.of(Material.PAPER,
-                    "§eContrat de " + c.from,
+                    "§eContrat #" + id.toString().substring(0, 6),
+                    "§7De: §f" + c.from,
                     "§7Objet: §f" + c.item + " x" + c.amount,
                     "§7Paiement: §a" + c.price + "€",
                     "",
-                    "§7Réputation: §6" + rep,
-                    "",
-                    c.accepted ? "§a✔ Accepté" : "§e⏳ En attente",
-                    "",
-                    "§aClick gauche = accepter",
-                    "§cClick droit = refuser"));
+                    "§7Réputation: §6" + rep));
+
+            // ✔ ACCEPTER
+            inv.setItem(slot + 9, ItemBuilder.of(Material.LIME_DYE,
+                    "§a✔ Accepter"));
+
+            // ❌ REFUSER
+            inv.setItem(slot + 18, ItemBuilder.of(Material.RED_DYE,
+                    "§c❌ Refuser"));
 
             slot++;
         }
 
-        // =========================
-        // ➕ CREER CONTRAT
-        // =========================
-        inv.setItem(22, ItemBuilder.of(Material.EMERALD_BLOCK, "§a➕ Créer un contrat",
-                "§7Créer un accord avec un joueur",
-                "",
-                "§7Commande:",
-                "§e/contrat create <joueur> <item> <quantité> <prix>",
-                "",
-                "§8Clique pour voir"));
-
-        // 🧱 déco
-        inv.setItem(18, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
-        inv.setItem(26, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
+        // ➕ bouton création
+        inv.setItem(49, ItemBuilder.of(Material.ANVIL, "§6➕ Créer un contrat"));
 
         p.openInventory(inv);
     }

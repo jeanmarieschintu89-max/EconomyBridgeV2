@@ -30,6 +30,20 @@ public class BankListener implements Listener {
 
         switch (e.getSlot()) {
 
+            // 📤 ENVOYER IBAN
+            case 1 -> {
+
+                String iban = BankStorage.getIban(id);
+
+                p.closeInventory();
+
+                p.sendMessage("§8━━━━━━━━━━━━━━━━━━");
+                p.sendMessage("§e🏦 Banque MoodCraft");
+                p.sendMessage("§7Titulaire: §e" + p.getName());
+                p.sendMessage("§7IBAN: §b" + iban);
+                p.sendMessage("§8━━━━━━━━━━━━━━━━━━");
+            }
+
             // ➖ RETIRER
             case 2 -> {
 
@@ -40,7 +54,6 @@ public class BankListener implements Listener {
                     BankStorage.set(id, bank - 1000);
                     eco.depositPlayer(p, 1000);
 
-                    // 🔥 LOG
                     TransactionLogger.log(p.getName(), "WITHDRAW", 1000);
 
                     p.sendMessage("§a✔ +1000€ retiré de la banque");
@@ -62,7 +75,6 @@ public class BankListener implements Listener {
                     double bank = BankStorage.get(id);
                     BankStorage.set(id, bank + 1000);
 
-                    // 🔥 LOG
                     TransactionLogger.log(p.getName(), "DEPOSIT", 1000);
 
                     p.sendMessage("§b✔ 1000€ déposé en banque");

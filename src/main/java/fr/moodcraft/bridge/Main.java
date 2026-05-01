@@ -32,18 +32,25 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new MineListener(), this);
         Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
 
+        // 🔥 AJOUT GUI BANQUE
+        Bukkit.getPluginManager().registerEvents(new BanqueAdminListener(), this);
+
         // 📜 commandes
         getCommand("prix").setExecutor(new PrixCommand());
         getCommand("syncprix").setExecutor(new SyncCommand());
         getCommand("trend").setExecutor(new GetTrendCommand());
         getCommand("ecoreset").setExecutor(new EcoResetCommand());
 
+        // 🔥 AJOUT COMMANDE BANQUE
+        getCommand("banqueadmin").setExecutor(new BanqueAdminCommand());
+
         // 🔁 rebuild index shops (CRITIQUE)
         ShopIndex.rebuild();
+
         // 🔁 refresh index toutes les 60 secondes
-Bukkit.getScheduler().runTaskTimer(this, () -> {
-    ShopIndex.rebuild();
-}, 20L * 60, 20L * 60);
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            ShopIndex.rebuild();
+        }, 20L * 60, 20L * 60);
 
         // 🔁 boucle marché (45s)
         Bukkit.getScheduler().runTaskTimer(this, () -> {

@@ -7,6 +7,10 @@ depend: [Vault]
 
 commands:
 
+  contractlog:
+    description: Voir historique contrats
+    usage: /contractlog [joueur]
+
   delcontrat:
     description: Supprimer un contrat
     usage: /delcontrat <id>

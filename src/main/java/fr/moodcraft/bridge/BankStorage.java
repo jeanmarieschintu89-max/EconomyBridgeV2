@@ -59,16 +59,38 @@ public class BankStorage {
     }
 
     // =========================
-    // 🔢 GENERATE IBAN
+    // 🔎 CHECK IBAN EXISTENCE
+    // =========================
+    public static boolean ibanExists(String iban) {
+
+        for (String key : config.getKeys(false)) {
+
+            String existing = config.getString(key + ".iban");
+
+            if (iban.equals(existing)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // =========================
+    // 🔢 GENERATE UNIQUE IBAN
     // =========================
     private static String generateIban() {
 
         Random r = new Random();
+        String iban;
 
-        int part1 = 1000 + r.nextInt(9000);
-        int part2 = 1000 + r.nextInt(9000);
+        do {
+            int part1 = 1000 + r.nextInt(9000);
+            int part2 = 1000 + r.nextInt(9000);
+            iban = "MC-" + part1 + "-" + part2;
 
-        return "MC-" + part1 + "-" + part2;
+        } while (ibanExists(iban)); // 🔥 sécurité unicité
+
+        return iban;
     }
 
     // =========================

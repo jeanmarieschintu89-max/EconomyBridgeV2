@@ -16,6 +16,4 @@ public final class MarketState {
 
     public static final Map<String, Double> lastPrice = new ConcurrentHashMap<>();
     public static final Map<String, String> trend = new ConcurrentHashMap<>();
-
-    public static final Map<String, Double> lastSent = new ConcurrentHashMap<>();
 }

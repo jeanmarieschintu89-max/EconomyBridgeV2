@@ -12,3 +12,7 @@ commands:
 
   trend:
     description: Voir tendance
+
+  ecoreset:
+  description: Reset complet de l'économie
+  permission: op

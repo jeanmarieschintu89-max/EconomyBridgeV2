@@ -50,9 +50,15 @@ commands:
     description: Voir les transactions bancaires
     usage: /transactions [joueur]
     permission: econ.use
+
   iban:
     description: Voir son IBAN
     usage: /iban [joueur]
+    permission: econ.use
+
+  ibanpay: # 💸 AJOUT IMPORTANT
+    description: Envoyer de l'argent via IBAN
+    usage: /ibanpay <iban> <montant>
     permission: econ.use
 
 permissions:

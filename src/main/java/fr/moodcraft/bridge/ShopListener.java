@@ -1,6 +1,5 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -9,7 +8,7 @@ import com.ghostchu.quickshop.api.event.economy.ShopPurchaseEvent;
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onBuy(ShopPurchaseEvent event) {
+    public void onTrade(ShopPurchaseEvent event) {
 
         String raw = event.getShop().getItem().getType().name().toLowerCase();
         int amount = event.getAmount();
@@ -18,23 +17,20 @@ public class ShopListener implements Listener {
 
         String item = normalize(raw);
 
-        // 🔁 On ignore les items hors économie AU LIEU de bloquer
-        if (!PriceUpdater.ALLOWED.contains(item)) {
-            // Log optionnel (tu peux le garder ou supprimer)
-            Bukkit.getLogger().info("[IGNORED BUY] " + item);
-            return;
+        if (!PriceUpdater.ALLOWED.contains(item)) return;
+
+        // 🔥 IMPORTANT : détecter sens
+        if (event.getShop().isBuying()) {
+            // 🟢 JOUEUR VEND → prix baisse
+            MarketEngine.applySell(item, amount);
+        } else {
+            // 🔵 JOUEUR ACHÈTE → prix monte
+            MarketEngine.applyBuy(item, amount);
         }
 
-        Bukkit.getLogger().info("[Bridge] Achat: " + item + " x" + amount);
-
-        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-            Bukkit.dispatchCommand(
-                    Bukkit.getConsoleSender(),
-                    "eco_buy " + item + " " + amount
-            );
-        });
-
+        // ⚡ update instant du shop
         PriceUpdater.updateSingle(event.getShop(), item);
+        PriceUpdater.updateItem(item);
     }
 
     private String normalize(String mat) {

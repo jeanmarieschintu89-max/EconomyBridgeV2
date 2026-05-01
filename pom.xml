@@ -8,21 +8,42 @@
     <groupId>fr.moodcraft</groupId>
     <artifactId>EconomyBridgeV2</artifactId>
     <version>1.0</version>
+    <packaging>jar</packaging>
 
+    <name>EconomyBridgeV2</name>
+
+    <!-- 🔥 Java propre -->
     <properties>
         <java.version>17</java.version>
     </properties>
 
+    <!-- 📦 REPOS -->
     <repositories>
+
+        <!-- Paper -->
         <repository>
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
+
+        <!-- Skript -->
+        <repository>
+            <id>skript-repo</id>
+            <url>https://repo.skriptlang.org/releases</url>
+        </repository>
+
+        <!-- PlaceholderAPI / autres -->
+        <repository>
+            <id>codemc</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+        </repository>
+
     </repositories>
 
+    <!-- 📚 DEPENDENCIES -->
     <dependencies>
 
-        <!-- Paper -->
+        <!-- Paper API -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -30,29 +51,29 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop LOCAL -->
+        <!-- Skript -->
         <dependency>
-            <groupId>local</groupId>
-            <artifactId>quickshop</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/QuickShop.jar</systemPath>
+            <groupId>com.github.SkriptLang</groupId>
+            <artifactId>Skript</artifactId>
+            <version>2.7.3</version>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- Skript LOCAL -->
+        <!-- QuickShop (API uniquement) -->
         <dependency>
-            <groupId>local</groupId>
-            <artifactId>skript</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/Skript.jar</systemPath>
+            <groupId>com.ghostchu</groupId>
+            <artifactId>quickshop-api</artifactId>
+            <version>6.2.0.0</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
 
+    <!-- ⚙️ BUILD -->
     <build>
         <plugins>
 
+            <!-- Java -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

@@ -14,17 +14,15 @@ public class ShopListener implements Listener {
             return;
         }
 
-        int amount = event.getAmount();
-        if (amount <= 0) return;
+        int amount = Math.max(1, event.getAmount());
 
-        String item = ItemNormalizer.normalize(event.getShop().getItem().getType());
+        // ✅ ITEM PROPRE (plus de unknown)
+        String item = event.getShop().getItem().getType().name().toLowerCase();
 
-        if (item == null) return;
         if (!PriceUpdater.ALLOWED.contains(item)) return;
 
-        // ✅ FIX QUICKSHOP (QUser → UUID → nom joueur)
+        // ✅ JOUEUR (QuickShop API)
         String player = "Inconnu";
-
         if (event.getPurchaser() != null) {
             var offline = Bukkit.getOfflinePlayer(event.getPurchaser().getUniqueId());
             if (offline.getName() != null) {
@@ -32,10 +30,11 @@ public class ShopListener implements Listener {
             }
         }
 
-        double price = event.getShop().getPrice();
+        // ✅ PRIX FIABLE (MarketEngine au lieu de QuickShop)
+        double price = Math.max(0.01, MarketEngine.getPrice(item));
         double total = price * amount;
 
-        // 📄 LOG SIMPLE
+        // 📄 LOG TRANSACTION
         if (event.getShop().isBuying()) {
             TransactionLogger.log(player, "Vente " + item + " x" + amount, total);
         } else {
@@ -46,7 +45,7 @@ public class ShopListener implements Listener {
                 (event.getShop().isBuying() ? "vend" : "achète") +
                 " " + item + " x" + amount + " (" + total + "€)");
 
-        // 📈 BOOST
+        // 📈 IMPACT MARCHÉ
         int boosted = amount * 3;
         MarketEngine.applyBuy(item, boosted);
 
@@ -58,7 +57,7 @@ public class ShopListener implements Listener {
             MarketState.stock.put(item, -10000.0);
         }
 
-        // ⚡ UPDATE
+        // 🔄 UPDATE SHOP
         PriceUpdater.updateSingle(event.getShop(), item);
     }
 }

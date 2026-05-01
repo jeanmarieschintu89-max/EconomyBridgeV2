@@ -19,7 +19,6 @@ public final class PriceUpdater {
             "netherite","amethyst","glowstone"
     );
 
-    // ⚡ anti spam
     private static final Map<String, Long> cooldown = new HashMap<>();
 
     public static void updateItem(String item) {
@@ -45,10 +44,9 @@ public final class PriceUpdater {
         double base = config.getDouble("prices.base." + item, target);
         double maxStep = Math.max(2, base * 0.10);
 
-        // 📦 stock impact
+        // 📦 impact stock
         double stock = MarketState.stock.getOrDefault(item, 0.0);
-        double stockImpact = stock * 0.00015;
-        target -= stockImpact;
+        target -= stock * 0.00015;
 
         double raw = clampStep(item, target, maxStep);
         double clamped = round2(raw);
@@ -58,49 +56,24 @@ public final class PriceUpdater {
 
         ch.njol.skript.variables.Variables.setVariable("bridge.lastsend." + item, clamped, null, false);
 
-        // 📈 trend update
+        // 📈 trend direct
         TrendManager.updateTrend(item, clamped);
 
         Set<Shop> shops = ShopIndex.get(item);
         if (shops == null || shops.isEmpty()) return;
 
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-
             for (Shop s : shops) {
                 if (Math.abs(s.getPrice() - clamped) >= 0.009) {
                     s.setPrice(clamped);
                 }
             }
-
         });
-
-        Main.getInstance().getLogger().info("⚡ Sync: " + item + " -> " + clamped);
     }
 
-    public static void updateSingle(Shop s, String item) {
-
-        if (!ALLOWED.contains(item)) return;
-
-        Object v = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
-        if (!(v instanceof Number n)) return;
-
-        double target = n.doubleValue();
-
-        var config = Main.getInstance().getConfig();
-
-        double base = config.getDouble("prices.base." + item, target);
-        double maxStep = Math.max(2, base * 0.10);
-
-        double raw = clampStep(item, target, maxStep);
-        double clamped = round2(raw);
-
-        if (Math.abs(s.getPrice() - clamped) < 0.009) return;
-
-        TrendManager.updateTrend(item, clamped);
-
-        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-            s.setPrice(clamped);
-        });
+    // 🔥 NOUVEAU : accessible depuis Skript
+    public static String getTrend(String item) {
+        return TrendManager.getTrend(item);
     }
 
     private static double getDouble(String path, double def) {
@@ -121,7 +94,6 @@ public final class PriceUpdater {
         return target;
     }
 
-    // 💎 arrondi propre 0.01
     private static double round2(double value) {
         return new BigDecimal(value)
                 .setScale(2, RoundingMode.HALF_UP)

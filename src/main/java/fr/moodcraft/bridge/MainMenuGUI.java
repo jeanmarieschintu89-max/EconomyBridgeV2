@@ -7,6 +7,10 @@ import org.bukkit.inventory.Inventory;
 
 import net.milkbowl.vault.economy.Economy;
 
+// 🔥 AJOUT TOWNY
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Town;
+
 public class MainMenuGUI {
 
     public static void open(Player p) {
@@ -19,10 +23,29 @@ public class MainMenuGUI {
         String id = p.getUniqueId().toString();
         double bank = BankStorage.get(id);
 
-        // 🟡 INFO JOUEUR (PORTFEUILLE + BANQUE)
+        // =========================
+        // 🏙️ ARGENT VILLE
+        // =========================
+        double townBalance = 0;
+        String townName = "Aucune";
+
+        try {
+            Town town = TownyAPI.getInstance().getTown(p);
+
+            if (town != null && town.getAccount() != null) {
+                townBalance = town.getAccount().getHoldingBalance();
+                townName = town.getName();
+            }
+
+        } catch (Exception ignored) {}
+
+        // =========================
+        // 💰 INFO JOUEUR
+        // =========================
         inv.setItem(4, ItemBuilder.of(Material.GOLD_INGOT, "§e💰 Comptes",
                 "§7💵 Portefeuille: §a" + balance + "€",
                 "§7🏦 Banque: §b" + bank + "€",
+                "§7🏙️ Ville (" + townName + "): §6" + townBalance + "€",
                 "",
                 "§8Clique pour gérer"));
 
@@ -68,7 +91,7 @@ public class MainMenuGUI {
                 "",
                 "§8Surveille les tendances"));
 
-        // 🔥 ADMIN (slot 22)
+        // 🔥 ADMIN
         if (p.hasPermission("econ.admin")) {
             inv.setItem(22, ItemBuilder.of(Material.BEACON, "§c⚙️ Admin",
                     "§7Contrôle économie",
@@ -76,7 +99,7 @@ public class MainMenuGUI {
                     "§8Clique pour ouvrir"));
         }
 
-        // 🧱 DÉCO (effet propre)
+        // 🧱 DÉCO
         inv.setItem(0, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
         inv.setItem(8, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
         inv.setItem(18, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));

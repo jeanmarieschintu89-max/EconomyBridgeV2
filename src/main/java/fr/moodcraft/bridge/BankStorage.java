@@ -59,38 +59,33 @@ public class BankStorage {
     }
 
     // =========================
-    // 🔎 CHECK IBAN EXISTENCE
+    // 🔍 FIND UUID BY IBAN
     // =========================
-    public static boolean ibanExists(String iban) {
+    public static String getUUIDByIban(String iban) {
 
         for (String key : config.getKeys(false)) {
 
-            String existing = config.getString(key + ".iban");
+            String stored = config.getString(key + ".iban");
 
-            if (iban.equals(existing)) {
-                return true;
+            if (stored != null && stored.equalsIgnoreCase(iban)) {
+                return key;
             }
         }
 
-        return false;
+        return null;
     }
 
     // =========================
-    // 🔢 GENERATE UNIQUE IBAN
+    // 🔢 GENERATE IBAN
     // =========================
     private static String generateIban() {
 
         Random r = new Random();
-        String iban;
 
-        do {
-            int part1 = 1000 + r.nextInt(9000);
-            int part2 = 1000 + r.nextInt(9000);
-            iban = "MC-" + part1 + "-" + part2;
+        int part1 = 1000 + r.nextInt(9000);
+        int part2 = 1000 + r.nextInt(9000);
 
-        } while (ibanExists(iban)); // 🔥 sécurité unicité
-
-        return iban;
+        return "MC-" + part1 + "-" + part2;
     }
 
     // =========================

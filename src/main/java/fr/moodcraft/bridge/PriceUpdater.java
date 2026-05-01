@@ -8,10 +8,6 @@ import java.util.Set;
 
 public final class PriceUpdater {
 
-    public static Set<String> getAllowed() {
-        return MarketState.price.keySet();
-    }
-
     public static void updateItem(String item) {
 
         double price = MarketEngine.getPrice(item);
@@ -26,7 +22,13 @@ public final class PriceUpdater {
                 int count = 0;
 
                 while (it.hasNext() && count < 30) {
-                    it.next().setPrice(price);
+
+                    Shop s = it.next();
+
+                    if (Math.abs(s.getPrice() - price) >= 0.01) {
+                        s.setPrice(price);
+                    }
+
                     count++;
                 }
 

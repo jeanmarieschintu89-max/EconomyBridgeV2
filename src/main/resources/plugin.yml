@@ -34,6 +34,9 @@ commands:
     description: Recharge complète de l'économie
     permission: econ.admin
 
+  menu:
+    description: Ouvre le menu principal
+
 permissions:
   econ.admin:
     description: Accès total à l'économie
@@ -42,6 +45,3 @@ permissions:
   econ.use:
     description: Utiliser le marché
     default: true
-
-  menu:
-    description: Ouvre le menu principal

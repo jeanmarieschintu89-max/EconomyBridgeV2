@@ -9,9 +9,11 @@ commands:
   prix:
     description: Ouvre le marché
     usage: /prix
+    permission: econ.use
 
   syncprix:
     description: Sync tous les shops
+    usage: /syncprix
     permission: econ.admin
 
   trend:
@@ -20,22 +22,28 @@ commands:
 
   ecoreset:
     description: Reset complet de l'économie
+    usage: /ecoreset
     permission: econ.admin
 
   banqueadmin:
     description: Banque admin
+    usage: /banqueadmin
     permission: econ.admin
 
   ecotest:
     description: Test economie
+    usage: /ecotest
     permission: econ.admin
 
   ecoreload:
     description: Recharge complète de l'économie
+    usage: /ecoreload
     permission: econ.admin
 
   menu:
     description: Ouvre le menu principal
+    usage: /menu
+    permission: econ.use
 
 permissions:
   econ.admin:

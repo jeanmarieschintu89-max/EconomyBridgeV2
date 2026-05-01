@@ -12,7 +12,6 @@ public class Main extends JavaPlugin {
 
         instance = this;
 
-        // 📁 CONFIG AUTO
         saveDefaultConfig();
 
         getLogger().info("🚀 EconomyBridgeV2 démarrage...");
@@ -24,17 +23,12 @@ public class Main extends JavaPlugin {
                 return;
             }
 
-            // 🔌 Listener
             Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
 
-            // 🔌 Commande priceupdate
-            if (getCommand("priceupdate") == null) {
-                getLogger().severe("❌ Commande priceupdate manquante !");
-            } else {
+            if (getCommand("priceupdate") != null) {
                 getCommand("priceupdate").setExecutor(new PriceCommand());
             }
 
-            // 🔄 Commande reload config
             if (getCommand("ecoreload") != null) {
                 getCommand("ecoreload").setExecutor((sender, command, label, args) -> {
                     reloadConfig();
@@ -43,13 +37,15 @@ public class Main extends JavaPlugin {
                 });
             }
 
-            // 🔄 Rebuild index toutes les 60s
+            // 🔄 rebuild index
+            Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
+
+            // 📦 decay stock auto
             Bukkit.getScheduler().runTaskTimer(this, () -> {
-                ShopIndex.rebuild();
+                MarketState.stock.replaceAll((k, v) -> v * 0.85);
             }, 20L * 60, 20L * 60);
 
-            getLogger().info("✅ Hook QuickShop OK");
-            getLogger().info("💰 EconomyBridgeV2 prêt");
+            getLogger().info("✅ Plugin prêt");
 
         }, 40L);
     }

@@ -11,12 +11,14 @@ public class BanqueAdminCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         // ❌ console non autorisée
-        if (!(sender instanceof Player p)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage("§cCommande joueur uniquement.");
             return true;
         }
 
-        // 🔐 permission propre
+        Player p = (Player) sender;
+
+        // 🔐 permission
         if (!p.hasPermission("econ.admin")) {
             p.sendMessage("§c❌ Permission refusée.");
             return true;

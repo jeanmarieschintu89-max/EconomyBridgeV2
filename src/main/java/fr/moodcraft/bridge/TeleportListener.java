@@ -10,24 +10,61 @@ public class TeleportListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
+        // 🔒 Vérifie le bon menu
         if (!e.getView().getTitle().equals("§b🧭 Téléportation")) return;
 
+        // 🔒 Clique uniquement dans le GUI
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
         e.setCancelled(true);
 
+        // 🔒 joueur uniquement
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
         switch (e.getSlot()) {
 
-            case 10 -> p.performCommand("warp ressources");
-            case 11 -> p.performCommand("warp shop");
-            case 12 -> p.performCommand("warp mini-jeux");
-            case 14 -> p.performCommand("spawn");
-            case 15 -> p.performCommand("t spawn");
+            // 🌲 Ressources
+            case 10 -> {
+                p.closeInventory();
+                p.performCommand("warp ressources");
+            }
 
-            case 22 -> MainMenuGUI.open(p);
+            // 🛒 Shop
+            case 11 -> {
+                p.closeInventory();
+                p.performCommand("warp shop");
+            }
+
+            // 🎮 Mini-jeux
+            case 12 -> {
+                p.closeInventory();
+                p.performCommand("warp mini-jeux");
+            }
+
+            // 🎲 Téléportation aléatoire
+            case 13 -> {
+                p.closeInventory();
+                p.performCommand("tpr");
+            }
+
+            // 🏠 Spawn
+            case 14 -> {
+                p.closeInventory();
+                p.performCommand("spawn");
+            }
+
+            // 🏙️ Ville
+            case 15 -> {
+                p.closeInventory();
+                p.performCommand("t spawn");
+            }
+
+            // 🔙 Retour menu principal
+            case 22 -> {
+                p.closeInventory();
+                MainMenuGUI.open(p);
+            }
         }
     }
 }

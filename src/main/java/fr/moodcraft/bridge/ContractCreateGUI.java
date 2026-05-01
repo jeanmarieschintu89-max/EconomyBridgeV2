@@ -5,39 +5,60 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public class ContractCreateGUI {
-
-    public static Map<UUID, ContractBuilder> builders = new HashMap<>();
 
     public static void open(Player p) {
 
-        builders.putIfAbsent(p.getUniqueId(), new ContractBuilder());
-        var b = builders.get(p.getUniqueId());
+        ContractBuilder builder = ContractBuilder.get(p);
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6✏ Création contrat");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6✏ Création de contrat");
 
-        inv.setItem(10, ItemBuilder.of(Material.PLAYER_HEAD, "§e👤 Joueur",
-                "§7Actuel: §f" + (b.target == null ? "Aucun" : b.target),
-                "§8Clique pour sélectionner"));
+        // =========================
+        // 👤 JOUEUR
+        // =========================
+        inv.setItem(10, ItemBuilder.of(Material.PLAYER_HEAD, "§eJoueur",
+                "§7" + (builder.target == null ? "§cNon défini" : builder.target)));
 
-        inv.setItem(11, ItemBuilder.of(Material.CHEST, "§e📦 Item",
-                "§7Main: §f" + (b.item == null ? "Aucun" : b.item),
-                "§8Clique avec item en main"));
+        // =========================
+        // 📦 ITEM
+        // =========================
+        inv.setItem(11, ItemBuilder.of(Material.CHEST, "§eObjet",
+                "§7" + (builder.item == null ? "§cNon défini" : builder.item)));
 
-        inv.setItem(12, ItemBuilder.of(Material.ANVIL, "§e🔢 Quantité",
-                "§7Actuel: §f" + b.amount,
-                "§8Gauche +1 / Droite -1"));
+        // =========================
+        // 🔢 QUANTITÉ
+        // =========================
+        inv.setItem(12, ItemBuilder.of(Material.PAPER, "§eQuantité",
+                "§7" + builder.amount));
 
-        inv.setItem(13, ItemBuilder.of(Material.GOLD_INGOT, "§e💰 Prix",
-                "§7Actuel: §f" + b.price + "€",
-                "§8Gauche +100 / Droite -100"));
+        // =========================
+        // ➖ PRIX
+        // =========================
+        inv.setItem(20, ItemBuilder.of(Material.REDSTONE, "§c➖ Prix",
+                "§7-100€"));
 
-        inv.setItem(16, ItemBuilder.of(Material.EMERALD_BLOCK, "§a✔ Valider",
-                "§8Créer le contrat"));
+        // =========================
+        // 💰 PRIX ACTUEL
+        // =========================
+        inv.setItem(22, ItemBuilder.of(Material.GOLD_INGOT, "§ePrix",
+                "§7" + builder.price + "€"));
+
+        // =========================
+        // ➕ PRIX
+        // =========================
+        inv.setItem(24, ItemBuilder.of(Material.EMERALD, "§a➕ Prix",
+                "§7+100€"));
+
+        // =========================
+        // ✔ VALIDER
+        // =========================
+        inv.setItem(26, ItemBuilder.of(Material.LIME_DYE, "§a✔ Créer le contrat",
+                "§7Clique pour confirmer"));
+
+        // =========================
+        // ❌ ANNULER
+        // =========================
+        inv.setItem(18, ItemBuilder.of(Material.BARRIER, "§cAnnuler"));
 
         p.openInventory(inv);
     }

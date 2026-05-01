@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import fr.moodcraft.bridge.commands.GetTrendCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,10 +38,14 @@ public class Main extends JavaPlugin {
                 });
             }
 
+            if (getCommand("gettrend") != null) {
+                getCommand("gettrend").setExecutor(new GetTrendCommand());
+            }
+
             // 🔄 rebuild index
             Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
 
-            // 📦 decay stock auto
+            // 📦 decay stock
             Bukkit.getScheduler().runTaskTimer(this, () -> {
                 MarketState.stock.replaceAll((k, v) -> v * 0.85);
             }, 20L * 60, 20L * 60);

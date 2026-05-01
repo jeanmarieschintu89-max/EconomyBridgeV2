@@ -1,22 +1,38 @@
 package fr.moodcraft.bridge;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TrendManager {
+
+    // 🆕 stockage du % réel (pour GUI, stats, etc.)
+    private static final Map<String, Double> percentMap = new HashMap<>();
 
     public static void updateTrend(String item, double newPrice) {
 
         double old = MarketState.getPrice(item);
 
+        // 🛡 sécurité
+        if (old <= 0) old = newPrice;
+
         double diff = newPrice - old;
-        double percent = (old == 0) ? 0 : (diff / old) * 100;
+        double percent = (diff / old) * 100;
 
         percent = Math.round(percent * 100.0) / 100.0;
+
+        // 🆕 on stocke le % brut
+        percentMap.put(item, percent);
 
         String result;
 
         if (percent > 0) {
-            result = percent > 5 ? "§2⬆ +" + percent + "%" : "§a⬆ +" + percent + "%";
+            result = percent > 5
+                    ? "§2⬆ +" + percent + "%"
+                    : "§a⬆ +" + percent + "%";
         } else if (percent < 0) {
-            result = percent < -5 ? "§4⬇ " + percent + "%" : "§c⬇ " + percent + "%";
+            result = percent < -5
+                    ? "§4⬇ " + percent + "%"
+                    : "§c⬇ " + percent + "%";
         } else {
             result = "§7➡ stable";
         }
@@ -24,7 +40,13 @@ public class TrendManager {
         MarketState.trend.put(item, result);
     }
 
+    // ✔ version texte (comme avant)
     public static String getTrend(String item) {
         return MarketState.trend.getOrDefault(item, "§7➡ stable");
+    }
+
+    // 🆕 version numérique (pour GUI avancé)
+    public static double getTrendPercent(String item) {
+        return percentMap.getOrDefault(item, 0.0);
     }
 }

@@ -6,7 +6,12 @@ import org.bukkit.block.Block;
 public class ItemNormalizer {
 
     public static String normalize(Material mat) {
+
+        if (mat == null) return "unknown";
+
         return switch (mat) {
+
+            // 💎 MINERAIS
             case DIAMOND -> "diamond";
             case EMERALD -> "emerald";
             case GOLD_INGOT -> "gold";
@@ -19,12 +24,30 @@ public class ItemNormalizer {
             case NETHERITE_INGOT -> "netherite";
             case AMETHYST_SHARD -> "amethyst";
             case GLOWSTONE_DUST -> "glowstone";
-            default -> null;
+
+            // 🧱 BLOCS (IMPORTANT → fix unknown GUI)
+            case DIAMOND_BLOCK -> "diamond";
+            case EMERALD_BLOCK -> "emerald";
+            case GOLD_BLOCK -> "gold";
+            case IRON_BLOCK -> "iron";
+            case COPPER_BLOCK -> "copper";
+            case REDSTONE_BLOCK -> "redstone";
+            case LAPIS_BLOCK -> "lapis";
+            case COAL_BLOCK -> "coal";
+            case QUARTZ_BLOCK -> "quartz";
+            case NETHERITE_BLOCK -> "netherite";
+
+            // 🔥 FALLBACK INTELLIGENT
+            default -> mat.name().toLowerCase();
         };
     }
 
     public static String normalizeBlock(Block block) {
+
+        if (block == null) return "unknown";
+
         return switch (block.getType()) {
+
             case DIAMOND_ORE, DEEPSLATE_DIAMOND_ORE -> "diamond";
             case EMERALD_ORE, DEEPSLATE_EMERALD_ORE -> "emerald";
             case GOLD_ORE, DEEPSLATE_GOLD_ORE -> "gold";
@@ -36,7 +59,9 @@ public class ItemNormalizer {
             case NETHER_QUARTZ_ORE -> "quartz";
             case GLOWSTONE -> "glowstone";
             case AMETHYST_CLUSTER -> "amethyst";
-            default -> null;
+
+            // 🔥 FALLBACK
+            default -> block.getType().name().toLowerCase();
         };
     }
 }

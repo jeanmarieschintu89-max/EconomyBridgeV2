@@ -29,14 +29,16 @@ public class ShopListener implements Listener {
         double total = pricePerItem * amount;
 
         // =========================
-        // 📄 LOG TRANSACTION
+        // 📄 LOG TRANSACTION (DETAIL RP)
         // =========================
         if (event.getShop().isBuying()) {
-            // Le shop ACHÈTE → joueur VEND
-            TransactionLogger.log(player, "Vente", total);
+            // joueur vend
+            TransactionLogger.log(player,
+                    "Vente (" + item + " x" + amount + ")", total);
         } else {
-            // Le shop VEND → joueur ACHÈTE
-            TransactionLogger.log(player, "Achat", total);
+            // joueur achète
+            TransactionLogger.log(player,
+                    "Achat (" + item + " x" + amount + ")", total);
         }
 
         Bukkit.getLogger().info("[Market] " + player + " " +

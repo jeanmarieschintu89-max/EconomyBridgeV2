@@ -1,70 +1,55 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-public class ContractGUIListener implements Listener {
+public class BanqueItemListener implements Listener {
 
     @EventHandler
-    public void click(InventoryClickEvent e) {
+    public void onUse(PlayerInteractEvent e) {
 
-        if (!e.getView().getTitle().equals("§6📄 Contrats")) return;
+        Player p = e.getPlayer();
 
-        e.setCancelled(true);
+        if (e.getItem() == null) return;
 
-        if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getCurrentItem() == null) return;
+        ItemStack item = e.getItem();
 
-        int slot = e.getSlot();
+        if (item.getType() == Material.AIR) return;
+        if (!item.hasItemMeta()) return;
+        if (!item.getItemMeta().hasDisplayName()) return;
+
+        String name = item.getItemMeta().getDisplayName();
 
         // =========================
-        // ➕ CREER CONTRAT
+        // 💳 CARTE BANCAIRE
         // =========================
-        if (slot == 22) {
-            p.closeInventory();
-            p.sendMessage("§e✏ Création de contrat:");
-            p.sendMessage("§7/contrat create <joueur> <item> <quantité> <prix>");
-            return;
+        if (name.equalsIgnoreCase("§b💳 Carte bancaire")) {
+
+            e.setCancelled(true);
+
+            BankGUI.open(p);
+
+            p.playSound(p.getLocation(), "ui.button.click", 1f, 1f);
         }
 
         // =========================
-        // 📄 LISTE CONTRATS
+        // 📤 IBAN
         // =========================
-        List<UUID> list = new ArrayList<>();
+        if (name.equalsIgnoreCase("§e📤 IBAN")) {
 
-        for (UUID id : ContractManager.contracts.keySet()) {
-            var c = ContractManager.contracts.get(id);
-            if (c != null && c.to.equalsIgnoreCase(p.getName())) {
-                list.add(id);
-            }
+            e.setCancelled(true);
+
+            String iban = BankStorage.getIban(p.getUniqueId().toString());
+
+            p.sendMessage("§8━━━━━━━━━━━━━━━━━━");
+            p.sendMessage("§e🏦 Banque MoodCraft");
+            p.sendMessage("§7Titulaire: §e" + p.getName());
+            p.sendMessage("§7IBAN: §b" + iban);
+            p.sendMessage("§8━━━━━━━━━━━━━━━━━━");
         }
-
-        if (slot < 0 || slot >= list.size()) return;
-
-        UUID id = list.get(slot);
-        var c = ContractManager.contracts.get(id);
-
-        if (c == null) return;
-
-        // ✔ ACCEPT
-        if (e.isLeftClick()) {
-            c.accepted = true;
-            p.sendMessage("§a✔ Contrat accepté");
-        }
-
-        // ❌ REFUSE
-        if (e.isRightClick()) {
-            ContractManager.contracts.remove(id);
-            ReputationManager.add(c.from, -1);
-            p.sendMessage("§c❌ Contrat refusé");
-        }
-
-        ContractGUI.open(p);
     }
 }

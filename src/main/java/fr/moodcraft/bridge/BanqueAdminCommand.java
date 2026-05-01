@@ -16,9 +16,9 @@ public class BanqueAdminCommand implements CommandExecutor {
             return true;
         }
 
-        // ❌ permission
-        if (!p.isOp()) {
-            p.sendMessage("§cPermission refusée.");
+        // 🔐 permission propre
+        if (!p.hasPermission("econ.admin")) {
+            p.sendMessage("§c❌ Permission refusée.");
             return true;
         }
 

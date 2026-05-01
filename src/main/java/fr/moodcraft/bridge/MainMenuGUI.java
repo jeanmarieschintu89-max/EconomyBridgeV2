@@ -7,6 +7,9 @@ import org.bukkit.inventory.Inventory;
 
 import net.milkbowl.vault.economy.Economy;
 
+import java.text.DecimalFormat;
+import java.util.List;
+
 public class MainMenuGUI {
 
     public static void open(Player p) {
@@ -18,6 +21,11 @@ public class MainMenuGUI {
 
         String id = p.getUniqueId().toString();
         double bank = BankStorage.get(id);
+
+        // 🎯 FORMAT ARGENT
+        DecimalFormat df = new DecimalFormat("#,##0.00");
+        String money = df.format(balance).replace(",", " ");
+        String bankMoney = df.format(bank).replace(",", " ");
 
         // =========================
         // 🏙️ VILLE SAFE
@@ -46,16 +54,16 @@ public class MainMenuGUI {
         // 💰 COMPTES
         // =========================
         inv.setItem(4, ItemBuilder.of(Material.GOLD_INGOT, "§e💰 Comptes",
-                "§7💵 Portefeuille: §a" + balance + "€",
-                "§7🏦 Banque: §b" + bank + "€",
+                "§7💵 Portefeuille: §a" + money + "€",
+                "§7🏦 Banque: §b" + bankMoney + "€",
                 "",
                 "§7🏙️ Ville: §a" + townName,
-                "§7💰 Trésor: §6" + townBalance + "€",
+                "§7💰 Trésor: §6" + df.format(townBalance).replace(",", " ") + "€",
                 "",
                 "§8Clique pour gérer"));
 
         // =========================
-        // 📈 BOURSE (MODIFIÉ)
+        // 📈 BOURSE
         // =========================
         inv.setItem(10, ItemBuilder.of(Material.EMERALD, "§6📈 Bourse des Minerais",
                 "§7Vends tes ressources",
@@ -64,7 +72,7 @@ public class MainMenuGUI {
                 "§8Clique pour ouvrir"));
 
         // =========================
-        // 🏙️ VILLE (MODIFIÉ)
+        // 🏙️ VILLE
         // =========================
         inv.setItem(11, ItemBuilder.of(Material.BRICKS, "§a🏙️ Ville",
                 "§7Menu de gestion de ville",
@@ -87,10 +95,25 @@ public class MainMenuGUI {
                 "§8Clique pour ouvrir"));
 
         // =========================
-        // 🏦 Banque
+        // 🏦 BANQUE + HISTORIQUE
         // =========================
-        inv.setItem(14, ItemBuilder.of(Material.ENDER_CHEST, "§b🏦 Banque",
-                "§7Gérer ton argent",
+        List<String> history = TransactionLogger.getLast(p.getName(), 3);
+
+        if (history.isEmpty()) {
+            history.add("§8Aucune transaction");
+        }
+
+        inv.setItem(14, ItemBuilder.of(Material.ENDER_CHEST, "§b🏦 Compte en banque",
+                "§7Gérer ton compte en banque",
+                "",
+                "§7💵 Portefeuille: §a" + money + "€",
+                "§7🏦 Banque: §b" + bankMoney + "€",
+                "",
+                "§6📄 Dernières transactions:",
+                history.get(0),
+                history.size() > 1 ? history.get(1) : "§8-",
+                history.size() > 2 ? history.get(2) : "§8-",
+                "",
                 "§8Clique pour ouvrir"));
 
         // =========================

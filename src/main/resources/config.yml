@@ -1,1 +1,18 @@
-debug: false
+base:
+  diamond: 2800
+  iron: 80
+  gold: 120
+  emerald: 15000
+  netherite: 32000
+
+weight:
+  diamond: 1.2
+  netherite: 1.5
+
+impact:
+  diamond: 20
+  iron: 110
+
+activity:
+  diamond: 0.001
+  iron: 0.002

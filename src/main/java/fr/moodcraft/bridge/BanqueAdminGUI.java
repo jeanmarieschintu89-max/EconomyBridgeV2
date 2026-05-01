@@ -15,6 +15,8 @@ public class BanqueAdminGUI {
 
         inv.setItem(1, item(Material.EMERALD_BLOCK, "§aInflation +5%"));
         inv.setItem(3, item(Material.REDSTONE_BLOCK, "§cDéflation -5%"));
+        inv.setItem(4, 
+item(Material.BEACON, "§bReload Économie"));
         inv.setItem(5, item(Material.NETHER_STAR, "§eSynchroniser"));
         inv.setItem(7, item(Material.BARRIER, "§4Reset Économie"));
 

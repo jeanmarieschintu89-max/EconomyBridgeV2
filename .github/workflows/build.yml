@@ -1,11 +1,15 @@
 name: Build Plugin
 
 on:
-  workflow_dispatch:
   push:
     branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      deploy_libs:
+        description: "Déployer QuickShop & Skript (true/false)"
+        required: false
+        default: "false"
 
-# 🔥 FIX 403 (OBLIGATOIRE)
 permissions:
   contents: read
   packages: write
@@ -15,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 📥 Clone repo
+      # 📥 Checkout
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -43,12 +47,13 @@ jobs:
           </settings>
           EOF
 
-      # 🧪 DEBUG (à laisser au début si besoin)
+      # 🧪 Debug (optionnel)
       - name: Debug files
         run: ls -R
 
-      # 📦 Upload QuickShop vers GitHub Packages
+      # 📦 DEPLOY LIBS (UNIQUEMENT SI MANUEL)
       - name: Deploy QuickShop
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_libs == 'true'
         run: |
           mvn deploy:deploy-file \
           -Dfile=libs/QuickShop-Hikari.jar \
@@ -59,8 +64,8 @@ jobs:
           -DrepositoryId=github \
           -Durl=https://maven.pkg.github.com/${{ github.repository }}
 
-      # 📦 Upload Skript vers GitHub Packages
       - name: Deploy Skript
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_libs == 'true'
         run: |
           mvn deploy:deploy-file \
           -Dfile=libs/Skript.jar \
@@ -71,7 +76,7 @@ jobs:
           -DrepositoryId=github \
           -Durl=https://maven.pkg.github.com/${{ github.repository }}
 
-      # 🔨 Build plugin
+      # 🔨 Build normal (sans redeploy)
       - name: Build with Maven
         run: mvn clean package
 

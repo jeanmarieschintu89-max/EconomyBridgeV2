@@ -10,20 +10,22 @@ public class MainMenuListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
+        // 🔒 Vérifie le bon GUI
         if (!e.getView().getTitle().equals("§6Menu Principal")) return;
 
-        // 🔒 sécurité inventaire joueur
+        // 🔒 Clique uniquement dans le menu (pas inventaire joueur)
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
         e.setCancelled(true);
 
+        // 🔒 joueur uniquement
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        // 🔒 sécurité item vide
-        if (e.getCurrentItem() == null) return;
+        // 🔒 item vide
+        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
-        // 🔊 son UX
+        // 🔊 petit feedback propre
         p.playSound(p.getLocation(), "ui.button.click", 1f, 1f);
 
         switch (e.getSlot()) {
@@ -35,7 +37,7 @@ public class MainMenuListener implements Listener {
 
             case 11 -> { // 🏙️ Ville
                 p.closeInventory();
-                p.performCommand("tm");
+                p.performCommand("townmenu"); // ✔ corrigé
             }
 
             case 12 -> { // ⚒️ Jobs
@@ -49,10 +51,10 @@ public class MainMenuListener implements Listener {
             }
 
             case 14 -> { // 💰 Banque joueur
-                BankGUI.open(p);
+                BankGUI.open(p); // pas besoin de fermer
             }
 
-            case 15 -> { // 🔥 ADMIN (optionnel)
+            case 15 -> { // 🔥 ADMIN
                 if (p.hasPermission("econ.admin")) {
                     p.closeInventory();
                     p.performCommand("banqueadmin");

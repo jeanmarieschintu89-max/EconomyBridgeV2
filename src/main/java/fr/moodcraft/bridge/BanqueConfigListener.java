@@ -21,61 +21,73 @@ public class BanqueConfigListener implements Listener {
 
         int slot = e.getSlot();
 
+        // 🔧 gestion du SHIFT (réglage rapide)
+        boolean shift = e.isShiftClick();
+        double step = shift ? 0.2 : 0.05;
+
         switch (slot) {
 
             case 0: // buy +
-                modifyConfig("engine.buy_multiplier", 0.1);
-                p.sendMessage("§aBuy augmenté");
-                refresh(p);
+                modifyConfig("engine.buy_multiplier", step);
+                p.sendMessage("§aBuy augmenté §7(+" + step + ")");
                 break;
 
             case 1: // buy -
-                modifyConfig("engine.buy_multiplier", -0.1);
-                p.sendMessage("§cBuy diminué");
-                refresh(p);
+                modifyConfig("engine.buy_multiplier", -step);
+                p.sendMessage("§cBuy diminué §7(-" + step + ")");
                 break;
 
             case 2: // sell +
-                modifyConfig("engine.sell_multiplier", 0.1);
-                p.sendMessage("§bSell augmenté");
-                refresh(p);
+                modifyConfig("engine.sell_multiplier", step);
+                p.sendMessage("§bSell augmenté §7(+" + step + ")");
                 break;
 
             case 3: // sell -
-                modifyConfig("engine.sell_multiplier", -0.1);
-                p.sendMessage("§7Sell diminué");
-                refresh(p);
+                modifyConfig("engine.sell_multiplier", -step);
+                p.sendMessage("§7Sell diminué §7(-" + step + ")");
                 break;
 
             case 4: // rareté +
-                modifyConfig("engine.rarity.boost", 1.1, true);
+                modifyConfigMultiply("engine.rarity.boost", shift ? 1.25 : 1.1);
                 p.sendMessage("§6Rareté augmentée");
-                refresh(p);
                 break;
 
             case 5: // rareté -
-                modifyConfig("engine.rarity.boost", 0.9, true);
+                modifyConfigMultiply("engine.rarity.boost", shift ? 0.75 : 0.9);
                 p.sendMessage("§eRareté réduite");
-                refresh(p);
                 break;
 
             case 6: // impact +
-                modifyAll(MarketState.impact, 0.9);
+                modifyAll(MarketState.impact, shift ? 0.8 : 0.9);
                 p.sendMessage("§6Impact augmenté (marché stable)");
-                refresh(p);
                 break;
 
             case 7: // impact -
-                modifyAll(MarketState.impact, 1.1);
+                modifyAll(MarketState.impact, shift ? 1.2 : 1.1);
                 p.sendMessage("§cImpact réduit (marché volatile)");
-                refresh(p);
                 break;
 
             case 8: // RESET CONFIG
                 resetConfig();
                 p.sendMessage("§4✔ Config réinitialisée");
-                refresh(p);
                 break;
+        }
+
+        // 🔥 application instant du marché
+        applyLive();
+
+        // 🔄 refresh GUI
+        refresh(p);
+    }
+
+    // =========================
+    // 🔥 APPLY LIVE
+    // =========================
+    private void applyLive() {
+        MarketEngine.tick();
+
+        for (String item : MarketState.base.keySet()) {
+            PriceUpdater.updateItem(item);
         }
     }
 
@@ -101,7 +113,7 @@ public class BanqueConfigListener implements Listener {
         plugin.saveConfig();
     }
 
-    private void modifyConfig(String path, double factor, boolean multiply) {
+    private void modifyConfigMultiply(String path, double factor) {
         Main plugin = Main.getInstance();
         double val = plugin.getConfig().getDouble(path, 0.002);
 
@@ -113,6 +125,6 @@ public class BanqueConfigListener implements Listener {
 
     private void resetConfig() {
         Main plugin = Main.getInstance();
-        plugin.reloadConfig(); // recharge config.yml par défaut
+        plugin.reloadConfig();
     }
 }

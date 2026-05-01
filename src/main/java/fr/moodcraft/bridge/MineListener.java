@@ -9,8 +9,8 @@ public class MineListener implements Listener {
     @EventHandler
     public void onMine(BlockBreakEvent e) {
 
-        String type = e.getBlock().getType().name().toLowerCase();
-        String item = ItemNormalizer.normalize(type);
+        String raw = e.getBlock().getType().name().toLowerCase();
+        String item = ItemNormalizer.normalize(raw);
 
         if (!MarketState.price.containsKey(item)) return;
 

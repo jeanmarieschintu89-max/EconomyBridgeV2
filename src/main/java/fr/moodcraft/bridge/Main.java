@@ -46,13 +46,13 @@ public class Main extends JavaPlugin {
                 new MineListener(),
                 new GUIListener(),
                 new WelcomeListener(),
-                new WelcomeClickListener(), // 🔥 AJOUT IMPORTANT
+                new WelcomeClickListener(),
                 new BanqueAdminListener(),
                 new BanqueConfigListener(),
                 new BanqueItemListener(),
                 new MainMenuListener(),
-                new BankListener()
-                new TeleportListener(),
+                new BankListener(),
+                new TeleportListener() // ✅ FIX
         );
 
         // =========================
@@ -77,7 +77,7 @@ public class Main extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
         Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20L, 20L * 45);
 
-        getLogger().info("✅ EconomyBridge chargé avec banque + logs + welcome GUI");
+        getLogger().info("✅ EconomyBridge chargé avec banque + logs + welcome GUI + TP");
     }
 
     @Override

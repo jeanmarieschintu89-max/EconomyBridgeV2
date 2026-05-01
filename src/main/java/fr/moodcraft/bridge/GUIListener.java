@@ -33,13 +33,11 @@ public class GUIListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getCurrentItem() == null) return;
 
-        // 🔐 permission marché
         if (!p.hasPermission("econ.use")) {
             p.sendMessage("§c❌ Accès refusé.");
             return;
         }
 
-        // ⚠️ sécurité Vault
         if (econ == null) {
             p.sendMessage("§c❌ Erreur économie (Vault manquant)");
             return;
@@ -67,7 +65,6 @@ public class GUIListener implements Listener {
             double price = MarketEngine.getPrice(id);
             double gain = amount * price;
 
-            // anti whale
             double mult = 1;
             if (amount > 512) mult = 0.6;
             else if (amount > 256) mult = 0.8;
@@ -82,13 +79,14 @@ public class GUIListener implements Listener {
             double taxe = round(tax);
             double net = round(finalGain);
 
-            // retirer items
             p.getInventory().removeItem(new ItemStack(mat, amount));
-
-            // 💰 GIVE sans message Vault
             econ.depositPlayer(p, net);
 
-            // 📩 message clean
+            // 📄 LOG VENTE 🔥
+            TransactionLogger.log(p.getName(),
+                    "Vente " + id + " x" + amount,
+                    net);
+
             p.sendMessage("§8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
             p.sendMessage("§a✔ Vente réussie");
             p.sendMessage("§7• Brut: §f" + brut + "€");
@@ -110,16 +108,18 @@ public class GUIListener implements Listener {
             double price = MarketEngine.getPrice(id);
             double cost = round(price * amount);
 
-            // 🔒 check argent
             if (econ.getBalance(p) < cost) {
                 p.sendMessage("§c❌ Pas assez d'argent");
                 return;
             }
 
-            // 💰 TAKE sans message Vault
             econ.withdrawPlayer(p, cost);
-
             p.getInventory().addItem(new ItemStack(mat, amount));
+
+            // 📄 LOG ACHAT 🔥
+            TransactionLogger.log(p.getName(),
+                    "Achat " + id + " x" + amount,
+                    cost);
 
             p.sendMessage("§a✔ Achat réussi");
             p.sendMessage("§cCoût: -" + cost + "€");

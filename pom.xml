@@ -5,33 +5,43 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- 💎 IDENTITÉ DU PLUGIN -->
     <groupId>fr.moodcraft</groupId>
     <artifactId>EconomyBridgeV2</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
+    <name>EconomyBridgeV2</name>
+    <description>Bridge économie dynamique Skript ↔ QuickShop</description>
+
+    <!-- ⚙️ JAVA -->
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <!-- 📦 REPOS -->
+    <!-- 📦 REPOSITORIES -->
     <repositories>
+
+        <!-- Paper -->
         <repository>
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
 
-        <!-- 🔥 TON REPO PRIVÉ (GitHub Packages) -->
+        <!-- GitHub Packages (TES LIBS) -->
         <repository>
             <id>github</id>
-            <url>https://maven.pkg.github.com/TON_USER/TON_REPO</url>
+            <url>https://maven.pkg.github.com/jeanmarieschintu89-max/EconomyBridgeV2</url>
         </repository>
+
     </repositories>
 
+    <!-- 📚 DEPENDENCIES -->
     <dependencies>
 
-        <!-- Paper -->
+        <!-- 🧱 Paper API -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -39,7 +49,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Skript -->
+        <!-- 🧠 Skript -->
         <dependency>
             <groupId>com.skript</groupId>
             <artifactId>skript</artifactId>
@@ -47,7 +57,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop -->
+        <!-- 📦 QuickShop -->
         <dependency>
             <groupId>com.quickshop</groupId>
             <artifactId>quickshop</artifactId>
@@ -56,5 +66,26 @@
         </dependency>
 
     </dependencies>
+
+    <!-- ⚙️ BUILD -->
+    <build>
+
+        <finalName>EconomyBridgeV2</finalName>
+
+        <plugins>
+
+            <!-- 🔨 Compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>17</release>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
 
 </project>

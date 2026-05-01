@@ -12,7 +12,7 @@ public class BankListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().equals("§6Banque")) return;
+        if (!e.getView().getTitle().equals("§6🏦 Banque")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -20,7 +20,6 @@ public class BankListener implements Listener {
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-
         if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
         Economy eco = VaultHook.getEconomy();
@@ -30,7 +29,7 @@ public class BankListener implements Listener {
 
         switch (e.getSlot()) {
 
-            // 📤 ENVOYER IBAN
+            // 📤 IBAN
             case 1 -> {
 
                 String iban = BankStorage.getIban(id);
@@ -44,7 +43,7 @@ public class BankListener implements Listener {
                 p.sendMessage("§8━━━━━━━━━━━━━━━━━━");
             }
 
-            // ➖ RETIRER
+            // ➖ RETRAIT
             case 2 -> {
 
                 double bank = BankStorage.get(id);
@@ -54,7 +53,7 @@ public class BankListener implements Listener {
                     BankStorage.set(id, bank - 1000);
                     eco.depositPlayer(p, 1000);
 
-                    TransactionLogger.log(p.getName(), "WITHDRAW", 1000);
+                    TransactionLogger.log(p.getName(), "Retrait", 1000);
 
                     p.sendMessage("§a✔ +1000€ retiré de la banque");
 
@@ -65,7 +64,7 @@ public class BankListener implements Listener {
                 BankGUI.open(p);
             }
 
-            // ➕ DEPOSER
+            // ➕ DÉPÔT
             case 6 -> {
 
                 if (eco.getBalance(p) >= 1000) {
@@ -75,7 +74,7 @@ public class BankListener implements Listener {
                     double bank = BankStorage.get(id);
                     BankStorage.set(id, bank + 1000);
 
-                    TransactionLogger.log(p.getName(), "DEPOSIT", 1000);
+                    TransactionLogger.log(p.getName(), "Dépôt", 1000);
 
                     p.sendMessage("§b✔ 1000€ déposé en banque");
 
@@ -84,6 +83,12 @@ public class BankListener implements Listener {
                 }
 
                 BankGUI.open(p);
+            }
+
+            // 📄 HISTORIQUE
+            case 7 -> {
+                p.closeInventory();
+                BankHistoryGUI.open(p, 0);
             }
 
             // 🔄 REFRESH

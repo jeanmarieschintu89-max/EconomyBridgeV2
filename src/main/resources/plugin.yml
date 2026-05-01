@@ -1,11 +1,13 @@
-name: EconomyBridgeV2
+name: EconomyBridge
 main: fr.moodcraft.bridge.Main
 version: 1.0
 api-version: 1.20
 
 commands:
-  priceupdate:
-    description: Sync prix
+  prix:
+    description: Ouvre le marché
+    usage: /prix
 
-  ecoreload:
-    description: Reload config
+  trend:
+    description: Voir la tendance d'un item
+    usage: /trend <item>

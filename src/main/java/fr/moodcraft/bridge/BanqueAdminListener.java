@@ -50,7 +50,6 @@ public class BanqueAdminListener implements Listener {
 
                 plugin.reloadConfig();
 
-                // 🧹 reset mémoire
                 MarketState.base.clear();
                 MarketState.price.clear();
                 MarketState.stock.clear();
@@ -61,7 +60,6 @@ public class BanqueAdminListener implements Listener {
                 MarketState.rarity.clear();
                 MarketState.weight.clear();
 
-                // 🔁 reload base
                 for (String key : plugin.getConfig().getConfigurationSection("base").getKeys(false)) {
                     double value = plugin.getConfig().getDouble("base." + key);
 
@@ -72,13 +70,11 @@ public class BanqueAdminListener implements Listener {
                     MarketState.sell.put(key, 0.0);
                 }
 
-                // 🔁 reload sections
                 loadSection(plugin, "activity", MarketState.activity);
                 loadSection(plugin, "impact", MarketState.impact);
                 loadSection(plugin, "rarity", MarketState.rarity);
                 loadSection(plugin, "weight", MarketState.weight);
 
-                // 🔄 rebuild marché
                 ShopIndex.rebuild();
                 MarketEngine.tick();
 
@@ -94,6 +90,10 @@ public class BanqueAdminListener implements Listener {
                     PriceUpdater.updateItem(item);
                 }
                 p.sendMessage("§e✔ Sync effectuée");
+                break;
+
+            case 6: // ⚙️ SOUS-MENU CONFIG
+                BanqueConfigGUI.open(p);
                 break;
 
             case 7: // reset

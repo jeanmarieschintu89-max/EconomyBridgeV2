@@ -13,46 +13,46 @@ base:
   amethyst: 6
 
 weight:
-  netherite: 1.5
-  emerald: 1.3
-  diamond: 1.2
-  gold: 1
-  iron: 0.9
-  copper: 0.7
-  quartz: 0.7
-  redstone: 0.6
-  lapis: 0.6
-  coal: 0.5
-  amethyst: 0.7
-  glowstone: 0.7
+  netherite: 0.9
+  emerald: 1.0
+  diamond: 1.0
+  gold: 0.9
+  iron: 0.7
+  copper: 0.6
+  quartz: 0.6
+  redstone: 0.5
+  lapis: 0.5
+  coal: 0.3
+  amethyst: 0.6
+  glowstone: 0.6
 
 impact:
-  netherite: 18
-  emerald: 22
-  diamond: 20
-  gold: 90
-  iron: 110
-  copper: 130
-  quartz: 140
-  redstone: 160
-  lapis: 160
-  coal: 300
-  amethyst: 160
-  glowstone: 160
+  netherite: 25
+  emerald: 28
+  diamond: 30
+  gold: 95
+  iron: 115
+  copper: 135
+  quartz: 145
+  redstone: 165
+  lapis: 165
+  coal: 320
+  amethyst: 165
+  glowstone: 165
 
 activity:
-  netherite: 0.0005
-  emerald: 0.0007
-  diamond: 0.0009
-  gold: 0.0013
-  iron: 0.0018
-  copper: 0.002
-  quartz: 0.0018
-  redstone: 0.0022
-  lapis: 0.0022
-  coal: 0.001
-  amethyst: 0.002
-  glowstone: 0.002
+  netherite: 0.0004
+  emerald: 0.0006
+  diamond: 0.0008
+  gold: 0.0012
+  iron: 0.0016
+  copper: 0.0018
+  quartz: 0.0016
+  redstone: 0.002
+  lapis: 0.002
+  coal: 0.0009
+  amethyst: 0.0018
+  glowstone: 0.0018
 
 rarity:
   netherite: 1
@@ -69,51 +69,55 @@ rarity:
   glowstone: 9
 
 engine:
-  base_return: 0.006
-  max_change: 0.15
-  activity_cap: 0.02
+  base_return: 0.008        # ⬅️ remonte un peu plus vite
+  max_change: 0.12          # ⬅️ évite grosses chutes
+  activity_cap: 0.025       # ⬅️ marché plus vivant
 
   min_price_factor: 0.5
   max_price_factor: 2.5
 
-  stock_decay: 0.85
+  stock_decay: 0.88         # ⬅️ stock disparaît plus vite → aide remontée
+
+  # 🔥 équilibre achat / vente
+  buy_multiplier: 1.4       # ⬅️ achats boostés
+  sell_multiplier: 1.0
 
   rarity:
     enabled: true
-    boost: 0.002
-    exponent: 1.2
-    max_boost: 0.05
+    boost: 0.0015          # ⬅️ réduit explosion
+    exponent: 1.1          # ⬅️ plus doux
+    max_boost: 0.03        # ⬅️ limite stricte
 
 # =========================
-# 🔥 RARETÉ PAR ITEM (NOUVEAU)
+# 🔥 RARETÉ PAR ITEM
 # =========================
 
 rarity_settings:
   netherite:
-    boost: 0.004
-    exponent: 1.5
-    max_boost: 0.08
-
-  emerald:
-    boost: 0.003
-    exponent: 1.4
-
-  diamond:
     boost: 0.0025
     exponent: 1.2
+    max_boost: 0.04
+
+  emerald:
+    boost: 0.0022
+    exponent: 1.2
+
+  diamond:
+    boost: 0.002
+    exponent: 1.15
 
   gold:
-    boost: 0.002
-    exponent: 1.1
-
-  iron:
     boost: 0.0018
     exponent: 1.1
 
-  copper:
+  iron:
     boost: 0.0015
     exponent: 1.05
 
+  copper:
+    boost: 0.0012
+    exponent: 1.05
+
   coal:
-    boost: 0.0005
+    boost: 0.0004
     exponent: 1.0

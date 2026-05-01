@@ -63,7 +63,7 @@ public class MainMenuGUI {
                 "",
                 "§8Surveille les tendances"));
 
-        // 🔥 ADMIN (visible uniquement si permission)
+        // 🔥 ADMIN (slot 22)
         if (p.hasPermission("econ.admin")) {
             inv.setItem(22, ItemBuilder.of(Material.BEACON, "§c⚙️ Admin",
                     "§7Contrôle économie",

@@ -56,6 +56,7 @@ public class Main extends JavaPlugin {
                 new TeleportListener(),
                 new PayListener(),
                 new ContractListener(),
+                new ContractCreateListener(),
                 new ContractGUIListener(), // 📄 GUI CONTRATS
                 new BankHistoryListener()
         );

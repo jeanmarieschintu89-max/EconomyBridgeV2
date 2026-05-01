@@ -4,11 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BanqueAdminGUI {
 
@@ -22,58 +17,52 @@ public class BanqueAdminGUI {
 
         Inventory inv = Bukkit.createInventory(null, 9, "§6Banque Admin");
 
-        // 📈 Inflation
-        inv.setItem(0, item(Material.EMERALD_BLOCK, "§aInflation +5%",
-                "§7Augmente tous les prix"));
+        inv.setItem(0, ItemBuilder.of(Material.EMERALD_BLOCK, "§aInflation +5%",
+                "§7Augmente tous les prix du marché",
+                "§7Effet: §a📈 hausse globale",
+                "",
+                "§8Utiliser pour relancer l'économie"));
 
-        // 📉 Déflation
-        inv.setItem(1, item(Material.REDSTONE_BLOCK, "§cDéflation -5%",
-                "§7Réduit tous les prix"));
+        inv.setItem(1, ItemBuilder.of(Material.REDSTONE_BLOCK, "§cDéflation -5%",
+                "§7Diminue tous les prix",
+                "§7Effet: §c📉 baisse globale",
+                "",
+                "§8Utiliser si les prix explosent"));
 
-        // 📦 CONFIG PAR ITEM (NOUVEAU)
-        inv.setItem(2, item(Material.CHEST, "§bConfigurer Items",
+        inv.setItem(2, ItemBuilder.of(Material.CHEST, "§bConfigurer Items",
                 "§7Modifier chaque ressource",
-                "§7individuellement"));
+                "§7individuellement",
+                "",
+                "§7Ex: diamond ≠ coal",
+                "§8Réglage précis"));
 
-        // 🔄 Reload
-        inv.setItem(3, item(Material.BEACON, "§bReload Économie",
-                "§7Recharge config + marché"));
+        inv.setItem(3, ItemBuilder.of(Material.BEACON, "§bReload Économie",
+                "§7Recharge config.yml",
+                "§7Reset mémoire + recalcul",
+                "",
+                "§cAttention: reset temporaire"));
 
-        // 🔁 Sync
-        inv.setItem(4, item(Material.NETHER_STAR, "§eSynchroniser",
-                "§7Met à jour tous les shops"));
+        inv.setItem(4, ItemBuilder.of(Material.NETHER_STAR, "§eSynchroniser",
+                "§7Met à jour tous les shops",
+                "§7avec les nouveaux prix",
+                "",
+                "§8A utiliser après changement"));
 
-        // 🎛️ CONFIG GLOBALE
-        inv.setItem(6, item(Material.COMPARATOR, "§dConfigurer Marché",
+        inv.setItem(6, ItemBuilder.of(Material.COMPARATOR, "§dConfigurer Marché",
+                "§7Réglage global du système",
+                "",
                 "§7Buy: §a" + buy,
                 "§7Sell: §c" + sell,
                 "§7Rareté: §e" + rarity,
                 "",
-                "§8Clique pour modifier"));
+                "§7→ Influence montée/descente"));
 
-        // 💥 RESET
-        inv.setItem(8, item(Material.BARRIER, "§4Reset Économie",
-                "§7Remet les prix de base"));
+        inv.setItem(8, ItemBuilder.of(Material.BARRIER, "§4Reset Économie",
+                "§7Remet tous les prix de base",
+                "",
+                "§c⚠ Efface l'évolution du marché",
+                "§8Utiliser en cas de problème"));
 
         p.openInventory(inv);
-    }
-
-    private static ItemStack item(Material mat, String name, String... loreLines) {
-        ItemStack i = new ItemStack(mat);
-        ItemMeta m = i.getItemMeta();
-
-        if (m != null) {
-            m.setDisplayName(name);
-
-            if (loreLines != null && loreLines.length > 0) {
-                List<String> lore = new ArrayList<>();
-                for (String line : loreLines) lore.add(line);
-                m.setLore(lore);
-            }
-
-            i.setItemMeta(m);
-        }
-
-        return i;
     }
 }

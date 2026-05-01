@@ -28,6 +28,7 @@ public class Main extends JavaPlugin {
         // =========================
         BankStorage.init();
         TransactionLogger.init();
+        ReputationManager.init(); // ⭐ AJOUT IMPORTANT
 
         // =========================
         // 🔄 LOAD DATA
@@ -55,7 +56,8 @@ public class Main extends JavaPlugin {
                 new TeleportListener(),
                 new PayListener(),
                 new ContractListener(),
-                new BankHistoryListener() // ✅ plus de virgule ici
+                new ContractGUIListener(), // 📄 GUI CONTRATS
+                new BankHistoryListener()
         );
 
         // =========================
@@ -71,8 +73,11 @@ public class Main extends JavaPlugin {
         registerCommand("menu", new MenuCommand());
         registerCommand("transactions", new TransactionsCommand());
         registerCommand("iban", new IbanCommand());
-        registerCommand("ibanpay", new IbanPayCommand()); // 💸 virement
+        registerCommand("ibanpay", new IbanPayCommand());
+
+        // 📄 CONTRATS
         registerCommand("contrataccept", new ContractAcceptCommand());
+        registerCommand("contrats", new ContractMenuCommand()); // ⭐ GUI
 
         // =========================
         // 🔁 INIT MARKET
@@ -82,7 +87,7 @@ public class Main extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
         Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20L, 20L * 45);
 
-        getLogger().info("✅ EconomyBridge chargé avec banque + logs + welcome GUI + TP + IBAN");
+        getLogger().info("✅ EconomyBridge chargé avec banque + logs + contrats + réputation + TP + IBAN");
     }
 
     @Override
@@ -92,6 +97,7 @@ public class Main extends JavaPlugin {
         // 💾 SAVE DATA
         // =========================
         BankStorage.save();
+        ReputationManager.save(); // ⭐ AJOUT IMPORTANT
 
         getLogger().info("💾 Données sauvegardées correctement");
     }

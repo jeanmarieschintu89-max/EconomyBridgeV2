@@ -30,6 +30,10 @@ commands:
     description: Test economie
     permission: econ.admin
 
+  ecoreload:
+    description: Recharge complète de l'économie
+    permission: econ.admin
+
 permissions:
   econ.admin:
     description: Accès total à l'économie
@@ -38,7 +42,3 @@ permissions:
   econ.use:
     description: Utiliser le marché
     default: true
-
-  ecoreload:
-    description: Recharge complète de l'économie
-    permission: op

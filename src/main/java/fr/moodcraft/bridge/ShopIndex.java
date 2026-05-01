@@ -12,6 +12,7 @@ public final class ShopIndex {
 
     private ShopIndex() {}
 
+    // 🔁 rebuild au démarrage
     public static void rebuild() {
 
         INDEX.clear();
@@ -21,40 +22,40 @@ public final class ShopIndex {
                 .getAllShops();
 
         for (Shop shop : shops) {
-
-            if (shop == null) continue;
-
-            String key = normalize(shop.getItem().getType().name().toLowerCase());
-
-            // ✅ FIX ALLOWED
-            if (!PriceUpdater.ALLOWED.contains(key)) continue;
-
-            INDEX.computeIfAbsent(key, k -> ConcurrentHashMap.newKeySet()).add(shop);
+            add(shop);
         }
     }
 
+    // ➕ ajout dynamique
+    public static void add(Shop shop) {
+
+        if (shop == null || shop.getItem() == null) return;
+
+        String key = ItemNormalizer.normalize(shop.getItem().getType());
+
+        if (key == null) return;
+        if (!PriceUpdater.ALLOWED.contains(key)) return;
+
+        INDEX.computeIfAbsent(key, k -> ConcurrentHashMap.newKeySet()).add(shop);
+    }
+
+    // ➖ suppression dynamique
+    public static void remove(Shop shop) {
+
+        if (shop == null || shop.getItem() == null) return;
+
+        String key = ItemNormalizer.normalize(shop.getItem().getType());
+
+        if (key == null) return;
+
+        Set<Shop> set = INDEX.get(key);
+        if (set != null) {
+            set.remove(shop);
+        }
+    }
+
+    // 📦 récupérer les shops d’un item
     public static Set<Shop> get(String item) {
         return INDEX.getOrDefault(item, Collections.emptySet());
-    }
-
-    private static String normalize(String mat) {
-
-        switch (mat) {
-            case "diamond": return "diamond";
-            case "emerald": return "emerald";
-            case "gold_ingot": return "gold";
-            case "iron_ingot": return "iron";
-            case "copper_ingot": return "copper";
-            case "coal":
-            case "charcoal": return "coal";
-            case "lapis_lazuli": return "lapis";
-            case "redstone": return "redstone";
-            case "quartz": return "quartz";
-            case "amethyst_shard": return "amethyst";
-            case "netherite_ingot": return "netherite";
-            case "glowstone_dust": return "glowstone";
-        }
-
-        return mat;
     }
 }

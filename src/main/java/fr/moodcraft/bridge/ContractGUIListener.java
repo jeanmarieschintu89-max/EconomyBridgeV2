@@ -23,10 +23,7 @@ public class ContractGUIListener implements Listener {
 
         e.setCancelled(true);
 
-        // 🔒 joueur uniquement
         if (!(e.getWhoClicked() instanceof Player p)) return;
-
-        // 🔒 item valide
         if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
         int slot = e.getSlot();
@@ -53,7 +50,6 @@ public class ContractGUIListener implements Listener {
             }
         }
 
-        // 🔒 sécurité slot
         if (slot < 0 || slot >= list.size()) return;
 
         UUID id = list.get(slot);
@@ -74,7 +70,6 @@ public class ContractGUIListener implements Listener {
             p.sendMessage("§c❌ Contrat refusé");
         }
 
-        // 🔄 refresh GUI
         ContractGUI.open(p);
     }
 }

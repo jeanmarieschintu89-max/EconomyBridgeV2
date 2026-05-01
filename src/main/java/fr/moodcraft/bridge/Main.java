@@ -18,26 +18,33 @@ public class Main extends JavaPlugin {
 
         instance = this;
 
-        // 📁 config
+        // 📁 CONFIG
         saveDefaultConfig();
 
+        // 🔄 LOAD DATA
         loadBase();
         loadSection("activity", MarketState.activity);
         loadSection("impact", MarketState.impact);
         loadSection("rarity", MarketState.rarity);
         loadSection("weight", MarketState.weight);
 
-        // 📦 listeners
+        // =========================
+        // 📦 LISTENERS
+        // =========================
         Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
         Bukkit.getPluginManager().registerEvents(new MineListener(), this);
         Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
 
-        // 🔥 AJOUT GUI BANQUE
+        // 🏦 GUI ADMIN
         Bukkit.getPluginManager().registerEvents(new BanqueAdminListener(), this);
+        Bukkit.getPluginManager().registerEvents(new BanqueConfigListener(), this);
 
-Bukkit.getPluginManager().registerEvents(new BanqueConfigListener(), this);
+        // 🆕 MENU PAR ITEM
+        Bukkit.getPluginManager().registerEvents(new BanqueItemListener(), this);
 
-        // 📜 commandes
+        // =========================
+        // 📜 COMMANDES
+        // =========================
         getCommand("prix").setExecutor(new PrixCommand());
         getCommand("syncprix").setExecutor(new SyncCommand());
         getCommand("trend").setExecutor(new GetTrendCommand());
@@ -45,26 +52,32 @@ Bukkit.getPluginManager().registerEvents(new BanqueConfigListener(), this);
         getCommand("ecotest").setExecutor(new EcoTestCommand());
         getCommand("ecoreload").setExecutor(new EcoReloadCommand());
 
-        // 🔥 AJOUT COMMANDE BANQUE
+        // 🏦 ADMIN
         getCommand("banqueadmin").setExecutor(new BanqueAdminCommand());
 
-        // 🔁 rebuild index shops (CRITIQUE)
+        // =========================
+        // 🔁 INIT MARKET
+        // =========================
         ShopIndex.rebuild();
 
-        // 🔁 refresh index toutes les 60 secondes
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            ShopIndex.rebuild();
-        }, 20L * 60, 20L * 60);
+        // 🔁 Refresh index toutes les 60s
+        Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
 
-        // 🔁 boucle marché (45s)
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            MarketEngine.tick();
-        }, 20L, 20L * 45);
+        // 🔁 Tick marché toutes les 45s
+        Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20L, 20L * 45);
 
-        getLogger().info("✅ EconomyBridge FULL JAVA chargé");
+        getLogger().info("✅ EconomyBridge FULL JAVA chargé avec GUI avancé");
     }
 
+    // =========================
+    // 📊 LOAD BASE
+    // =========================
     private void loadBase() {
+
+        if (getConfig().getConfigurationSection("base") == null) {
+            getLogger().warning("⚠ Section 'base' manquante dans config.yml");
+            return;
+        }
 
         for (String key : getConfig().getConfigurationSection("base").getKeys(false)) {
 
@@ -78,9 +91,15 @@ Bukkit.getPluginManager().registerEvents(new BanqueConfigListener(), this);
         }
     }
 
+    // =========================
+    // 📊 LOAD SECTIONS
+    // =========================
     private void loadSection(String path, Map<String, Double> map) {
 
-        if (getConfig().getConfigurationSection(path) == null) return;
+        if (getConfig().getConfigurationSection(path) == null) {
+            getLogger().warning("⚠ Section '" + path + "' manquante");
+            return;
+        }
 
         for (String key : getConfig().getConfigurationSection(path).getKeys(false)) {
             map.put(key, getConfig().getDouble(path + "." + key));

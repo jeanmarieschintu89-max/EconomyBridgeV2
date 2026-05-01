@@ -31,6 +31,19 @@ public class ReputationManager {
         save();
     }
 
+    // 🔥 BADGE RP
+    public static String getBadge(String player) {
+
+        int rep = get(player);
+
+        if (rep < 0) return "§c🔴 Escroc";
+        if (rep <= 2) return "§7⚪ Inconnu";
+        if (rep <= 5) return "§a🟢 Fiable";
+        if (rep <= 10) return "§b🔵 Professionnel";
+
+        return "§d🟣 Elite";
+    }
+
     public static void save() {
         try { config.save(file); } catch (IOException e) { e.printStackTrace(); }
     }

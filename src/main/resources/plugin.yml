@@ -7,71 +7,106 @@ depend: [Vault]
 
 commands:
 
+  # =========================
+  # 📊 CONTRATS
+  # =========================
   contractlog:
     description: Voir historique contrats
     usage: /contractlog [joueur]
+    permission: econ.admin
 
   delcontrat:
     description: Supprimer un contrat
     usage: /delcontrat <id>
-
-  resetrep:
-    description: Reset réputation joueur
-    usage: /resetrep <joueur>
+    permission: econ.admin
 
   contrats:
     description: Voir les contrats
     usage: /contrats
+    permission: econ.use
 
   contrataccept:
     description: Accepter un contrat
     usage: /contrataccept <id>
+    permission: econ.use
 
+  # =========================
+  # ⭐ RÉPUTATION
+  # =========================
+  resetrep:
+    description: Reset réputation joueur
+    usage: /resetrep <joueur>
+    permission: econ.admin
+
+  # =========================
+  # 💰 MARCHÉ
+  # =========================
   prix:
     description: Ouvre le marché
     usage: /prix
+    permission: econ.use
 
   syncprix:
     description: Synchronise tous les shops
     usage: /syncprix
+    permission: econ.admin
 
   trend:
     description: Voir tendance d'un item
     usage: /trend <item>
+    permission: econ.use
 
-  ecoreset:
-    description: Reset complet de l'économie
-    usage: /ecoreset
-
+  # =========================
+  # 🏦 BANQUE
+  # =========================
   banqueadmin:
     description: Ouvre la banque admin
     usage: /banqueadmin
-
-  ecotest:
-    description: Test économie
-    usage: /ecotest
-
-  ecoreload:
-    description: Recharge la config économie
-    usage: /ecoreload
-
-  menu:
-    description: Ouvre le menu principal
-    usage: /menu
+    permission: econ.admin
 
   transactions:
     description: Voir les transactions bancaires
     usage: /transactions [joueur]
+    permission: econ.use
 
   iban:
     description: Voir son IBAN
     usage: /iban [joueur]
+    permission: econ.use
 
   ibanpay:
     description: Envoyer de l'argent via IBAN
     usage: /ibanpay <iban> <montant>
+    permission: econ.use
+
+  # =========================
+  # ⚙️ ADMIN ECO
+  # =========================
+  ecoreset:
+    description: Reset complet de l'économie
+    usage: /ecoreset
+    permission: econ.admin
+
+  ecotest:
+    description: Test économie
+    usage: /ecotest
+    permission: econ.admin
+
+  ecoreload:
+    description: Recharge la config économie
+    usage: /ecoreload
+    permission: econ.admin
+
+  # =========================
+  # 🧭 MENU
+  # =========================
+  menu:
+    description: Ouvre le menu principal
+    usage: /menu
+    permission: econ.use
 
 permissions:
+
   econ.admin:
     description: Accès total à l'économie
     default: op

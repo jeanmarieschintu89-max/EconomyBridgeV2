@@ -18,6 +18,7 @@ public class Main extends JavaPlugin {
 
         instance = this;
 
+        // 📁 config
         saveDefaultConfig();
 
         loadBase();
@@ -26,23 +27,29 @@ public class Main extends JavaPlugin {
         loadSection("rarity", MarketState.rarity);
         loadSection("weight", MarketState.weight);
 
+        // 📦 listeners
         Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
         Bukkit.getPluginManager().registerEvents(new MineListener(), this);
         Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
 
+        // 📜 commandes
         getCommand("prix").setExecutor(new PrixCommand());
         getCommand("syncprix").setExecutor(new SyncCommand());
         getCommand("trend").setExecutor(new GetTrendCommand());
 
-        // 🔁 boucle marché (comme ton every 45 seconds)
+        // 🔁 rebuild index shops (CRITIQUE)
+        ShopIndex.rebuild();
+
+        // 🔁 boucle marché (45s)
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             MarketEngine.tick();
         }, 20L, 20L * 45);
 
-        getLogger().info("✅ EconomyBridge chargé (FULL JAVA)");
+        getLogger().info("✅ EconomyBridge FULL JAVA chargé");
     }
 
     private void loadBase() {
+
         for (String key : getConfig().getConfigurationSection("base").getKeys(false)) {
 
             double value = getConfig().getDouble("base." + key);
@@ -56,6 +63,7 @@ public class Main extends JavaPlugin {
     }
 
     private void loadSection(String path, Map<String, Double> map) {
+
         if (getConfig().getConfigurationSection(path) == null) return;
 
         for (String key : getConfig().getConfigurationSection(path).getKeys(false)) {

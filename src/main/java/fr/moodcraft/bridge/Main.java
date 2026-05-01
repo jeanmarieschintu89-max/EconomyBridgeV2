@@ -54,6 +54,7 @@ public class Main extends JavaPlugin {
                 new BankListener(),
                 new TeleportListener(),
                 new PayListener(),
+                new ContractListener(),
                 new BankHistoryListener() // ✅ plus de virgule ici
         );
 

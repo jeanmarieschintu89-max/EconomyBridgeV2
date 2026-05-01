@@ -1,88 +1,44 @@
 name: Build Plugin
 
 on:
+  workflow_dispatch: # 🔘 bouton manuel
   push:
-    branches: ["main"]
-  workflow_dispatch:
-    inputs:
-      deploy_libs:
-        description: "Déployer QuickShop & Skript (true/false)"
-        required: false
-        default: "false"
-
-permissions:
-  contents: read
-  packages: write
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 📥 Checkout
-      - name: Checkout repository
+      # 📥 Clone repo
+      - name: Checkout
         uses: actions/checkout@v4
 
       # ☕ Java 21
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
-          cache: 'maven'
+          distribution: temurin
+          java-version: 21
 
-      # 🔐 Auth Maven GitHub Packages
+      # 🔐 Auth GitHub Packages
       - name: Setup Maven auth
-        run: |
-          mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml <<EOF
-          <settings>
-            <servers>
-              <server>
-                <id>github</id>
-                <username>${{ github.actor }}</username>
-                <password>${{ secrets.GITHUB_TOKEN }}</password>
-              </server>
-            </servers>
-          </settings>
-          EOF
+        uses: s4u/maven-settings-action@v2
+        with:
+          servers: |
+            [{
+              "id": "github",
+              "username": "${{ github.actor }}",
+              "password": "${{ secrets.GITHUB_TOKEN }}"
+            }]
 
-      # 🧪 Debug (optionnel)
-      - name: Debug files
-        run: ls -R
-
-      # 📦 DEPLOY LIBS (UNIQUEMENT SI MANUEL)
-      - name: Deploy QuickShop
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_libs == 'true'
-        run: |
-          mvn deploy:deploy-file \
-          -Dfile=libs/QuickShop-Hikari.jar \
-          -DgroupId=com.quickshop \
-          -DartifactId=quickshop \
-          -Dversion=1.0 \
-          -Dpackaging=jar \
-          -DrepositoryId=github \
-          -Durl=https://maven.pkg.github.com/${{ github.repository }}
-
-      - name: Deploy Skript
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_libs == 'true'
-        run: |
-          mvn deploy:deploy-file \
-          -Dfile=libs/Skript.jar \
-          -DgroupId=com.skript \
-          -DartifactId=skript \
-          -Dversion=1.0 \
-          -Dpackaging=jar \
-          -DrepositoryId=github \
-          -Durl=https://maven.pkg.github.com/${{ github.repository }}
-
-      # 🔨 Build normal (sans redeploy)
+      # 📦 Build
       - name: Build with Maven
         run: mvn clean package
 
-      # 📦 Upload artifact
-      - name: Upload plugin jar
+      # 📤 Upload .jar (downloadable)
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: EconomyBridgeV2
+          name: EconomyBridge
           path: target/*.jar

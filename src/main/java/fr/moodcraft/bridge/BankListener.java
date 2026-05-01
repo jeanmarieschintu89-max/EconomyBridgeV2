@@ -21,6 +21,8 @@ public class BankListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
+        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
+
         Economy eco = VaultHook.getEconomy();
         if (eco == null) return;
 
@@ -28,7 +30,7 @@ public class BankListener implements Listener {
 
         switch (e.getSlot()) {
 
-            // ➖ RETIRER (banque → joueur)
+            // ➖ RETIRER
             case 2 -> {
 
                 double bank = BankStorage.get(id);
@@ -37,6 +39,9 @@ public class BankListener implements Listener {
 
                     BankStorage.set(id, bank - 1000);
                     eco.depositPlayer(p, 1000);
+
+                    // 🔥 LOG
+                    TransactionLogger.log(p.getName(), "WITHDRAW", 1000);
 
                     p.sendMessage("§a✔ +1000€ retiré de la banque");
 
@@ -47,7 +52,7 @@ public class BankListener implements Listener {
                 BankGUI.open(p);
             }
 
-            // ➕ DEPOSER (joueur → banque)
+            // ➕ DEPOSER
             case 6 -> {
 
                 if (eco.getBalance(p) >= 1000) {
@@ -56,6 +61,9 @@ public class BankListener implements Listener {
 
                     double bank = BankStorage.get(id);
                     BankStorage.set(id, bank + 1000);
+
+                    // 🔥 LOG
+                    TransactionLogger.log(p.getName(), "DEPOSIT", 1000);
 
                     p.sendMessage("§b✔ 1000€ déposé en banque");
 

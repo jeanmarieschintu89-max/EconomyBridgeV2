@@ -10,11 +10,13 @@ commands:
   contrats:
     description: Voir les contrats
     usage: /contrats
-  permission: econ.use
+    permission: econ.use
+
   contrataccept:
     description: Accepter un contrat
     usage: /contrataccept <id>
     permission: econ.use
+
   prix:
     description: Ouvre le marché
     usage: /prix
@@ -65,7 +67,7 @@ commands:
     usage: /iban [joueur]
     permission: econ.use
 
-  ibanpay: # 💸 AJOUT IMPORTANT
+  ibanpay:
     description: Envoyer de l'argent via IBAN
     usage: /ibanpay <iban> <montant>
     permission: econ.use

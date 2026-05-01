@@ -46,6 +46,11 @@ commands:
     usage: /menu
     permission: econ.use
 
+  transactions:
+    description: Voir les transactions bancaires
+    usage: /transactions [joueur]
+    permission: econ.use
+
 permissions:
   econ.admin:
     description: Accès total à l'économie

@@ -3,6 +3,8 @@ main: fr.moodcraft.bridge.Main
 version: 1.0
 api-version: 1.20
 
+depend: [Vault]
+
 commands:
   prix:
     description: Ouvre le marché
@@ -23,7 +25,7 @@ commands:
   banqueadmin:
     description: Banque admin
     permission: op
-  
+
   ecotest:
     description: Test economie
-    permission op
+    permission: op

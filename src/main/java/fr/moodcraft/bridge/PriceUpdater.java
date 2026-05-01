@@ -19,6 +19,7 @@ public final class PriceUpdater {
             "netherite","amethyst","glowstone"
     );
 
+    // ⚡ anti spam
     private static final Map<String, Long> cooldown = new HashMap<>();
 
     public static void updateItem(String item) {
@@ -56,7 +57,7 @@ public final class PriceUpdater {
 
         ch.njol.skript.variables.Variables.setVariable("bridge.lastsend." + item, clamped, null, false);
 
-        // 📈 trend direct
+        // 📈 trend
         TrendManager.updateTrend(item, clamped);
 
         Set<Shop> shops = ShopIndex.get(item);
@@ -69,9 +70,39 @@ public final class PriceUpdater {
                 }
             }
         });
+
+        Main.getInstance().getLogger().info("⚡ Sync: " + item + " -> " + clamped);
     }
 
-    // 🔥 NOUVEAU : accessible depuis Skript
+    // ✅ MÉTHODE QUI MANQUAIT (FIX BUILD)
+    public static void updateSingle(Shop s, String item) {
+
+        if (!ALLOWED.contains(item)) return;
+
+        Object v = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
+        if (!(v instanceof Number n)) return;
+
+        double target = n.doubleValue();
+
+        var config = Main.getInstance().getConfig();
+
+        double base = config.getDouble("prices.base." + item, target);
+        double maxStep = Math.max(2, base * 0.10);
+
+        double raw = clampStep(item, target, maxStep);
+        double clamped = round2(raw);
+
+        if (Math.abs(s.getPrice() - clamped) < 0.009) return;
+
+        // 📈 trend aussi ici
+        TrendManager.updateTrend(item, clamped);
+
+        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+            s.setPrice(clamped);
+        });
+    }
+
+    // 🔥 pour GUI instant
     public static String getTrend(String item) {
         return TrendManager.getTrend(item);
     }

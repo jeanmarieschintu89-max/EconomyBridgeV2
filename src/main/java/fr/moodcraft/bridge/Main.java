@@ -66,6 +66,7 @@ public class Main extends JavaPlugin {
         registerCommand("banqueadmin", new BanqueAdminCommand());
         registerCommand("menu", new MenuCommand());
         registerCommand("transactions", new TransactionsCommand());
+        registerCommand("iban", new IbanCommand());
 
         // =========================
         // 🔁 INIT MARKET

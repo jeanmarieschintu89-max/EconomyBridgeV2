@@ -4,10 +4,10 @@ public class TrendManager {
 
     public static void updateTrend(String item, double newPrice) {
 
-        double old = MarketState.lastPrice.getOrDefault(item, newPrice);
+        double old = MarketState.getPrice(item);
 
         double diff = newPrice - old;
-        double percent = old == 0 ? 0 : (diff / old) * 100;
+        double percent = (old == 0) ? 0 : (diff / old) * 100;
 
         percent = Math.round(percent * 100.0) / 100.0;
 
@@ -22,6 +22,9 @@ public class TrendManager {
         }
 
         MarketState.trend.put(item, result);
-        MarketState.lastPrice.put(item, newPrice);
+    }
+
+    public static String getTrend(String item) {
+        return MarketState.trend.getOrDefault(item, "§7➡ stable");
     }
 }

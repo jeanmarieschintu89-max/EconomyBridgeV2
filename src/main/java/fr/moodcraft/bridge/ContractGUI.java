@@ -24,6 +24,8 @@ public class ContractGUI {
 
             int rep = ReputationManager.get(c.from);
 
+            if (slot >= 21) break;
+
             inv.setItem(slot, ItemBuilder.of(Material.PAPER,
                     "§eContrat de " + c.from,
                     "§7Objet: §f" + c.item + " x" + c.amount,
@@ -37,7 +39,6 @@ public class ContractGUI {
                     "§cClick droit = refuser"));
 
             slot++;
-            if (slot >= 21) break;
         }
 
         p.openInventory(inv);

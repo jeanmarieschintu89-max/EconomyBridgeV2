@@ -10,16 +10,22 @@ public class MainMenuListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
+        // 🔒 Vérifie le bon GUI
         if (!e.getView().getTitle().equals("§6🏠 Menu Principal")) return;
 
+        // 🔒 Clique uniquement dans le menu
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
         e.setCancelled(true);
 
+        // 🔒 joueur uniquement
         if (!(e.getWhoClicked() instanceof Player p)) return;
+
+        // 🔒 item valide
         if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
+        // 🔊 feedback
         p.playSound(p.getLocation(), "ui.button.click", 1f, 1f);
 
         switch (e.getSlot()) {
@@ -58,6 +64,12 @@ public class MainMenuListener implements Listener {
             case 14 -> {
                 p.closeInventory();
                 BankGUI.open(p);
+            }
+
+            // 🧭 Téléportation
+            case 15 -> {
+                p.closeInventory();
+                TeleportGUI.open(p);
             }
 
             // ℹ️ Infos

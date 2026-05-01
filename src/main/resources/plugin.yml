@@ -38,3 +38,7 @@ permissions:
   econ.use:
     description: Utiliser le marché
     default: true
+
+  ecoreload:
+    description: Recharge complète de l'économie
+    permission: op

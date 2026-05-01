@@ -1,19 +1,13 @@
 package fr.moodcraft.bridge;
 
 import com.ghostchu.quickshop.api.shop.Shop;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.Set;
 
 public final class PriceUpdater {
 
-    private PriceUpdater() {}
-
-    // ✅ FIX ALLOWED
     public static final Set<String> ALLOWED = Set.of(
             "diamond","iron","gold","emerald","copper",
             "redstone","lapis","coal","quartz",
@@ -24,13 +18,10 @@ public final class PriceUpdater {
 
         if (!ALLOWED.contains(item)) return;
 
-        Object v = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
-        if (!(v instanceof Number n)) return;
-
-        double price = round(n.doubleValue());
+        double price = MarketState.getPrice(item);
 
         Set<Shop> shops = ShopIndex.get(item);
-        if (shops.isEmpty()) return;
+        if (shops == null || shops.isEmpty()) return;
 
         Iterator<Shop> it = shops.iterator();
 
@@ -45,7 +36,7 @@ public final class PriceUpdater {
 
                     if (shop == null) continue;
 
-                    if (Math.abs(shop.getPrice() - price) >= 0.01) {
+                    if (Math.abs(shop.getPrice() - price) > 0.01) {
                         shop.setPrice(price);
                     }
 
@@ -62,21 +53,10 @@ public final class PriceUpdater {
         if (!ALLOWED.contains(item)) return;
         if (shop == null) return;
 
-        Object v = ch.njol.skript.variables.Variables.getVariable("price." + item, null, false);
-        if (!(v instanceof Number n)) return;
-
-        double price = round(n.doubleValue());
+        double price = MarketState.getPrice(item);
 
         if (Math.abs(shop.getPrice() - price) < 0.01) return;
 
-        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-            shop.setPrice(price);
-        });
-    }
-
-    private static double round(double value) {
-        return new BigDecimal(value)
-                .setScale(2, RoundingMode.HALF_UP)
-                .doubleValue();
+        shop.setPrice(price);
     }
 }

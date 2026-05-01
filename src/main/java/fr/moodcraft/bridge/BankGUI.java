@@ -20,6 +20,11 @@ public class BankGUI {
 
         Inventory inv = Bukkit.createInventory(null, 9, "§6Banque");
 
+        // 📤 Envoyer IBAN
+        inv.setItem(1, ItemBuilder.of(Material.NAME_TAG, "§b📤 Envoyer IBAN",
+                "§7Clique pour afficher ton IBAN",
+                "§7dans le chat"));
+
         // 🏦 Compte bancaire
         inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§e🏦 Compte bancaire",
                 "§7IBAN: §b" + iban,

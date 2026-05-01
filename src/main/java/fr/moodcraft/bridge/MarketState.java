@@ -12,6 +12,12 @@ public final class MarketState {
     public static final Map<String, Double> sell = new HashMap<>();
     public static final Map<String, String> trend = new HashMap<>();
 
+    // 🔥 CONFIG
+    public static final Map<String, Double> activity = new HashMap<>();
+    public static final Map<String, Double> impact = new HashMap<>();
+    public static final Map<String, Double> rarity = new HashMap<>();
+    public static final Map<String, Double> weight = new HashMap<>();
+
     private MarketState() {}
 
     public static double getPrice(String item) {

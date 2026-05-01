@@ -35,6 +35,8 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new MineListener(), this);
         Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
 
+Bukkit.getPluginManager().registerEvents(new WelcomeListener(), this);
+
         // 🏦 GUI ADMIN
         Bukkit.getPluginManager().registerEvents(new BanqueAdminListener(), this);
         Bukkit.getPluginManager().registerEvents(new BanqueConfigListener(), this);

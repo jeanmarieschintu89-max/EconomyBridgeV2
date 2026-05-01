@@ -1,18 +1,69 @@
 base:
-  diamond: 2800
-  iron: 80
-  gold: 120
-  emerald: 15000
   netherite: 32000
+  emerald: 15000
+  diamond: 2800
+  gold: 120
+  iron: 80
+  copper: 12
+  redstone: 20
+  lapis: 20
+  coal: 8
+  quartz: 25
+  glowstone: 15
+  amethyst: 6
 
 weight:
-  diamond: 1.2
   netherite: 1.5
+  emerald: 1.3
+  diamond: 1.2
+  gold: 1
+  iron: 0.9
+  copper: 0.7
+  quartz: 0.7
+  redstone: 0.6
+  lapis: 0.6
+  coal: 0.5
+  amethyst: 0.7
+  glowstone: 0.7
 
 impact:
+  netherite: 20
+  emerald: 25
   diamond: 20
+  gold: 90
   iron: 110
+  copper: 130
+  quartz: 140
+  redstone: 160
+  lapis: 160
+  coal: 280
+  amethyst: 160
+  glowstone: 160
 
 activity:
+  netherite: 0.0006
+  emerald: 0.0008
   diamond: 0.001
+  gold: 0.0015
   iron: 0.002
+  copper: 0.0022
+  quartz: 0.002
+  redstone: 0.0025
+  lapis: 0.0025
+  coal: 0.0012
+  amethyst: 0.0022
+  glowstone: 0.0022
+
+rarity:
+  netherite: 1
+  emerald: 2
+  diamond: 3
+  gold: 5
+  iron: 6
+  copper: 7
+  quartz: 7
+  redstone: 8
+  lapis: 8
+  coal: 10
+  amethyst: 9
+  glowstone: 9

@@ -22,20 +22,38 @@ public class BanqueAdminGUI {
 
         Inventory inv = Bukkit.createInventory(null, 9, "§6Banque Admin");
 
-        inv.setItem(1, item(Material.EMERALD_BLOCK, "§aInflation +5%"));
-        inv.setItem(3, item(Material.REDSTONE_BLOCK, "§cDéflation -5%"));
-        inv.setItem(4, item(Material.BEACON, "§bReload Économie"));
-        inv.setItem(5, item(Material.NETHER_STAR, "§eSynchroniser"));
+        // 📈 Inflation
+        inv.setItem(0, item(Material.EMERALD_BLOCK, "§aInflation +5%",
+                "§7Augmente tous les prix"));
 
-        // 🔥 CONFIG LIVE
+        // 📉 Déflation
+        inv.setItem(1, item(Material.REDSTONE_BLOCK, "§cDéflation -5%",
+                "§7Réduit tous les prix"));
+
+        // 📦 CONFIG PAR ITEM (NOUVEAU)
+        inv.setItem(2, item(Material.CHEST, "§bConfigurer Items",
+                "§7Modifier chaque ressource",
+                "§7individuellement"));
+
+        // 🔄 Reload
+        inv.setItem(3, item(Material.BEACON, "§bReload Économie",
+                "§7Recharge config + marché"));
+
+        // 🔁 Sync
+        inv.setItem(4, item(Material.NETHER_STAR, "§eSynchroniser",
+                "§7Met à jour tous les shops"));
+
+        // 🎛️ CONFIG GLOBALE
         inv.setItem(6, item(Material.COMPARATOR, "§dConfigurer Marché",
-                "§7Buy Multiplier: §a" + buy,
-                "§7Sell Multiplier: §c" + sell,
+                "§7Buy: §a" + buy,
+                "§7Sell: §c" + sell,
                 "§7Rareté: §e" + rarity,
                 "",
                 "§8Clique pour modifier"));
 
-        inv.setItem(7, item(Material.BARRIER, "§4Reset Économie"));
+        // 💥 RESET
+        inv.setItem(8, item(Material.BARRIER, "§4Reset Économie",
+                "§7Remet les prix de base"));
 
         p.openInventory(inv);
     }

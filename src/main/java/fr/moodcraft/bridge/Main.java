@@ -40,6 +40,10 @@ public class Main extends JavaPlugin {
 
         // 🔁 rebuild index shops (CRITIQUE)
         ShopIndex.rebuild();
+        // 🔁 refresh index toutes les 60 secondes
+Bukkit.getScheduler().runTaskTimer(this, () -> {
+    ShopIndex.rebuild();
+}, 20L * 60, 20L * 60);
 
         // 🔁 boucle marché (45s)
         Bukkit.getScheduler().runTaskTimer(this, () -> {

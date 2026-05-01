@@ -25,25 +25,38 @@ public class ContractListener implements org.bukkit.event.Listener {
 
         List<UUID> toRemove = new ArrayList<>();
 
-        for (Map.Entry<UUID, ContractManager.Contract> entry : ContractManager.contracts.entrySet()) {
+        // 🔒 copie pour éviter problèmes
+        for (UUID id : new ArrayList<>(ContractManager.contracts.keySet())) {
 
-            UUID id = entry.getKey();
-            var c = entry.getValue();
+            var c = ContractManager.contracts.get(id);
+            if (c == null) continue;
 
+            // =========================
             // ⏳ EXPIRATION
+            // =========================
             if (System.currentTimeMillis() > c.expireAt) {
 
                 Player from = Bukkit.getPlayerExact(c.from);
                 Player to = Bukkit.getPlayerExact(c.to);
 
-                if (from != null) from.sendMessage("§c⏳ Contrat expiré");
-                if (to != null) to.sendMessage("§c⏳ Contrat expiré");
+                if (from != null) {
+                    removeContractBook(from, id);
+                    from.sendMessage("§c⏳ Contrat expiré");
+                }
+
+                if (to != null) {
+                    removeContractBook(to, id);
+                    to.sendMessage("§c⏳ Contrat expiré");
+                }
 
                 toRemove.add(id);
                 continue;
             }
 
-            if (c == null || !c.accepted) continue;
+            // =========================
+            // 🔒 CONDITIONS
+            // =========================
+            if (!c.accepted) continue;
             if (!c.to.equalsIgnoreCase(p.getName())) continue;
 
             Material mat;
@@ -58,15 +71,21 @@ public class ContractListener implements org.bukkit.event.Listener {
 
             if (total >= c.amount) {
 
+                // 📦 retirer items
                 remove(p, mat, c.amount);
+
+                // 💰 payer
                 eco.depositPlayer(p, c.price);
 
+                // 📄 log
                 TransactionLogger.log(p.getName(),
                         "Contrat " + c.item + " x" + c.amount,
                         c.price);
 
+                // ⭐ réputation
                 ReputationManager.add(c.from, +1);
 
+                // 📜 supprimer livres
                 removeContractBook(p, id);
 
                 Player from = Bukkit.getPlayerExact(c.from);
@@ -79,6 +98,7 @@ public class ContractListener implements org.bukkit.event.Listener {
             }
         }
 
+        // 🔥 suppression après boucle
         for (UUID id : toRemove) {
             ContractManager.contracts.remove(id);
         }

@@ -1,10 +1,10 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.entity.Player;
 
 public class WelcomeListener implements Listener {
 
@@ -13,18 +13,29 @@ public class WelcomeListener implements Listener {
 
         Player p = e.getPlayer();
 
-        // ⏳ délai plus long pour être sûr (important)
-        Bukkit.getScheduler().runTaskLater(
-                Main.getInstance(),
-                () -> {
+        // 🧠 Détection Bedrock (Floodgate)
+        boolean isBedrock = false;
+        try {
+            Class<?> floodgate = Class.forName("org.geysermc.floodgate.api.FloodgateApi");
+            Object api = floodgate.getMethod("getInstance").invoke(null);
+            isBedrock = (boolean) floodgate.getMethod("isFloodgatePlayer", Player.class).invoke(api, p);
+        } catch (Exception ignored) {}
 
-                    if (!p.isOnline()) return;
+        // ⏳ délai adapté
+        long delay = isBedrock ? 60L : 30L; // Bedrock plus long
 
-                    // 🔥 ouvre TOUJOURS
-                    WelcomeGUI.open(p);
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
 
-                },
-                100L // ✅ 5 secondes (safe)
-        );
+            if (!p.isOnline()) return;
+
+            try {
+                WelcomeGUI.open(p);
+            } catch (Exception ex) {
+                // 🔥 fallback sécurité
+                p.sendMessage("§eBienvenue !");
+                ex.printStackTrace();
+            }
+
+        }, delay);
     }
 }

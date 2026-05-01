@@ -5,6 +5,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ContractGUIListener implements Listener {
@@ -19,34 +21,42 @@ public class ContractGUIListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getCurrentItem() == null) return;
 
-        int slot = e.getSlot();
-
-        int index = 0;
+        List<UUID> list = new ArrayList<>();
 
         for (UUID id : ContractManager.contracts.keySet()) {
-
             var c = ContractManager.contracts.get(id);
-
-            if (!c.to.equalsIgnoreCase(p.getName())) continue;
-
-            if (index == slot) {
-
-                if (e.isLeftClick()) {
-                    c.accepted = true;
-                    p.sendMessage("§a✔ Contrat accepté");
-                }
-
-                if (e.isRightClick()) {
-                    ContractManager.contracts.remove(id);
-                    ReputationManager.add(c.from, -1);
-                    p.sendMessage("§c❌ Contrat refusé");
-                }
-
-                ContractGUI.open(p);
-                return;
+            if (c != null && c.to.equalsIgnoreCase(p.getName())) {
+                list.add(id);
             }
-
-            index++;
         }
+
+        int slot = e.getSlot();
+
+        if (slot < 0 || slot >= list.size()) return;
+
+        UUID id = list.get(slot);
+        var c = ContractManager.contracts.get(id);
+
+        if (c == null) return;
+
+        // ✔ ACCEPT
+        if (e.isLeftClick()) {
+
+            c.accepted = true;
+
+            p.sendMessage("§a✔ Contrat accepté");
+        }
+
+        // ❌ REFUSE
+        if (e.isRightClick()) {
+
+            ContractManager.contracts.remove(id);
+
+            ReputationManager.add(c.from, -1);
+
+            p.sendMessage("§c❌ Contrat refusé");
+        }
+
+        ContractGUI.open(p);
     }
 }

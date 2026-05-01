@@ -43,7 +43,7 @@ public class MainMenuGUI {
         } catch (Exception ignored) {}
 
         // =========================
-        // 💰 INFO GLOBAL
+        // 💰 COMPTES
         // =========================
         inv.setItem(4, ItemBuilder.of(Material.GOLD_INGOT, "§e💰 Comptes",
                 "§7💵 Portefeuille: §a" + balance + "€",
@@ -58,7 +58,7 @@ public class MainMenuGUI {
         // =========================
         // 📊 Marché
         // =========================
-        inv.setItem(10, ItemBuilder.of(Material.GOLD_INGOT, "§6📊 Marché",
+        inv.setItem(10, ItemBuilder.of(Material.EMERALD, "§6💹 Marché",
                 "§7Prix dynamiques en temps réel",
                 "§aAcheter = prix ↑",
                 "§cVendre = prix ↓",
@@ -66,9 +66,9 @@ public class MainMenuGUI {
                 "§8Clique pour ouvrir"));
 
         // =========================
-        // 🏙️ Ville
+        // 🏙️ Ville (🔥 BRICKS)
         // =========================
-        inv.setItem(11, ItemBuilder.of(Material.EMERALD_BLOCK, "§a🏙️ Ville",
+        inv.setItem(11, ItemBuilder.of(Material.BRICKS, "§a🏙️ Ville",
                 "§7Gestion Towny",
                 "§7Influence l'économie",
                 "",
@@ -86,7 +86,7 @@ public class MainMenuGUI {
         // =========================
         // 📜 Quêtes
         // =========================
-        inv.setItem(13, ItemBuilder.of(Material.MAP, "§e📜 Quêtes",
+        inv.setItem(13, ItemBuilder.of(Material.WRITABLE_BOOK, "§e📜 Quêtes",
                 "§7Missions et récompenses",
                 "",
                 "§8Clique pour ouvrir"));
@@ -113,7 +113,7 @@ public class MainMenuGUI {
         // 🔥 ADMIN
         // =========================
         if (p.hasPermission("econ.admin")) {
-            inv.setItem(22, ItemBuilder.of(Material.BEACON, "§c⚙️ Admin",
+            inv.setItem(22, ItemBuilder.of(Material.REDSTONE_BLOCK, "§c⚙️ Admin",
                     "§7Contrôle économie",
                     "",
                     "§8Clique pour ouvrir"));

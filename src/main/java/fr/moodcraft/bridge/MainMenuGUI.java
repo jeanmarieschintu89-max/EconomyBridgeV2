@@ -43,7 +43,7 @@ public class MainMenuGUI {
         } catch (Exception ignored) {}
 
         // =========================
-        // 💰 COMPTES (TOP)
+        // 💰 COMPTES
         // =========================
         inv.setItem(4, ItemBuilder.of(Material.GOLD_INGOT, "§e💰 Comptes",
                 "§7💵 Portefeuille: §a" + balance + "€",
@@ -55,30 +55,46 @@ public class MainMenuGUI {
                 "§8Clique pour gérer"));
 
         // =========================
-        // 🎮 GAMEPLAY
+        // 📈 BOURSE (MODIFIÉ)
         // =========================
-        inv.setItem(10, ItemBuilder.of(Material.EMERALD, "§6💹 Marché",
-                "§7Acheter / vendre",
+        inv.setItem(10, ItemBuilder.of(Material.EMERALD, "§6📈 Bourse des Minerais",
+                "§7Vends tes ressources",
+                "§7selon le marché dynamique",
+                "",
                 "§8Clique pour ouvrir"));
 
+        // =========================
+        // 🏙️ VILLE (MODIFIÉ)
+        // =========================
         inv.setItem(11, ItemBuilder.of(Material.BRICKS, "§a🏙️ Ville",
-                "§7Gestion Towny",
+                "§7Menu de gestion de ville",
+                "§7Towny & économie locale",
+                "",
                 "§8Clique pour ouvrir"));
 
+        // =========================
+        // ⚒️ Jobs
+        // =========================
         inv.setItem(12, ItemBuilder.of(Material.IRON_PICKAXE, "§7⚒️ Jobs",
                 "§7Gagner de l'argent",
                 "§8Clique pour ouvrir"));
 
+        // =========================
+        // 📜 Quêtes
+        // =========================
         inv.setItem(13, ItemBuilder.of(Material.WRITABLE_BOOK, "§e📜 Quêtes",
                 "§7Missions",
                 "§8Clique pour ouvrir"));
 
+        // =========================
+        // 🏦 Banque
+        // =========================
         inv.setItem(14, ItemBuilder.of(Material.ENDER_CHEST, "§b🏦 Banque",
                 "§7Gérer ton argent",
                 "§8Clique pour ouvrir"));
 
         // =========================
-        // 🧭 TELEPORTATION (IMPORTANT)
+        // 🧭 TELEPORTATION
         // =========================
         inv.setItem(15, ItemBuilder.of(Material.COMPASS, "§b🧭 Téléportation",
                 "§7Se déplacer rapidement",

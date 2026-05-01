@@ -14,10 +14,10 @@ public class Main extends JavaPlugin {
 
         getLogger().info("🚀 EconomyBridge démarrage...");
 
-        // 📦 Config
+        // 📦 Charger config
         saveDefaultConfig();
 
-        // 🧠 Init marché
+        // 🧠 Initialisation du marché
         MarketEngine.init(getConfig());
 
         // 🔌 Listeners
@@ -25,10 +25,10 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new MineListener(), this);
         Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
 
-        // 🔄 Index immédiat (IMPORTANT)
+        // 🔄 Index immédiat (CRUCIAL)
         ShopIndex.rebuild();
 
-        // 🔄 Refresh index
+        // 🔄 Refresh index toutes les 60s
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
 
         // 📜 Commandes
@@ -36,7 +36,11 @@ public class Main extends JavaPlugin {
             getCommand("prix").setExecutor(new PrixCommand());
         }
 
-        // (optionnel si tu veux garder ta commande trend)
+        if (getCommand("syncprix") != null) {
+            getCommand("syncprix").setExecutor(new SyncCommand());
+        }
+
+        // optionnel (si tu gardes ta commande trend)
         if (getCommand("trend") != null) {
             getCommand("trend").setExecutor(new GetTrendCommand());
         }

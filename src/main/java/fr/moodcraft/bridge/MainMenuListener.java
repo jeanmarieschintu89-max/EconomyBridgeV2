@@ -1,97 +1,59 @@
-package fr.moodcraft.bridge;
+switch (e.getSlot()) {
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.entity.Player;
+    // 💰 Comptes
+    case 4 -> {
+        p.closeInventory();
+        BankGUI.open(p);
+    }
 
-public class MainMenuListener implements Listener {
+    // 📈 Marché
+    case 10 -> {
+        p.closeInventory();
+        p.performCommand("prix");
+    }
 
-    @EventHandler
-    public void click(InventoryClickEvent e) {
+    // 🏦 Banque
+    case 11 -> {
+        p.closeInventory();
+        BankGUI.open(p);
+    }
 
-        // 🔒 Vérifie le bon GUI
-        if (!e.getView().getTitle().equals("§6🏠 Menu Principal")) return;
+    // 📄 Contrats (🔥 FIX)
+    case 12 -> {
+        p.closeInventory();
+        p.performCommand("contrats");
+    }
 
-        // 🔒 Clique uniquement dans le menu
-        if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+    // 🏙️ Ville
+    case 14 -> {
+        p.closeInventory();
+        p.performCommand("townmenu");
+    }
 
-        e.setCancelled(true);
+    // ⚒️ Jobs (🔥 déplacé)
+    case 15 -> {
+        p.closeInventory();
+        p.performCommand("jobs join");
+    }
 
-        // 🔒 joueur uniquement
-        if (!(e.getWhoClicked() instanceof Player p)) return;
+    // 🧭 Téléport
+    case 16 -> {
+        p.closeInventory();
+        TeleportGUI.open(p);
+    }
 
-        // 🔒 item valide
-        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
+    // ℹ️ Infos
+    case 21 -> {
+        p.sendMessage("§7💡 Astuce: achète bas, vends haut !");
+    }
 
-        // 🔊 feedback
-        p.playSound(p.getLocation(), "ui.button.click", 1f, 1f);
-
-        switch (e.getSlot()) {
-
-            // 💰 Comptes → ouvre banque
-            case 4 -> {
-                p.closeInventory();
-                BankGUI.open(p);
-            }
-
-            // 📊 Marché
-            case 10 -> {
-                p.closeInventory();
-                p.performCommand("prix");
-            }
-
-            // 🏙️ Ville
-            case 11 -> {
-                p.closeInventory();
-                p.performCommand("townmenu");
-            }
-
-            // ⚒️ Jobs
-            case 12 -> {
-                p.closeInventory();
-                p.performCommand("jobs join");
-            }
-
-            // 📜 Quêtes
-            case 13 -> {
-                p.closeInventory();
-                p.performCommand("quests");
-            }
-
-            // 🏦 Banque
-            case 14 -> {
-                p.closeInventory();
-                BankGUI.open(p);
-            }
-
-            // 🧭 Téléportation
-            case 15 -> {
-                p.closeInventory();
-                TeleportGUI.open(p);
-            }
-
-            // ℹ️ Infos
-            case 16 -> {
-                p.sendMessage("§7💡 Astuce: achète bas, vends haut !");
-            }
-
-            // 📄 CONTRATS (AJOUT 🔥)
-            case 17 -> {
-                p.closeInventory();
-                p.performCommand("contrats");
-            }
-
-            // 🔥 Admin
-            case 22 -> {
-                if (p.hasPermission("econ.admin")) {
-                    p.closeInventory();
-                    p.performCommand("banqueadmin");
-                } else {
-                    p.sendMessage("§c❌ Accès refusé.");
-                }
-            }
+    // 🔥 Admin
+    case 23 -> {
+        if (p.hasPermission("econ.admin")) {
+            p.closeInventory();
+            p.performCommand("banqueadmin");
+        } else {
+            p.sendMessage("§c❌ Accès refusé.");
         }
     }
 }

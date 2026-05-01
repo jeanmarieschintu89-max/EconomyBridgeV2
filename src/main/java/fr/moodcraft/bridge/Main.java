@@ -14,6 +14,7 @@ public class Main extends JavaPlugin {
 
         getLogger().info("🚀 EconomyBridge démarrage...");
 
+        // 📦 Config
         saveDefaultConfig();
 
         // 🧠 Init marché
@@ -22,14 +23,30 @@ public class Main extends JavaPlugin {
         // 🔌 Listeners
         Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
         Bukkit.getPluginManager().registerEvents(new MineListener(), this);
+        Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
 
-        // 🔄 INDEX IMMÉDIAT (FIX IMPORTANT)
+        // 🔄 Index immédiat (IMPORTANT)
         ShopIndex.rebuild();
 
-        // 🔄 Rebuild toutes les 60s
+        // 🔄 Refresh index
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
 
+        // 📜 Commandes
+        if (getCommand("prix") != null) {
+            getCommand("prix").setExecutor(new PrixCommand());
+        }
+
+        // (optionnel si tu veux garder ta commande trend)
+        if (getCommand("trend") != null) {
+            getCommand("trend").setExecutor(new GetTrendCommand());
+        }
+
         getLogger().info("✅ Marché chargé (FULL JAVA)");
+    }
+
+    @Override
+    public void onDisable() {
+        getLogger().info("🛑 EconomyBridge arrêté");
     }
 
     public static Main getInstance() {

@@ -5,6 +5,14 @@ on:
     branches: [ "main" ]
   pull_request:
 
+  # 🔴 BOUTON MANUEL
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version du build (optionnel)"
+        required: false
+        default: "manual"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -52,3 +60,14 @@ jobs:
         with:
           name: EconomyBridgeV2
           path: target/*.jar
+
+      # 🚀 Release automatique (push main OU bouton)
+      - name: Create Release
+        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Build ${{ github.run_number }} (${{ github.event.inputs.version }})
+          files: target/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

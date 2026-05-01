@@ -29,7 +29,10 @@ public class ContractListener implements org.bukkit.event.Listener {
             UUID id = entry.getKey();
             var c = entry.getValue();
 
-            if (c == null || !c.accepted) continue;
+            // 🔒 CONDITIONS IMPORTANTES
+            if (c == null) continue;
+            if (!c.accepted) continue;
+            if (!c.signed) continue; // 🔥 SIGNATURE OBLIGATOIRE
             if (!c.to.equalsIgnoreCase(p.getName())) continue;
 
             Material mat;
@@ -58,9 +61,10 @@ public class ContractListener implements org.bukkit.event.Listener {
                 // ⭐ réputation
                 ReputationManager.add(c.from, +1);
 
-                // 📜 SUPPRESSION LIVRE
+                // 📜 SUPPRESSION LIVRE (joueur)
                 removeContractBook(p, id);
 
+                // 📜 SUPPRESSION LIVRE (créateur)
                 Player from = org.bukkit.Bukkit.getPlayerExact(c.from);
                 if (from != null) {
                     removeContractBook(from, id);
@@ -75,11 +79,15 @@ public class ContractListener implements org.bukkit.event.Listener {
             }
         }
 
+        // 🔥 suppression propre
         for (UUID id : toRemove) {
             ContractManager.contracts.remove(id);
         }
     }
 
+    // =========================
+    // 📜 SUPPRESSION LIVRE
+    // =========================
     private static void removeContractBook(Player p, UUID id) {
 
         for (ItemStack item : p.getInventory()) {
@@ -97,6 +105,9 @@ public class ContractListener implements org.bukkit.event.Listener {
         }
     }
 
+    // =========================
+    // 📦 COUNT
+    // =========================
     private static int count(Player p, Material mat) {
         int total = 0;
         for (ItemStack item : p.getInventory()) {
@@ -107,6 +118,9 @@ public class ContractListener implements org.bukkit.event.Listener {
         return total;
     }
 
+    // =========================
+    // 📦 REMOVE
+    // =========================
     private static void remove(Player p, Material mat, int amount) {
         p.getInventory().removeItem(new ItemStack(mat, amount));
     }

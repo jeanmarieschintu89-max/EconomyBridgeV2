@@ -21,6 +21,9 @@ public class Main extends JavaPlugin {
         // 📁 CONFIG
         saveDefaultConfig();
 
+        // 💾 INIT STOCKAGE BANQUE
+        BankStorage.init();
+
         // 🔄 LOAD DATA
         loadBase();
         loadSection("activity", MarketState.activity);
@@ -63,7 +66,16 @@ public class Main extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
         Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20L, 20L * 45);
 
-        getLogger().info("✅ EconomyBridge FULL JAVA chargé avec GUI avancé");
+        getLogger().info("✅ EconomyBridge FULL JAVA chargé avec sauvegarde active");
+    }
+
+    @Override
+    public void onDisable() {
+
+        // 💾 SAVE BANQUE
+        BankStorage.save();
+
+        getLogger().info("💾 Données sauvegardées");
     }
 
     // =========================

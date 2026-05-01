@@ -41,6 +41,7 @@ public class Main extends JavaPlugin {
         getCommand("trend").setExecutor(new GetTrendCommand());
         getCommand("ecoreset").setExecutor(new EcoResetCommand());
         getCommand("ecotest").setExecutor(new EcoTestCommand());
+        getCommand("ecoreload").setExecutor(new EcoReloadCommand());
 
         // 🔥 AJOUT COMMANDE BANQUE
         getCommand("banqueadmin").setExecutor(new BanqueAdminCommand());

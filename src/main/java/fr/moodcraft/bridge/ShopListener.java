@@ -1,28 +1,22 @@
 package fr.moodcraft.bridge;
 
+import com.ghostchu.quickshop.api.event.economy.ShopPurchaseEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import com.ghostchu.quickshop.api.event.economy.ShopPurchaseEvent;
 
 public class ShopListener implements Listener {
 
     @EventHandler
-    public void onBuy(ShopPurchaseEvent e) {
+    public void onBuy(ShopPurchaseEvent event) {
 
-        String item = ItemNormalizer.normalize(
-                e.getShop().getItem().getType().name().toLowerCase()
-        );
+        String item = ItemNormalizer.normalize(event.getShop().getItem().getType());
 
-        int amount = e.getAmount();
+        if (!PriceUpdater.ALLOWED.contains(item)) return;
 
-        if (!MarketState.price.containsKey(item)) return;
+        int amount = event.getAmount();
 
-        if (e.getShop().isBuying()) {
-            MarketEngine.applySell(item, amount);
-        } else {
-            MarketEngine.applyBuy(item, amount);
-        }
+        MarketState.buy.merge(item, (double) amount, Double::sum);
 
-        PriceUpdater.updateSingle(e.getShop(), item);
+        PriceUpdater.updateSingle(event.getShop(), item);
     }
 }

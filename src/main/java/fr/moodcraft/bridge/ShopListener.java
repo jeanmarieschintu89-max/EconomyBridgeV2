@@ -22,24 +22,40 @@ public class ShopListener implements Listener {
         if (item == null) return;
         if (!PriceUpdater.ALLOWED.contains(item)) return;
 
-        Bukkit.getLogger().info("[Market] Achat: " + item + " x" + amount);
+        String player = event.getPlayer().getName();
+
+        // 💰 PRIX TOTAL
+        double pricePerItem = event.getShop().getPrice();
+        double total = pricePerItem * amount;
 
         // =========================
-        // 📈 BOOST ACHAT (IMPORTANT)
+        // 📄 LOG TRANSACTION
         // =========================
-        int boosted = amount * 3; // ← tu peux ajuster (2 à 5)
+        if (event.getShop().isBuying()) {
+            // Le shop ACHÈTE → joueur VEND
+            TransactionLogger.log(player, "Vente", total);
+        } else {
+            // Le shop VEND → joueur ACHÈTE
+            TransactionLogger.log(player, "Achat", total);
+        }
 
+        Bukkit.getLogger().info("[Market] " + player + " " +
+                (event.getShop().isBuying() ? "vend" : "achète") +
+                " " + item + " x" + amount + " (" + total + "€)");
+
+        // =========================
+        // 📈 BOOST ACHAT
+        // =========================
+        int boosted = amount * 3;
         MarketEngine.applyBuy(item, boosted);
 
         // =========================
-        // 📦 STOCK (ACHAT = DIMINUTION)
+        // 📦 STOCK
         // =========================
         double weight = MarketState.weight.getOrDefault(item, 1.0);
 
-        // ⚠️ ACHAT = enlève du marché
         MarketState.stock.merge(item, -weight * amount, Double::sum);
 
-        // évite stock négatif extrême
         if (MarketState.stock.get(item) < -10000) {
             MarketState.stock.put(item, -10000.0);
         }

@@ -83,3 +83,37 @@ engine:
     boost: 0.002
     exponent: 1.2
     max_boost: 0.05
+
+# =========================
+# 🔥 RARETÉ PAR ITEM (NOUVEAU)
+# =========================
+
+rarity_settings:
+  netherite:
+    boost: 0.004
+    exponent: 1.5
+    max_boost: 0.08
+
+  emerald:
+    boost: 0.003
+    exponent: 1.4
+
+  diamond:
+    boost: 0.0025
+    exponent: 1.2
+
+  gold:
+    boost: 0.002
+    exponent: 1.1
+
+  iron:
+    boost: 0.0018
+    exponent: 1.1
+
+  copper:
+    boost: 0.0015
+    exponent: 1.05
+
+  coal:
+    boost: 0.0005
+    exponent: 1.0

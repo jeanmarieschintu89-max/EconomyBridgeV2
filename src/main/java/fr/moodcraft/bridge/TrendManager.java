@@ -12,14 +12,13 @@ public class TrendManager {
         double diff = newPrice - old;
         double percent = (old == 0) ? 0 : (diff / old) * 100;
 
-        diff = round(diff);
         percent = round(percent);
 
         String result;
 
-        if (diff > 0) {
+        if (percent > 0) {
             result = percent > 5 ? "§2⬆ +" + percent + "%" : "§a⬆ +" + percent + "%";
-        } else if (diff < 0) {
+        } else if (percent < 0) {
             result = percent < -5 ? "§4⬇ " + percent + "%" : "§c⬇ " + percent + "%";
         } else {
             result = "§7➡ stable";

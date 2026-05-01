@@ -11,12 +11,10 @@ public class BanqueAdminCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         // ❌ console non autorisée
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player p)) {
             sender.sendMessage("§cCommande joueur uniquement.");
             return true;
         }
-
-        Player p = (Player) sender;
 
         // 🔐 permission
         if (!p.hasPermission("econ.admin")) {
@@ -24,7 +22,44 @@ public class BanqueAdminCommand implements CommandExecutor {
             return true;
         }
 
-        // 🏦 ouverture GUI
+        // =========================
+        // ⚙️ SOUS-COMMANDES
+        // =========================
+        if (args.length > 0) {
+
+            switch (args[0].toLowerCase()) {
+
+                case "reload" -> {
+                    Main plugin = Main.getInstance();
+
+                    plugin.reloadConfig();
+
+                    p.sendMessage("§b✔ Config rechargée");
+                    return true;
+                }
+
+                case "reset" -> {
+                    for (String item : MarketState.base.keySet()) {
+                        double base = MarketState.base.get(item);
+                        MarketState.setPrice(item, base);
+                        PriceUpdater.updateItem(item);
+                    }
+
+                    p.sendMessage("§4✔ Économie reset");
+                    return true;
+                }
+
+                default -> {
+                    p.sendMessage("§cUsage: /banqueadmin [reload|reset]");
+                    return true;
+                }
+            }
+        }
+
+        // =========================
+        // 🏦 GUI
+        // =========================
+        p.closeInventory();
         BanqueAdminGUI.open(p);
 
         return true;

@@ -24,14 +24,29 @@ public class ShopListener implements Listener {
 
         Bukkit.getLogger().info("[Market] Achat: " + item + " x" + amount);
 
-        // 📊 impact marché
-        MarketEngine.applyBuy(item, amount);
+        // =========================
+        // 📈 BOOST ACHAT (IMPORTANT)
+        // =========================
+        int boosted = amount * 3; // ← tu peux ajuster (2 à 5)
 
-        // 📦 stock (config weight)
+        MarketEngine.applyBuy(item, boosted);
+
+        // =========================
+        // 📦 STOCK (ACHAT = DIMINUTION)
+        // =========================
         double weight = MarketState.weight.getOrDefault(item, 1.0);
-        MarketState.stock.merge(item, weight * amount, Double::sum);
 
-        // ⚡ update instant
+        // ⚠️ ACHAT = enlève du marché
+        MarketState.stock.merge(item, -weight * amount, Double::sum);
+
+        // évite stock négatif extrême
+        if (MarketState.stock.get(item) < -10000) {
+            MarketState.stock.put(item, -10000.0);
+        }
+
+        // =========================
+        // ⚡ UPDATE SHOP
+        // =========================
         PriceUpdater.updateSingle(event.getShop(), item);
     }
 }

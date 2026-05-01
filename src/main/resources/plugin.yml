@@ -16,3 +16,7 @@ commands:
   ecoreset:
   description: Reset complet de l'économie
   permission: op
+
+  banqueadmin:
+  description: Banque admin
+  permission: op

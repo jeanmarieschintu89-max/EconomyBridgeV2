@@ -50,6 +50,10 @@ commands:
     description: Voir les transactions bancaires
     usage: /transactions [joueur]
     permission: econ.use
+  iban:
+    description: Voir son IBAN
+    usage: /iban [joueur]
+    permission: econ.use
 
 permissions:
   econ.admin:

@@ -22,8 +22,15 @@ public class ShopListener implements Listener {
         if (item == null) return;
         if (!PriceUpdater.ALLOWED.contains(item)) return;
 
-        // ✅ FIX API QUICKSHOP
-        String player = event.getPurchaser().getName();
+        // ✅ FIX QUICKSHOP (QUser → UUID → nom joueur)
+        String player = "Inconnu";
+
+        if (event.getPurchaser() != null) {
+            var offline = Bukkit.getOfflinePlayer(event.getPurchaser().getUniqueId());
+            if (offline.getName() != null) {
+                player = offline.getName();
+            }
+        }
 
         double price = event.getShop().getPrice();
         double total = price * amount;

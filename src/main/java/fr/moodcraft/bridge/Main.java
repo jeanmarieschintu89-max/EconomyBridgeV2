@@ -83,6 +83,7 @@ public class Main extends JavaPlugin {
         // 📄 CONTRATS
         registerCommand("contrataccept", new ContractAcceptCommand());
         registerCommand("contrats", new ContractMenuCommand());
+        registerCommand("delcontrat", new ContractDeleteCommand());
 
         // =========================
         // 🔁 INIT MARKET

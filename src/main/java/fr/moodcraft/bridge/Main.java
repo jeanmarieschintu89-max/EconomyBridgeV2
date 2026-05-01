@@ -47,6 +47,8 @@ Bukkit.getPluginManager().registerEvents(new WelcomeListener(), this);
 Bukkit.getPluginManager().registerEvents(new MainMenuListener(), this);
 getCommand("menu").setExecutor(new MenuCommand());
 
+Bukkit.getPluginManager().registerEvents(new BankListener(), this);
+
         // =========================
         // 📜 COMMANDES
         // =========================

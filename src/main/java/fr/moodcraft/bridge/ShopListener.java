@@ -29,9 +29,15 @@ public class ShopListener implements Listener {
             }
         }
 
-        // ✅ PRIX RÉEL QUICKSHOP
-        double total = event.getTransaction().getTotalPrice();
-        double price = total / amount;
+        // 💰 PRIX QUICKSHOP
+        double price = event.getShop().getPrice();
+
+        // 🔥 FIX 0€
+        if (price <= 0) {
+            price = MarketEngine.getPrice(item);
+        }
+
+        double total = price * amount;
 
         // 📄 LOG
         if (event.getShop().isBuying()) {

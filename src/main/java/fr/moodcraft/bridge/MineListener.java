@@ -9,13 +9,10 @@ public class MineListener implements Listener {
     @EventHandler
     public void onMine(BlockBreakEvent e) {
 
-        String raw = e.getBlock().getType().name().toLowerCase();
-        String item = ItemNormalizer.normalize(raw);
+        String item = ItemNormalizer.normalizeBlock(e.getBlock());
 
-        if (!MarketState.price.containsKey(item)) return;
+        if (item == null) return;
 
-        double weight = Main.getInstance().getConfig().getDouble("weight." + item, 1);
-
-        MarketState.stock.merge(item, weight, Double::sum);
+        MarketState.stock.merge(item, 1.0, Double::sum);
     }
 }

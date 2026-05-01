@@ -16,12 +16,11 @@ public class ShopListener implements Listener {
 
         int amount = Math.max(1, event.getAmount());
 
-        // ✅ ITEM PROPRE (plus de unknown)
         String item = event.getShop().getItem().getType().name().toLowerCase();
 
         if (!PriceUpdater.ALLOWED.contains(item)) return;
 
-        // ✅ JOUEUR (QuickShop API)
+        // 👤 joueur
         String player = "Inconnu";
         if (event.getPurchaser() != null) {
             var offline = Bukkit.getOfflinePlayer(event.getPurchaser().getUniqueId());
@@ -30,11 +29,11 @@ public class ShopListener implements Listener {
             }
         }
 
-        // ✅ PRIX FIABLE (MarketEngine au lieu de QuickShop)
-        double price = Math.max(0.01, MarketEngine.getPrice(item));
-        double total = price * amount;
+        // ✅ PRIX RÉEL QUICKSHOP
+        double total = event.getTransaction().getTotalPrice();
+        double price = total / amount;
 
-        // 📄 LOG TRANSACTION
+        // 📄 LOG
         if (event.getShop().isBuying()) {
             TransactionLogger.log(player, "Vente " + item + " x" + amount, total);
         } else {
@@ -45,7 +44,7 @@ public class ShopListener implements Listener {
                 (event.getShop().isBuying() ? "vend" : "achète") +
                 " " + item + " x" + amount + " (" + total + "€)");
 
-        // 📈 IMPACT MARCHÉ
+        // 📈 IMPACT
         int boosted = amount * 3;
         MarketEngine.applyBuy(item, boosted);
 
@@ -57,7 +56,6 @@ public class ShopListener implements Listener {
             MarketState.stock.put(item, -10000.0);
         }
 
-        // 🔄 UPDATE SHOP
         PriceUpdater.updateSingle(event.getShop(), item);
     }
 }

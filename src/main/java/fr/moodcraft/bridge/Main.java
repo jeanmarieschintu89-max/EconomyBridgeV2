@@ -36,6 +36,7 @@ public class Main extends JavaPlugin {
         getCommand("prix").setExecutor(new PrixCommand());
         getCommand("syncprix").setExecutor(new SyncCommand());
         getCommand("trend").setExecutor(new GetTrendCommand());
+        getCommand("ecoreset").setExecutor(new EcoResetCommand());
 
         // 🔁 rebuild index shops (CRITIQUE)
         ShopIndex.rebuild();

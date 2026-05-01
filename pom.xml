@@ -28,7 +28,13 @@
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
 
-        <!-- GitHub Packages (TES JARS) -->
+        <!-- JitPack (Vault) -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+
+        <!-- GitHub Packages -->
         <repository>
             <id>github</id>
             <url>https://maven.pkg.github.com/jeanmarieschintu89-max/EconomyBridgeV2</url>
@@ -47,7 +53,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- QuickShop (depuis GitHub Packages) -->
+        <!-- QuickShop -->
         <dependency>
             <groupId>com.quickshop</groupId>
             <artifactId>quickshop</artifactId>
@@ -55,11 +61,19 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Skript (depuis GitHub Packages) -->
+        <!-- Skript -->
         <dependency>
             <groupId>com.skript</groupId>
             <artifactId>skript</artifactId>
             <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 🔥 VAULT (FIX ERREUR) -->
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
             <scope>provided</scope>
         </dependency>
 

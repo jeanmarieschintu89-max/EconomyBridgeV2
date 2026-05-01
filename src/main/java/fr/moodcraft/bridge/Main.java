@@ -53,7 +53,7 @@ public class Main extends JavaPlugin {
                 new MainMenuListener(),
                 new BankListener(),
                 new TeleportListener(),
-                new BankHistoryListener(),
+                new BankHistoryListener() // ✅ plus de virgule ici
         );
 
         // =========================
@@ -69,6 +69,7 @@ public class Main extends JavaPlugin {
         registerCommand("menu", new MenuCommand());
         registerCommand("transactions", new TransactionsCommand());
         registerCommand("iban", new IbanCommand());
+        registerCommand("ibanpay", new IbanPayCommand()); // 💸 virement
 
         // =========================
         // 🔁 INIT MARKET
@@ -78,7 +79,7 @@ public class Main extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
         Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20L, 20L * 45);
 
-        getLogger().info("✅ EconomyBridge chargé avec banque + logs + welcome GUI + TP");
+        getLogger().info("✅ EconomyBridge chargé avec banque + logs + welcome GUI + TP + IBAN");
     }
 
     @Override

@@ -42,3 +42,6 @@ permissions:
   econ.use:
     description: Utiliser le marché
     default: true
+
+  menu:
+    description: Ouvre le menu principal

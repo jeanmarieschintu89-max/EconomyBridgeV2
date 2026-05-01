@@ -6,6 +6,11 @@ api-version: 1.20
 depend: [Vault]
 
 commands:
+
+  contrataccept:
+    description: Accepter un contrat
+    usage: /contrataccept <id>
+    permission: econ.use
   prix:
     description: Ouvre le marché
     usage: /prix

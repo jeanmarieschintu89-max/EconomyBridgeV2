@@ -52,7 +52,7 @@ public class MainMenuGUI {
         // =========================
         // 💰 COMPTES
         // =========================
-        inv.setItem(4, ItemBuilder.of(Material.GOLD_INGOT, "§e💰 Comptes",
+        inv.setItem(4, ItemBuilder.of(Material.CLOCK, "§e💰 Comptes",
                 "§7💵 Portefeuille: §a" + money + "€",
                 "§7🏦 Banque: §b" + bankMoney + "€",
                 "",
@@ -73,7 +73,7 @@ public class MainMenuGUI {
         // =========================
         // 🏙️ VILLE
         // =========================
-        inv.setItem(11, ItemBuilder.of(Material.BRICKS, "§a🏙️ Ville",
+        inv.setItem(11, ItemBuilder.of(Material.BELL, "§a🏙️ Ville",
                 "§7Menu de gestion de ville",
                 "§7Towny & économie locale",
                 "",
@@ -89,12 +89,12 @@ public class MainMenuGUI {
         // =========================
         // 📜 Quêtes
         // =========================
-        inv.setItem(13, ItemBuilder.of(Material.WRITABLE_BOOK, "§e📜 Quêtes",
+        inv.setItem(13, ItemBuilder.of(Material.BOOK, "§e📜 Quêtes",
                 "§7Missions",
                 "§8Clique pour ouvrir"));
 
         // =========================
-        // 🏦 BANQUE (SANS HISTORIQUE)
+        // 🏦 BANQUE
         // =========================
         inv.setItem(14, ItemBuilder.of(Material.ENDER_CHEST, "§b🏦 Compte en banque",
                 "§7Gérer ton compte en banque",
@@ -123,6 +123,19 @@ public class MainMenuGUI {
         // =========================
         inv.setItem(16, ItemBuilder.of(Material.BOOK, "§dℹ️ Infos",
                 "§7💡 Achète bas, vends haut"));
+
+        // =========================
+        // 📄 CONTRATS (AJOUT 🔥)
+        // =========================
+        inv.setItem(17, ItemBuilder.of(Material.PAPER, "§6📄 Contrats",
+                "§7Créer et gérer tes accords",
+                "§7avec les autres joueurs",
+                "",
+                "§7✔ Livraison",
+                "§7✔ Paiement sécurisé",
+                "§7✔ Réputation",
+                "",
+                "§8Clique pour ouvrir"));
 
         // =========================
         // 🔥 ADMIN

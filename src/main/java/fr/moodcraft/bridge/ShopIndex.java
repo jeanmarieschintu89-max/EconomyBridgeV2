@@ -14,18 +14,13 @@ public final class ShopIndex {
 
     public static void rebuild() {
         INDEX.clear();
-        Collection<Shop> shops = QuickShopAPI.getInstance().getShopManager().getAllShops();
+
+        Collection<Shop> shops = QuickShopAPI.getInstance()
+                .getShopManager()
+                .getAllShops();
 
         for (Shop s : shops) {
-
-            String key = normalize(s.getItem().getType().name().toLowerCase());
-
-            // 🛑 FILTRE ULTRA IMPORTANT
-            if (!PriceUpdater.ALLOWED.contains(key)) {
-                continue;
-            }
-
-            INDEX.computeIfAbsent(key, k -> ConcurrentHashMap.newKeySet()).add(s);
+            add(s);
         }
     }
 
@@ -34,38 +29,31 @@ public final class ShopIndex {
     }
 
     public static void add(Shop s) {
-        String key = normalize(s.getItem().getType().name().toLowerCase());
+
+        if (s == null || s.getItem() == null) return;
+
+        String key = ItemNormalizer.normalize(
+                s.getItem().getType().name().toLowerCase()
+        );
 
         if (!PriceUpdater.ALLOWED.contains(key)) return;
 
-        INDEX.computeIfAbsent(key, k -> ConcurrentHashMap.newKeySet()).add(s);
+        INDEX.computeIfAbsent(key, k -> ConcurrentHashMap.newKeySet())
+             .add(s);
     }
 
     public static void remove(Shop s) {
-        String key = normalize(s.getItem().getType().name().toLowerCase());
+
+        if (s == null || s.getItem() == null) return;
+
+        String key = ItemNormalizer.normalize(
+                s.getItem().getType().name().toLowerCase()
+        );
+
         Set<Shop> set = INDEX.get(key);
-        if (set != null) set.remove(s);
-    }
 
-    // 🔥 IMPORTANT : static
-    private static String normalize(String mat) {
-
-        switch (mat) {
-            case "diamond": return "diamond";
-            case "emerald": return "emerald";
-            case "gold_ingot": return "gold";
-            case "iron_ingot": return "iron";
-            case "copper_ingot": return "copper";
-            case "coal":
-            case "charcoal": return "coal";
-            case "lapis_lazuli": return "lapis";
-            case "redstone": return "redstone";
-            case "quartz": return "quartz";
-            case "amethyst_shard": return "amethyst";
-            case "netherite_ingot": return "netherite";
-            case "glowstone_dust": return "glowstone";
+        if (set != null) {
+            set.removeIf(shop -> shop == null || shop.isDeleted());
         }
-
-        return mat;
     }
 }

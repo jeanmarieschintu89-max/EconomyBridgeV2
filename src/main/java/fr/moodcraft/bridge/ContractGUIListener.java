@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -14,10 +15,8 @@ public class ContractGUIListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        // 🔒 Vérifie GUI
         if (!e.getView().getTitle().equals("§6📄 Contrats")) return;
 
-        // 🔒 Clique uniquement dans le menu
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
@@ -59,7 +58,21 @@ public class ContractGUIListener implements Listener {
 
         // ✔ ACCEPT
         if (e.isLeftClick()) {
+
             c.accepted = true;
+
+            // 📜 LIVRE CONTRAT
+            var book = ContractItem.create(id, c);
+
+            // donner au joueur
+            p.getInventory().addItem(book.clone());
+
+            // donner au créateur
+            Player from = Bukkit.getPlayerExact(c.from);
+            if (from != null) {
+                from.getInventory().addItem(book.clone());
+            }
+
             p.sendMessage("§a✔ Contrat accepté");
         }
 

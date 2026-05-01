@@ -7,6 +7,10 @@ depend: [Vault]
 
 commands:
 
+  contrats:
+    description: Voir les contrats
+    usage: /contrats
+  permission: econ.use
   contrataccept:
     description: Accepter un contrat
     usage: /contrataccept <id>

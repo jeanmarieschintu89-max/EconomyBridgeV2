@@ -11,16 +11,20 @@ public class MainMenuGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6Menu Principal");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6🏠 Menu Principal");
 
         Economy eco = VaultHook.getEconomy();
         double balance = eco != null ? eco.getBalance(p) : 0;
 
-        // 💰 INFO JOUEUR
-        inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§e💰 Ton Argent",
-                "§7Solde: §a" + balance + "€",
+        String id = p.getUniqueId().toString();
+        double bank = BankStorage.get(id);
+
+        // 🟡 INFO JOUEUR (PORTFEUILLE + BANQUE)
+        inv.setItem(4, ItemBuilder.of(Material.GOLD_INGOT, "§e💰 Comptes",
+                "§7💵 Portefeuille: §a" + balance + "€",
+                "§7🏦 Banque: §b" + bank + "€",
                 "",
-                "§8Gagne avec jobs et quêtes"));
+                "§8Clique pour gérer"));
 
         // 📊 Marché
         inv.setItem(10, ItemBuilder.of(Material.GOLD_INGOT, "§6📊 Marché",
@@ -50,9 +54,10 @@ public class MainMenuGUI {
                 "",
                 "§8Clique pour ouvrir"));
 
-        // 💰 Banque joueur
-        inv.setItem(14, ItemBuilder.of(Material.CHEST, "§b💰 Banque",
+        // 🏦 Banque joueur
+        inv.setItem(14, ItemBuilder.of(Material.ENDER_CHEST, "§b🏦 Banque",
                 "§7Déposer / retirer de l'argent",
+                "§7Gérer ton compte bancaire",
                 "",
                 "§8Clique pour ouvrir"));
 
@@ -70,6 +75,12 @@ public class MainMenuGUI {
                     "",
                     "§8Clique pour ouvrir"));
         }
+
+        // 🧱 DÉCO (effet propre)
+        inv.setItem(0, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
+        inv.setItem(8, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
+        inv.setItem(18, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
+        inv.setItem(26, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
 
         p.openInventory(inv);
     }

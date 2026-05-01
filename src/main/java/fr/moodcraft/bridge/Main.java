@@ -31,49 +31,56 @@ public class Main extends JavaPlugin {
         // =========================
         // 📦 LISTENERS
         // =========================
-        Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
-        Bukkit.getPluginManager().registerEvents(new MineListener(), this);
-        Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
-
-Bukkit.getPluginManager().registerEvents(new WelcomeListener(), this);
-
-        // 🏦 GUI ADMIN
-        Bukkit.getPluginManager().registerEvents(new BanqueAdminListener(), this);
-        Bukkit.getPluginManager().registerEvents(new BanqueConfigListener(), this);
-
-        // 🆕 MENU PAR ITEM
-        Bukkit.getPluginManager().registerEvents(new BanqueItemListener(), this);
-
-Bukkit.getPluginManager().registerEvents(new MainMenuListener(), this);
-getCommand("menu").setExecutor(new MenuCommand());
-
-Bukkit.getPluginManager().registerEvents(new BankListener(), this);
+        registerEvents(
+                new ShopListener(),
+                new MineListener(),
+                new GUIListener(),
+                new WelcomeListener(),
+                new BanqueAdminListener(),
+                new BanqueConfigListener(),
+                new BanqueItemListener(),
+                new MainMenuListener(),
+                new BankListener()
+        );
 
         // =========================
         // 📜 COMMANDES
         // =========================
-        getCommand("prix").setExecutor(new PrixCommand());
-        getCommand("syncprix").setExecutor(new SyncCommand());
-        getCommand("trend").setExecutor(new GetTrendCommand());
-        getCommand("ecoreset").setExecutor(new EcoResetCommand());
-        getCommand("ecotest").setExecutor(new EcoTestCommand());
-        getCommand("ecoreload").setExecutor(new EcoReloadCommand());
-
-        // 🏦 ADMIN
-        getCommand("banqueadmin").setExecutor(new BanqueAdminCommand());
+        registerCommand("prix", new PrixCommand());
+        registerCommand("syncprix", new SyncCommand());
+        registerCommand("trend", new GetTrendCommand());
+        registerCommand("ecoreset", new EcoResetCommand());
+        registerCommand("ecotest", new EcoTestCommand());
+        registerCommand("ecoreload", new EcoReloadCommand());
+        registerCommand("banqueadmin", new BanqueAdminCommand());
+        registerCommand("menu", new MenuCommand());
 
         // =========================
         // 🔁 INIT MARKET
         // =========================
         ShopIndex.rebuild();
 
-        // 🔁 Refresh index toutes les 60s
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
-
-        // 🔁 Tick marché toutes les 45s
         Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20L, 20L * 45);
 
         getLogger().info("✅ EconomyBridge FULL JAVA chargé avec GUI avancé");
+    }
+
+    // =========================
+    // 🔧 MÉTHODES UTILITAIRES
+    // =========================
+    private void registerEvents(org.bukkit.event.Listener... listeners) {
+        for (var listener : listeners) {
+            Bukkit.getPluginManager().registerEvents(listener, this);
+        }
+    }
+
+    private void registerCommand(String name, org.bukkit.command.CommandExecutor executor) {
+        if (getCommand(name) != null) {
+            getCommand(name).setExecutor(executor);
+        } else {
+            getLogger().warning("❌ Commande non trouvée: " + name + " (plugin.yml ?)");
+        }
     }
 
     // =========================

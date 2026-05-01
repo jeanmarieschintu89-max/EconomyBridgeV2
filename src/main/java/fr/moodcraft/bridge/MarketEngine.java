@@ -16,6 +16,21 @@ public final class MarketEngine {
 
     public static void tick() {
 
+        var cfg = Main.getInstance().getConfig();
+
+        double baseReturn = cfg.getDouble("engine.base_return", 0.006);
+        double maxChangeFactor = cfg.getDouble("engine.max_change", 0.15);
+        double activityCapFactor = cfg.getDouble("engine.activity_cap", 0.02);
+        double stockDecay = cfg.getDouble("engine.stock_decay", 0.85);
+
+        double minFactor = cfg.getDouble("engine.min_price_factor", 0.5);
+        double maxFactor = cfg.getDouble("engine.max_price_factor", 2.5);
+
+        boolean rarityEnabled = cfg.getBoolean("engine.rarity.enabled", true);
+        double rarityBoost = cfg.getDouble("engine.rarity.boost", 0.002);
+        double rarityExp = cfg.getDouble("engine.rarity.exponent", 1.2);
+        double rarityMax = cfg.getDouble("engine.rarity.max_boost", 0.05);
+
         for (String item : MarketState.base.keySet()) {
 
             double price = MarketState.getPrice(item);
@@ -25,39 +40,42 @@ public final class MarketEngine {
             double sell = MarketState.sell.getOrDefault(item, 0.0);
 
             // =========================
-            // 📉 / 📈 ACTIVITY FIX
+            // 📊 ACTIVITY
             // =========================
             double coef = MarketState.activity.getOrDefault(item, 0.001);
             double activity = Math.sqrt(stock + 1) * coef;
 
-            double maxActivity = price * 0.02;
+            double maxActivity = price * activityCapFactor;
             if (activity > maxActivity) activity = maxActivity;
 
-            if (sell > 0) {
-                price -= activity;
-            }
+            if (sell > 0) price -= activity;
+            if (buy > 0) price += activity;
 
-            if (buy > 0) {
-                price += activity;
+            // =========================
+            // 🌟 RARITY CONFIG
+            // =========================
+            if (rarityEnabled) {
+
+                double rare = MarketState.rarity.getOrDefault(item, 10.0);
+
+                if (stock < rare) {
+
+                    double ratio = (rare - stock) / rare;
+                    double boost = Math.pow(ratio, rarityExp) * rarityBoost;
+
+                    if (boost > rarityMax) boost = rarityMax;
+
+                    price += base * boost;
+                }
             }
 
             // =========================
-            // 🌟 RARITY
-            // =========================
-            double rare = MarketState.rarity.getOrDefault(item, 10.0);
-
-            if (stock < rare) {
-                price += base * 0.002;
-            }
-
-            // =========================
-            // 💥 IMPACT (FIX MAJEUR)
+            // 💥 IMPACT
             // =========================
             double div = MarketState.impact.getOrDefault(item, 20.0);
-
             double delta = (buy - sell) / div;
 
-            double maxChange = price * 0.15;
+            double maxChange = price * maxChangeFactor;
 
             if (delta > maxChange) delta = maxChange;
             if (delta < -maxChange) delta = -maxChange;
@@ -67,13 +85,12 @@ public final class MarketEngine {
             // =========================
             // 🔄 RETOUR BASE
             // =========================
-            price += (base - price) * 0.006;
+            price += (base - price) * baseReturn;
 
             // =========================
             // 🧹 STOCK DECAY
             // =========================
-            stock *= 0.85;
-
+            stock *= stockDecay;
             if (stock > 10000) stock = 10000;
 
             MarketState.stock.put(item, stock);
@@ -81,26 +98,22 @@ public final class MarketEngine {
             // =========================
             // 🧱 LIMITES
             // =========================
-            double min = base * 0.5;
-            double max = base * 2.5;
+            double min = base * minFactor;
+            double max = base * maxFactor;
 
             if (price < min) price = min;
             if (price > max) price = max;
-
             if (price < 1) price = 1;
 
             price = round(price);
 
             MarketState.setPrice(item, price);
 
-            // 📈 trend
             TrendManager.updateTrend(item, price);
 
-            // 🔄 reset activité
             MarketState.buy.put(item, 0.0);
             MarketState.sell.put(item, 0.0);
 
-            // ⚡ sync shops
             PriceUpdater.updateItem(item);
         }
     }

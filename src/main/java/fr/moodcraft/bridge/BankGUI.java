@@ -16,11 +16,11 @@ public class BankGUI {
 
         String id = p.getUniqueId().toString();
         double bank = BankStorage.get(id);
-        String iban = BankStorage.getIban(id); // 🔥 AJOUT
+        String iban = BankStorage.getIban(id);
 
         Inventory inv = Bukkit.createInventory(null, 9, "§6Banque");
 
-        // 💰 Comptes + IBAN
+        // 🏦 Compte bancaire
         inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§e🏦 Compte bancaire",
                 "§7IBAN: §b" + iban,
                 "",
@@ -29,21 +29,15 @@ public class BankGUI {
 
         // ➖ Retirer
         inv.setItem(2, ItemBuilder.of(Material.REDSTONE, "§cRetirer 1000€",
-                "§7Prend depuis la banque"));
+                "§7Banque → Joueur"));
 
         // ➕ Déposer
         inv.setItem(6, ItemBuilder.of(Material.EMERALD, "§aDéposer 1000€",
-                "§7Ajoute à la banque"));
-
-        // 💳 Carte bancaire RP (option mais stylé)
-        inv.setItem(0, ItemBuilder.of(Material.PAPER, "§f💳 Carte bancaire",
-                "§7Titulaire: §e" + p.getName(),
-                "§7IBAN: §b" + iban,
-                "",
-                "§8Objet RP"));
+                "§7Joueur → Banque"));
 
         // 🔄 Refresh
-        inv.setItem(8, ItemBuilder.of(Material.BARRIER, "§7Rafraîchir"));
+        inv.setItem(8, ItemBuilder.of(Material.BARRIER, "§7Rafraîchir",
+                "§8Met à jour les valeurs"));
 
         p.openInventory(inv);
     }

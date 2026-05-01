@@ -71,10 +71,15 @@ rarity:
 engine:
   base_return: 0.006
   max_change: 0.15
-  rarity_boost: 0.002
   activity_cap: 0.02
 
   min_price_factor: 0.5
   max_price_factor: 2.5
 
   stock_decay: 0.85
+
+  rarity:
+    enabled: true
+    boost: 0.002
+    exponent: 1.2
+    max_boost: 0.05

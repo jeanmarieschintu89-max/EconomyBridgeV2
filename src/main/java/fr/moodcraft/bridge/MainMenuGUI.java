@@ -21,13 +21,12 @@ public class MainMenuGUI {
         String id = p.getUniqueId().toString();
         double bank = BankStorage.get(id);
 
-        // 🎯 FORMAT ARGENT
         DecimalFormat df = new DecimalFormat("#,##0.00");
         String money = df.format(balance).replace(",", " ");
         String bankMoney = df.format(bank).replace(",", " ");
 
         // =========================
-        // 🏙️ VILLE SAFE
+        // 🏙️ VILLE (SAFE)
         // =========================
         String townName = "Aucune";
         double townBalance = 0;
@@ -50,7 +49,7 @@ public class MainMenuGUI {
         } catch (Exception ignored) {}
 
         // =========================
-        // 💰 COMPTES
+        // 💰 COMPTES (CENTRE HAUT)
         // =========================
         inv.setItem(4, ItemBuilder.of(Material.CLOCK, "§e💰 Comptes",
                 "§7💵 Portefeuille: §a" + money + "€",
@@ -62,74 +61,26 @@ public class MainMenuGUI {
                 "§8Clique pour gérer"));
 
         // =========================
-        // 📈 BOURSE
+        // 📈 MARCHÉ
         // =========================
-        inv.setItem(10, ItemBuilder.of(Material.EMERALD, "§6📈 Bourse des Minerais",
-                "§7Vends tes ressources",
-                "§7selon le marché dynamique",
+        inv.setItem(10, ItemBuilder.of(Material.EMERALD, "§6📈 Marché",
+                "§7Acheter / vendre ressources",
                 "",
-                "§8Clique pour ouvrir"));
-
-        // =========================
-        // 🏙️ VILLE
-        // =========================
-        inv.setItem(11, ItemBuilder.of(Material.BELL, "§a🏙️ Ville",
-                "§7Menu de gestion de ville",
-                "§7Towny & économie locale",
-                "",
-                "§8Clique pour ouvrir"));
-
-        // =========================
-        // ⚒️ Jobs
-        // =========================
-        inv.setItem(12, ItemBuilder.of(Material.IRON_PICKAXE, "§7⚒️ Jobs",
-                "§7Gagner de l'argent",
-                "§8Clique pour ouvrir"));
-
-        // =========================
-        // 📜 Quêtes
-        // =========================
-        inv.setItem(13, ItemBuilder.of(Material.BOOK, "§e📜 Quêtes",
-                "§7Missions",
                 "§8Clique pour ouvrir"));
 
         // =========================
         // 🏦 BANQUE
         // =========================
-        inv.setItem(14, ItemBuilder.of(Material.ENDER_CHEST, "§b🏦 Compte en banque",
-                "§7Gérer ton compte en banque",
-                "",
-                "§7💵 Portefeuille: §a" + money + "€",
-                "§7🏦 Banque: §b" + bankMoney + "€",
+        inv.setItem(11, ItemBuilder.of(Material.ENDER_CHEST, "§b🏦 Banque",
+                "§7Gérer ton argent",
                 "",
                 "§8Clique pour ouvrir"));
 
         // =========================
-        // 🧭 TELEPORTATION
+        // 📄 CONTRATS
         // =========================
-        inv.setItem(15, ItemBuilder.of(Material.COMPASS, "§b🧭 Téléportation",
-                "§7Se déplacer rapidement",
-                "",
-                "§7- Ressources",
-                "§7- Shop",
-                "§7- Mini-jeux",
-                "§7- Spawn",
-                "§7- Ville",
-                "",
-                "§8Clique pour ouvrir"));
-
-        // =========================
-        // ℹ️ INFOS
-        // =========================
-        inv.setItem(16, ItemBuilder.of(Material.BOOK, "§dℹ️ Infos",
-                "§7💡 Achète bas, vends haut"));
-
-        // =========================
-        // 📄 CONTRATS (AJOUT 🔥)
-        // =========================
-        inv.setItem(17, ItemBuilder.of(Material.PAPER, "§6📄 Contrats",
+        inv.setItem(12, ItemBuilder.of(Material.WRITTEN_BOOK, "§6📄 Contrats",
                 "§7Créer et gérer tes accords",
-                "§7avec les autres joueurs",
                 "",
                 "§7✔ Livraison",
                 "§7✔ Paiement sécurisé",
@@ -138,21 +89,51 @@ public class MainMenuGUI {
                 "§8Clique pour ouvrir"));
 
         // =========================
+        // 🏙️ VILLE
+        // =========================
+        inv.setItem(14, ItemBuilder.of(Material.BELL, "§a🏙️ Ville",
+                "§7Gestion Towny",
+                "",
+                "§8Clique pour ouvrir"));
+
+        // =========================
+        // ⚒️ JOBS
+        // =========================
+        inv.setItem(15, ItemBuilder.of(Material.IRON_PICKAXE, "§7⚒️ Jobs",
+                "§7Gagner de l'argent",
+                "",
+                "§8Clique pour ouvrir"));
+
+        // =========================
+        // 🧭 TELEPORT
+        // =========================
+        inv.setItem(16, ItemBuilder.of(Material.COMPASS, "§b🧭 Téléportation",
+                "§7Se déplacer rapidement",
+                "",
+                "§8Clique pour ouvrir"));
+
+        // =========================
+        // ℹ️ INFOS
+        // =========================
+        inv.setItem(21, ItemBuilder.of(Material.BOOK, "§dℹ️ Infos",
+                "§7💡 Achète bas, vends haut"));
+
+        // =========================
         // 🔥 ADMIN
         // =========================
         if (p.hasPermission("econ.admin")) {
-            inv.setItem(22, ItemBuilder.of(Material.REDSTONE_BLOCK, "§c⚙️ Admin",
+            inv.setItem(23, ItemBuilder.of(Material.REDSTONE_BLOCK, "§c⚙️ Admin",
                     "§7Gestion économie",
+                    "",
                     "§8Clique pour ouvrir"));
         }
 
         // =========================
-        // 🧱 DECO
+        // 🧱 DECO CLEAN
         // =========================
-        inv.setItem(0, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
-        inv.setItem(8, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
-        inv.setItem(18, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
-        inv.setItem(26, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
+        for (int i : new int[]{0,1,2,3,5,6,7,8,18,19,20,22,24,25,26}) {
+            inv.setItem(i, ItemBuilder.of(Material.GRAY_STAINED_GLASS_PANE, " "));
+        }
 
         p.openInventory(inv);
     }

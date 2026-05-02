@@ -1,8 +1,7 @@
-
 name: Build Plugin
 
 on:
-  workflow_dispatch: # 🔘 bouton manuel
+  workflow_dispatch:
   push:
     branches: [ "main" ]
 
@@ -21,6 +20,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+          cache: maven
 
       # 🔐 Auth GitHub Packages
       - name: Setup Maven auth
@@ -33,11 +33,15 @@ jobs:
               "password": "${{ secrets.GITHUB_TOKEN }}"
             }]
 
-      # 📦 Build
-      - name: Build with Maven
-        run: mvn clean package
+      # 💣 FIX CRITIQUE → supprime Vault corrompu
+      - name: Fix Vault cache
+        run: rm -rf ~/.m2/repository/com/github/MilkBowl
 
-      # 📤 Upload .jar (downloadable)
+      # 🔄 Force re-download dépendances
+      - name: Build with Maven
+        run: mvn clean package -U
+
+      # 📤 Upload .jar
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:

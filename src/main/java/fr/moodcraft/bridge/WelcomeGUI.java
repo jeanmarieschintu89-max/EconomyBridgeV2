@@ -4,103 +4,42 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import net.milkbowl.vault.economy.Economy;
-
-import java.util.Arrays;
 
 public class WelcomeGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§8Bienvenue");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6Bienvenue");
 
-        try {
+        SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.SUNFLOWER, "§eTon profil",
+                "§8────────",
+                "§7Reputation:",
+                ReputationManager.format(p.getName())));
 
-            Economy eco = VaultHook.getEconomy();
-            double balance = eco != null ? eco.getBalance(p) : 0;
+        SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.GOLD_INGOT, "§6Economie",
+                "§8────────",
+                "§7Marché dynamique",
+                "§aAcheter ↑",
+                "§cVendre ↓"));
 
-            // 💰 ARGENT
-            inv.setItem(4, item(Material.SUNFLOWER, "§fComptes",
-                    "§8────────",
-                    "§7Solde:",
-                    "§f" + format(balance) + "€",
-                    "",
-                    "§7Utilise /menu"));
+        SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.IRON_PICKAXE, "§7Jobs",
+                "§8────────",
+                "§7Travaille pour gagner"));
 
-            // 📈 BOURSE
-            inv.setItem(10, item(Material.GOLD_INGOT, "§fBourse",
-                    "§8────────",
-                    "§7Prix dynamiques",
-                    "",
-                    "§7Acheter → monte",
-                    "§7Vendre → baisse",
-                    "",
-                    "§7Fais du profit"));
+        SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.MAP, "§eQuetes",
+                "§8────────",
+                "§7Missions et récompenses"));
 
-            // ⚒️ JOBS
-            inv.setItem(12, item(Material.IRON_PICKAXE, "§fJobs",
-                    "§8────────",
-                    "§7Travaille pour gagner",
-                    "",
-                    "§7Influence la bourse"));
+        SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.EMERALD_BLOCK, "§aVilles",
+                "§8────────",
+                "§7Développe ta ville"));
 
-            // 📜 QUÊTES
-            inv.setItem(14, item(Material.MAP, "§fQuetes",
-                    "§8────────",
-                    "§7Missions disponibles",
-                    "",
-                    "§7Gagne des rewards"));
+        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.NETHER_STAR, "§bMenu",
+                "§8────────",
+                "§7Ouvrir le menu principal"));
 
-            // 🏙️ VILLES
-            inv.setItem(16, item(Material.EMERALD_BLOCK, "§fVilles",
-                    "§8────────",
-                    "§7Gestion territoire",
-                    "",
-                    "§7Developpe ton empire"));
-
-            // 🎮 MENU PRINCIPAL
-            inv.setItem(22, item(Material.NETHER_STAR, "§fMenu",
-                    "§8────────",
-                    "§7Acces principal",
-                    "",
-                    "§8Ouvrir"));
-
-            // ❌ FERMER
-            inv.setItem(26, item(Material.BARRIER, "§fFermer",
-                    "§8────────",
-                    "§7Fermer ce menu"));
-
-        } catch (Exception ex) {
-            inv.clear();
-            inv.setItem(13, new ItemStack(Material.DIAMOND));
-            p.sendMessage("§7Bienvenue sur le serveur");
-            ex.printStackTrace();
-        }
+        SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.BARRIER, "§cFermer"));
 
         p.openInventory(inv);
-    }
-
-    private static ItemStack item(Material mat, String name, String... lore) {
-        ItemStack it = new ItemStack(mat);
-        ItemMeta meta = it.getItemMeta();
-
-        if (meta != null) {
-            meta.setDisplayName("§r" + name);
-
-            if (lore != null && lore.length > 0) {
-                meta.setLore(Arrays.asList(lore));
-            }
-
-            it.setItemMeta(meta);
-        }
-
-        return it;
-    }
-
-    private static String format(double v) {
-        return String.format("%.2f", v);
     }
 }

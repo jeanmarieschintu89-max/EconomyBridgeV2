@@ -11,14 +11,14 @@ public class MainMenuGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6Menu");
+        Inventory inv = Bukkit.createInventory(null, 27, "§fMenu"); // 🔥 moins agressif
 
         try {
 
             Economy eco = VaultHook.getEconomy();
             double balance = eco != null ? eco.getBalance(p) : 0;
             double bank = BankStorage.get(p.getUniqueId().toString());
-            double total = balance + bank; // 🔥 AJOUT
+            double total = balance + bank;
 
             // 💰 COMPTES (slot 4)
             SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.CLOCK, "§eComptes",
@@ -36,7 +36,7 @@ public class MainMenuGUI {
                     "§8Clique pour ouvrir"));
 
             // 📈 BOURSE (slot 10)
-            SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.GOLD_INGOT, "§6Bourse Minerais",
+            SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.GOLD_INGOT, "§eBourse Minerais", // 🔥 FIX
                     "§8────────────",
                     "§7Prix influencés",
                     "§7par les joueurs",
@@ -57,7 +57,7 @@ public class MainMenuGUI {
                     "§8Clique pour ouvrir"));
 
             // 📄 CONTRATS (slot 12)
-            SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.WRITTEN_BOOK, "§6Contrats",
+            SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.WRITTEN_BOOK, "§eContrats", // 🔥 FIX
                     "§8────────────",
                     "§7Accords entre joueurs",
                     "",

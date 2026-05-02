@@ -11,19 +11,24 @@ public class BanqueConfigListener implements Listener {
     public void onClick(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
+        if (title == null) return;
 
-        // 🔥 FIX TITRE (compatible couleurs + Bedrock)
-        if (title == null || !title.contains("Configuration")) return;
+        // 🔥 NORMALISATION (anti couleurs / Bedrock)
+        String clean = title.replaceAll("§.", "");
+
+        // 🔒 MATCH STRICT
+        if (!clean.equalsIgnoreCase("Configuration Marché")) return;
 
         if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
+        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        int slot = e.getRawSlot(); // 🔥 FIX IMPORTANT
-        if (slot > 8) return;
+        int slot = e.getRawSlot();
 
         boolean shift = e.isShiftClick();
         double step = shift ? 0.2 : 0.05;
@@ -78,7 +83,7 @@ public class BanqueConfigListener implements Listener {
 
         applyLive();
 
-        // 🔥 refresh propre (IMPORTANT)
+        // 🔄 refresh GUI
         BanqueConfigGUI.open(p);
     }
 

@@ -30,7 +30,7 @@ public class Main extends JavaPlugin {
         TransactionLogger.init();
         ReputationManager.init();
         ContractHistoryManager.init();
-        MarketStorage.init(); // 🔥 persistance marché
+        MarketStorage.init();
 
         // =========================
         // 🔄 LOAD DATA
@@ -48,20 +48,34 @@ public class Main extends JavaPlugin {
                 new ShopListener(),
                 new MineListener(),
                 new GUIListener(),
+
                 new WelcomeListener(),
                 new WelcomeClickListener(),
+
+                // 🏦 BANQUE
+                new BankListener(),
+                new BankHistoryListener(),
+                new BanqueItemListener(), // carte bancaire
+
+                // 📊 ADMIN / CONFIG
                 new BanqueAdminListener(),
                 new BanqueConfigListener(),
-                new BanqueItemListener(),
+
+                // 🔥 ITEMS MARCHÉ (AJOUT IMPORTANT)
+                new BanqueItemListListener(),
+                new BanqueItemGUIListener(),
+
+                // 📋 MENUS
                 new MainMenuListener(),
-                new BankListener(),
                 new TeleportListener(),
+
+                // 💸 ECONOMIE
                 new PayListener(),
-                // ❌ ContractListener supprimé (plus un Listener)
+
+                // 📄 CONTRATS
                 new ContractSignListener(),
                 new ContractCreateListener(),
-                new ContractGUIListener(),
-                new BankHistoryListener()
+                new ContractGUIListener()
         );
 
         // =========================
@@ -70,11 +84,14 @@ public class Main extends JavaPlugin {
         registerCommand("prix", new PrixCommand());
         registerCommand("syncprix", new SyncCommand());
         registerCommand("trend", new GetTrendCommand());
+
         registerCommand("ecoreset", new EcoResetCommand());
         registerCommand("ecotest", new EcoTestCommand());
         registerCommand("ecoreload", new EcoReloadCommand());
+
         registerCommand("banqueadmin", new BanqueAdminCommand());
         registerCommand("menu", new MenuCommand());
+
         registerCommand("transactions", new TransactionsCommand());
         registerCommand("iban", new IbanCommand());
         registerCommand("ibanpay", new IbanPayCommand());
@@ -96,27 +113,24 @@ public class Main extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
         Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20L, 20L * 45);
 
-        // 🔥 LANCEMENT AUTO DES CONTRATS
+        // 🔥 CONTRATS AUTO
         ContractListener.start();
 
-        getLogger().info("✅ EconomyBridge chargé avec économie persistante + contrats + réputation + historique");
+        getLogger().info("✅ EconomyBridge chargé (version clean)");
     }
 
     @Override
     public void onDisable() {
 
-        // =========================
-        // 💾 SAVE DATA
-        // =========================
         BankStorage.save();
         ReputationManager.save();
-        MarketStorage.save(); // 🔥 sauvegarde marché
+        MarketStorage.save();
 
-        getLogger().info("💾 Données sauvegardées correctement");
+        getLogger().info("💾 Données sauvegardées");
     }
 
     // =========================
-    // 🔧 UTILITAIRES
+    // 🔧 UTILS
     // =========================
     private void registerEvents(org.bukkit.event.Listener... listeners) {
         for (var listener : listeners) {
@@ -132,9 +146,6 @@ public class Main extends JavaPlugin {
         }
     }
 
-    // =========================
-    // 📊 LOAD BASE (SAFE)
-    // =========================
     private void loadBase() {
 
         if (getConfig().getConfigurationSection("base") == null) return;
@@ -145,7 +156,6 @@ public class Main extends JavaPlugin {
 
             MarketState.base.put(key, value);
 
-            // 🔥 NE PAS ÉCRASER LES PRIX SAUVEGARDÉS
             if (!MarketState.price.containsKey(key)) {
                 MarketState.price.put(key, value);
             }
@@ -156,9 +166,6 @@ public class Main extends JavaPlugin {
         }
     }
 
-    // =========================
-    // 📊 LOAD SECTIONS
-    // =========================
     private void loadSection(String path, Map<String, Double> map) {
 
         if (getConfig().getConfigurationSection(path) == null) return;

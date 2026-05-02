@@ -15,7 +15,8 @@ public class ContractGUIListener implements Listener {
 
         String title = e.getView().getTitle();
 
-        if (title == null || !title.contains("Contrats")) return;
+        // 🔒 FIX STRICT
+        if (title == null || !title.equals("§eContrats")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -26,14 +27,12 @@ public class ContractGUIListener implements Listener {
 
         int slot = e.getRawSlot();
 
-        // ➕ CREATION
         if (slot == 49) {
             p.closeInventory();
             ContractCreateGUI.open(p);
             return;
         }
 
-        // 🔁 LISTE
         List<UUID> list = new ArrayList<>();
 
         for (UUID id : ContractManager.contracts.keySet()) {
@@ -58,7 +57,6 @@ public class ContractGUIListener implements Listener {
 
         if (c == null) return;
 
-        // ✔ ACCEPTER
         if (row == 1) {
 
             c.accepted = true;
@@ -75,7 +73,6 @@ public class ContractGUIListener implements Listener {
             p.sendMessage("§a✔ Contrat accepté");
         }
 
-        // ❌ REFUSER
         else if (row == 2) {
 
             ContractManager.contracts.remove(id);
@@ -84,7 +81,6 @@ public class ContractGUIListener implements Listener {
             p.sendMessage("§cContrat refusé");
         }
 
-        // 🗑 ANNULER
         else if (row == 3) {
 
             ContractManager.contracts.remove(id);

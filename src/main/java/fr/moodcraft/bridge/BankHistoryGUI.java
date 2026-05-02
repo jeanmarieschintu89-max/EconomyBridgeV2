@@ -28,34 +28,67 @@ public class BankHistoryGUI {
         for (int i = logs.size() - 1; i >= 0 && slot < 21; i--) {
 
             try {
+
+                // 🔥 BON FORMAT
                 String[] parts = logs.get(i).split("\\|\\|");
-                String date = parts[0];
-                String[] data = parts[1].split("\\|");
 
-                String type = data[0];
-                String item = data.length > 1 ? data[1] : "paper";
-                double total = data.length > 4 ? Double.parseDouble(data[4]) : 0;
+                String date = parts.length > 0 ? parts[0] : "??";
+                String type = parts.length > 1 ? parts[1] : "Inconnu";
 
-                Material mat;
+                double amount = 0;
                 try {
-                    mat = Material.valueOf(item.toUpperCase());
-                } catch (Exception e) {
-                    mat = Material.PAPER;
+                    amount = parts.length > 2 ? Double.parseDouble(parts[2]) : 0;
+                } catch (Exception ignored) {}
+
+                // 🎨 couleur + signe
+                String color = "§7";
+                String sign = "";
+
+                if (type.contains("Vente")) {
+                    color = "§a";
+                    sign = "+";
                 }
+                else if (type.contains("Depot")) {
+                    color = "§b";
+                    sign = "+";
+                }
+                else if (type.contains("Retrait")) {
+                    color = "§e";
+                    sign = "-";
+                }
+                else if (type.contains("Achat")) {
+                    color = "§c";
+                    sign = "-";
+                }
+
+                // 🎯 matériau
+                Material mat = Material.PAPER;
+
+                if (type.contains("Vente")) mat = Material.EMERALD;
+                else if (type.contains("Achat")) mat = Material.REDSTONE;
+                else if (type.contains("Depot")) mat = Material.GOLD_INGOT;
+                else if (type.contains("Retrait")) mat = Material.IRON_INGOT;
 
                 SafeGUI.safeSet(inv, slot,
                         SafeGUI.item(mat,
-                                (type.equalsIgnoreCase("VENTE") ? "§a" : "§c") + type,
-                                "§7" + item,
-                                "§6" + df.format(total) + "€",
-                                "§8" + date));
+                                "§eTransaction",
+                                "§8────────",
+                                "§7Type: §f" + type,
+                                "§7Montant: " + color + sign + df.format(amount) + "€",
+                                "",
+                                "§7Date:",
+                                "§f" + date,
+                                "§8────────"
+                        ));
 
                 slot++;
 
             } catch (Exception ignored) {}
         }
 
-        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.BARRIER, "§cRetour"));
+        // 🔙 retour
+        SafeGUI.safeSet(inv, 22,
+                SafeGUI.item(Material.BARRIER, "§cRetour"));
 
         p.openInventory(inv);
     }

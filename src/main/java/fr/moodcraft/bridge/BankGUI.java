@@ -23,71 +23,67 @@ public class BankGUI {
 
         // 📤 IBAN
         inv.setItem(0, ItemBuilder.of(Material.NAME_TAG, "§bIBAN",
-                "§8────────────",
-                "§7Afficher ton IBAN",
+                "§8──────────── §7",
+                "§7Afficher ton IBAN §7",
                 "",
-                "§8Clique"));
+                "§8Clique §7"));
 
         // 💸 RETRAIT
         inv.setItem(1, ItemBuilder.of(Material.REDSTONE, "§cRetirer 1000€",
-                "§8────────────",
-                "§7Banque → Portefeuille",
+                "§8──────────── §7",
+                "§7Banque → Portefeuille §7",
                 "",
-                "§e-1000€",
+                "§e-1000€ §7",
                 "",
-                "§8Clique"));
+                "§8Clique §7"));
 
         // 💸 VIREMENT
         inv.setItem(2, ItemBuilder.of(Material.PAPER, "§eVirement",
-                "§8────────────",
-                "§7Envoyer de l'argent",
-                "§7à un joueur",
+                "§8──────────── §7",
+                "§7Envoyer de l'argent §7",
+                "§7à un joueur §7",
                 "",
-                "§7Via IBAN",
+                "§7Via IBAN §7",
                 "",
-                "§8Clique"));
+                "§8Clique §7"));
 
         // 💰 COMPTE
         inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§eCompte",
-                "§8────────────",
-                "§7Situation financière",
+                "§8──────────── §7",
+                "§7Situation financière §7",
                 "",
-                "§aArgent: §f" + format(balance) + "€",
-                "§bBanque: §f" + format(bank) + "€",
+                "§aArgent: §f" + SafeGUI.money(balance),
+                "§bBanque: §f" + SafeGUI.money(bank),
                 "",
-                "§eTotal: §f" + format(total) + "€",
+                "§eTotal: §f" + SafeGUI.money(total),
                 "",
-                "§7Statut:",
-                ReputationManager.format(p.getName())
+                "§7Statut: §7",
+                ReputationManager.format(p.getName()) + " §7"
         ));
 
         // 💰 DEPOT
         inv.setItem(6, ItemBuilder.of(Material.EMERALD, "§aDéposer 1000€",
-                "§8────────────",
-                "§7Portefeuille → Banque",
+                "§8──────────── §7",
+                "§7Portefeuille → Banque §7",
                 "",
-                "§a+1000€",
+                "§a+1000€ §7",
                 "",
-                "§8Clique"));
+                "§8Clique §7"));
 
         // 📄 HISTORIQUE
         inv.setItem(7, ItemBuilder.of(Material.BOOK, "§eHistorique",
-                "§8────────────",
-                "§7Voir tes transactions",
+                "§8──────────── §7",
+                "§7Voir tes transactions §7",
                 "",
-                "§8Clique"));
+                "§8Clique §7"));
 
         // 🔄 REFRESH
         inv.setItem(8, ItemBuilder.of(Material.BARRIER, "§7Actualiser",
-                "§8────────────",
-                "§7Mettre à jour",
+                "§8──────────── §7",
+                "§7Mettre à jour §7",
                 "",
-                "§8Clique"));
+                "§8Clique §7"));
 
         p.openInventory(inv);
-    }
-
-    private static String format(double v) {
-        return String.format("%.2f", v);
     }
 }

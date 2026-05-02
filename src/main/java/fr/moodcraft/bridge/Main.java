@@ -27,15 +27,15 @@ public class Main extends JavaPlugin {
         // 💾 STOCKAGE
         // =========================
         BankStorage.init();
-        MarketStorage.init();
         TransactionLogger.init();
         ReputationManager.init();
-        ContractHistoryManager.init(); // ✔ OK
+        ContractHistoryManager.init();
+        MarketStorage.init(); // 🔥 AJOUT IMPORTANT
 
         // =========================
         // 🔄 LOAD DATA
         // =========================
-        loadBase();
+        loadBase(); // ⚠️ corrigé plus bas
         loadSection("activity", MarketState.activity);
         loadSection("impact", MarketState.impact);
         loadSection("rarity", MarketState.rarity);
@@ -97,7 +97,7 @@ public class Main extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
         Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20L, 20L * 45);
 
-        getLogger().info("✅ EconomyBridge chargé avec économie + contrats + réputation + historique + TP + IBAN");
+        getLogger().info("✅ EconomyBridge chargé avec économie persistante + contrats + réputation + historique");
     }
 
     @Override
@@ -108,11 +108,14 @@ public class Main extends JavaPlugin {
         // =========================
         BankStorage.save();
         ReputationManager.save();
-        MarketStorage.save();
+        MarketStorage.save(); // 🔥 AJOUT IMPORTANT
 
         getLogger().info("💾 Données sauvegardées correctement");
     }
 
+    // =========================
+    // 🔧 UTILITAIRES
+    // =========================
     private void registerEvents(org.bukkit.event.Listener... listeners) {
         for (var listener : listeners) {
             Bukkit.getPluginManager().registerEvents(listener, this);
@@ -127,6 +130,9 @@ public class Main extends JavaPlugin {
         }
     }
 
+    // =========================
+    // 📊 LOAD BASE (CORRIGÉ)
+    // =========================
     private void loadBase() {
 
         if (getConfig().getConfigurationSection("base") == null) return;
@@ -136,13 +142,21 @@ public class Main extends JavaPlugin {
             double value = getConfig().getDouble("base." + key);
 
             MarketState.base.put(key, value);
-            MarketState.price.put(key, value);
-            MarketState.stock.put(key, 0.0);
-            MarketState.buy.put(key, 0.0);
-            MarketState.sell.put(key, 0.0);
+
+            // 🔥 NE PAS ÉCRASER LES PRIX SAUVEGARDÉS
+            if (!MarketState.price.containsKey(key)) {
+                MarketState.price.put(key, value);
+            }
+
+            MarketState.stock.putIfAbsent(key, 0.0);
+            MarketState.buy.putIfAbsent(key, 0.0);
+            MarketState.sell.putIfAbsent(key, 0.0);
         }
     }
 
+    // =========================
+    // 📊 LOAD SECTIONS
+    // =========================
     private void loadSection(String path, Map<String, Double> map) {
 
         if (getConfig().getConfigurationSection(path) == null) return;

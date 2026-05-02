@@ -17,24 +17,30 @@ public class BankHistoryListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
+        if (title == null) return;
 
-        if (title == null || !title.contains("Historique")) return;
+        // 🔥 NORMALISATION (anti couleur / Bedrock)
+        String clean = title.replaceAll("§.", "");
+
+        if (!clean.equalsIgnoreCase("Historique")) return;
 
         if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
+        // 🔥 NE BLOQUE QUE TON GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        int slot = e.getRawSlot(); // 🔥 FIX PRINCIPAL
-
-        if (slot > 26) return; // 🔒 bloque inventaire joueur
+        int slot = e.getRawSlot();
 
         String name = p.getName();
         int page = pages.getOrDefault(name, 0);
 
+        // =========================
         // 🔙 RETOUR
+        // =========================
         if (slot == 22) {
             pages.remove(name);
             p.closeInventory();
@@ -42,7 +48,9 @@ public class BankHistoryListener implements Listener {
             return;
         }
 
+        // =========================
         // ⬅ PAGE PRÉCÉDENTE
+        // =========================
         if (slot == 21) {
 
             if (page > 0) {
@@ -54,7 +62,9 @@ public class BankHistoryListener implements Listener {
             return;
         }
 
+        // =========================
         // ➡ PAGE SUIVANTE
+        // =========================
         if (slot == 23) {
 
             List<String> logs = TransactionLogger.getAll(name);

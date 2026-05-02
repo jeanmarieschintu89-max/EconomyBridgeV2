@@ -36,37 +36,48 @@ public class ContractDeliverCommand implements CommandExecutor {
             return true;
         }
 
+        // Vérifie les items
         if (!worker.getInventory().contains(mat, c.amount)) {
             worker.sendMessage("§c❌ Vous n'avez pas les objets demandés");
             return true;
         }
 
-        // 🔄 transfert
+        // =========================
+        // 📦 TRANSFERT
+        // =========================
         worker.getInventory().removeItem(new ItemStack(mat, c.amount));
         owner.getInventory().addItem(new ItemStack(mat, c.amount));
 
-        // 💰 paiement
+        // =========================
+        // 💰 PAIEMENT (BANQUE)
+        // =========================
         String workerId = worker.getUniqueId().toString();
         double money = BankStorage.get(workerId);
         BankStorage.set(workerId, money + c.price);
 
-        // ⭐ RÉPUTATION (FIX)
-        ReputationManager.add(worker.getUniqueId().toString(), 1);
+        // =========================
+        // ⭐ RÉPUTATION
+        // =========================
+        ReputationManager.add(worker.getName(), 1);
 
+        // =========================
+        // ✔ FINALISATION
+        // =========================
         c.status = Contract.Status.COMPLETED;
 
         worker.sendMessage("§8────────────");
-        worker.sendMessage("§a✔ Contrat terminé !");
+        worker.sendMessage("§a[OK] Contrat terminé !");
         worker.sendMessage("§7Paiement: §a+" + c.price + "€");
-        worker.sendMessage("§7Réputation: §a+1 ⭐");
+        worker.sendMessage("§7Réputation: §a+1");
         worker.sendMessage("§8────────────");
 
         owner.sendMessage("§8────────────");
-        owner.sendMessage("§a✔ Commande reçue !");
+        owner.sendMessage("§a[OK] Commande reçue !");
         owner.sendMessage("§7Joueur: §f" + worker.getName());
         owner.sendMessage("§8────────────");
 
-        ContractManager.remove(c.id); ✔
+        // suppression
+        ContractManager.remove(c.id);
 
         return true;
     }

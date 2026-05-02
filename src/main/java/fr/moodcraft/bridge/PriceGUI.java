@@ -13,21 +13,21 @@ public class PriceGUI {
 
         try {
 
-            set(inv, p, 10, "netherite", Material.NETHERITE_INGOT, "§5◆ Netherite");
-            set(inv, p, 11, "emerald", Material.EMERALD, "§a◆ Émeraude");
-            set(inv, p, 12, "diamond", Material.DIAMOND, "§b◆ Diamant");
+            set(inv, 10, "netherite", Material.NETHERITE_INGOT, "§5◆ Netherite");
+            set(inv, 11, "emerald", Material.EMERALD, "§a◆ Émeraude");
+            set(inv, 12, "diamond", Material.DIAMOND, "§b◆ Diamant");
 
-            set(inv, p, 13, "gold", Material.GOLD_INGOT, "§6◆ Or");
-            set(inv, p, 14, "copper", Material.COPPER_INGOT, "§6◆ Cuivre");
-            set(inv, p, 15, "iron", Material.IRON_INGOT, "§7◆ Fer");
+            set(inv, 13, "gold", Material.GOLD_INGOT, "§6◆ Or");
+            set(inv, 14, "copper", Material.COPPER_INGOT, "§6◆ Cuivre");
+            set(inv, 15, "iron", Material.IRON_INGOT, "§7◆ Fer");
 
-            set(inv, p, 16, "glowstone", Material.GLOWSTONE_DUST, "§e◆ Glowstone");
+            set(inv, 16, "glowstone", Material.GLOWSTONE_DUST, "§e◆ Glowstone");
 
-            set(inv, p, 19, "quartz", Material.QUARTZ, "§f◆ Quartz");
-            set(inv, p, 20, "amethyst", Material.AMETHYST_SHARD, "§d◆ Améthyste");
-            set(inv, p, 21, "redstone", Material.REDSTONE, "§c◆ Redstone");
-            set(inv, p, 22, "lapis", Material.LAPIS_LAZULI, "§9◆ Lapis");
-            set(inv, p, 23, "coal", Material.COAL, "§8◆ Charbon");
+            set(inv, 19, "quartz", Material.QUARTZ, "§f◆ Quartz");
+            set(inv, 20, "amethyst", Material.AMETHYST_SHARD, "§d◆ Améthyste");
+            set(inv, 21, "redstone", Material.REDSTONE, "§c◆ Redstone");
+            set(inv, 22, "lapis", Material.LAPIS_LAZULI, "§9◆ Lapis");
+            set(inv, 23, "coal", Material.COAL, "§8◆ Charbon");
 
         } catch (Exception e) {
             inv.clear();
@@ -38,7 +38,7 @@ public class PriceGUI {
         p.openInventory(inv);
     }
 
-    private static void set(Inventory inv, Player p, int slot, String id, Material mat, String name) {
+    private static void set(Inventory inv, int slot, String id, Material mat, String name) {
 
         double price = MarketEngine.getPrice(id);
         String trend = MarketState.trend.getOrDefault(id, "§7▬ Stable");
@@ -52,9 +52,6 @@ public class PriceGUI {
                         "",
                         "§7Tendance:",
                         trend,
-                        "",
-                        "§7Reputation:",
-                        ReputationManager.format(p.getName()),
                         "§8────────────",
                         "",
                         "§aClique pour vendre"));

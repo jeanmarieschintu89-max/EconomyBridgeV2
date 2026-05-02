@@ -43,7 +43,6 @@ public class BankHistoryGUI {
                     amount = parts.length > 2 ? Double.parseDouble(parts[2]) : 0;
                 } catch (Exception ignored) {}
 
-                // 🎨 couleurs + signes
                 String color = "§7";
                 String sign = "";
 
@@ -61,7 +60,6 @@ public class BankHistoryGUI {
                     sign = "-";
                 }
 
-                // 🎯 icône
                 Material mat = Material.PAPER;
 
                 if (type.contains("Vente")) mat = Material.EMERALD;
@@ -86,23 +84,19 @@ public class BankHistoryGUI {
             } catch (Exception ignored) {}
         }
 
-        // =========================
-        // 🔁 NAVIGATION
-        // =========================
-
-        // page précédente
+        // ⬅ page précédente
         if (page > 0) {
             SafeGUI.safeSet(inv, 21,
                     SafeGUI.item(Material.ARROW, "§aPage précédente"));
         }
 
-        // page suivante
+        // ➡ page suivante
         if (start - perPage >= 0) {
             SafeGUI.safeSet(inv, 23,
                     SafeGUI.item(Material.ARROW, "§aPage suivante"));
         }
 
-        // retour
+        // 🔙 retour
         SafeGUI.safeSet(inv, 22,
                 SafeGUI.item(Material.BARRIER, "§cRetour"));
 

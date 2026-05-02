@@ -9,7 +9,7 @@ public class BanqueItemListGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§bItems");
+        Inventory inv = Bukkit.createInventory(null, 27, "§bItems Marché");
 
         int slot = 0;
 
@@ -18,8 +18,16 @@ public class BanqueItemListGUI {
             Material mat = map(item);
             if (mat == null) continue;
 
+            double price = MarketState.getPrice(item);
+
             SafeGUI.safeSet(inv, slot,
-                    SafeGUI.item(mat, "§f" + item));
+                    SafeGUI.item(mat,
+                            "§f" + item,
+                            "§8────────────",
+                            "§7Prix actuel:",
+                            "§a" + String.format("%.2f", price) + "€",
+                            "",
+                            "§e➜ Cliquer pour config"));
 
             slot++;
         }

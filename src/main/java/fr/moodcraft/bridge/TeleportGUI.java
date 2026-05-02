@@ -20,11 +20,11 @@ public class TeleportGUI {
                         "§8Clique pour accéder"));
 
         SafeGUI.safeSet(inv, 11,
-                SafeGUI.item(Material.EMERALD, "§6Shop",
+                SafeGUI.item(Material.EMERALD, "§6AdminShop",
                         "§8────────────",
                         "§7Boutique d'items",
                         "",
-                        "§aAcheter et vendre",
+                        "§aAcheter",
                         "",
                         "§8Clique pour accéder"));
 
@@ -49,9 +49,7 @@ public class TeleportGUI {
         SafeGUI.safeSet(inv, 14,
                 SafeGUI.item(Material.COMPASS, "§eSpawn",
                         "§8────────────",
-                        "§7Retour au lobby",
-                        "",
-                        "§7Zone principale",
+                        "§7Retour à l'accueil",
                         "",
                         "§8Clique pour revenir"));
 

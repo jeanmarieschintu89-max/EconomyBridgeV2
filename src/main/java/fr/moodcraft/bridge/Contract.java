@@ -5,12 +5,13 @@ import java.util.UUID;
 public class Contract {
 
     public enum Status {
-        CREATED,
+        OPEN,        // 🔥 remplace CREATED
         ACCEPTED,
         COMPLETED
     }
 
-    public UUID id = UUID.randomUUID();
+    // 🔥 ID NUMÉRIQUE (IMPORTANT pour GUI)
+    public int id;
 
     public UUID owner;
     public UUID worker;
@@ -19,8 +20,9 @@ public class Contract {
     public int amount;
     public double price;
 
-    public Status status = Status.CREATED;
+    public Status status = Status.OPEN;
 
+    // ✅ CONSTRUCTEUR OBLIGATOIRE
     public Contract(UUID owner, String item, int amount, double price) {
         this.owner = owner;
         this.item = item;

@@ -17,6 +17,9 @@ public class TransferListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
+        // 🔥 NORMALISATION TITRE (anti bug couleurs / Bedrock)
+        String clean = title.replaceAll("§.", "");
+
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
@@ -24,20 +27,19 @@ public class TransferListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        int slot = e.getSlot(); // 🔥 FIX
+        int slot = e.getSlot();
 
         var b = TransferBuilder.get(p);
 
         // =========================
-        // 💸 MENU PRINCIPAL VIREMENT
+        // 💸 MENU PRINCIPAL
         // =========================
-        if (title.equals("§eVirement")) {
+        if (clean.equalsIgnoreCase("Virement")) {
 
             p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
             switch (slot) {
 
-                // IBAN
                 case 11 -> {
                     p.closeInventory();
 
@@ -48,13 +50,11 @@ public class TransferListener implements Listener {
                     p.sendMessage("§8────────────");
                 }
 
-                // JOUEUR
                 case 13 -> {
                     p.closeInventory();
                     TransferTargetGUI.open(p);
                 }
 
-                // RETOUR
                 case 15 -> {
                     p.closeInventory();
                     BankGUI.open(p);
@@ -65,9 +65,9 @@ public class TransferListener implements Listener {
         }
 
         // =========================
-        // 👤 SELECT PLAYER
+        // 👤 CHOIX JOUEUR
         // =========================
-        if (title.equals("§eChoisir joueur virement")) {
+        if (clean.equalsIgnoreCase("Choisir joueur virement")) {
 
             var item = e.getCurrentItem();
             if (item == null || !item.hasItemMeta()) return;
@@ -78,6 +78,8 @@ public class TransferListener implements Listener {
 
             p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
+            p.sendMessage("§aCible: §f" + name);
+
             TransferConfirmGUI.open(p);
             return;
         }
@@ -85,15 +87,21 @@ public class TransferListener implements Listener {
         // =========================
         // 💰 CONFIRMATION
         // =========================
-        if (title.equals("§eConfirmation virement")) {
+        if (clean.equalsIgnoreCase("Confirmation virement")) {
 
             p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
             switch (slot) {
 
-                case 11 -> b.amount = Math.max(0, b.amount - 100);
+                case 11 -> {
+                    b.amount = Math.max(0, b.amount - 100);
+                    p.sendMessage("§c-" + 100 + "€");
+                }
 
-                case 15 -> b.amount += 100;
+                case 15 -> {
+                    b.amount += 100;
+                    p.sendMessage("§a+" + 100 + "€");
+                }
 
                 case 26 -> {
 
@@ -130,7 +138,7 @@ public class TransferListener implements Listener {
                 }
             }
 
-            // 🔄 refresh GUI
+            // 🔄 refresh GUI (IMPORTANT)
             TransferConfirmGUI.open(p);
         }
     }

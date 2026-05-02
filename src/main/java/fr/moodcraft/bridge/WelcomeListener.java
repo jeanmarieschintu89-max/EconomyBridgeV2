@@ -13,44 +13,47 @@ public class WelcomeListener implements Listener {
 
         Player p = e.getPlayer();
 
-        // 🧠 Détection Bedrock (Floodgate)
-        boolean isBedrock = false;
-        try {
-            Class<?> floodgate = Class.forName("org.geysermc.floodgate.api.FloodgateApi");
-            Object api = floodgate.getMethod("getInstance").invoke(null);
-            isBedrock = (boolean) floodgate
-                    .getMethod("isFloodgatePlayer", Player.class)
-                    .invoke(api, p);
-        } catch (Exception ignored) {}
+        // 🔁 on vérifie régulièrement jusqu'à ce qu'il puisse jouer
+        Bukkit.getScheduler().runTaskTimer(Main.getInstance(), new Runnable() {
 
-        // ⏳ délai
-        long delay = isBedrock ? 100L : 40L;
+            int tries = 0;
 
-        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+            @Override
+            public void run() {
 
-            if (!p.isOnline() || !p.isValid()) return;
+                if (!p.isOnline()) {
+                    cancel();
+                    return;
+                }
 
-            try {
-                // 🔥 ferme tout (important Bedrock + conflits plugins)
-                p.closeInventory();
+                // 🧠 condition : joueur libre (plus bloqué login)
+                if (p.isValid() && p.getWalkSpeed() > 0) {
 
-                // 🔁 ouvre légèrement après
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                    // 🔥 ouvre proprement
+                    p.closeInventory();
 
-                    if (!p.isOnline()) return;
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                        if (p.isOnline()) {
+                            WelcomeGUI.open(p);
+                        }
+                    }, 2L);
 
-                    WelcomeGUI.open(p);
+                    cancel();
+                    return;
+                }
 
-                }, 2L);
+                tries++;
 
-            } catch (Exception ex) {
-
-                // fallback safe
-                p.sendMessage("§7Bienvenue sur le serveur");
-
-                ex.printStackTrace();
+                // ⛔ sécurité (évite boucle infinie)
+                if (tries > 20) {
+                    cancel();
+                }
             }
 
-        }, delay);
+            private void cancel() {
+                Bukkit.getScheduler().cancelTasks(Main.getInstance());
+            }
+
+        }, 40L, 40L); // check toutes les 2 secondes
     }
 }

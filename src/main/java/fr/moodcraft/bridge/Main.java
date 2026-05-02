@@ -50,9 +50,9 @@ public class Main extends JavaPlugin {
                 new BanqueAdminListener(),
                 new BanqueConfigListener(),
 
-                // 🔥 ITEMS MARCHÉ (CONFIRMÉ)
+                // ITEMS MARCHÉ
                 new BanqueItemListListener(),
-                new BanqueItemGUIListener(), // ✅ ton nouveau GUI dynamique
+                new BanqueItemGUIListener(),
 
                 // MENUS
                 new MainMenuListener(),
@@ -62,11 +62,8 @@ public class Main extends JavaPlugin {
                 new PayListener(),
                 new TransferListener(),
 
-                // CONTRATS
-                new ContractGUIListener(),
-                new ContractCreateListener(),
-                new TargetPlayerListener(),
-                new ContractSignListener()
+                // 🔥 NOUVEAU SYSTÈME CONTRATS
+                new BookSignListener() // ✅ signature livre
         );
 
         // =========================
@@ -89,10 +86,12 @@ public class Main extends JavaPlugin {
 
         registerCommand("resetrep", new ReputationResetCommand());
 
-        registerCommand("contrataccept", new ContractAcceptCommand());
-        registerCommand("contrats", new ContractMenuCommand());
-        registerCommand("delcontrat", new ContractDeleteCommand());
-        registerCommand("contractlog", new ContractLogCommand());
+        // =========================
+        // 🔥 CONTRATS (NOUVEAU)
+        // =========================
+        registerCommand("contract", new ContractCommand()); // créer
+        registerCommand("contractaccept", new ContractAcceptCommand()); // recevoir livre
+        registerCommand("contractdeliver", new ContractDeliverCommand()); // livrer
 
         // =========================
         // 🔁 TASKS
@@ -112,9 +111,10 @@ public class Main extends JavaPlugin {
                 20L * 45
         );
 
-        ContractListener.start();
+        // ❌ SUPPRIMÉ (ancien système bug)
+        // ContractListener.start();
 
-        getLogger().info("✅ EconomyBridge chargé (stable & clean)");
+        getLogger().info("✅ EconomyBridge chargé (Contrats Premium actifs)");
     }
 
     @Override

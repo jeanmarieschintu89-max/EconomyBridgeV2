@@ -16,15 +16,20 @@ public class BankListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
+        // 🔥 NORMALISATION
         String clean = title.replaceAll("§.", "");
 
-        if (!clean.equalsIgnoreCase("Banque")) return;
+        // 🔒 SUPPORT ancien + nouveau titre
+        if (!clean.equalsIgnoreCase("Banque") &&
+            !clean.equalsIgnoreCase("🏦 Banque")) return;
 
         if (e.getClickedInventory() == null) return;
 
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
+
+        if (e.isShiftClick()) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
@@ -35,57 +40,43 @@ public class BankListener implements Listener {
 
         Economy eco = VaultHook.getEconomy();
         if (eco == null) {
-            p.sendMessage("§cErreur économie");
+            p.sendMessage("§c❌ Erreur économie");
             return;
         }
 
         String id = p.getUniqueId().toString();
 
+        // 🔊 feedback léger
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
         switch (slot) {
 
-            // =========================
-            // 📤 IBAN
-            // =========================
+            // 📄 IBAN
             case 0 -> showIban(p, id);
 
-            // =========================
             // 💸 RETRAIT
-            // =========================
             case 1 -> withdraw(p, eco, id);
 
-            // =========================
-            // 💸 VIREMENT
-            // =========================
+            // 🔁 VIREMENT
             case 2 -> {
                 p.closeInventory();
 
-                // 🔥 RESET UNIQUEMENT VIREMENT
                 TransferBuilder.remove(p);
-
-                // 🔥 START FLOW PROPRE
                 TransferBuilder.create(p);
 
                 BankTransferGUI.open(p);
             }
 
-            // =========================
             // 💰 DEPOT
-            // =========================
             case 6 -> deposit(p, eco, id);
 
-            // =========================
-            // 📄 HISTORIQUE
-            // =========================
+            // 📜 HISTORIQUE
             case 7 -> {
                 p.closeInventory();
                 BankHistoryGUI.open(p, 0);
             }
 
-            // =========================
             // 🔙 RETOUR
-            // =========================
             case 8 -> {
                 p.closeInventory();
                 MainMenuGUI.open(p);
@@ -99,11 +90,13 @@ public class BankListener implements Listener {
 
         p.closeInventory();
 
-        p.sendMessage("§8────────────");
-        p.sendMessage("§eBanque MoodCraft");
-        p.sendMessage("§7Titulaire: §e" + p.getName());
+        p.sendMessage("§8════════════");
+        p.sendMessage("§6🏦 Banque MoodCraft");
+        p.sendMessage("");
+        p.sendMessage("§7Titulaire: §f" + p.getName());
         p.sendMessage("§7IBAN: §b" + iban);
-        p.sendMessage("§8────────────");
+        p.sendMessage("");
+        p.sendMessage("§8════════════");
     }
 
     private void withdraw(Player p, Economy eco, String id) {
@@ -117,13 +110,13 @@ public class BankListener implements Listener {
 
             TransactionLogger.log(p.getName(), "Retrait", 1000);
 
-            p.sendMessage("§8────────────");
-            p.sendMessage("§aRetrait effectué");
-            p.sendMessage("§7Montant: §a+1000€");
-            p.sendMessage("§8────────────");
+            p.sendMessage("§8════════════");
+            p.sendMessage("§a✔ Retrait effectué");
+            p.sendMessage("§7+1000€ en liquide");
+            p.sendMessage("§8════════════");
 
         } else {
-            p.sendMessage("§cSolde insuffisant en banque");
+            p.sendMessage("§c❌ Solde insuffisant en banque");
         }
 
         BankGUI.open(p);
@@ -140,13 +133,13 @@ public class BankListener implements Listener {
 
             TransactionLogger.log(p.getName(), "Depot", 1000);
 
-            p.sendMessage("§8────────────");
-            p.sendMessage("§bDépôt effectué");
-            p.sendMessage("§7Montant: §b+1000€");
-            p.sendMessage("§8────────────");
+            p.sendMessage("§8════════════");
+            p.sendMessage("§b✔ Dépôt effectué");
+            p.sendMessage("§7+1000€ en banque");
+            p.sendMessage("§8════════════");
 
         } else {
-            p.sendMessage("§cPas assez d'argent");
+            p.sendMessage("§c❌ Pas assez d'argent");
         }
 
         BankGUI.open(p);

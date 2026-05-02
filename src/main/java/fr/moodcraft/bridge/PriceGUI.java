@@ -9,26 +9,25 @@ public class PriceGUI {
 
     public static void open(Player p) {
 
-        // 🔥 NOUVEAU NOM (lisible Bedrock)
-        Inventory inv = Bukkit.createInventory(null, 27, "§bBourse Minerais");
+        Inventory inv = Bukkit.createInventory(null, 27, "§3Bourse Minerais");
 
         try {
 
-            set(inv, 10, "netherite", Material.NETHERITE_INGOT, "§5Netherite");
-            set(inv, 11, "emerald", Material.EMERALD, "§aEmerald");
-            set(inv, 12, "diamond", Material.DIAMOND, "§bDiamant");
+            set(inv, 10, "netherite", Material.NETHERITE_INGOT, "§5◆ Netherite");
+            set(inv, 11, "emerald", Material.EMERALD, "§a◆ Émeraude");
+            set(inv, 12, "diamond", Material.DIAMOND, "§b◆ Diamant");
 
-            set(inv, 13, "gold", Material.GOLD_INGOT, "§6Or");
-            set(inv, 14, "copper", Material.COPPER_INGOT, "§6Cuivre");
-            set(inv, 15, "iron", Material.IRON_INGOT, "§7Fer");
+            set(inv, 13, "gold", Material.GOLD_INGOT, "§6◆ Or");
+            set(inv, 14, "copper", Material.COPPER_INGOT, "§6◆ Cuivre");
+            set(inv, 15, "iron", Material.IRON_INGOT, "§7◆ Fer");
 
-            set(inv, 16, "glowstone", Material.GLOWSTONE_DUST, "§eGlowstone");
+            set(inv, 16, "glowstone", Material.GLOWSTONE_DUST, "§e◆ Glowstone");
 
-            set(inv, 19, "quartz", Material.QUARTZ, "§fQuartz");
-            set(inv, 20, "amethyst", Material.AMETHYST_SHARD, "§dAmethyste");
-            set(inv, 21, "redstone", Material.REDSTONE, "§cRedstone");
-            set(inv, 22, "lapis", Material.LAPIS_LAZULI, "§9Lapis");
-            set(inv, 23, "coal", Material.COAL, "§8Charbon");
+            set(inv, 19, "quartz", Material.QUARTZ, "§f◆ Quartz");
+            set(inv, 20, "amethyst", Material.AMETHYST_SHARD, "§d◆ Améthyste");
+            set(inv, 21, "redstone", Material.REDSTONE, "§c◆ Redstone");
+            set(inv, 22, "lapis", Material.LAPIS_LAZULI, "§9◆ Lapis");
+            set(inv, 23, "coal", Material.COAL, "§8◆ Charbon");
 
         } catch (Exception e) {
             inv.clear();
@@ -42,18 +41,20 @@ public class PriceGUI {
     private static void set(Inventory inv, int slot, String id, Material mat, String name) {
 
         double price = MarketEngine.getPrice(id);
-        String trend = MarketState.trend.getOrDefault(id, "§7=");
+        String trend = MarketState.trend.getOrDefault(id, "§7▬ Stable");
 
         SafeGUI.safeSet(inv, slot,
                 SafeGUI.item(mat, name,
+
+                        "§8────────────",
                         "§7Prix actuel:",
-                        "§f" + String.format("%.2f", price),
+                        "§f" + String.format("%.2f", price) + "€",
                         "",
                         "§7Tendance:",
                         trend,
+                        "§8────────────",
                         "",
-                        "§aClic gauche: vendre",
-                        "§bClic droit: acheter"
+                        "§a➜ Clique pour vendre"
                 ));
     }
 }

@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -12,15 +13,18 @@ public class ChatListener implements Listener {
 
         if (e.isCancelled()) return;
 
-        String player = e.getPlayer().getName();
-
-        // 🔥 sécurité null (au cas où)
-        String rep = ReputationManager.format(player);
-        if (rep == null) rep = "§7?";
-
-        // 🔥 format propre
+        var p = e.getPlayer();
+        String player = p.getName();
         String message = e.getMessage();
 
-        e.setFormat("§7[" + rep + "] §f" + player + " §8» §f" + message);
+        // 🔥 IMPORTANT → passer en sync pour éviter bugs thread
+        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+
+            String rep = ReputationManager.format(player);
+            if (rep == null) rep = "§7?";
+
+            // 🔥 format propre
+            e.setFormat("§7[" + rep + "] §f" + player + " §8» §f" + message);
+        });
     }
 }

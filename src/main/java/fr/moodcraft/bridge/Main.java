@@ -30,12 +30,12 @@ public class Main extends JavaPlugin {
         TransactionLogger.init();
         ReputationManager.init();
         ContractHistoryManager.init();
-        MarketStorage.init(); // 🔥 AJOUT IMPORTANT
+        MarketStorage.init(); // 🔥 persistance marché
 
         // =========================
         // 🔄 LOAD DATA
         // =========================
-        loadBase(); // ⚠️ corrigé plus bas
+        loadBase();
         loadSection("activity", MarketState.activity);
         loadSection("impact", MarketState.impact);
         loadSection("rarity", MarketState.rarity);
@@ -58,7 +58,7 @@ public class Main extends JavaPlugin {
                 new TeleportListener(),
                 new PayListener(),
                 new ChatListener(),
-                new ContractListener(),
+                // ❌ ContractListener supprimé (plus un Listener)
                 new ContractSignListener(),
                 new ContractCreateListener(),
                 new ContractGUIListener(),
@@ -97,6 +97,9 @@ public class Main extends JavaPlugin {
         Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
         Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20L, 20L * 45);
 
+        // 🔥 LANCEMENT AUTO DES CONTRATS
+        ContractListener.start();
+
         getLogger().info("✅ EconomyBridge chargé avec économie persistante + contrats + réputation + historique");
     }
 
@@ -108,7 +111,7 @@ public class Main extends JavaPlugin {
         // =========================
         BankStorage.save();
         ReputationManager.save();
-        MarketStorage.save(); // 🔥 AJOUT IMPORTANT
+        MarketStorage.save(); // 🔥 sauvegarde marché
 
         getLogger().info("💾 Données sauvegardées correctement");
     }
@@ -131,7 +134,7 @@ public class Main extends JavaPlugin {
     }
 
     // =========================
-    // 📊 LOAD BASE (CORRIGÉ)
+    // 📊 LOAD BASE (SAFE)
     // =========================
     private void loadBase() {
 

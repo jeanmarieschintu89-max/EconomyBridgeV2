@@ -11,23 +11,42 @@ public class TransferConfirmGUI {
 
         var b = TransferBuilder.get(p);
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§eVirement");
+        // 🔥 FIX TITRE (aligné listener)
+        Inventory inv = Bukkit.createInventory(null, 27, "§eConfirmation virement");
 
+        // ➖ DIMINUER
         SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.REDSTONE, "§c-100",
-                "§7Réduire montant"));
+                "§8────────",
+                "§7Réduire le montant",
+                "",
+                "§7Montant actuel:",
+                "§f" + b.amount + "€"));
 
+        // 💰 INFOS
         SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.GOLD_INGOT, "§eMontant",
+                "§8────────",
                 "§f" + b.amount + "€",
                 "",
                 "§7Cible:",
-                "§a" + b.target));
+                "§a" + (b.target == null ? "Non défini" : b.target)));
 
+        // ➕ AUGMENTER
         SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.EMERALD, "§a+100",
-                "§7Augmenter montant"));
+                "§8────────",
+                "§7Augmenter le montant",
+                "",
+                "§7Montant actuel:",
+                "§f" + b.amount + "€"));
 
-        SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.LIME_DYE, "§aValider"));
+        // ✔ VALIDER
+        SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.LIME_DYE, "§aValider",
+                "§8────────",
+                "§7Envoyer le virement"));
 
-        SafeGUI.safeSet(inv, 18, SafeGUI.item(Material.BARRIER, "§cAnnuler"));
+        // ❌ ANNULER
+        SafeGUI.safeSet(inv, 18, SafeGUI.item(Material.BARRIER, "§cAnnuler",
+                "§8────────",
+                "§7Annuler le virement"));
 
         p.openInventory(inv);
     }

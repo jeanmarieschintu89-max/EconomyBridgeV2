@@ -11,78 +11,72 @@ public class BankGUI {
 
     public static void open(Player p) {
 
+        Inventory inv = Bukkit.createInventory(null, 9, "§b🏦 Banque");
+
         Economy eco = VaultHook.getEconomy();
-        double balance = eco != null ? eco.getBalance(p) : 0;
 
-        String id = p.getUniqueId().toString();
-        double bank = BankStorage.get(id);
+        double cash = eco != null ? eco.getBalance(p) : 0;
+        double bank = BankStorage.get(p.getUniqueId().toString());
 
-        double total = balance + bank;
-
-        Inventory inv = Bukkit.createInventory(null, 9, "§fBanque");
-
-        // 📤 IBAN
-        inv.setItem(0, ItemBuilder.of(Material.NAME_TAG, "§bIBAN",
+        // 📄 IBAN
+        SafeGUI.safeSet(inv, 0, SafeGUI.item(Material.PAPER, "§e📄 IBAN",
                 "§8────────────",
-                "§7Afficher ton IBAN",
+                "§7Voir ton IBAN",
+                "§7et informations",
                 "",
-                "§8Clique"));
+                "§eClique pour afficher"));
 
         // 💸 RETRAIT
-        inv.setItem(1, ItemBuilder.of(Material.REDSTONE, "§cRetirer 1000€",
+        SafeGUI.safeSet(inv, 1, SafeGUI.item(Material.REDSTONE, "§c⬇ Retirer 1000€",
                 "§8────────────",
-                "§7Banque → Portefeuille",
+                "§7Solde banque:",
+                "§b" + SafeGUI.money(bank),
                 "",
-                "§e-1000€",
+                "§cRetirer vers liquide",
                 "",
-                "§8Clique"));
+                "§eClique pour retirer"));
 
-        // 💸 VIREMENT
-        inv.setItem(2, ItemBuilder.of(Material.PAPER, "§eVirement",
+        // 🔁 VIREMENT
+        SafeGUI.safeSet(inv, 2, SafeGUI.item(Material.FEATHER, "§e🔁 Virement",
                 "§8────────────",
                 "§7Envoyer de l'argent",
                 "§7à un joueur",
                 "",
-                "§7Via IBAN",
-                "",
-                "§8Clique"));
+                "§eClique pour transférer"));
 
-        // 💰 COMPTE
-        inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§eCompte",
+        // 💰 INFOS CENTRE
+        SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.CLOCK, "§6💰 Comptes",
                 "§8────────────",
-                "§7Situation financière",
+                "§7Liquide:",
+                "§a" + SafeGUI.money(cash),
                 "",
-                "§aArgent: §f" + SafeGUI.money(balance) + "€",
-                "§bBanque: §f" + SafeGUI.money(bank) + "€",
+                "§7Banque:",
+                "§b" + SafeGUI.money(bank),
                 "",
-                "§eTotal: §f" + SafeGUI.money(total) + "€",
-                "",
-                "§7Statut:",
-                ReputationManager.format(p.getName())
-        ));
+                "§6Total:",
+                "§f" + SafeGUI.money(cash + bank)));
 
         // 💰 DEPOT
-        inv.setItem(6, ItemBuilder.of(Material.EMERALD, "§aDéposer 1000€",
+        SafeGUI.safeSet(inv, 6, SafeGUI.item(Material.LIME_DYE, "§a⬆ Déposer 1000€",
                 "§8────────────",
-                "§7Portefeuille → Banque",
+                "§7Solde liquide:",
+                "§a" + SafeGUI.money(cash),
                 "",
-                "§a+1000€",
+                "§aEnvoyer vers banque",
                 "",
-                "§8Clique"));
+                "§eClique pour déposer"));
 
-        // 📄 HISTORIQUE
-        inv.setItem(7, ItemBuilder.of(Material.BOOK, "§eHistorique",
+        // 📜 HISTORIQUE
+        SafeGUI.safeSet(inv, 7, SafeGUI.item(Material.BOOK, "§d📜 Historique",
                 "§8────────────",
-                "§7Voir tes transactions",
+                "§7Voir toutes",
+                "§7tes transactions",
                 "",
-                "§8Clique"));
+                "§eClique pour consulter"));
 
-        // 🔙 RETOUR (REMPLACE ACTUALISER)
-        inv.setItem(8, ItemBuilder.of(Material.ARROW, "§cRetour",
-                "§8────────────",
-                "§7Retour au menu principal",
-                "",
-                "§8Clique"));
+        // 🔙 RETOUR
+        SafeGUI.safeSet(inv, 8, SafeGUI.item(Material.BARRIER, "§c⬅ Retour",
+                "§7Menu principal"));
 
         p.openInventory(inv);
     }

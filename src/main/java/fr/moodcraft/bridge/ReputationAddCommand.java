@@ -35,13 +35,14 @@ public class ReputationAddCommand implements CommandExecutor {
             return true;
         }
 
-        double current = ReputationManager.get(target.getUniqueId());
+        String id = target.getUniqueId().toString();
+
+        double current = ReputationManager.get(id);
         double newValue = current + value;
 
-        // 🔒 sécurité (option)
         if (newValue < 0) newValue = 0;
 
-        ReputationManager.set(target.getUniqueId(), newValue);
+        ReputationManager.set(id, newValue);
 
         sender.sendMessage("§8────────────");
         sender.sendMessage("§a✔ Réputation modifiée");

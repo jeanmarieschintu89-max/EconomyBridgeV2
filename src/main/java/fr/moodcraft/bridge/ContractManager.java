@@ -33,10 +33,16 @@ public class ContractManager {
     }
 
     // =========================
+    // 📦 TOUS LES CONTRATS (GUI)
+    // =========================
+    public static List<Contract> getAll() {
+        return new ArrayList<>(contracts.values());
+    }
+
+    // =========================
     // 🧠 BACKWARD COMPAT
     // =========================
 
-    // ancien système (book)
     public static Contract getOpen() {
         return contracts.values().stream()
                 .filter(c -> c.status == Contract.Status.OPEN)
@@ -44,7 +50,6 @@ public class ContractManager {
                 .orElse(null);
     }
 
-    // contrat actif du worker
     public static Contract getByWorker(UUID uuid) {
         return contracts.values().stream()
                 .filter(c -> uuid.equals(c.worker) && c.status == Contract.Status.ACCEPTED)

@@ -38,6 +38,7 @@ public class Main extends JavaPlugin {
         registerEvents(
 
                 new ShopListener(),
+                new DebugListener(),
                 new MineListener(),
                 new GUIListener(),
 

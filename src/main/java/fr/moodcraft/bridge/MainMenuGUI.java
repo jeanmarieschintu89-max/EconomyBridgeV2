@@ -11,7 +11,7 @@ public class MainMenuGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6Menu");
+        Inventory inv = Bukkit.createInventory(null, 27, "§8Menu");
 
         try {
 
@@ -20,85 +20,91 @@ public class MainMenuGUI {
             double bank = BankStorage.get(p.getUniqueId().toString());
 
             // 💰 COMPTES
-            SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.CLOCK, "§eComptes",
-                    "§7Argent sur toi:",
-                    "§a" + SafeGUI.money(balance) + "€",
+            SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.CLOCK, "§fComptes",
+                    "§8────────────",
+                    "§7Argent:",
+                    "§f" + SafeGUI.money(balance) + "€",
                     "",
                     "§7Banque:",
-                    "§b" + SafeGUI.money(bank) + "€",
+                    "§f" + SafeGUI.money(bank) + "€",
                     "",
-                    "§8Clique pour ouvrir"));
+                    "§8Ouvrir"));
 
-            // 📈 BOURSE (TRÈS IMPORTANT)
-            SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.GOLD_INGOT, "§6Bourse Minerais",
+            // 📈 BOURSE
+            SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.GOLD_INGOT, "§fBourse Minerais",
+                    "§8────────────",
                     "§7Marche dynamique",
-                    "§7Les prix changent en temps reel",
+                    "§7prix en evolution",
                     "",
-                    "§aAcheter = prix augmente",
-                    "§cVendre = prix diminue",
+                    "§7Acheter → prix monte",
+                    "§7Vendre → prix baisse",
                     "",
-                    "§7Analyse le marche",
-                    "§7et fais du profit",
+                    "§7Optimise tes ventes",
                     "",
-                    "§8Clique pour ouvrir"));
+                    "§8Ouvrir"));
 
             // 🏦 BANQUE
-            SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.ENDER_CHEST, "§bBanque",
-                    "§7Deposer et retirer",
-                    "§7ton argent",
+            SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.ENDER_CHEST, "§fBanque",
+                    "§8────────────",
+                    "§7Depot et retrait",
                     "",
-                    "§7Stocke en securite",
+                    "§7Stockage securise",
                     "",
-                    "§8Clique pour ouvrir"));
+                    "§8Ouvrir"));
 
             // 📄 CONTRATS
-            SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.WRITTEN_BOOK, "§6Contrats",
-                    "§7Commandes entre joueurs",
+            SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.WRITTEN_BOOK, "§fContrats",
+                    "§8────────────",
+                    "§7Commandes joueurs",
+                    "",
                     "§7Remplis des missions",
+                    "§7contre paiement",
                     "",
-                    "§aGagne argent",
-                    "§cPerds reputation si refuse",
-                    "",
-                    "§8Clique pour voir"));
+                    "§8Ouvrir"));
 
             // 🏙️ VILLE
-            SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.BELL, "§aVille",
-                    "§7Gestion de ta ville",
-                    "§7Territoire et economie",
+            SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.BELL, "§fVille",
+                    "§8────────────",
+                    "§7Gestion territoire",
+                    "§7et economie",
                     "",
-                    "§8Clique pour ouvrir"));
+                    "§8Ouvrir"));
 
             // ⚒️ JOBS
-            SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.IRON_PICKAXE, "§7Jobs",
-                    "§7Travaille pour gagner",
-                    "§7de l'argent",
+            SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.IRON_PICKAXE, "§fJobs",
+                    "§8────────────",
+                    "§7Travail = revenus",
                     "",
-                    "§7Influence la bourse",
+                    "§7Impact sur la bourse",
                     "",
-                    "§8Clique pour rejoindre"));
+                    "§8Ouvrir"));
 
             // 🧭 TELEPORT
-            SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.COMPASS, "§bTeleport",
+            SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.COMPASS, "§fTeleport",
+                    "§8────────────",
                     "§7Deplacement rapide",
-                    "§7entre les zones",
                     "",
-                    "§8Clique pour ouvrir"));
+                    "§7Acces aux zones",
+                    "",
+                    "§8Ouvrir"));
 
             // ℹ️ INFOS
-            SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.BOOK, "§dInfos",
-                    "§7Conseils utiles",
+            SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.BOOK, "§fInfos",
+                    "§8────────────",
+                    "§7Conseil:",
+                    "§7acheter bas",
+                    "§7vendre haut",
                     "",
-                    "§7Achete bas",
-                    "§7Vends haut",
-                    "",
-                    "§8Clique"));
+                    "§8Voir"));
 
             // 🔧 ADMIN
             if (p.hasPermission("econ.admin")) {
-                SafeGUI.safeSet(inv, 23, SafeGUI.item(Material.REDSTONE_BLOCK, "§cAdmin",
-                        "§7Configuration serveur",
+                SafeGUI.safeSet(inv, 23, SafeGUI.item(Material.REDSTONE_BLOCK, "§fAdmin",
+                        "§8────────────",
+                        "§7Configuration",
+                        "§7du marche",
                         "",
-                        "§8Clique"));
+                        "§8Ouvrir"));
             }
 
         } catch (Exception e) {

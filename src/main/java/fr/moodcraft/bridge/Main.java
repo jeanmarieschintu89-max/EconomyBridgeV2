@@ -29,8 +29,7 @@ public class Main extends JavaPlugin {
         BankStorage.init();
         TransactionLogger.init();
         ReputationManager.init();
-        ContractManager.init();
-        ContractHistoryManager.init(); // 🔥 AJOUT HISTORIQUE
+        ContractHistoryManager.init(); // ✔ OK
 
         // =========================
         // 🔄 LOAD DATA
@@ -57,7 +56,7 @@ public class Main extends JavaPlugin {
                 new BankListener(),
                 new TeleportListener(),
                 new PayListener(),
-                new ChatListener(), // 💬 réputation chat
+                new ChatListener(),
                 new ContractListener(),
                 new ContractSignListener(),
                 new ContractCreateListener(),
@@ -87,7 +86,7 @@ public class Main extends JavaPlugin {
         registerCommand("contrataccept", new ContractAcceptCommand());
         registerCommand("contrats", new ContractMenuCommand());
         registerCommand("delcontrat", new ContractDeleteCommand());
-        registerCommand("contractlog", new ContractLogCommand()); // 🔥 HISTORIQUE
+        registerCommand("contractlog", new ContractLogCommand());
 
         // =========================
         // 🔁 INIT MARKET
@@ -108,14 +107,10 @@ public class Main extends JavaPlugin {
         // =========================
         BankStorage.save();
         ReputationManager.save();
-        ContractManager.save();
 
         getLogger().info("💾 Données sauvegardées correctement");
     }
 
-    // =========================
-    // 🔧 UTILITAIRES
-    // =========================
     private void registerEvents(org.bukkit.event.Listener... listeners) {
         for (var listener : listeners) {
             Bukkit.getPluginManager().registerEvents(listener, this);
@@ -126,19 +121,13 @@ public class Main extends JavaPlugin {
         if (getCommand(name) != null) {
             getCommand(name).setExecutor(executor);
         } else {
-            getLogger().warning("❌ Commande non trouvée: " + name + " (plugin.yml ?)");
+            getLogger().warning("❌ Commande non trouvée: " + name);
         }
     }
 
-    // =========================
-    // 📊 LOAD BASE
-    // =========================
     private void loadBase() {
 
-        if (getConfig().getConfigurationSection("base") == null) {
-            getLogger().warning("⚠ Section 'base' manquante dans config.yml");
-            return;
-        }
+        if (getConfig().getConfigurationSection("base") == null) return;
 
         for (String key : getConfig().getConfigurationSection("base").getKeys(false)) {
 
@@ -152,15 +141,9 @@ public class Main extends JavaPlugin {
         }
     }
 
-    // =========================
-    // 📊 LOAD SECTIONS
-    // =========================
     private void loadSection(String path, Map<String, Double> map) {
 
-        if (getConfig().getConfigurationSection(path) == null) {
-            getLogger().warning("⚠ Section '" + path + "' manquante");
-            return;
-        }
+        if (getConfig().getConfigurationSection(path) == null) return;
 
         for (String key : getConfig().getConfigurationSection(path).getKeys(false)) {
             map.put(key, getConfig().getDouble(path + "." + key));

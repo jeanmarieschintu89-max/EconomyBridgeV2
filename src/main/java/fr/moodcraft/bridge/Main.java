@@ -74,6 +74,7 @@ public class Main extends JavaPlugin {
                 // 📄 CONTRATS
                 new ContractSignListener(),
                 new ContractCreateListener(),
+                new TargetPlayerListener(),
                 new ContractGUIListener()
         );
 

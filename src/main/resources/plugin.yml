@@ -10,6 +10,11 @@ commands:
   # =========================
   # 📊 CONTRATS
   # =========================
+
+  reputation:
+    description: Voir sa réputation
+    usage: /reputation
+
   contractlog:
     description: Voir historique contrats
     usage: /contractlog [joueur]

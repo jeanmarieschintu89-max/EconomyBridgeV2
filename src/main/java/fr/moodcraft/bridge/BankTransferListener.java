@@ -1,81 +1,59 @@
-package fr.moodcraft.bridge;
+@EventHandler
+public void click(InventoryClickEvent e) {
 
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
+    String title = e.getView().getTitle();
+    if (title == null) return;
 
-public class BankTransferListener implements Listener {
+    String clean = title.replaceAll("§.", "");
 
-    @EventHandler
-    public void click(InventoryClickEvent e) {
+    // 🔥 IMPORTANT → uniquement le menu principal
+    if (!clean.equalsIgnoreCase("Virement")) return;
 
-        String title = e.getView().getTitle();
-        if (title == null) return;
+    // 🔥 ignore si c'est la GUI de confirmation
+    if (e.getView().getTopInventory().getSize() != 27) return;
 
-        // 🔥 NORMALISATION (anti couleur / Bedrock)
-        String clean = title.replaceAll("§.", "");
+    if (e.getClickedInventory() == null) return;
 
-        if (!clean.equalsIgnoreCase("Virement")) return;
+    if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
-        if (e.getClickedInventory() == null) return;
+    e.setCancelled(true);
 
-        // 🔥 IMPORTANT → ne bloque QUE le GUI
-        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
+    if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        e.setCancelled(true);
+    var item = e.getCurrentItem();
+    if (item == null || item.getType().isAir()) return;
 
-        if (!(e.getWhoClicked() instanceof Player p)) return;
+    int slot = e.getRawSlot();
 
-        var item = e.getCurrentItem();
-        if (item == null || item.getType().isAir()) return;
+    p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
-        int slot = e.getRawSlot();
+    switch (slot) {
 
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+        case 11 -> {
+            p.closeInventory();
 
-        switch (slot) {
+            p.sendMessage("§8────────────");
+            p.sendMessage("§eVirement IBAN");
+            p.sendMessage("§7Commande:");
+            p.sendMessage("§f/ibanpay <iban> <montant>");
+            p.sendMessage("§8────────────");
+        }
 
-            // =========================
-            // 💳 IBAN
-            // =========================
-            case 11 -> {
-                p.closeInventory();
+        case 13 -> {
+            p.closeInventory();
 
-                p.sendMessage("§8────────────");
-                p.sendMessage("§eVirement IBAN");
-                p.sendMessage("§7Commande:");
-                p.sendMessage("§f/ibanpay <iban> <montant>");
-                p.sendMessage("§8────────────");
-            }
+            ContractBuilder.remove(p);
+            TransferBuilder.get(p); // 🔥 remplace create
 
-            // =========================
-            // 👤 JOUEUR
-            // =========================
-            case 13 -> {
-                p.closeInventory();
+            TransferTargetGUI.open(p);
+        }
 
-                // 🔥 sécurité : reset autre système
-                ContractBuilder.remove(p);
+        case 15 -> {
+            p.closeInventory();
 
-                // 🔥 start flow virement
-                TransferBuilder.create(p);
+            TransferBuilder.remove(p);
 
-                TransferTargetGUI.open(p);
-            }
-
-            // =========================
-            // 🔙 RETOUR
-            // =========================
-            case 15 -> {
-                p.closeInventory();
-
-                // 🔥 clean builder si retour
-                TransferBuilder.remove(p);
-
-                BankGUI.open(p);
-            }
+            BankGUI.open(p);
         }
     }
 }

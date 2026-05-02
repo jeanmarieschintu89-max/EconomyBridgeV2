@@ -12,12 +12,17 @@ public class BanqueItemListListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
+        if (title == null) return;
 
-        // 🔥 détecte ton GUI
-        if (title == null || !title.contains("Items Marché")) return;
+        // 🔥 NORMALISATION (anti couleurs / Bedrock)
+        String clean = title.replaceAll("§.", "");
+
+        if (!clean.equalsIgnoreCase("Items Marché")) return;
 
         if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
+        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
@@ -27,10 +32,13 @@ public class BanqueItemListListener implements Listener {
         if (item == null || item.getType().isAir()) return;
         if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return;
 
-        // 🔥 récupère ID propre
+        // 🔥 récupération propre du nom
         String id = ChatColor.stripColor(item.getItemMeta().getDisplayName()).toLowerCase();
 
-        // 🚀 ouvre config item
+        // 🔊 petit feedback propre
+        p.playSound(p.getLocation(), org.bukkit.Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+
+        // 🚀 ouverture config item
         BanqueItemGUI.open(p, id);
     }
 }

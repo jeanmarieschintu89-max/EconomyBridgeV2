@@ -14,20 +14,19 @@ public class MainMenuListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        // 🔥 NORMALISATION (anti couleurs / Bedrock)
+        // 🔥 NORMALISATION
         String clean = title.replaceAll("§.", "");
 
-        // 🔒 MATCH STRICT
-        if (!clean.equalsIgnoreCase("Menu")) return;
+        // 🔒 SUPPORT ANCIEN + NOUVEAU MENU
+        if (!clean.equalsIgnoreCase("Menu") &&
+            !clean.equalsIgnoreCase("✦ Menu MoodCraft")) return;
 
         if (e.getClickedInventory() == null) return;
 
-        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
-        // 🔥 anti glitch (shift / double click)
         if (e.isShiftClick()) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
@@ -37,7 +36,7 @@ public class MainMenuListener implements Listener {
 
         int slot = e.getRawSlot();
 
-        // 🔊 feedback
+        // 🔊 feedback clean
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
         switch (slot) {
@@ -51,7 +50,7 @@ public class MainMenuListener implements Listener {
             // 🏦 BANQUE
             case 11 -> open(p, () -> BankGUI.open(p));
 
-            // 📄 CONTRATS
+            // 📜 CONTRATS
             case 12 -> command(p, "contrats");
 
             // 🏙️ VILLE
@@ -66,7 +65,7 @@ public class MainMenuListener implements Listener {
             // ℹ️ INFOS
             case 22 -> {
                 p.sendMessage("§8────────────");
-                p.sendMessage("§7Astuce marché");
+                p.sendMessage("§6📊 Conseil marché");
                 p.sendMessage("§aAcheter bas");
                 p.sendMessage("§cVendre haut");
                 p.sendMessage("§8────────────");
@@ -77,9 +76,12 @@ public class MainMenuListener implements Listener {
                 if (p.hasPermission("econ.admin")) {
                     command(p, "banqueadmin");
                 } else {
-                    p.sendMessage("§cAccès refusé");
+                    p.sendMessage("§c❌ Accès refusé");
                 }
             }
+
+            // ❌ FERMER
+            case 26 -> p.closeInventory();
         }
     }
 

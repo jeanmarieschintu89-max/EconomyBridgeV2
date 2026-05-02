@@ -16,7 +16,6 @@ public class TargetPlayerListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        // 🔥 NORMALISATION
         String clean = title.replaceAll("§.", "");
 
         if (!clean.equalsIgnoreCase("Choisir joueur") &&
@@ -24,12 +23,10 @@ public class TargetPlayerListener implements Listener {
 
         if (e.getClickedInventory() == null) return;
 
-        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
-        // 🔥 anti spam / double clic
         if (e.isShiftClick()) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
@@ -40,7 +37,6 @@ public class TargetPlayerListener implements Listener {
         String name = item.getItemMeta().getDisplayName();
         if (name == null) return;
 
-        // 🔥 nettoyage complet couleurs
         name = ChatColor.stripColor(name).trim();
 
         if (name.isEmpty()) return;
@@ -52,29 +48,12 @@ public class TargetPlayerListener implements Listener {
             return;
         }
 
-        // 🔊 feedback
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
         // =========================
-        // 🧠 CONTEXTE UNIQUE (ANTI BUG)
+        // 💸 VIREMENT UNIQUEMENT
         // =========================
-
-        boolean hasTransfer = TransferBuilder.has(p);
-        boolean hasContract = ContractBuilder.has(p);
-
-        // 🔒 sécurité → évite conflit double builder
-        if (hasTransfer && hasContract) {
-            TransferBuilder.remove(p);
-            ContractBuilder.remove(p);
-            p.sendMessage("§cErreur système, réessaie");
-            p.closeInventory();
-            return;
-        }
-
-        // =========================
-        // 💸 VIREMENT
-        // =========================
-        if (hasTransfer) {
+        if (TransferBuilder.has(p)) {
 
             var builder = TransferBuilder.get(p);
             builder.target = target.getName();
@@ -83,21 +62,6 @@ public class TargetPlayerListener implements Listener {
 
             p.closeInventory();
             TransferConfirmGUI.open(p);
-            return;
-        }
-
-        // =========================
-        // 📄 CONTRAT
-        // =========================
-        if (hasContract) {
-
-            var builder = ContractBuilder.get(p);
-            builder.target = target.getName();
-
-            p.sendMessage("§aCible: §f" + target.getName());
-
-            p.closeInventory();
-            ContractCreateGUI.open(p);
         }
     }
 }

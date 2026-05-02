@@ -57,7 +57,6 @@ public class Main extends JavaPlugin {
                 new BankListener(),
                 new TeleportListener(),
                 new PayListener(),
-                new ChatListener(),
                 // ❌ ContractListener supprimé (plus un Listener)
                 new ContractSignListener(),
                 new ContractCreateListener(),

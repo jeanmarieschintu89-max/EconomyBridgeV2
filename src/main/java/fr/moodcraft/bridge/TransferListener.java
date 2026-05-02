@@ -29,9 +29,9 @@ public class TransferListener implements Listener {
         var b = TransferBuilder.get(p);
 
         // =========================
-        // 👤 SELECT PLAYER
+        // 👤 SELECT PLAYER (VIREMENT)
         // =========================
-        if (title.contains("Choisir joueur")) {
+        if (title.equals("§eChoisir joueur virement")) {
 
             var item = e.getCurrentItem();
             if (item == null || !item.hasItemMeta()) return;
@@ -47,9 +47,9 @@ public class TransferListener implements Listener {
         }
 
         // =========================
-        // 💰 CONFIG TRANSFER
+        // 💰 CONFIRMATION
         // =========================
-        if (title.contains("Virement")) {
+        if (title.equals("§eConfirmation virement")) {
 
             switch (slot) {
 
@@ -76,6 +76,8 @@ public class TransferListener implements Listener {
 
                     p.sendMessage("§a✔ Virement envoyé");
                     target.sendMessage("§a+" + b.amount + "€ reçu de " + p.getName());
+
+                    TransactionLogger.log(p.getName(), "Virement vers " + target.getName(), b.amount);
 
                     TransferBuilder.remove(p);
                     p.closeInventory();

@@ -44,6 +44,7 @@ public class Main extends JavaPlugin {
 
                 // BANQUE
                 new BankListener(),
+                new InventoryGuardListener(),
                 new BankHistoryListener(),
 
                 // ADMIN / CONFIG

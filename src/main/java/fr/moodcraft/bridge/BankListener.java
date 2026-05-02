@@ -15,7 +15,7 @@ public class BankListener implements Listener {
 
         String title = e.getView().getTitle();
 
-        // 🔥 FIX titre (Bedrock safe)
+        // 🔒 SAFE Bedrock + couleur
         if (title == null || !title.contains("Banque")) return;
 
         if (e.getClickedInventory() == null) return;
@@ -24,82 +24,39 @@ public class BankListener implements Listener {
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
+
+        var item = e.getCurrentItem();
+        if (item == null || item.getType().isAir()) return;
+
+        int slot = e.getRawSlot();
+        if (slot > 8) return;
 
         Economy eco = VaultHook.getEconomy();
         if (eco == null) {
-            p.sendMessage("§cErreur economie");
+            p.sendMessage("§cErreur économie");
             return;
         }
 
         String id = p.getUniqueId().toString();
-        int slot = e.getSlot();
 
-        // 🔊 feedback
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
         switch (slot) {
 
             // =========================
             // 📤 IBAN
             // =========================
-            case 1 -> {
-                String iban = BankStorage.getIban(id);
-
-                p.closeInventory();
-
-                p.sendMessage("§8────────────");
-                p.sendMessage("§eBanque MoodCraft");
-                p.sendMessage("§7Titulaire: §e" + p.getName());
-                p.sendMessage("§7IBAN: §b" + iban);
-                p.sendMessage("§8────────────");
-            }
+            case 1 -> showIban(p, id);
 
             // =========================
             // 💸 RETRAIT
             // =========================
-            case 2 -> {
-
-                double bank = BankStorage.get(id);
-
-                if (bank >= 1000) {
-
-                    BankStorage.set(id, bank - 1000);
-                    eco.depositPlayer(p, 1000);
-
-                    TransactionLogger.log(p.getName(), "Retrait", 1000);
-
-                    p.sendMessage("§a+1000€ retire");
-
-                } else {
-                    p.sendMessage("§cPas assez en banque");
-                }
-
-                BankGUI.open(p);
-            }
+            case 2 -> withdraw(p, eco, id);
 
             // =========================
             // 💰 DEPOT
             // =========================
-            case 6 -> {
-
-                if (eco.getBalance(p) >= 1000) {
-
-                    eco.withdrawPlayer(p, 1000);
-
-                    double bank = BankStorage.get(id);
-                    BankStorage.set(id, bank + 1000);
-
-                    TransactionLogger.log(p.getName(), "Depot", 1000);
-
-                    p.sendMessage("§b1000€ depose");
-
-                } else {
-                    p.sendMessage("§cPas assez d'argent");
-                }
-
-                BankGUI.open(p);
-            }
+            case 6 -> deposit(p, eco, id);
 
             // =========================
             // 📄 HISTORIQUE
@@ -114,5 +71,67 @@ public class BankListener implements Listener {
             // =========================
             case 8 -> BankGUI.open(p);
         }
+    }
+
+    // =========================
+    // 🔧 MÉTHODES PROPRES
+    // =========================
+
+    private void showIban(Player p, String id) {
+        String iban = BankStorage.getIban(id);
+
+        p.closeInventory();
+
+        p.sendMessage("§8────────────");
+        p.sendMessage("§eBanque MoodCraft");
+        p.sendMessage("§7Titulaire: §e" + p.getName());
+        p.sendMessage("§7IBAN: §b" + iban);
+        p.sendMessage("§8────────────");
+    }
+
+    private void withdraw(Player p, Economy eco, String id) {
+
+        double bank = BankStorage.get(id);
+
+        if (bank >= 1000) {
+
+            BankStorage.set(id, bank - 1000);
+            eco.depositPlayer(p, 1000);
+
+            TransactionLogger.log(p.getName(), "Retrait", 1000);
+
+            p.sendMessage("§8────────────");
+            p.sendMessage("§aRetrait effectué");
+            p.sendMessage("§7Montant: §a+1000€");
+            p.sendMessage("§8────────────");
+
+        } else {
+            p.sendMessage("§cSolde insuffisant en banque");
+        }
+
+        BankGUI.open(p);
+    }
+
+    private void deposit(Player p, Economy eco, String id) {
+
+        if (eco.getBalance(p) >= 1000) {
+
+            eco.withdrawPlayer(p, 1000);
+
+            double bank = BankStorage.get(id);
+            BankStorage.set(id, bank + 1000);
+
+            TransactionLogger.log(p.getName(), "Depot", 1000);
+
+            p.sendMessage("§8────────────");
+            p.sendMessage("§bDépôt effectué");
+            p.sendMessage("§7Montant: §b+1000€");
+            p.sendMessage("§8────────────");
+
+        } else {
+            p.sendMessage("§cPas assez d'argent");
+        }
+
+        BankGUI.open(p);
     }
 }

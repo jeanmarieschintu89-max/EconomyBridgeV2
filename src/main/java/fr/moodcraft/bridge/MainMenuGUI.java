@@ -11,7 +11,7 @@ public class MainMenuGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§fMenu");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6✦ Menu MoodCraft");
 
         try {
 
@@ -20,105 +20,121 @@ public class MainMenuGUI {
             double bank = BankStorage.get(p.getUniqueId().toString());
             double total = balance + bank;
 
-            // 💰 COMPTES
-            SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.CLOCK, "§eComptes",
-                    "§8──────────── §7",
-                    "§7Situation financière §7",
+            String id = p.getUniqueId().toString();
+            int rep = ReputationManager.get(id);
+
+            // 💰 COMPTES (CENTRE)
+            SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.CLOCK, "§6💰 Comptes",
+                    "§8────────────",
+                    "§7Vue globale",
                     "",
-                    "§aArgent: §f" + SafeGUI.money(balance),
+                    "§aLiquide: §f" + SafeGUI.money(balance),
                     "§bBanque: §f" + SafeGUI.money(bank),
                     "",
                     "§6Total: §f" + SafeGUI.money(total),
                     "",
-                    "§7Statut: §7",
-                    ReputationManager.format(p.getName()) + " §7",
+                    "§7Réputation:",
+                    ReputationManager.format(id),
                     "",
-                    "§8Clique pour ouvrir §7"));
+                    "§eClique pour gérer"
+            ));
 
             // 📈 BOURSE
-            SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.GOLD_INGOT, "§eBourse Minerais",
-                    "§8──────────── §7",
-                    "§7Prix influencés §7",
-                    "§7par les joueurs §7",
+            SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.GOLD_INGOT, "§e📈 Bourse",
+                    "§8────────────",
+                    "§7Prix dynamiques",
                     "",
-                    "§aProfite des hausses §7",
-                    "§cÉvite les baisses §7",
+                    "§aProfite des hausses",
+                    "§cAttention aux chutes",
                     "",
-                    "§8Clique pour en profiter §7"));
+                    "§eClique pour trader"
+            ));
 
             // 🏦 BANQUE
-            SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.ENDER_CHEST, "§bBanque",
-                    "§8──────────── §7",
-                    "§7Gestion des fonds §7",
+            SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.ENDER_CHEST, "§b🏦 Banque",
+                    "§8────────────",
+                    "§7Gestion sécurisée",
                     "",
-                    "§aDéposer en sécurité §7",
-                    "§eRetirer à tout moment §7",
+                    "§aDéposer",
+                    "§eRetirer",
                     "",
-                    "§8Clique pour ouvrir §7"));
+                    "§eClique pour ouvrir"
+            ));
 
-            // 📄 CONTRATS
-            SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.WRITTEN_BOOK, "§eContrats",
-                    "§8──────────── §7",
-                    "§7Accords entre joueurs §7",
+            // 📜 CONTRATS
+            SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.WRITTEN_BOOK, "§e📜 Contrats",
+                    "§8────────────",
+                    "§7Travaux entre joueurs",
                     "",
-                    "§aRécompenses à la clé §7",
-                    "§cRefus → réputation ↓ §7",
+                    "§aRécompenses",
+                    "§7Influence réputation",
                     "",
-                    "§8Clique pour ouvrir §7"));
+                    "§eClique pour accéder"
+            ));
 
             // 🏙️ VILLE
-            SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.BELL, "§aVille",
-                    "§8──────────── §7",
-                    "§7Gestion du territoire §7",
+            SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.BELL, "§a🏙 Ville",
+                    "§8────────────",
+                    "§7Développement",
                     "",
-                    "§aDéveloppe ta ville §7",
-                    "§7Économie locale active §7",
+                    "§aAméliore ton territoire",
+                    "§7Économie locale",
                     "",
-                    "§8Clique pour ouvrir §7"));
+                    "§eClique pour ouvrir"
+            ));
 
             // ⚒️ JOBS
-            SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.IRON_PICKAXE, "§7Jobs",
-                    "§8──────────── §7",
-                    "§7Activités rémunérées §7",
+            SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.IRON_PICKAXE, "§7⚒ Jobs",
+                    "§8────────────",
+                    "§7Gains réguliers",
                     "",
-                    "§aGains réguliers §7",
-                    "§eInfluence le marché §7",
+                    "§aRevenus stables",
+                    "§eImpact marché",
                     "",
-                    "§8Clique pour rejoindre §7"));
+                    "§eClique pour travailler"
+            ));
 
             // 🧭 TELEPORT
-            SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.COMPASS, "§bTéléportation",
-                    "§8──────────── §7",
-                    "§7Téléportation rapide §7",
+            SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.COMPASS, "§b🧭 Téléportation",
+                    "§8────────────",
+                    "§7Déplacements rapides",
                     "",
-                    "§aVille • Shop • Farm §7",
-                    "§7Exploration facilitée §7",
+                    "§aVille • Shop • Farm",
                     "",
-                    "§8Clique pour ouvrir §7"));
+                    "§eClique pour voyager"
+            ));
 
             // ℹ️ INFOS
-            SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.BOOK, "§dInfos",
-                    "§8──────────── §7",
-                    "§7Astuces du marché §7",
+            SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.BOOK, "§dℹ Infos",
+                    "§8────────────",
+                    "§7Conseils économiques",
                     "",
-                    "§aAchète au bon moment §7",
-                    "§cVends au bon moment §7"));
+                    "§aAcheter bas",
+                    "§cVendre haut",
+                    "",
+                    "§7Observe le marché"
+            ));
 
             // 🔧 ADMIN
             if (p.hasPermission("econ.admin")) {
-                SafeGUI.safeSet(inv, 23, SafeGUI.item(Material.REDSTONE_BLOCK, "§cAdmin",
-                        "§8──────────── §7",
-                        "§7Paramètres du serveur §7",
+                SafeGUI.safeSet(inv, 23, SafeGUI.item(Material.REDSTONE_BLOCK, "§c⚙ Admin",
+                        "§8────────────",
+                        "§7Gestion serveur",
                         "",
-                        "§eAjuster l'économie §7",
-                        "§7Gérer le marché §7",
+                        "§eModifier économie",
+                        "§7Configurer marché",
                         "",
-                        "§8Clique pour ouvrir §7"));
+                        "§eClique pour gérer"
+                ));
             }
+
+            // ❌ FERMER
+            SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.BARRIER, "§cFermer",
+                    "§7Quitter le menu"));
 
         } catch (Exception e) {
             inv.clear();
-            SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BARRIER, "§cMenu indisponible §7"));
+            SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BARRIER, "§cMenu indisponible"));
             p.sendMessage("§cErreur ouverture menu");
             e.printStackTrace();
         }

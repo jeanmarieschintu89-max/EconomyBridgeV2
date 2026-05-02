@@ -87,6 +87,7 @@ public class Main extends JavaPlugin {
         registerCommand("resetrep", new ReputationResetCommand());
         registerCommand("reputation", new ReputationCommand());
         registerCommand("rep", new ReputationAddCommand());
+        registerCommand("bank", new BankAdminCommand());
 
         // =========================
         // 🔥 CONTRATS (NOUVEAU)

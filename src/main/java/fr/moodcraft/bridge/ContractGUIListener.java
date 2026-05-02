@@ -20,7 +20,6 @@ public class ContractGUIListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
         if (e.getClickedInventory() == null) return;
-
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
@@ -33,25 +32,33 @@ public class ContractGUIListener implements Listener {
 
         switch (slot) {
 
+            // =========================
             // 📄 CRÉER
+            // =========================
             case 11:
                 p.closeInventory();
                 ContractCreateGUI.open(p);
                 break;
 
+            // =========================
             // 📜 MARCHÉ
+            // =========================
             case 13:
                 p.closeInventory();
                 ContractMarketGUI.open(p);
                 break;
 
-            // 📦 MES CONTRATS
+            // =========================
+            // 📦 MES CONTRATS (FIX)
+            // =========================
             case 15:
                 p.closeInventory();
-                p.sendMessage("§7Fonction en cours...");
+                ContractPlayerGUI.open(p); // 🔥 FIX ICI
                 break;
 
+            // =========================
             // 🔙 RETOUR
+            // =========================
             case 22:
                 p.closeInventory();
                 MainMenuGUI.open(p);

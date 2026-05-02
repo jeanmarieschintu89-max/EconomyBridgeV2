@@ -10,7 +10,11 @@ public class ContractCreateGUI {
 
     public static void open(Player p) {
 
+        // 🔥 FIX CRITIQUE : toujours avoir un builder
         var b = ContractBuilder.get(p);
+        if (b == null) {
+            b = ContractBuilder.create(p);
+        }
 
         Inventory inv = Bukkit.createInventory(null, 27, "§eContrat");
 

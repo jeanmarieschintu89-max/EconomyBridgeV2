@@ -1,6 +1,6 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Sound;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,7 +11,9 @@ public class TargetPlayerListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (e.getView().getTitle() == null || !e.getView().getTitle().contains("Choisir un joueur")) return;
+        String title = e.getView().getTitle();
+
+        if (title == null || !title.contains("Choisir joueur")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -19,23 +21,28 @@ public class TargetPlayerListener implements Listener {
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-
         if (e.getCurrentItem() == null || !e.getCurrentItem().hasItemMeta()) return;
 
-        String name = e.getCurrentItem().getItemMeta().getDisplayName().replace("§a", "");
+        String name = e.getCurrentItem().getItemMeta().getDisplayName();
+        if (name == null) return;
+
+        // 🔥 Nettoyage couleur
+        name = name.replace("§a", "").replace("§f", "");
 
         Player target = Bukkit.getPlayerExact(name);
+
         if (target == null) {
             p.sendMessage("§cJoueur introuvable");
             return;
         }
 
-        // 🔥 STOCKAGE TEMPORAIRE
-        ContractManager.target.put(p.getUniqueId(), target.getUniqueId());
+        // ✅ UTILISE ContractBuilder (CORRECT)
+        var builder = ContractBuilder.get(p);
+        builder.target = target.getName();
 
-        p.sendMessage("§aCible sélectionnée: §e" + target.getName());
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+        p.sendMessage("§aJoueur sélectionné: §e" + target.getName());
 
-        p.closeInventory();
+        // 🔄 retour menu création
+        ContractCreateGUI.open(p);
     }
 }

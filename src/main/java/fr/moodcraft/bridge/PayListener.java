@@ -7,7 +7,30 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class PayListener implements Listener {
+
+    private static final Map<UUID, Double> lastBalance = new HashMap<>();
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPrePay(PlayerCommandPreprocessEvent e) {
+
+        String raw = e.getMessage();
+        if (raw == null) return;
+
+        String msg = raw.trim().replaceAll("\\s+", " ").toLowerCase();
+
+        if (!msg.startsWith("/pay ")) return;
+
+        Player p = e.getPlayer();
+
+        // 📌 stocke balance AVANT
+        lastBalance.put(p.getUniqueId(),
+                VaultHook.getEconomy().getBalance(p));
+    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPay(PlayerCommandPreprocessEvent e) {
@@ -15,7 +38,6 @@ public class PayListener implements Listener {
         String raw = e.getMessage();
         if (raw == null) return;
 
-        // 👉 normalise (espaces multiples, casse)
         String msg = raw.trim().replaceAll("\\s+", " ").toLowerCase();
 
         if (!msg.startsWith("/pay ")) return;
@@ -32,20 +54,29 @@ public class PayListener implements Listener {
         try {
             amount = Double.parseDouble(args[2].replace(",", "."));
         } catch (Exception ex) {
-            return; // montant invalide
+            return;
         }
 
         if (amount <= 0) return;
 
-        // 🔎 vérifie que la cible existe (au moins offline)
-        var offline = Bukkit.getOfflinePlayer(targetName);
-        if (offline == null || offline.getName() == null) return;
+        var eco = VaultHook.getEconomy();
+        if (eco == null) return;
 
-        // ⚠️ On est en MONITOR + ignoreCancelled = true
-        // → la commande /pay a déjà été exécutée avec succès par le plugin éco
+        Double before = lastBalance.remove(senderPlayer.getUniqueId());
+        if (before == null) return;
 
-        // 🧾 logs propres
-        TransactionLogger.log(sender, "Paiement envoye", amount);
-        TransactionLogger.log(offline.getName(), "Paiement recu", amount);
+        double after = eco.getBalance(senderPlayer);
+
+        double real = before - after;
+
+        // 🔒 sécurité → évite faux logs
+        if (real <= 0) return;
+
+        var target = Bukkit.getPlayerExact(targetName);
+        String targetFinal = target != null ? target.getName() : targetName;
+
+        // 🧾 logs RÉELS
+        EconomyListener.log(sender, "Paiement vers " + targetFinal, real);
+        EconomyListener.log(targetFinal, "Paiement reçu de " + sender, real);
     }
 }

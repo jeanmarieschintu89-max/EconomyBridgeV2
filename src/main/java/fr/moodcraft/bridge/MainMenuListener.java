@@ -13,7 +13,7 @@ public class MainMenuListener implements Listener {
 
         String title = e.getView().getTitle();
 
-        // 🔥 FIX titre (safe Bedrock)
+        // 🔥 SAFE (Bedrock + couleurs)
         if (title == null || !title.contains("Menu")) return;
 
         if (e.getClickedInventory() == null) return;
@@ -22,62 +22,57 @@ public class MainMenuListener implements Listener {
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
-        int slot = e.getRawSlot(); // 🔥 FIX IMPORTANT
+        var item = e.getCurrentItem();
+        if (item == null || item.getType().isAir()) return;
+
+        int slot = e.getRawSlot(); // 🔥 IMPORTANT
         if (slot > 26) return;
 
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
+        // 🔊 son propre
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
         switch (slot) {
 
-            case 4 -> {
-                p.closeInventory();
-                BankGUI.open(p);
-            }
+            case 4 -> open(p, () -> BankGUI.open(p));
 
-            case 10 -> {
-                p.closeInventory();
-                PriceGUI.open(p);
-            }
+            case 10 -> open(p, () -> PriceGUI.open(p));
 
-            case 11 -> {
-                p.closeInventory();
-                BankGUI.open(p);
-            }
+            case 11 -> open(p, () -> BankGUI.open(p));
 
-            case 12 -> {
-                p.closeInventory();
-                p.performCommand("contrats");
-            }
+            case 12 -> command(p, "contrats");
 
-            case 14 -> {
-                p.closeInventory();
-                p.performCommand("townmenu");
-            }
+            case 14 -> command(p, "townmenu");
 
-            case 15 -> {
-                p.closeInventory();
-                p.performCommand("jobs join");
-            }
+            case 15 -> command(p, "jobs join");
 
-            case 16 -> {
-                p.closeInventory();
-                TeleportGUI.open(p);
-            }
+            case 16 -> open(p, () -> TeleportGUI.open(p));
 
             case 22 -> {
-                p.sendMessage("§7Astuce: §aacheter bas §7et §cvendre haut");
+                p.sendMessage("§8────────────\n§7Astuce marché\n§aEntrer bas\n§cSortir haut\n§8────────────");
             }
 
             case 23 -> {
                 if (p.hasPermission("econ.admin")) {
-                    p.closeInventory();
-                    p.performCommand("banqueadmin");
+                    command(p, "banqueadmin");
                 } else {
-                    p.sendMessage("§cAcces refuse");
+                    p.sendMessage("§cAccès refusé");
                 }
             }
         }
+    }
+
+    // =========================
+    // 🔧 UTILITAIRES PROPRES
+    // =========================
+
+    private void open(Player p, Runnable action) {
+        p.closeInventory();
+        action.run();
+    }
+
+    private void command(Player p, String cmd) {
+        p.closeInventory();
+        p.performCommand(cmd);
     }
 }

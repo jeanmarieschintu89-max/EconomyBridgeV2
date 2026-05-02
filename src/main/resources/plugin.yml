@@ -88,6 +88,10 @@ commands:
     usage: /ibanpay <iban> <montant>
     permission: econ.use
 
+  bank:
+    description: Modifier la banque d'un joueur
+    usage: /bank <joueur> <montant>
+
   # =========================
   # ⚙️ ADMIN ECO
   # =========================

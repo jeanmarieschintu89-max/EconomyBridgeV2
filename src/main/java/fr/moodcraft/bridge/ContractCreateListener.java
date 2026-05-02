@@ -10,19 +10,17 @@ public class ContractCreateListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        // 🔒 GUI exact (attention au titre SafeGUI)
-        if (!e.getView().getTitle().equals("§6Creation")) return;
+        String title = e.getView().getTitle();
 
-        // 🔒 Clique uniquement dans le menu
+        // 🔥 FIX BEDROCK + NOM GUI
+        if (title == null || !title.contains("Contrat")) return;
+
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
         e.setCancelled(true);
 
-        // 🔒 joueur uniquement
         if (!(e.getWhoClicked() instanceof Player p)) return;
-
-        // 🔒 item valide
         if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
         ContractBuilder builder = ContractBuilder.get(p);
@@ -33,7 +31,7 @@ public class ContractCreateListener implements Listener {
         // =========================
         if (slot == 24) {
             builder.price += 100;
-            p.sendMessage("§aPrix: " + builder.price + "€");
+            p.sendMessage("§aPrix: " + builder.price);
             ContractCreateGUI.open(p);
             return;
         }
@@ -43,7 +41,7 @@ public class ContractCreateListener implements Listener {
         // =========================
         if (slot == 20) {
             builder.price = Math.max(0, builder.price - 100);
-            p.sendMessage("§cPrix: " + builder.price + "€");
+            p.sendMessage("§cPrix: " + builder.price);
             ContractCreateGUI.open(p);
             return;
         }
@@ -54,7 +52,7 @@ public class ContractCreateListener implements Listener {
         if (slot == 26) {
 
             if (builder.target == null || builder.item == null) {
-                p.sendMessage("§c❌ Données incomplètes");
+                p.sendMessage("§cDonnees incompletes");
                 return;
             }
 
@@ -66,21 +64,18 @@ public class ContractCreateListener implements Listener {
                     builder.price
             );
 
-            // 🔥 LOG HISTORIQUE
             ContractHistoryManager.log(
                     id,
                     "CREATE",
                     p.getName(),
                     builder.target,
-                    builder.item + " x" + builder.amount + " " + builder.price + "€"
+                    builder.item + " x" + builder.amount + " " + builder.price
             );
 
-            p.sendMessage("§a✔ Contrat créé !");
+            p.sendMessage("§aContrat cree");
             p.closeInventory();
 
-            // 🔥 IMPORTANT → éviter fuite mémoire
             ContractBuilder.remove(p);
-
             return;
         }
 
@@ -89,9 +84,7 @@ public class ContractCreateListener implements Listener {
         // =========================
         if (slot == 18) {
             p.closeInventory();
-            p.sendMessage("§cContrat annulé");
-
-            // 🔥 nettoyage
+            p.sendMessage("§cContrat annule");
             ContractBuilder.remove(p);
         }
     }

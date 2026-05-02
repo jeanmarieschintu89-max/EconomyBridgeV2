@@ -12,7 +12,7 @@ public class BankListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().equals("§6🏦 Banque")) return;
+        if (!e.getView().getTitle().equals("§6Banque")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -29,21 +29,19 @@ public class BankListener implements Listener {
 
         switch (e.getSlot()) {
 
-            // 📤 IBAN
             case 1 -> {
 
                 String iban = BankStorage.getIban(id);
 
                 p.closeInventory();
 
-                p.sendMessage("§8━━━━━━━━━━━━━━━━━━");
-                p.sendMessage("§e🏦 Banque MoodCraft");
+                p.sendMessage("§8━━━━━━━━━━━━━━");
+                p.sendMessage("§e🏦 Banque");
                 p.sendMessage("§7Titulaire: §e" + p.getName());
                 p.sendMessage("§7IBAN: §b" + iban);
-                p.sendMessage("§8━━━━━━━━━━━━━━━━━━");
+                p.sendMessage("§8━━━━━━━━━━━━━━");
             }
 
-            // ➖ RETRAIT
             case 2 -> {
 
                 double bank = BankStorage.get(id);
@@ -55,16 +53,15 @@ public class BankListener implements Listener {
 
                     TransactionLogger.log(p.getName(), "Retrait", 1000);
 
-                    p.sendMessage("§a✔ +1000€ retiré de la banque");
+                    p.sendMessage("§a✔ +1000€ retiré");
 
                 } else {
-                    p.sendMessage("§c❌ Pas assez d'argent en banque");
+                    p.sendMessage("§c❌ Pas assez d'argent");
                 }
 
                 BankGUI.open(p);
             }
 
-            // ➕ DEPOT
             case 6 -> {
 
                 if (eco.getBalance(p) >= 1000) {
@@ -74,9 +71,9 @@ public class BankListener implements Listener {
                     double bank = BankStorage.get(id);
                     BankStorage.set(id, bank + 1000);
 
-                    TransactionLogger.log(p.getName(), "Dépôt", 1000);
+                    TransactionLogger.log(p.getName(), "Depot", 1000);
 
-                    p.sendMessage("§b✔ 1000€ déposé en banque");
+                    p.sendMessage("§b✔ 1000€ déposé");
 
                 } else {
                     p.sendMessage("§c❌ Pas assez d'argent");
@@ -85,13 +82,11 @@ public class BankListener implements Listener {
                 BankGUI.open(p);
             }
 
-            // 📄 HISTORIQUE
             case 7 -> {
                 p.closeInventory();
-                BankHistoryGUI.open(p, 0); // ✅ FIX ICI
+                BankHistoryGUI.open(p, 0);
             }
 
-            // 🔄 REFRESH
             case 8 -> BankGUI.open(p);
         }
     }

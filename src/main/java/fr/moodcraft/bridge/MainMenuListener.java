@@ -11,7 +11,10 @@ public class MainMenuListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (!"§6Menu".equals(e.getView().getTitle())) return;
+        String title = e.getView().getTitle();
+
+        // 🔥 FIX titre (safe Bedrock)
+        if (title == null || !title.contains("Menu")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -21,9 +24,12 @@ public class MainMenuListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
+        int slot = e.getRawSlot(); // 🔥 FIX IMPORTANT
+        if (slot > 26) return;
+
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
 
-        switch (e.getSlot()) {
+        switch (slot) {
 
             case 4 -> {
                 p.closeInventory();

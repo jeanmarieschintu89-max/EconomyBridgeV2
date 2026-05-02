@@ -31,10 +31,10 @@ public class ContractGUIListener implements Listener {
 
         switch (slot) {
 
-            case 10 -> command(p, "contract");
-            case 12 -> command(p, "contractaccept");
-            case 14 -> command(p, "contractdeliver");
-            case 16 -> command(p, "contractlog");
+            case 10 -> cmd(p, "contract");
+            case 12 -> cmd(p, "contractaccept");
+            case 14 -> cmd(p, "contractdeliver");
+            case 16 -> cmd(p, "contractlog");
 
             case 22 -> {
                 p.closeInventory();
@@ -43,8 +43,8 @@ public class ContractGUIListener implements Listener {
         }
     }
 
-    private void command(Player p, String cmd) {
+    private void cmd(Player p, String command) {
         p.closeInventory();
-        p.performCommand(cmd);
+        p.performCommand(command);
     }
 }

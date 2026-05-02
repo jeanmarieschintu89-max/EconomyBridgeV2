@@ -9,56 +9,19 @@ public class ContractCreateGUI {
 
     public static void open(Player p) {
 
-        ContractBuilder builder = ContractBuilder.get(p);
+        var b = ContractBuilder.get(p);
+        Inventory inv = Bukkit.createInventory(null, 27, "§6Creation");
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6✏ Création de contrat");
+        SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.PLAYER_HEAD, "§eJoueur", "§7" + b.target));
+        SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.CHEST, "§eObjet", "§7" + b.item));
+        SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.PAPER, "§eQuantite", "§7" + b.amount));
 
-        // =========================
-        // 👤 JOUEUR
-        // =========================
-        inv.setItem(10, ItemBuilder.of(Material.PLAYER_HEAD, "§eJoueur",
-                "§7" + (builder.target == null ? "§cNon défini" : builder.target)));
+        SafeGUI.safeSet(inv, 20, SafeGUI.item(Material.REDSTONE, "§c-100"));
+        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.GOLD_INGOT, "§ePrix", "§7" + b.price + "€"));
+        SafeGUI.safeSet(inv, 24, SafeGUI.item(Material.EMERALD, "§a+100"));
 
-        // =========================
-        // 📦 ITEM
-        // =========================
-        inv.setItem(11, ItemBuilder.of(Material.CHEST, "§eObjet",
-                "§7" + (builder.item == null ? "§cNon défini" : builder.item)));
-
-        // =========================
-        // 🔢 QUANTITÉ
-        // =========================
-        inv.setItem(12, ItemBuilder.of(Material.PAPER, "§eQuantité",
-                "§7" + builder.amount));
-
-        // =========================
-        // ➖ PRIX
-        // =========================
-        inv.setItem(20, ItemBuilder.of(Material.REDSTONE, "§c➖ Prix",
-                "§7-100€"));
-
-        // =========================
-        // 💰 PRIX ACTUEL
-        // =========================
-        inv.setItem(22, ItemBuilder.of(Material.GOLD_INGOT, "§ePrix",
-                "§7" + builder.price + "€"));
-
-        // =========================
-        // ➕ PRIX
-        // =========================
-        inv.setItem(24, ItemBuilder.of(Material.EMERALD, "§a➕ Prix",
-                "§7+100€"));
-
-        // =========================
-        // ✔ VALIDER
-        // =========================
-        inv.setItem(26, ItemBuilder.of(Material.LIME_DYE, "§a✔ Créer le contrat",
-                "§7Clique pour confirmer"));
-
-        // =========================
-        // ❌ ANNULER
-        // =========================
-        inv.setItem(18, ItemBuilder.of(Material.BARRIER, "§cAnnuler"));
+        SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.LIME_DYE, "§aValider"));
+        SafeGUI.safeSet(inv, 18, SafeGUI.item(Material.BARRIER, "§cAnnuler"));
 
         p.openInventory(inv);
     }

@@ -16,7 +16,7 @@ public class ContractGUIListener implements Listener {
 
         String clean = title.replaceAll("§.", "");
 
-        if (!clean.equalsIgnoreCase("📜 Contrats")) return;
+        if (!clean.equalsIgnoreCase("Contrats")) return;
 
         if (e.getClickedInventory() == null) return;
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
@@ -27,24 +27,29 @@ public class ContractGUIListener implements Listener {
 
         int slot = e.getRawSlot();
 
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
         switch (slot) {
 
-            case 10 -> cmd(p, "contract");
-            case 12 -> cmd(p, "contractaccept");
-            case 14 -> cmd(p, "contractdeliver");
-            case 16 -> cmd(p, "contractlog");
+            case 11 -> {
+                p.closeInventory();
+                p.sendMessage("§eUtilise: §f/contract <item> <quantité> <prix>");
+            }
+
+            case 13 -> {
+                p.closeInventory();
+                ContractMarketGUI.open(p); // 👉 menu des contrats dispo
+            }
+
+            case 15 -> {
+                p.closeInventory();
+                p.sendMessage("§7Fonction bientôt dispo");
+            }
 
             case 22 -> {
                 p.closeInventory();
                 MainMenuGUI.open(p);
             }
         }
-    }
-
-    private void cmd(Player p, String command) {
-        p.closeInventory();
-        p.performCommand(command);
     }
 }

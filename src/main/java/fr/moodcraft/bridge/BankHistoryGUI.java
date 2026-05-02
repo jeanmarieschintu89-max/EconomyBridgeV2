@@ -13,10 +13,10 @@ public class BankHistoryGUI {
     public static void open(Player p, int page) {
 
         List<String> logs = TransactionLogger.getAll(p.getName());
-        Inventory inv = Bukkit.createInventory(null, 27, "§6📊 Historique Trader");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6Historique");
 
         if (logs == null || logs.isEmpty()) {
-            inv.setItem(13, ItemBuilder.of(Material.BARRIER, "§cAucune transaction"));
+            SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BARRIER, "§cVide"));
             p.openInventory(inv);
             return;
         }
@@ -27,20 +27,13 @@ public class BankHistoryGUI {
 
         for (int i = logs.size() - 1; i >= 0 && slot < 21; i--) {
 
-            String line = logs.get(i);
-
             try {
-                String[] parts = line.split("\\|\\|");
-
+                String[] parts = logs.get(i).split("\\|\\|");
                 String date = parts[0];
-                String payload = parts[1];
-
-                String[] data = payload.split("\\|");
+                String[] data = parts[1].split("\\|");
 
                 String type = data[0];
-                String item = data.length > 1 ? data[1] : "unknown";
-                int amount = data.length > 2 ? Integer.parseInt(data[2]) : 0;
-                double unit = data.length > 3 ? Double.parseDouble(data[3]) : 0;
+                String item = data.length > 1 ? data[1] : "paper";
                 double total = data.length > 4 ? Double.parseDouble(data[4]) : 0;
 
                 Material mat;
@@ -50,21 +43,19 @@ public class BankHistoryGUI {
                     mat = Material.PAPER;
                 }
 
-                String color = type.equalsIgnoreCase("VENTE") ? "§a" : "§c";
-
-                inv.setItem(slot, ItemBuilder.of(mat,
-                        color + type + " §7(" + item + ")",
-                        "§7Date: §f" + date,
-                        "§7Quantité: §e" + amount,
-                        "§7Prix total: §6" + df.format(total) + "€",
-                        "§7Prix unitaire: §8" + df.format(unit) + "€"));
+                SafeGUI.safeSet(inv, slot,
+                        SafeGUI.item(mat,
+                                (type.equalsIgnoreCase("VENTE") ? "§a" : "§c") + type,
+                                "§7" + item,
+                                "§6" + df.format(total) + "€",
+                                "§8" + date));
 
                 slot++;
 
             } catch (Exception ignored) {}
         }
 
-        inv.setItem(22, ItemBuilder.of(Material.BARRIER, "§cRetour"));
+        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.BARRIER, "§cRetour"));
 
         p.openInventory(inv);
     }

@@ -10,7 +10,19 @@ public class ContractMenuCommand implements CommandExecutor {
 
         if (!(sender instanceof Player p)) return true;
 
-        ContractGUI.open(p);
+        p.sendMessage("§8────────────");
+        p.sendMessage("§e📜 Contrats MoodCraft");
+        p.sendMessage("");
+        p.sendMessage("§7Créer un contrat :");
+        p.sendMessage("§e/contract <item> <quantité> <prix>");
+        p.sendMessage("");
+        p.sendMessage("§7Accepter un contrat :");
+        p.sendMessage("§e/contractaccept");
+        p.sendMessage("");
+        p.sendMessage("§7Livrer un contrat :");
+        p.sendMessage("§e/contractdeliver");
+        p.sendMessage("§8────────────");
+
         return true;
     }
 }

@@ -5,28 +5,41 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SafeGUI {
 
+    // =========================
+    // 🎯 CRÉATION ITEM SAFE
+    // =========================
     public static ItemStack item(Material mat, String name, String... lore) {
+
         ItemStack it = new ItemStack(mat);
         ItemMeta meta = it.getItemMeta();
 
         if (meta != null) {
 
-            // 🔥 reset + anti gras
-            meta.setDisplayName("§r" + name + "§7");
+            // 🔥 reset total du nom
+            meta.setDisplayName("§r" + name);
 
+            // 🔥 lore sécurisé (anti gras / italique / héritage)
             if (lore != null && lore.length > 0) {
 
-                List<String> fixedLore = Arrays.stream(lore)
-                        .map(SafeGUI::fixLine)
-                        .collect(Collectors.toList());
+                List<String> fixed = new ArrayList<>();
 
-                meta.setLore(fixedLore);
+                for (String line : lore) {
+
+                    if (line == null) {
+                        fixed.add("");
+                        continue;
+                    }
+
+                    // 🔥 reset + couleur par défaut propre
+                    fixed.add("§r§7" + line);
+                }
+
+                meta.setLore(fixed);
             }
 
             it.setItemMeta(meta);
@@ -35,6 +48,9 @@ public class SafeGUI {
         return it;
     }
 
+    // =========================
+    // 🛡️ SAFE SET SLOT
+    // =========================
     public static void safeSet(Inventory inv, int slot, ItemStack item) {
         try {
             inv.setItem(slot, item);
@@ -45,26 +61,9 @@ public class SafeGUI {
     }
 
     // =========================
-    // 💰 FORMAT ARGENT (FIX ÉPAIS)
+    // 💰 FORMAT ARGENT
     // =========================
     public static String money(double v) {
-        return String.format("%.2f", v) + "€ §7";
-    }
-
-    // =========================
-    // 🔧 FIX LORE (ANTI ÉPAIS)
-    // =========================
-    private static String fixLine(String s) {
-
-        if (s == null || s.isEmpty()) return "§7";
-
-        // si la ligne finit par chiffre → on casse le rendu
-        char last = s.charAt(s.length() - 1);
-
-        if (Character.isDigit(last)) {
-            return s + " §7";
-        }
-
-        return s + " §7";
+        return String.format("%.2f", v);
     }
 }

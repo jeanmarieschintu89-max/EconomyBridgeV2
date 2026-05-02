@@ -18,6 +18,7 @@ public class MainMenuGUI {
             Economy eco = VaultHook.getEconomy();
             double balance = eco != null ? eco.getBalance(p) : 0;
             double bank = BankStorage.get(p.getUniqueId().toString());
+            double total = balance + bank; // 🔥 AJOUT
 
             // 💰 COMPTES (slot 4)
             SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.CLOCK, "§eComptes",
@@ -26,6 +27,8 @@ public class MainMenuGUI {
                     "",
                     "§aArgent: §f" + SafeGUI.money(balance) + "€",
                     "§bBanque: §f" + SafeGUI.money(bank) + "€",
+                    "",
+                    "§6Total: §f" + SafeGUI.money(total) + "€",
                     "",
                     "§7Statut:",
                     ReputationManager.format(p.getName()),
@@ -86,7 +89,7 @@ public class MainMenuGUI {
             // 🧭 TELEPORTATION (slot 16)
             SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.COMPASS, "§bTéléportation",
                     "§8────────────",
-                    "§7Télèportation rapide",
+                    "§7Téléportation rapide",
                     "",
                     "§aVille • Shop • Farm",
                     "§7Exploration facilitée",
@@ -98,8 +101,8 @@ public class MainMenuGUI {
                     "§8────────────",
                     "§7Astuces du marché",
                     "",
-                    "§aAchete au bon moment",
-                    "§cVend au bon moment"));
+                    "§aAchète au bon moment",
+                    "§cVends au bon moment"));
 
             // 🔧 ADMIN (slot 23)
             if (p.hasPermission("econ.admin")) {

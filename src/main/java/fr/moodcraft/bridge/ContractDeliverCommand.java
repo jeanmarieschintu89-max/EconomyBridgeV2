@@ -36,34 +36,34 @@ public class ContractDeliverCommand implements CommandExecutor {
             return true;
         }
 
-        // 🔍 Vérification inventaire
         if (!worker.getInventory().contains(mat, c.amount)) {
             worker.sendMessage("§c❌ Vous n'avez pas les objets demandés");
             return true;
         }
 
-        // 🔄 Retirer items worker
+        // 🔄 transfert
         worker.getInventory().removeItem(new ItemStack(mat, c.amount));
-
-        // 📦 Donner au client
         owner.getInventory().addItem(new ItemStack(mat, c.amount));
 
-        // 💰 Paiement (escrow → worker)
+        // 💰 paiement
         String workerId = worker.getUniqueId().toString();
         double money = BankStorage.get(workerId);
-
         BankStorage.set(workerId, money + c.price);
+
+        // ⭐ RÉPUTATION
+        ReputationManager.add(worker.getUniqueId(), 1);
 
         c.status = Contract.Status.COMPLETED;
 
         worker.sendMessage("§8────────────");
         worker.sendMessage("§a✔ Contrat terminé !");
-        worker.sendMessage("§7Paiement reçu : §a" + c.price + "€");
+        worker.sendMessage("§7Paiement: §a+" + c.price + "€");
+        worker.sendMessage("§7Réputation: §a+1 ⭐");
         worker.sendMessage("§8────────────");
 
         owner.sendMessage("§8────────────");
         owner.sendMessage("§a✔ Commande reçue !");
-        owner.sendMessage("§7Merci pour votre contrat");
+        owner.sendMessage("§7Joueur: §f" + worker.getName());
         owner.sendMessage("§8────────────");
 
         ContractManager.remove(c.id);

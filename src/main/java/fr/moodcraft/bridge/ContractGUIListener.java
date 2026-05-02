@@ -15,7 +15,7 @@ public class ContractGUIListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().equals("§6📄 Contrats")) return;
+        if (!e.getView().getTitle().equals("§6Contrats")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -23,18 +23,18 @@ public class ContractGUIListener implements Listener {
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getCurrentItem() == null) return;
+        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
         int slot = e.getSlot();
 
         // ➕ CREATION
-        if (slot == 49) {
+        if (slot == 22) {
             p.closeInventory();
             ContractCreateGUI.open(p);
             return;
         }
 
-        // 🔁 reconstruire liste
+        // 🔁 liste contrats
         List<UUID> list = new ArrayList<>();
 
         for (UUID id : ContractManager.contracts.keySet()) {
@@ -44,19 +44,19 @@ public class ContractGUIListener implements Listener {
             }
         }
 
-        // 📌 calcul index
-        int baseSlot = slot % 9;
-        int row = slot / 9;
+        if (list.isEmpty()) return;
 
-        if (baseSlot >= list.size()) return;
+        int index = slot;
 
-        UUID id = list.get(baseSlot);
+        if (index < 0 || index >= list.size()) return;
+
+        UUID id = list.get(index);
         var c = ContractManager.contracts.get(id);
 
         if (c == null) return;
 
-        // ✔ ACCEPTER (ligne 2)
-        if (row == 1) {
+        // ✔ ACCEPTER
+        if (e.isLeftClick()) {
 
             c.accepted = true;
 
@@ -72,8 +72,8 @@ public class ContractGUIListener implements Listener {
             p.sendMessage("§a✔ Contrat accepté");
         }
 
-        // ❌ REFUSER (ligne 3)
-        if (row == 2) {
+        // ❌ REFUSER
+        if (e.isRightClick()) {
 
             ContractManager.contracts.remove(id);
             ReputationManager.add(c.from, -1);

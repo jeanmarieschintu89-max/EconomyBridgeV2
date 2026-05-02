@@ -16,41 +16,67 @@ public class ContractCreateListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        if (!title.replaceAll("§.", "").equalsIgnoreCase("Créer contrat")) return;
+        String clean = title.replaceAll("§.", "");
+        if (!clean.equalsIgnoreCase("Créer contrat")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
+        // ❗ important : top inventory uniquement
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
-        e.setCancelled(true);
+        int slot = e.getRawSlot();
 
         ContractBuilder builder = ContractBuilder.get(p.getUniqueId());
 
-        int slot = e.getRawSlot();
+        // =========================
+        // 📦 SLOT ITEM (autorisé)
+        // =========================
+        if (slot == 10) {
+            e.setCancelled(false);
+
+            // récupérer l'item après dépôt
+            p.getServer().getScheduler().runTaskLater(Main.getInstance(), () -> {
+                ItemStack item = e.getInventory().getItem(10);
+
+                if (item != null && item.getType() != Material.AIR) {
+                    builder.item = item.getType().name();
+                    p.sendMessage("§aItem sélectionné: §f" + builder.item);
+                }
+            }, 1L);
+
+            return;
+        }
+
+        // bloque le reste
+        e.setCancelled(true);
 
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
         switch (slot) {
 
-            case 10 -> {
-                p.sendMessage("§7Dépose un item dans ce slot");
-                e.setCancelled(false);
-            }
-
+            // =========================
+            // 📊 QUANTITÉ
+            // =========================
             case 12 -> {
                 builder.amount += 1;
-                p.sendMessage("§bQuantité: " + builder.amount);
+                p.sendMessage("§bQuantité: §f" + builder.amount);
             }
 
+            // =========================
+            // 💰 PRIX
+            // =========================
             case 14 -> {
                 builder.price += 100;
-                p.sendMessage("§6Prix: " + builder.price + "€");
+                p.sendMessage("§6Prix: §f" + builder.price + "€");
             }
 
+            // =========================
+            // ✅ VALIDATION
+            // =========================
             case 16 -> {
 
                 if (builder.item == null) {
-                    p.sendMessage("§cAucun item");
+                    p.sendMessage("§c❌ Aucun item défini");
                     return;
                 }
 
@@ -61,12 +87,20 @@ public class ContractCreateListener implements Listener {
                         builder.price
                 );
 
+                p.sendMessage("§8────────────");
                 p.sendMessage("§a✔ Contrat créé !");
-                ContractBuilder.remove(p.getUniqueId());
+                p.sendMessage("§7Item: §f" + builder.item);
+                p.sendMessage("§7Quantité: §f" + builder.amount);
+                p.sendMessage("§7Prix: §f" + builder.price + "€");
+                p.sendMessage("§8────────────");
 
+                ContractBuilder.remove(p.getUniqueId());
                 p.closeInventory();
             }
 
+            // =========================
+            // 🔙 RETOUR
+            // =========================
             case 22 -> {
                 p.closeInventory();
                 ContractGUI.open(p);

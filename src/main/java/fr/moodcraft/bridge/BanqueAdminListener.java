@@ -11,19 +11,27 @@ public class BanqueAdminListener implements Listener {
     public void onClick(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
+        if (title == null) return;
 
-        // 🔥 FIX : compatible couleurs / Bedrock
-        if (title == null || !title.contains("Admin")) return;
+        // 🔥 NORMALISATION (anti Bedrock / couleurs)
+        String clean = title.replaceAll("§.", "");
+
+        // 🔒 MATCH STRICT
+        if (!clean.equalsIgnoreCase("Admin Economie")) return;
 
         if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
+        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
-        int slot = e.getSlot();
+        var item = e.getCurrentItem();
+        if (item == null || item.getType().isAir()) return;
+
+        int slot = e.getRawSlot();
 
         switch (slot) {
 
@@ -31,10 +39,10 @@ public class BanqueAdminListener implements Listener {
             // 📈 INFLATION
             // =========================
             case 0 -> {
-                for (String item : MarketState.base.keySet()) {
-                    double price = MarketState.getPrice(item) * 1.05;
-                    MarketState.setPrice(item, round(price));
-                    PriceUpdater.updateItem(item);
+                for (String itemKey : MarketState.base.keySet()) {
+                    double price = MarketState.getPrice(itemKey) * 1.05;
+                    MarketState.setPrice(itemKey, round(price));
+                    PriceUpdater.updateItem(itemKey);
                 }
                 p.sendMessage("§a✔ Inflation +5%");
                 applyLive();
@@ -45,10 +53,10 @@ public class BanqueAdminListener implements Listener {
             // 📉 DÉFLATION
             // =========================
             case 1 -> {
-                for (String item : MarketState.base.keySet()) {
-                    double price = MarketState.getPrice(item) * 0.95;
-                    MarketState.setPrice(item, round(price));
-                    PriceUpdater.updateItem(item);
+                for (String itemKey : MarketState.base.keySet()) {
+                    double price = MarketState.getPrice(itemKey) * 0.95;
+                    MarketState.setPrice(itemKey, round(price));
+                    PriceUpdater.updateItem(itemKey);
                 }
                 p.sendMessage("§c✔ Déflation -5%");
                 applyLive();
@@ -88,7 +96,6 @@ public class BanqueAdminListener implements Listener {
 
                         MarketState.base.put(key, value);
 
-                        // 🔒 NE PAS écraser sauvegarde
                         if (!MarketState.price.containsKey(key)) {
                             MarketState.price.put(key, value);
                         }
@@ -115,8 +122,8 @@ public class BanqueAdminListener implements Listener {
             // 🔄 SYNC
             // =========================
             case 4 -> {
-                for (String item : MarketState.base.keySet()) {
-                    PriceUpdater.updateItem(item);
+                for (String itemKey : MarketState.base.keySet()) {
+                    PriceUpdater.updateItem(itemKey);
                 }
                 p.sendMessage("§e✔ Synchronisation effectuée");
             }
@@ -133,10 +140,10 @@ public class BanqueAdminListener implements Listener {
             // 🔥 RESET
             // =========================
             case 8 -> {
-                for (String item : MarketState.base.keySet()) {
-                    double base = MarketState.base.get(item);
-                    MarketState.setPrice(item, base);
-                    PriceUpdater.updateItem(item);
+                for (String itemKey : MarketState.base.keySet()) {
+                    double base = MarketState.base.get(itemKey);
+                    MarketState.setPrice(itemKey, base);
+                    PriceUpdater.updateItem(itemKey);
                 }
                 p.sendMessage("§4✔ Économie réinitialisée");
                 applyLive();

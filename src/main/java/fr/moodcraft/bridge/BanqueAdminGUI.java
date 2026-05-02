@@ -9,51 +9,74 @@ public class BanqueAdminGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 9, "§6Admin Economie");
+        Inventory inv = Bukkit.createInventory(null, 9, "§fAdmin Economie");
 
-        // 0 → inflation
+        // 📈 INFLATION
         SafeGUI.safeSet(inv, 0, SafeGUI.item(Material.EMERALD_BLOCK, "§aInflation +5%",
-                "§8────────",
-                "§7Augmente tous les prix",
-                "§7du marché",
+                "§8──────────── §7",
+                "§7Augmente tous les prix §7",
+                "§7du marché §7",
                 "",
-                "§aEffet: hausse globale"));
+                "§aEffet: hausse globale §7",
+                "",
+                "§8Clique pour appliquer §7"));
 
-        // 1 → déflation
+        // 📉 DÉFLATION
         SafeGUI.safeSet(inv, 1, SafeGUI.item(Material.REDSTONE_BLOCK, "§cDéflation -5%",
-                "§8────────",
-                "§7Réduit tous les prix",
+                "§8──────────── §7",
+                "§7Réduit tous les prix §7",
                 "",
-                "§cEffet: baisse globale"));
+                "§cEffet: baisse globale §7",
+                "",
+                "§8Clique pour appliquer §7"));
 
-        // 2 → items
-        SafeGUI.safeSet(inv, 2, SafeGUI.item(Material.CHEST, "§bConfigurer Items",
-                "§8────────",
-                "§7Réglage individuel",
-                "§7par ressource"));
+        // 📦 CONFIG ITEMS
+        SafeGUI.safeSet(inv, 2, SafeGUI.item(Material.CHEST, "§bConfigurer les items",
+                "§8──────────── §7",
+                "§7Modifier chaque ressource §7",
+                "",
+                "§eImpact • Activité §7",
+                "§eRareté • Poids §7",
+                "",
+                "§8Clique pour ouvrir §7"));
 
-        // 3 → reload
-        SafeGUI.safeSet(inv, 3, SafeGUI.item(Material.BEACON, "§bReload Economie",
-                "§8────────",
-                "§7Recharge config.yml",
-                "§cReset temporaire"));
+        // 🔄 RELOAD
+        SafeGUI.safeSet(inv, 3, SafeGUI.item(Material.BEACON, "§bRecharger économie",
+                "§8──────────── §7",
+                "§7Recharge le config.yml §7",
+                "",
+                "§cAttention: reset temporaire §7",
+                "",
+                "§8Clique pour recharger §7"));
 
-        // 4 → sync
-        SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.NETHER_STAR, "§eSynchroniser",
-                "§8────────",
-                "§7Met à jour",
-                "§7tous les shops"));
+        // 🔁 SYNC
+        SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.NETHER_STAR, "§eSynchroniser marché",
+                "§8──────────── §7",
+                "§7Met à jour tous les shops §7",
+                "",
+                "§aActualisation globale §7",
+                "",
+                "§8Clique pour synchroniser §7"));
 
-        // 6 → config globale
-        SafeGUI.safeSet(inv, 6, SafeGUI.item(Material.COMPARATOR, "§dConfig Marché",
-                "§8────────",
-                "§7Paramètres globaux"));
+        // ⚙ CONFIG GLOBALE
+        SafeGUI.safeSet(inv, 6, SafeGUI.item(Material.COMPARATOR, "§dConfig globale",
+                "§8──────────── §7",
+                "§7Paramètres du marché §7",
+                "",
+                "§eTick • Variations §7",
+                "§eMultiplicateurs §7",
+                "",
+                "§8Clique pour configurer §7"));
 
-        // 8 → reset
-        SafeGUI.safeSet(inv, 8, SafeGUI.item(Material.BARRIER, "§4Reset Economie",
-                "§8────────",
-                "§cRemet tous les prix",
-                "§cà zéro"));
+        // ☢ RESET
+        SafeGUI.safeSet(inv, 8, SafeGUI.item(Material.BARRIER, "§cReset économie",
+                "§8──────────── §7",
+                "§cRemet tous les prix §7",
+                "§cà leur base §7",
+                "",
+                "§4Action irréversible §7",
+                "",
+                "§8Clique pour reset §7"));
 
         p.openInventory(inv);
     }

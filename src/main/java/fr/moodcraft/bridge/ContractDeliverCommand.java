@@ -50,8 +50,8 @@ public class ContractDeliverCommand implements CommandExecutor {
         double money = BankStorage.get(workerId);
         BankStorage.set(workerId, money + c.price);
 
-        // ⭐ RÉPUTATION
-        ReputationManager.add(worker.getUniqueId(), 1);
+        // ⭐ RÉPUTATION (FIX)
+        ReputationManager.add(worker.getUniqueId().toString(), 1);
 
         c.status = Contract.Status.COMPLETED;
 

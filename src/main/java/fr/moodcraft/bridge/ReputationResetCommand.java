@@ -26,7 +26,9 @@ public class ReputationResetCommand implements CommandExecutor {
             return true;
         }
 
-        ReputationManager.set(target.getUniqueId(), 0);
+        String id = target.getUniqueId().toString();
+
+        ReputationManager.reset(id);
 
         sender.sendMessage("§a✔ Réputation réinitialisée pour §f" + target.getName());
         target.sendMessage("§c⚠ Votre réputation a été réinitialisée");

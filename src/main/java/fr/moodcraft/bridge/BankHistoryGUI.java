@@ -23,13 +23,16 @@ public class BankHistoryGUI {
 
         DecimalFormat df = new DecimalFormat("#,##0.00");
 
+        int perPage = 21;
+        int start = logs.size() - (page * perPage) - 1;
+        int end = Math.max(start - perPage + 1, 0);
+
         int slot = 0;
 
-        for (int i = logs.size() - 1; i >= 0 && slot < 21; i--) {
+        for (int i = start; i >= end && slot < 21; i--) {
 
             try {
 
-                // 🔥 BON FORMAT
                 String[] parts = logs.get(i).split("\\|\\|");
 
                 String date = parts.length > 0 ? parts[0] : "??";
@@ -40,28 +43,25 @@ public class BankHistoryGUI {
                     amount = parts.length > 2 ? Double.parseDouble(parts[2]) : 0;
                 } catch (Exception ignored) {}
 
-                // 🎨 couleur + signe
+                // 🎨 couleurs + signes
                 String color = "§7";
                 String sign = "";
 
                 if (type.contains("Vente")) {
                     color = "§a";
                     sign = "+";
-                }
-                else if (type.contains("Depot")) {
+                } else if (type.contains("Depot")) {
                     color = "§b";
                     sign = "+";
-                }
-                else if (type.contains("Retrait")) {
+                } else if (type.contains("Retrait")) {
                     color = "§e";
                     sign = "-";
-                }
-                else if (type.contains("Achat")) {
+                } else if (type.contains("Achat")) {
                     color = "§c";
                     sign = "-";
                 }
 
-                // 🎯 matériau
+                // 🎯 icône
                 Material mat = Material.PAPER;
 
                 if (type.contains("Vente")) mat = Material.EMERALD;
@@ -86,7 +86,23 @@ public class BankHistoryGUI {
             } catch (Exception ignored) {}
         }
 
-        // 🔙 retour
+        // =========================
+        // 🔁 NAVIGATION
+        // =========================
+
+        // page précédente
+        if (page > 0) {
+            SafeGUI.safeSet(inv, 21,
+                    SafeGUI.item(Material.ARROW, "§aPage précédente"));
+        }
+
+        // page suivante
+        if (start - perPage >= 0) {
+            SafeGUI.safeSet(inv, 23,
+                    SafeGUI.item(Material.ARROW, "§aPage suivante"));
+        }
+
+        // retour
         SafeGUI.safeSet(inv, 22,
                 SafeGUI.item(Material.BARRIER, "§cRetour"));
 

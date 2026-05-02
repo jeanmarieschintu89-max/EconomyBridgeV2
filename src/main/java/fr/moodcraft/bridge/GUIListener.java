@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,7 +27,7 @@ public class GUIListener implements Listener {
 
         String title = e.getView().getTitle();
 
-        // 🔥 NOUVEAU NOM + BEDROCK SAFE
+        // 🔥 BEDROCK SAFE
         if (title == null || !title.contains("Bourse")) return;
 
         if (e.getClickedInventory() == null) return;
@@ -54,83 +53,57 @@ public class GUIListener implements Listener {
 
         if (id == null) return;
 
-        ClickType click = e.getClick();
-
         // =========================
-        // 🟢 VENTE
+        // 🔥 VENTE UNIQUE
         // =========================
-        if (click.isLeftClick()) {
 
-            int amount = count(p, mat);
+        int amount = count(p, mat);
 
-            if (amount <= 0) {
-                p.sendMessage("§cRien a vendre");
-                return;
-            }
-
-            double price = MarketEngine.getPrice(id);
-            double gain = amount * price;
-
-            double mult = 1;
-            if (amount > 512) mult = 0.6;
-            else if (amount > 256) mult = 0.8;
-
-            gain *= mult;
-
-            double taxRate = Main.getInstance().getConfig().getDouble("tax", 20);
-            double tax = gain * taxRate / 100;
-            double finalGain = gain - tax;
-
-            double brut = round(gain);
-            double taxe = round(tax);
-            double net = round(finalGain);
-
-            p.getInventory().removeItem(new ItemStack(mat, amount));
-            econ.depositPlayer(p, net);
-
-            TransactionLogger.log(p.getName(),
-                    "Vente " + id + " x" + amount,
-                    net);
-
-            p.sendMessage("§8----------------");
-            p.sendMessage("§aVente reussie");
-            p.sendMessage("§7Brut: §f" + brut);
-            p.sendMessage("§7Taxe: §c-" + taxe);
-            p.sendMessage("§7Gain: §a+" + net);
-            p.sendMessage("§8----------------");
-
-            MarketEngine.applySell(id, amount);
-            PriceUpdater.updateItem(id);
+        if (amount <= 0) {
+            p.sendMessage("§cRien a vendre");
+            return;
         }
 
-        // =========================
-        // 🔵 ACHAT
-        // =========================
-        if (click.isRightClick()) {
+        double price = MarketEngine.getPrice(id);
+        double gain = amount * price;
 
-            int amount = 64;
+        // 📉 pénalité volume
+        double mult = 1;
+        if (amount > 512) mult = 0.6;
+        else if (amount > 256) mult = 0.8;
 
-            double price = MarketEngine.getPrice(id);
-            double cost = round(price * amount);
+        gain *= mult;
 
-            if (econ.getBalance(p) < cost) {
-                p.sendMessage("§cPas assez d'argent");
-                return;
-            }
+        // 💸 taxe
+        double taxRate = Main.getInstance().getConfig().getDouble("tax", 20);
+        double tax = gain * taxRate / 100;
+        double finalGain = gain - tax;
 
-            econ.withdrawPlayer(p, cost);
-            p.getInventory().addItem(new ItemStack(mat, amount));
+        double brut = round(gain);
+        double taxe = round(tax);
+        double net = round(finalGain);
 
-            TransactionLogger.log(p.getName(),
-                    "Achat " + id + " x" + amount,
-                    cost);
+        // 📦 remove + pay
+        p.getInventory().removeItem(new ItemStack(mat, amount));
+        econ.depositPlayer(p, net);
 
-            p.sendMessage("§aAchat reussi");
-            p.sendMessage("§cCout: -" + cost);
+        // 📄 LOG
+        TransactionLogger.log(p.getName(),
+                "Vente " + id + " x" + amount,
+                net);
 
-            MarketEngine.applyBuy(id, amount);
-            PriceUpdater.updateItem(id);
-        }
+        // 📢 message clean
+        p.sendMessage("§8────────────");
+        p.sendMessage("§a✔ Vente effectuée");
+        p.sendMessage("§7Quantite: §f" + amount);
+        p.sendMessage("§7Brut: §f" + brut + "€");
+        p.sendMessage("§7Taxe: §c-" + taxe + "€");
+        p.sendMessage("§7Gain: §a+" + net + "€");
+        p.sendMessage("§8────────────");
+
+        // 📈 marché
+        MarketEngine.applySell(id, amount);
+        PriceUpdater.updateItem(id);
     }
 
     private int count(Player p, Material mat) {

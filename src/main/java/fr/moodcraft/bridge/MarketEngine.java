@@ -40,6 +40,12 @@ public final class MarketEngine {
             double sell = MarketState.sell.getOrDefault(item, 0.0);
 
             // =========================
+            // 📦 UPDATE STOCK (FIX IMPORTANT)
+            // =========================
+            stock += buy;
+            stock -= sell;
+
+            // =========================
             // 📊 ACTIVITY
             // =========================
             double coef = MarketState.activity.getOrDefault(item, 0.001);
@@ -119,11 +125,17 @@ public final class MarketEngine {
             if (price > max) price = max;
             if (price < 1) price = 1;
 
-            price = round(price);
+            // =========================
+            // 💹 TREND + PRICE (FIX IMPORTANT)
+            // =========================
+            double rawPrice = price; // pour calcul tendance précis
+            price = round(price);    // affichage
 
-            MarketState.setPrice(item, price);
+            MarketState.setPrice(item, rawPrice); // calc tendance ici
+            MarketState.price.put(item, price);   // valeur affichée
 
-            TrendManager.updateTrend(item, price);
+            // ❌ SUPPRIMÉ (double calcul bug)
+            // TrendManager.updateTrend(item, price);
 
             // reset cycle
             MarketState.buy.put(item, 0.0);

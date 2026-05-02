@@ -12,41 +12,68 @@ public class BankTransferListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
+        if (title == null) return;
 
-        // 🔒 FIX STRICT
-        if (title == null || !title.equals("§eVirement")) return;
+        // 🔥 NORMALISATION (anti couleur / Bedrock)
+        String clean = title.replaceAll("§.", "");
+
+        if (!clean.equalsIgnoreCase("Virement")) return;
 
         if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
+        // 🔥 IMPORTANT → ne bloque QUE le GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
+        var item = e.getCurrentItem();
+        if (item == null || item.getType().isAir()) return;
 
         int slot = e.getRawSlot();
-        if (slot > 26) return;
 
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
         switch (slot) {
 
+            // =========================
+            // 💳 IBAN
+            // =========================
             case 11 -> {
                 p.closeInventory();
+
                 p.sendMessage("§8────────────");
                 p.sendMessage("§eVirement IBAN");
+                p.sendMessage("§7Commande:");
                 p.sendMessage("§f/ibanpay <iban> <montant>");
                 p.sendMessage("§8────────────");
             }
 
+            // =========================
+            // 👤 JOUEUR
+            // =========================
             case 13 -> {
                 p.closeInventory();
-                TransferTargetGUI.open(p); // GUI VIREMENT
+
+                // 🔥 sécurité : reset autre système
+                ContractBuilder.remove(p);
+
+                // 🔥 start flow virement
+                TransferBuilder.create(p);
+
+                TransferTargetGUI.open(p);
             }
 
+            // =========================
+            // 🔙 RETOUR
+            // =========================
             case 15 -> {
                 p.closeInventory();
+
+                // 🔥 clean builder si retour
+                TransferBuilder.remove(p);
+
                 BankGUI.open(p);
             }
         }

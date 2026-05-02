@@ -16,34 +16,45 @@ public class BankGUI {
 
         String id = p.getUniqueId().toString();
         double bank = BankStorage.get(id);
-        String iban = BankStorage.getIban(id);
 
         double total = balance + bank;
 
-        Inventory inv = Bukkit.createInventory(null, 9, "§fBanque"); // 🔥 FIX titre
+        Inventory inv = Bukkit.createInventory(null, 9, "§fBanque");
 
         // =========================
         // 📤 IBAN
         // =========================
-        inv.setItem(1, ItemBuilder.of(Material.NAME_TAG, "§bIBAN",
+        inv.setItem(0, ItemBuilder.of(Material.NAME_TAG, "§bIBAN",
                 "§8────────────",
                 "§7Afficher ton IBAN",
                 "",
-                "§8Clique pour afficher"));
+                "§8Clique"));
 
         // =========================
         // 💸 RETRAIT
         // =========================
-        inv.setItem(2, ItemBuilder.of(Material.REDSTONE, "§cRetirer 1000€",
+        inv.setItem(1, ItemBuilder.of(Material.REDSTONE, "§cRetirer 1000€",
                 "§8────────────",
-                "§7Transfert vers portefeuille",
+                "§7Banque → Portefeuille",
                 "",
                 "§e-1000€",
                 "",
-                "§8Clique pour retirer"));
+                "§8Clique"));
 
         // =========================
-        // 💰 INFOS COMPTE
+        // 💸 VIREMENT (NEW)
+        // =========================
+        inv.setItem(2, ItemBuilder.of(Material.PAPER, "§eVirement",
+                "§8────────────",
+                "§7Envoyer de l'argent",
+                "§7à un joueur",
+                "",
+                "§7Via IBAN",
+                "",
+                "§8Clique"));
+
+        // =========================
+        // 💰 COMPTE (CENTRE)
         // =========================
         inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§eCompte",
                 "§8────────────",
@@ -52,7 +63,7 @@ public class BankGUI {
                 "§aArgent: §f" + format(balance) + "€",
                 "§bBanque: §f" + format(bank) + "€",
                 "",
-                "§eTotal: §f" + format(total) + "€", // 🔥 FIX §6 → §e
+                "§eTotal: §f" + format(total) + "€",
                 "",
                 "§7Statut:",
                 ReputationManager.format(p.getName())
@@ -63,31 +74,29 @@ public class BankGUI {
         // =========================
         inv.setItem(6, ItemBuilder.of(Material.EMERALD, "§aDéposer 1000€",
                 "§8────────────",
-                "§7Transfert vers banque",
+                "§7Portefeuille → Banque",
                 "",
                 "§a+1000€",
                 "",
-                "§8Clique pour déposer"));
+                "§8Clique"));
 
         // =========================
         // 📄 HISTORIQUE
         // =========================
-        inv.setItem(7, ItemBuilder.of(Material.PAPER, "§eHistorique", // 🔥 FIX §6 → §e
+        inv.setItem(7, ItemBuilder.of(Material.BOOK, "§eHistorique",
                 "§8────────────",
-                "§7Consulte tes transactions",
+                "§7Voir tes transactions",
                 "",
-                "§7Entrées et sorties",
-                "",
-                "§8Clique pour ouvrir"));
+                "§8Clique"));
 
         // =========================
         // 🔄 REFRESH
         // =========================
         inv.setItem(8, ItemBuilder.of(Material.BARRIER, "§7Actualiser",
                 "§8────────────",
-                "§7Mettre à jour les données",
+                "§7Mettre à jour",
                 "",
-                "§8Clique pour rafraîchir"));
+                "§8Clique"));
 
         p.openInventory(inv);
     }

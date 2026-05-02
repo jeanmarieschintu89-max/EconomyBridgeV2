@@ -27,7 +27,7 @@ public class BankTransferListener implements Listener {
         int slot = e.getRawSlot();
         if (slot > 26) return;
 
-        // 🔊 feedback clean
+        // 🔊 feedback
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
         switch (slot) {
@@ -40,24 +40,19 @@ public class BankTransferListener implements Listener {
 
                 p.sendMessage("§8────────────");
                 p.sendMessage("§eVirement IBAN");
-                p.sendMessage("§7Commande:");
+                p.sendMessage("§7Utilise la commande:");
                 p.sendMessage("§f/ibanpay <iban> <montant>");
                 p.sendMessage("§8────────────");
             }
 
             // =========================
-            // 👤 JOUEUR (préparation futur)
+            // 👤 JOUEUR (ACTIF)
             // =========================
             case 13 -> {
                 p.closeInventory();
 
-                p.sendMessage("§8────────────");
-                p.sendMessage("§eVirement joueur");
-                p.sendMessage("§7Fonction en préparation");
-                p.sendMessage("§8────────────");
-
-                // 👉 PLUS TARD:
-                // TargetPlayerGUI.open(p);
+                // 🔥 ouverture du vrai GUI
+                TransferTargetGUI.open(p);
             }
 
             // =========================

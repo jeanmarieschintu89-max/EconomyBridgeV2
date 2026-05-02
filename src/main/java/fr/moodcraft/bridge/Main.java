@@ -64,6 +64,7 @@ public class Main extends JavaPlugin {
 
                 // 🔥 NOUVEAU SYSTÈME CONTRATS
                 new ContractGUIListener(),
+                new ContractMarketListener(),
                 new BookSignListener() // ✅ signature livre
         );
 

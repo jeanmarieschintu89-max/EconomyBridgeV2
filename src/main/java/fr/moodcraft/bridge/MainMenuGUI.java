@@ -83,7 +83,7 @@ public class MainMenuGUI {
                     "",
                     "§8Clique pour rejoindre"));
 
-            // 🧭 TELEPORT (slot 16)
+            // 🧭 TELEPORTATION (slot 16)
             SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.COMPASS, "§bTéléportation",
                     "§8────────────",
                     "§7Télèportation rapide",

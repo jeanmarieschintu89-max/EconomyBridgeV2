@@ -55,13 +55,12 @@ public class Main extends JavaPlugin {
                 // 🏦 BANQUE
                 new BankListener(),
                 new BankHistoryListener(),
-                new BanqueItemListener(), // carte bancaire
 
                 // 📊 ADMIN / CONFIG
                 new BanqueAdminListener(),
                 new BanqueConfigListener(),
 
-                // 🔥 ITEMS MARCHÉ (AJOUT IMPORTANT)
+                // 🔥 ITEMS MARCHÉ
                 new BanqueItemListListener(),
                 new BanqueItemGUIListener(),
 

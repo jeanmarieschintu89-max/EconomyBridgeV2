@@ -9,26 +9,26 @@ public class BanqueItemGUI {
 
     public static void open(Player p, String item) {
 
-        Inventory inv = Bukkit.createInventory(null, 9, "§eConfig: " + item);
+        Inventory inv = Bukkit.createInventory(null, 9, "§eItem");
 
         double impact = MarketState.impact.getOrDefault(item, 50.0);
         double activity = MarketState.activity.getOrDefault(item, 0.001);
         double rarity = MarketState.rarity.getOrDefault(item, 10.0);
         double weight = MarketState.weight.getOrDefault(item, 1.0);
 
-        inv.setItem(0, ItemBuilder.of(Material.BLAZE_POWDER, "§6Impact +", "§7" + impact));
-        inv.setItem(1, ItemBuilder.of(Material.GUNPOWDER, "§cImpact -", "§7" + impact));
+        SafeGUI.safeSet(inv, 0, SafeGUI.item(Material.BLAZE_POWDER, "§6Impact +", "§7" + impact));
+        SafeGUI.safeSet(inv, 1, SafeGUI.item(Material.GUNPOWDER, "§cImpact -", "§7" + impact));
 
-        inv.setItem(2, ItemBuilder.of(Material.SUGAR, "§aActivity +", "§7" + activity));
-        inv.setItem(3, ItemBuilder.of(Material.COAL, "§7Activity -", "§7" + activity));
+        SafeGUI.safeSet(inv, 2, SafeGUI.item(Material.SUGAR, "§aActivity +", "§7" + activity));
+        SafeGUI.safeSet(inv, 3, SafeGUI.item(Material.COAL, "§7Activity -", "§7" + activity));
 
-        inv.setItem(4, ItemBuilder.of(Material.GOLD_INGOT, "§eRareté +", "§7" + rarity));
-        inv.setItem(5, ItemBuilder.of(Material.IRON_INGOT, "§8Rareté -", "§7" + rarity));
+        SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.GOLD_INGOT, "§eRare +", "§7" + rarity));
+        SafeGUI.safeSet(inv, 5, SafeGUI.item(Material.IRON_INGOT, "§8Rare -", "§7" + rarity));
 
-        inv.setItem(6, ItemBuilder.of(Material.DIAMOND, "§bWeight +", "§7" + weight));
-        inv.setItem(7, ItemBuilder.of(Material.FLINT, "§cWeight -", "§7" + weight));
+        SafeGUI.safeSet(inv, 6, SafeGUI.item(Material.DIAMOND, "§bWeight +", "§7" + weight));
+        SafeGUI.safeSet(inv, 7, SafeGUI.item(Material.FLINT, "§cWeight -", "§7" + weight));
 
-        inv.setItem(8, ItemBuilder.of(Material.BARRIER, "§4Retour"));
+        SafeGUI.safeSet(inv, 8, SafeGUI.item(Material.BARRIER, "§4Retour"));
 
         p.openInventory(inv);
     }

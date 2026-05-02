@@ -50,9 +50,9 @@ public class Main extends JavaPlugin {
                 new BanqueAdminListener(),
                 new BanqueConfigListener(),
 
-                // ITEMS MARCHÉ
+                // 🔥 ITEMS MARCHÉ (CONFIRMÉ)
                 new BanqueItemListListener(),
-                new BanqueItemGUIListener(),
+                new BanqueItemGUIListener(), // ✅ ton nouveau GUI dynamique
 
                 // MENUS
                 new MainMenuListener(),
@@ -60,7 +60,7 @@ public class Main extends JavaPlugin {
 
                 // ECONOMIE
                 new PayListener(),
-                new TransferListener(), // ✅ SEUL système virement
+                new TransferListener(),
 
                 // CONTRATS
                 new ContractGUIListener(),
@@ -69,6 +69,9 @@ public class Main extends JavaPlugin {
                 new ContractSignListener()
         );
 
+        // =========================
+        // 📜 COMMANDES
+        // =========================
         registerCommand("prix", new PrixCommand());
         registerCommand("syncprix", new SyncCommand());
         registerCommand("trend", new GetTrendCommand());
@@ -90,6 +93,10 @@ public class Main extends JavaPlugin {
         registerCommand("contrats", new ContractMenuCommand());
         registerCommand("delcontrat", new ContractDeleteCommand());
         registerCommand("contractlog", new ContractLogCommand());
+
+        // =========================
+        // 🔁 TASKS
+        // =========================
 
         ShopIndex.rebuild();
 

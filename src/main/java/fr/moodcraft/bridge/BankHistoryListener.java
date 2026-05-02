@@ -27,14 +27,14 @@ public class BankHistoryListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
+        int slot = e.getRawSlot(); // 🔥 FIX PRINCIPAL
+
+        if (slot > 26) return; // 🔒 bloque inventaire joueur
+
         String name = p.getName();
         int page = pages.getOrDefault(name, 0);
 
-        int slot = e.getSlot();
-
-        // =========================
         // 🔙 RETOUR
-        // =========================
         if (slot == 22) {
             pages.remove(name);
             p.closeInventory();
@@ -42,9 +42,7 @@ public class BankHistoryListener implements Listener {
             return;
         }
 
-        // =========================
         // ⬅ PAGE PRÉCÉDENTE
-        // =========================
         if (slot == 21) {
 
             if (page > 0) {
@@ -56,14 +54,11 @@ public class BankHistoryListener implements Listener {
             return;
         }
 
-        // =========================
         // ➡ PAGE SUIVANTE
-        // =========================
         if (slot == 23) {
 
             List<String> logs = TransactionLogger.getAll(name);
 
-            // 🔥 LIMITATION PROPRE
             if (logs == null || logs.size() <= (page + 1) * 21) {
                 p.sendMessage("§cAucune page suivante");
                 return;

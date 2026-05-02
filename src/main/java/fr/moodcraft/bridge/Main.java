@@ -51,10 +51,6 @@ public class Main extends JavaPlugin {
                 new MineListener(),
                 new GUIListener(),
 
-                // WELCOME
-                new WelcomeListener(),
-                new WelcomeClickListener(),
-
                 // BANQUE
                 new BankListener(),
                 new BankHistoryListener(),

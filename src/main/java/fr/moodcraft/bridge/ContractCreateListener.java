@@ -37,7 +37,7 @@ public class ContractCreateListener implements Listener {
 
             case 10 -> {
                 p.closeInventory();
-                TargetPlayerGUI.openContract(p); // 🔥 IMPORTANT
+                TargetPlayerGUI.open(p); // 🔥 IMPORTANT
             }
 
             case 11 -> {

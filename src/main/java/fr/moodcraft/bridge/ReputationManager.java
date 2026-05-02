@@ -31,7 +31,6 @@ public class ReputationManager {
         save();
     }
 
-    // 🔥 RESET
     public static void reset(String player) {
         config.set(player.toLowerCase(), 0);
         save();
@@ -47,6 +46,11 @@ public class ReputationManager {
         if (rep <= 10) return "§b🔵 Professionnel";
 
         return "§d🟣 Elite";
+    }
+
+    // 🔥 FORMAT GLOBAL (à utiliser partout)
+    public static String format(String player) {
+        return "§6" + get(player) + " " + getBadge(player);
     }
 
     public static void save() {

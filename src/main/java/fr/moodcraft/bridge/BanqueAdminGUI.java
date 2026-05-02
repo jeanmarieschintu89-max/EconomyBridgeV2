@@ -1,65 +1,52 @@
-inv.setItem(0, ItemBuilder.of(Material.EMERALD_BLOCK, "§a📈 Inflation +5%",
-        "§8────────────",
-        "§7Augmente tous les prix",
-        "§7de la bourse",
-        "",
-        "§7Effet:",
-        "§a• Hausse globale des prix",
-        "",
-        "§7Utilisation:",
-        "§7Relancer une économie lente",
-        "§8────────────"));
+package fr.moodcraft.bridge;
 
-inv.setItem(1, ItemBuilder.of(Material.REDSTONE_BLOCK, "§c📉 Déflation -5%",
-        "§8────────────",
-        "§7Réduit tous les prix",
-        "",
-        "§7Effet:",
-        "§c• Baisse globale",
-        "",
-        "§7Utilisation:",
-        "§7Corriger une inflation",
-        "§8────────────"));
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
-inv.setItem(2, ItemBuilder.of(Material.CHEST, "§b📦 Config Items",
-        "§8────────────",
-        "§7Modifier chaque ressource",
-        "",
-        "§7Impact, rareté, activité",
-        "",
-        "§e➜ Réglage avancé",
-        "§8────────────"));
+public class BanqueAdminGUI {
 
-inv.setItem(3, ItemBuilder.of(Material.BEACON, "§b🔄 Reload Économie",
-        "§8────────────",
-        "§7Recharge config.yml",
-        "",
-        "§c⚠ Réinitialise la mémoire",
-        "§7temporaire",
-        "§8────────────"));
+    public static void open(Player p) {
 
-inv.setItem(4, ItemBuilder.of(Material.NETHER_STAR, "§e🔁 Synchroniser",
-        "§8────────────",
-        "§7Met à jour tous les shops",
-        "",
-        "§7avec les prix actuels",
-        "§8────────────"));
+        var cfg = Main.getInstance().getConfig();
 
-inv.setItem(6, ItemBuilder.of(Material.COMPARATOR, "§d⚙ Config Marché",
-        "§8────────────",
-        "§7Paramètres globaux",
-        "",
-        "§7Buy: §a" + buy,
-        "§7Sell: §c" + sell,
-        "§7Rareté: §e" + rarity,
-        "",
-        "§7→ Influence les variations",
-        "§8────────────"));
+        double buy = cfg.getDouble("engine.buy_multiplier", 1.0);
+        double sell = cfg.getDouble("engine.sell_multiplier", 1.0);
+        double rarity = cfg.getDouble("engine.rarity.boost", 0.002);
 
-inv.setItem(8, ItemBuilder.of(Material.BARRIER, "§4💣 Reset Économie",
-        "§8────────────",
-        "§7Remet tous les prix",
-        "§7à leur base",
-        "",
-        "§c⚠ Efface le marché",
-        "§8────────────"));
+        Inventory inv = Bukkit.createInventory(null, 9, "§8Admin");
+
+        SafeGUI.safeSet(inv, 0, SafeGUI.item(Material.EMERALD_BLOCK, "§fInflation +5%",
+                "§8────────",
+                "§7Augmente tous les prix"));
+
+        SafeGUI.safeSet(inv, 1, SafeGUI.item(Material.REDSTONE_BLOCK, "§fDéflation -5%",
+                "§8────────",
+                "§7Réduit tous les prix"));
+
+        SafeGUI.safeSet(inv, 2, SafeGUI.item(Material.CHEST, "§fItems",
+                "§8────────",
+                "§7Configurer chaque ressource"));
+
+        SafeGUI.safeSet(inv, 3, SafeGUI.item(Material.BEACON, "§fReload",
+                "§8────────",
+                "§7Recharge config"));
+
+        SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.NETHER_STAR, "§fSync",
+                "§8────────",
+                "§7Met à jour les shops"));
+
+        SafeGUI.safeSet(inv, 6, SafeGUI.item(Material.COMPARATOR, "§fMarché",
+                "§8────────",
+                "§7Buy: §f" + buy,
+                "§7Sell: §f" + sell,
+                "§7Rareté: §f" + rarity));
+
+        SafeGUI.safeSet(inv, 8, SafeGUI.item(Material.BARRIER, "§fReset",
+                "§8────────",
+                "§7Reset complet"));
+
+        p.openInventory(inv);
+    }
+}

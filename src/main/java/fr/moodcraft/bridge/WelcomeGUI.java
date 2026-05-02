@@ -15,65 +15,88 @@ public class WelcomeGUI {
 
     public static void open(Player p) {
 
-        // 🔒 Titre court et sûr
-        Inventory inv = Bukkit.createInventory(null, 27, "§6Bienvenue");
+        Inventory inv = Bukkit.createInventory(null, 27, "§8Bienvenue");
 
         try {
 
             Economy eco = VaultHook.getEconomy();
             double balance = eco != null ? eco.getBalance(p) : 0;
 
-            // 💰 Argent
-            inv.setItem(4, item(Material.SUNFLOWER, "§eArgent",
-                    "§7Solde: §a" + format(balance) + "€"));
+            // 💰 ARGENT
+            inv.setItem(4, item(Material.SUNFLOWER, "§fComptes",
+                    "§8────────",
+                    "§7Solde:",
+                    "§f" + format(balance) + "€",
+                    "",
+                    "§7Utilise /menu"));
 
-            // 📊 Économie
-            inv.setItem(10, item(Material.GOLD_INGOT, "§6Economie",
-                    "§7Marche dynamique",
-                    "§aAcheter ↑  §cVendre ↓"));
+            // 📈 BOURSE
+            inv.setItem(10, item(Material.GOLD_INGOT, "§fBourse",
+                    "§8────────",
+                    "§7Prix dynamiques",
+                    "",
+                    "§7Acheter → monte",
+                    "§7Vendre → baisse",
+                    "",
+                    "§7Fais du profit"));
 
-            // ⚒️ Jobs
-            inv.setItem(12, item(Material.IRON_PICKAXE, "§7Jobs",
-                    "§7Travaille pour gagner"));
+            // ⚒️ JOBS
+            inv.setItem(12, item(Material.IRON_PICKAXE, "§fJobs",
+                    "§8────────",
+                    "§7Travaille pour gagner",
+                    "",
+                    "§7Influence la bourse"));
 
-            // 📜 Quêtes
-            inv.setItem(14, item(Material.MAP, "§eQuetes",
-                    "§7Missions et recompenses"));
+            // 📜 QUÊTES
+            inv.setItem(14, item(Material.MAP, "§fQuetes",
+                    "§8────────",
+                    "§7Missions disponibles",
+                    "",
+                    "§7Gagne des rewards"));
 
-            // 🏙️ Villes
-            inv.setItem(16, item(Material.EMERALD_BLOCK, "§aVilles",
-                    "§7Developpe ta ville"));
+            // 🏙️ VILLES
+            inv.setItem(16, item(Material.EMERALD_BLOCK, "§fVilles",
+                    "§8────────",
+                    "§7Gestion territoire",
+                    "",
+                    "§7Developpe ton empire"));
 
-            // 🎮 Menu
-            inv.setItem(22, item(Material.NETHER_STAR, "§bMenu",
-                    "§7Clique pour ouvrir"));
+            // 🎮 MENU PRINCIPAL
+            inv.setItem(22, item(Material.NETHER_STAR, "§fMenu",
+                    "§8────────",
+                    "§7Acces principal",
+                    "",
+                    "§8Ouvrir"));
 
-            // ❌ Fermer
-            inv.setItem(26, item(Material.BARRIER, "§cFermer"));
+            // ❌ FERMER
+            inv.setItem(26, item(Material.BARRIER, "§fFermer",
+                    "§8────────",
+                    "§7Fermer ce menu"));
 
         } catch (Exception ex) {
-            // 🛟 Fallback ultra sûr
             inv.clear();
             inv.setItem(13, new ItemStack(Material.DIAMOND));
-            p.sendMessage("§eBienvenue sur le serveur !");
+            p.sendMessage("§7Bienvenue sur le serveur");
             ex.printStackTrace();
         }
 
         p.openInventory(inv);
     }
 
-    // 🔧 Création d’item simple (sans builder externe)
     private static ItemStack item(Material mat, String name, String... lore) {
         ItemStack it = new ItemStack(mat);
         ItemMeta meta = it.getItemMeta();
+
         if (meta != null) {
-            meta.setDisplayName("§r" + name); // reset des styles
+            meta.setDisplayName("§r" + name);
+
             if (lore != null && lore.length > 0) {
-                // 2-3 lignes max, pas d’emojis
                 meta.setLore(Arrays.asList(lore));
             }
+
             it.setItemMeta(meta);
         }
+
         return it;
     }
 

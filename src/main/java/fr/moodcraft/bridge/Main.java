@@ -45,37 +45,42 @@ public class Main extends JavaPlugin {
         // 📦 LISTENERS
         // =========================
         registerEvents(
+
+                // CORE
                 new ShopListener(),
                 new MineListener(),
                 new GUIListener(),
 
+                // WELCOME
                 new WelcomeListener(),
                 new WelcomeClickListener(),
 
-                // 🏦 BANQUE
+                // BANQUE
                 new BankListener(),
                 new BankHistoryListener(),
 
-                // 📊 ADMIN / CONFIG
+                // ADMIN / CONFIG
                 new BanqueAdminListener(),
                 new BanqueConfigListener(),
 
-                // 🔥 ITEMS MARCHÉ
+                // ITEMS MARCHÉ
                 new BanqueItemListListener(),
                 new BanqueItemGUIListener(),
 
-                // 📋 MENUS
+                // MENUS
                 new MainMenuListener(),
                 new TeleportListener(),
 
-                // 💸 ECONOMIE
+                // ECONOMIE
                 new PayListener(),
 
-                // 📄 CONTRATS
-                new ContractSignListener(),
-                new ContractCreateListener(),
-                new TargetPlayerListener(),
-                new ContractGUIListener()
+                // =========================
+                // 📄 CONTRATS (🔥 FIX IMPORTANT)
+                // =========================
+                new ContractGUIListener(),      // menu liste contrats
+                new ContractCreateListener(),   // création
+                new TargetPlayerListener(),     // sélection joueur
+                new ContractSignListener()      // signature item
         );
 
         // =========================
@@ -96,10 +101,10 @@ public class Main extends JavaPlugin {
         registerCommand("iban", new IbanCommand());
         registerCommand("ibanpay", new IbanPayCommand());
 
-        // 🔥 RÉPUTATION
+        // RÉPUTATION
         registerCommand("resetrep", new ReputationResetCommand());
 
-        // 📄 CONTRATS
+        // CONTRATS
         registerCommand("contrataccept", new ContractAcceptCommand());
         registerCommand("contrats", new ContractMenuCommand());
         registerCommand("delcontrat", new ContractDeleteCommand());
@@ -110,13 +115,24 @@ public class Main extends JavaPlugin {
         // =========================
         ShopIndex.rebuild();
 
-        Bukkit.getScheduler().runTaskTimer(this, ShopIndex::rebuild, 20L * 60, 20L * 60);
-        Bukkit.getScheduler().runTaskTimer(this, MarketEngine::tick, 20L, 20L * 45);
+        Bukkit.getScheduler().runTaskTimer(this,
+                ShopIndex::rebuild,
+                20L * 60,
+                20L * 60
+        );
 
+        Bukkit.getScheduler().runTaskTimer(this,
+                MarketEngine::tick,
+                20L,
+                20L * 45
+        );
+
+        // =========================
         // 🔥 CONTRATS AUTO
+        // =========================
         ContractListener.start();
 
-        getLogger().info("✅ EconomyBridge chargé (clean & stable)");
+        getLogger().info("✅ EconomyBridge chargé (stable & clean)");
     }
 
     @Override
@@ -146,6 +162,9 @@ public class Main extends JavaPlugin {
         }
     }
 
+    // =========================
+    // 📊 LOAD BASE
+    // =========================
     private void loadBase() {
 
         if (getConfig().getConfigurationSection("base") == null) return;
@@ -166,6 +185,9 @@ public class Main extends JavaPlugin {
         }
     }
 
+    // =========================
+    // 📊 LOAD SECTIONS
+    // =========================
     private void loadSection(String path, Map<String, Double> map) {
 
         if (getConfig().getConfigurationSection(path) == null) return;

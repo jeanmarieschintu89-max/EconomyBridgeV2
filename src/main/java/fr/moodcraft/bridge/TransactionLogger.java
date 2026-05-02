@@ -1,51 +1,19 @@
-package fr.moodcraft.bridge;
+public static void log(String player, String type, double amount) {
+    log(player, type, amount, null);
+}
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+public static void log(String player, String type, double amount, String target) {
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+    String date = new java.text.SimpleDateFormat("dd/MM HH:mm").format(new java.util.Date());
 
-public class TransactionLogger {
+    String line;
 
-    private static File file;
-    private static FileConfiguration config;
-
-    private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM HH:mm");
-
-    public static void init() {
-
-        file = new File(Main.getInstance().getDataFolder(), "transactions.yml");
-
-        if (!file.exists()) {
-            try { file.createNewFile(); } catch (IOException e) { e.printStackTrace(); }
-        }
-
-        config = YamlConfiguration.loadConfiguration(file);
+    if (target != null) {
+        line = date + "||" + type + " -> " + target + "||" + amount;
+    } else {
+        line = date + "||" + type + "||" + amount;
     }
 
-    public static void log(String player, String payload, double amount) {
-
-        List<String> logs = config.getStringList(player);
-
-        String date = format.format(new Date());
-
-        // On stocke brut pour parser ensuite
-        // date||payload||amount
-        String line = date + "||" + payload + "||" + amount;
-
-        logs.add(line);
-        config.set(player, logs);
-        save();
-    }
-
-    public static List<String> getAll(String player) {
-        return config.getStringList(player);
-    }
-
-    public static void save() {
-        try { config.save(file); } catch (IOException e) { e.printStackTrace(); }
-    }
+    logs.computeIfAbsent(player, k -> new java.util.ArrayList<>()).add(line);
+    save();
 }

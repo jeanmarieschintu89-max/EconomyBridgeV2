@@ -30,25 +30,35 @@ public class GUIListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
+
+        // 🔒 Vérifie le bon GUI
         if (title == null || !title.contains("Bourse")) return;
 
+        // 🔒 Clique uniquement dans le GUI
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
         e.setCancelled(true);
 
+        // 🔥 Anti bug double clic / shift
+        if (e.isShiftClick() || e.isRightClick()) return;
+
+        // 🔒 joueur uniquement
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
+        // 🔒 item valide
         if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
+        // 🔥 économie
         if (econ == null) {
             loadEconomy();
             if (econ == null) {
-                p.sendMessage("§cErreur economie");
+                p.sendMessage("§cErreur economie (Vault)");
                 return;
             }
         }
 
+        // 🔒 permission
         if (!p.hasPermission("econ.use")) {
             p.sendMessage("§cAcces refuse");
             return;
@@ -56,6 +66,7 @@ public class GUIListener implements Listener {
 
         Material mat = e.getCurrentItem().getType();
         String id = map(mat);
+
         if (id == null) return;
 
         int amount = count(p, mat);
@@ -66,29 +77,44 @@ public class GUIListener implements Listener {
         }
 
         double price = MarketEngine.getPrice(id);
+
+        // 🔒 sécurité prix
+        if (price <= 0) {
+            p.sendMessage("§cPrix invalide");
+            return;
+        }
+
         double gain = round(amount * price);
 
         // 🔥 suppression SAFE
         removeItems(p, mat, amount);
+        p.updateInventory();
 
+        // 💰 paiement
         econ.depositPlayer(p, gain);
 
+        // 📄 LOG
         TransactionLogger.log(p.getName(),
                 "Vente " + id + " x" + amount,
                 gain);
 
+        // 💬 message
         p.sendMessage("§8────────────");
         p.sendMessage("§aVente effectuee");
         p.sendMessage("§7Quantite: §f" + amount);
         p.sendMessage("§7Gain: §a+" + gain + "€");
         p.sendMessage("§8────────────");
 
+        // 📈 marché
         MarketEngine.applySell(id, amount);
         PriceUpdater.updateItem(id);
     }
 
-    // 🔥 FIX COUNT
+    // =========================
+    // 🔢 COMPTER ITEMS
+    // =========================
     private int count(Player p, Material mat) {
+
         int total = 0;
 
         for (ItemStack item : p.getInventory().getContents()) {
@@ -101,7 +127,9 @@ public class GUIListener implements Listener {
         return total;
     }
 
-    // 🔥 FIX REMOVE
+    // =========================
+    // 🧹 RETIRER ITEMS (SAFE)
+    // =========================
     private void removeItems(Player p, Material mat, int amount) {
 
         int toRemove = amount;
@@ -121,6 +149,9 @@ public class GUIListener implements Listener {
         }
     }
 
+    // =========================
+    // 🔗 MAP ITEM → ID
+    // =========================
     private String map(Material mat) {
         switch (mat) {
             case DIAMOND: return "diamond";
@@ -139,6 +170,9 @@ public class GUIListener implements Listener {
         return null;
     }
 
+    // =========================
+    // 🔢 ARRONDI
+    // =========================
     private double round(double v) {
         return Math.round(v * 100.0) / 100.0;
     }

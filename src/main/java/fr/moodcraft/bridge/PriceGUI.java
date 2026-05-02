@@ -13,48 +13,32 @@ public class PriceGUI {
 
         try {
 
-            set(inv, 10, "netherite", Material.NETHERITE_INGOT, "§5◆ Netherite");
-            set(inv, 11, "emerald", Material.EMERALD, "§a◆ Émeraude");
-            set(inv, 12, "diamond", Material.DIAMOND, "§b◆ Diamant");
-
-            set(inv, 13, "gold", Material.GOLD_INGOT, "§6◆ Or");
-            set(inv, 14, "copper", Material.COPPER_INGOT, "§6◆ Cuivre");
-            set(inv, 15, "iron", Material.IRON_INGOT, "§7◆ Fer");
-
-            set(inv, 16, "glowstone", Material.GLOWSTONE_DUST, "§e◆ Glowstone");
-
-            set(inv, 19, "quartz", Material.QUARTZ, "§f◆ Quartz");
-            set(inv, 20, "amethyst", Material.AMETHYST_SHARD, "§d◆ Améthyste");
-            set(inv, 21, "redstone", Material.REDSTONE, "§c◆ Redstone");
-            set(inv, 22, "lapis", Material.LAPIS_LAZULI, "§9◆ Lapis");
-            set(inv, 23, "coal", Material.COAL, "§8◆ Charbon");
+            set(inv, p, 10, "netherite", Material.NETHERITE_INGOT, "§5◆ Netherite");
+            set(inv, p, 11, "emerald", Material.EMERALD, "§a◆ Émeraude");
+            set(inv, p, 12, "diamond", Material.DIAMOND, "§b◆ Diamant");
 
         } catch (Exception e) {
             inv.clear();
-            SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BARRIER, "§cErreur Bourse"));
-            e.printStackTrace();
         }
 
         p.openInventory(inv);
     }
 
-    private static void set(Inventory inv, int slot, String id, Material mat, String name) {
+    private static void set(Inventory inv, Player p, int slot, String id, Material mat, String name) {
 
         double price = MarketEngine.getPrice(id);
         String trend = MarketState.trend.getOrDefault(id, "§7▬ Stable");
 
         SafeGUI.safeSet(inv, slot,
                 SafeGUI.item(mat, name,
-
-                        "§8────────────",
-                        "§7Prix actuel:",
-                        "§f" + String.format("%.2f", price) + "€",
+                        "§7Prix:",
+                        "§f" + price + "€",
                         "",
-                        "§7Tendance:",
+                        "§7Reputation:",
+                        ReputationManager.format(p.getName()),
+                        "",
                         trend,
-                        "§8────────────",
                         "",
-                        "§a➜ Clique pour vendre"
-                ));
+                        "§aClique pour vendre"));
     }
 }

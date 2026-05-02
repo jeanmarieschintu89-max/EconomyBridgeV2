@@ -1,59 +1,55 @@
-@EventHandler
-public void click(InventoryClickEvent e) {
+package fr.moodcraft.bridge;
 
-    String title = e.getView().getTitle();
-    if (title == null) return;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
-    String clean = title.replaceAll("§.", "");
+public class BankTransferListener implements Listener {
 
-    // 🔥 IMPORTANT → uniquement le menu principal
-    if (!clean.equalsIgnoreCase("Virement")) return;
+    @EventHandler
+    public void click(InventoryClickEvent e) {
 
-    // 🔥 ignore si c'est la GUI de confirmation
-    if (e.getView().getTopInventory().getSize() != 27) return;
+        String title = e.getView().getTitle();
+        if (title == null) return;
 
-    if (e.getClickedInventory() == null) return;
+        String clean = title.replaceAll("§.", "");
 
-    if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
+        if (!clean.equalsIgnoreCase("Virement")) return;
 
-    e.setCancelled(true);
+        if (e.getClickedInventory() == null) return;
 
-    if (!(e.getWhoClicked() instanceof Player p)) return;
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
-    var item = e.getCurrentItem();
-    if (item == null || item.getType().isAir()) return;
+        e.setCancelled(true);
 
-    int slot = e.getRawSlot();
+        if (!(e.getWhoClicked() instanceof Player p)) return;
 
-    p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+        var item = e.getCurrentItem();
+        if (item == null || item.getType().isAir()) return;
 
-    switch (slot) {
+        int slot = e.getRawSlot();
 
-        case 11 -> {
-            p.closeInventory();
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
-            p.sendMessage("§8────────────");
-            p.sendMessage("§eVirement IBAN");
-            p.sendMessage("§7Commande:");
-            p.sendMessage("§f/ibanpay <iban> <montant>");
-            p.sendMessage("§8────────────");
-        }
+        switch (slot) {
 
-        case 13 -> {
-            p.closeInventory();
+            case 11 -> {
+                p.closeInventory();
+                p.sendMessage("§e/ibanpay <iban> <montant>");
+            }
 
-            ContractBuilder.remove(p);
-            TransferBuilder.get(p); // 🔥 remplace create
+            case 13 -> {
+                p.closeInventory();
+                TransferBuilder.get(p);
+                TransferTargetGUI.open(p);
+            }
 
-            TransferTargetGUI.open(p);
-        }
-
-        case 15 -> {
-            p.closeInventory();
-
-            TransferBuilder.remove(p);
-
-            BankGUI.open(p);
+            case 15 -> {
+                p.closeInventory();
+                BankGUI.open(p);
+            }
         }
     }
 }

@@ -66,6 +66,7 @@ public class Main extends JavaPlugin {
                 new ContractGUIListener(),
                 new ContractCreateListener(),
                 new ContractMarketListener(),
+                new ContractPlayerListener(),
                 new BookSignListener() // ✅ signature livre
         );
 

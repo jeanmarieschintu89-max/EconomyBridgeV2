@@ -13,7 +13,8 @@ public class TargetPlayerListener implements Listener {
 
         String title = e.getView().getTitle();
 
-        if (title == null || !title.contains("Choisir joueur")) return;
+        // 🔒 IMPORTANT → EXACT MATCH
+        if (title == null || !title.equals("§eChoisir joueur")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -26,23 +27,39 @@ public class TargetPlayerListener implements Listener {
         String name = e.getCurrentItem().getItemMeta().getDisplayName();
         if (name == null) return;
 
-        // 🔥 Nettoyage couleur
-        name = name.replace("§a", "").replace("§f", "");
+        name = name.replace("§a", "");
 
         Player target = Bukkit.getPlayerExact(name);
-
         if (target == null) {
             p.sendMessage("§cJoueur introuvable");
             return;
         }
 
-        // ✅ UTILISE ContractBuilder (CORRECT)
-        var builder = ContractBuilder.get(p);
-        builder.target = target.getName();
+        // =========================
+        // 🔀 DETECTER CONTEXTE
+        // =========================
 
-        p.sendMessage("§aJoueur sélectionné: §e" + target.getName());
+        // 👉 si joueur vient du système CONTRAT
+        if (ContractBuilder.get(p) != null) {
 
-        // 🔄 retour menu création
-        ContractCreateGUI.open(p);
+            var builder = ContractBuilder.get(p);
+            builder.target = target.getName();
+
+            p.sendMessage("§aCible définie: §e" + target.getName());
+
+            ContractCreateGUI.open(p);
+            return;
+        }
+
+        // 👉 sinon système VIREMENT
+        if (TransferBuilder.get(p) != null) {
+
+            var builder = TransferBuilder.get(p);
+            builder.target = target.getName();
+
+            p.sendMessage("§aDestinataire: §e" + target.getName());
+
+            TransferConfirmGUI.open(p);
+        }
     }
 }

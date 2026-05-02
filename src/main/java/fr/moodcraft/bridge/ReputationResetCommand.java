@@ -1,29 +1,35 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.Bukkit;
+import org.bukkit.command.*;
+import org.bukkit.entity.Player;
 
 public class ReputationResetCommand implements CommandExecutor {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        if (!sender.hasPermission("econ.admin")) {
+        if (!sender.hasPermission("moodcraft.admin")) {
             sender.sendMessage("§c❌ Permission refusée");
             return true;
         }
 
-        if (args.length != 1) {
-            sender.sendMessage("§cUsage: /resetrep <joueur>");
+        if (args.length == 0) {
+            sender.sendMessage("§c❌ Utilisation : /resetrep <joueur>");
             return true;
         }
 
-        String target = args[0];
+        Player target = Bukkit.getPlayerExact(args[0]);
 
-        ReputationManager.reset(target);
+        if (target == null) {
+            sender.sendMessage("§c❌ Joueur introuvable");
+            return true;
+        }
 
-        sender.sendMessage("§a✔ Réputation reset pour " + target);
+        ReputationManager.set(target.getUniqueId(), 0);
+
+        sender.sendMessage("§a✔ Réputation réinitialisée pour §f" + target.getName());
+        target.sendMessage("§c⚠ Votre réputation a été réinitialisée");
 
         return true;
     }

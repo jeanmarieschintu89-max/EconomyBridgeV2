@@ -28,7 +28,7 @@
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
 
-        <!-- JitPack (Vault) -->
+        <!-- JitPack (Vault FIX) -->
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
@@ -69,11 +69,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- 🔥 VAULT (FIX ERREUR) -->
+        <!-- 🔥 VAULT FIX (IMPORTANT) -->
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
+            <version>1.7.1</version> <!-- ✅ FIX -->
             <scope>provided</scope>
         </dependency>
 

@@ -26,20 +26,26 @@ public class GUIListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().equals("§6🏪 Marché (€)")) return;
+        String title = e.getView().getTitle();
+
+        // 🔥 NOUVEAU NOM + BEDROCK SAFE
+        if (title == null || !title.contains("Bourse")) return;
+
+        if (e.getClickedInventory() == null) return;
+        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getCurrentItem() == null) return;
+        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
         if (!p.hasPermission("econ.use")) {
-            p.sendMessage("§c❌ Accès refusé.");
+            p.sendMessage("§cAcces refuse");
             return;
         }
 
         if (econ == null) {
-            p.sendMessage("§c❌ Erreur économie (Vault manquant)");
+            p.sendMessage("§cErreur economie");
             return;
         }
 
@@ -58,7 +64,7 @@ public class GUIListener implements Listener {
             int amount = count(p, mat);
 
             if (amount <= 0) {
-                p.sendMessage("§c❌ Rien à vendre");
+                p.sendMessage("§cRien a vendre");
                 return;
             }
 
@@ -82,17 +88,16 @@ public class GUIListener implements Listener {
             p.getInventory().removeItem(new ItemStack(mat, amount));
             econ.depositPlayer(p, net);
 
-            // 📄 LOG VENTE 🔥
             TransactionLogger.log(p.getName(),
                     "Vente " + id + " x" + amount,
                     net);
 
-            p.sendMessage("§8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
-            p.sendMessage("§a✔ Vente réussie");
-            p.sendMessage("§7• Brut: §f" + brut + "€");
-            p.sendMessage("§7• Taxe: §c-" + taxe + "€");
-            p.sendMessage("§7• Gain: §a+" + net + "€");
-            p.sendMessage("§8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
+            p.sendMessage("§8----------------");
+            p.sendMessage("§aVente reussie");
+            p.sendMessage("§7Brut: §f" + brut);
+            p.sendMessage("§7Taxe: §c-" + taxe);
+            p.sendMessage("§7Gain: §a+" + net);
+            p.sendMessage("§8----------------");
 
             MarketEngine.applySell(id, amount);
             PriceUpdater.updateItem(id);
@@ -109,20 +114,19 @@ public class GUIListener implements Listener {
             double cost = round(price * amount);
 
             if (econ.getBalance(p) < cost) {
-                p.sendMessage("§c❌ Pas assez d'argent");
+                p.sendMessage("§cPas assez d'argent");
                 return;
             }
 
             econ.withdrawPlayer(p, cost);
             p.getInventory().addItem(new ItemStack(mat, amount));
 
-            // 📄 LOG ACHAT 🔥
             TransactionLogger.log(p.getName(),
                     "Achat " + id + " x" + amount,
                     cost);
 
-            p.sendMessage("§a✔ Achat réussi");
-            p.sendMessage("§cCoût: -" + cost + "€");
+            p.sendMessage("§aAchat reussi");
+            p.sendMessage("§cCout: -" + cost);
 
             MarketEngine.applyBuy(id, amount);
             PriceUpdater.updateItem(id);

@@ -18,21 +18,36 @@ public class WelcomeListener implements Listener {
         try {
             Class<?> floodgate = Class.forName("org.geysermc.floodgate.api.FloodgateApi");
             Object api = floodgate.getMethod("getInstance").invoke(null);
-            isBedrock = (boolean) floodgate.getMethod("isFloodgatePlayer", Player.class).invoke(api, p);
+            isBedrock = (boolean) floodgate
+                    .getMethod("isFloodgatePlayer", Player.class)
+                    .invoke(api, p);
         } catch (Exception ignored) {}
 
-        // ⏳ délai adapté
-        long delay = isBedrock ? 60L : 30L; // Bedrock plus long
+        // ⏳ délai
+        long delay = isBedrock ? 100L : 40L;
 
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
 
-            if (!p.isOnline()) return;
+            if (!p.isOnline() || !p.isValid()) return;
 
             try {
-                WelcomeGUI.open(p);
+                // 🔥 ferme tout (important Bedrock + conflits plugins)
+                p.closeInventory();
+
+                // 🔁 ouvre légèrement après
+                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+
+                    if (!p.isOnline()) return;
+
+                    WelcomeGUI.open(p);
+
+                }, 2L);
+
             } catch (Exception ex) {
-                // 🔥 fallback sécurité
-                p.sendMessage("§eBienvenue !");
+
+                // fallback safe
+                p.sendMessage("§7Bienvenue sur le serveur");
+
                 ex.printStackTrace();
             }
 

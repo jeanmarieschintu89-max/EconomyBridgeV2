@@ -14,8 +14,8 @@ public class ContractCreateListener implements Listener {
 
         String title = e.getView().getTitle();
 
-        // 🔒 FIX STRICT
-        if (title == null || !title.equals("§6Contrat")) return;
+        // 🔥 FIX TITRE (safe couleur)
+        if (title == null || !title.contains("Contrat")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -26,8 +26,8 @@ public class ContractCreateListener implements Listener {
 
         if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
-        int slot = e.getRawSlot();
-        if (slot > 26) return;
+        // 🔥 FIX SLOT (IMPORTANT)
+        int slot = e.getSlot();
 
         var b = ContractBuilder.get(p);
 
@@ -35,11 +35,17 @@ public class ContractCreateListener implements Listener {
 
         switch (slot) {
 
+            // =========================
+            // 👤 JOUEUR
+            // =========================
             case 10 -> {
                 p.closeInventory();
-                TargetPlayerGUI.open(p); // 🔥 IMPORTANT
+                TargetPlayerGUI.open(p);
             }
 
+            // =========================
+            // 📦 OBJET
+            // =========================
             case 11 -> {
 
                 ItemStack item = p.getInventory().getItemInMainHand();
@@ -58,21 +64,36 @@ public class ContractCreateListener implements Listener {
                 ContractCreateGUI.open(p);
             }
 
+            // =========================
+            // 📄 QUANTITÉ
+            // =========================
             case 12 -> {
                 b.amount++;
+                p.sendMessage("§eQuantité: §f" + b.amount);
                 ContractCreateGUI.open(p);
             }
 
+            // =========================
+            // ➖ PRIX
+            // =========================
             case 20 -> {
                 b.price = Math.max(0, b.price - 100);
+                p.sendMessage("§cPrix: §f" + b.price + "€");
                 ContractCreateGUI.open(p);
             }
 
+            // =========================
+            // ➕ PRIX
+            // =========================
             case 24 -> {
                 b.price += 100;
+                p.sendMessage("§aPrix: §f" + b.price + "€");
                 ContractCreateGUI.open(p);
             }
 
+            // =========================
+            // ✔ VALIDER
+            // =========================
             case 26 -> {
 
                 if (b.target == null || b.item == null) {
@@ -93,9 +114,13 @@ public class ContractCreateListener implements Listener {
                 ContractBuilder.remove(p);
             }
 
+            // =========================
+            // ❌ ANNULER
+            // =========================
             case 18 -> {
                 p.closeInventory();
                 ContractBuilder.remove(p);
+                p.sendMessage("§cContrat annulé");
             }
         }
     }

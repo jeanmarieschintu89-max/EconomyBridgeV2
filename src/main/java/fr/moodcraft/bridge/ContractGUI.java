@@ -25,21 +25,36 @@ public class ContractGUI {
             if (slot >= 9) break;
 
             int rep = ReputationManager.get(c.from);
+            String badge = ReputationManager.getBadge(c.from);
+
+            // ⏳ temps restant (safe)
+            long remaining = Math.max(0, (c.expireAt - System.currentTimeMillis()) / 1000);
+            long minutes = remaining / 60;
 
             SafeGUI.safeSet(inv, slot,
                     SafeGUI.item(Material.PAPER,
-                            "§e#" + id.toString().substring(0, 6),
-                            "§7" + c.item + " x" + c.amount,
-                            "§a" + c.price + "€ | rep: " + rep));
+                            "§eContrat #" + id.toString().substring(0, 6),
+                            "§7De: §f" + c.from,
+                            "§7Objet: §f" + c.item + " x" + c.amount,
+                            "§7Paiement: §a" + c.price + "€",
+                            "§7Rep: §6" + rep + " " + badge,
+                            "§7Expire: §e" + minutes + " min"
+                    ));
 
-            SafeGUI.safeSet(inv, slot + 9, SafeGUI.item(Material.LIME_DYE, "§aAccepter"));
-            SafeGUI.safeSet(inv, slot + 18, SafeGUI.item(Material.RED_DYE, "§cRefuser"));
-            SafeGUI.safeSet(inv, slot + 27, SafeGUI.item(Material.BARRIER, "§4Annuler"));
+            SafeGUI.safeSet(inv, slot + 9,
+                    SafeGUI.item(Material.LIME_DYE, "§aAccepter"));
+
+            SafeGUI.safeSet(inv, slot + 18,
+                    SafeGUI.item(Material.RED_DYE, "§cRefuser"));
+
+            SafeGUI.safeSet(inv, slot + 27,
+                    SafeGUI.item(Material.BARRIER, "§4Annuler"));
 
             slot++;
         }
 
-        SafeGUI.safeSet(inv, 49, SafeGUI.item(Material.ANVIL, "§6Creer"));
+        SafeGUI.safeSet(inv, 49,
+                SafeGUI.item(Material.ANVIL, "§6Créer"));
 
         p.openInventory(inv);
     }

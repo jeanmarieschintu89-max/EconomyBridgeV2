@@ -22,23 +22,32 @@ public class ReputationManager {
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-    public static int get(String player) {
-        return config.getInt(player.toLowerCase(), 0);
+    // 🔥 GET
+    public static int get(String uuid) {
+        return config.getInt(uuid, 0);
     }
 
-    public static void add(String player, int value) {
-        config.set(player.toLowerCase(), get(player) + value);
+    // 🔥 ADD
+    public static void add(String uuid, int value) {
+        config.set(uuid, get(uuid) + value);
         save();
     }
 
-    public static void reset(String player) {
-        config.set(player.toLowerCase(), 0);
+    // 🔥 SET (AJOUT IMPORTANT)
+    public static void set(String uuid, double value) {
+        config.set(uuid, value);
         save();
     }
 
-    public static String getBadge(String player) {
+    // 🔥 RESET
+    public static void reset(String uuid) {
+        config.set(uuid, 0);
+        save();
+    }
 
-        int rep = get(player);
+    public static String getBadge(String uuid) {
+
+        int rep = get(uuid);
 
         if (rep < 0) return "§c🔴 Escroc";
         if (rep <= 2) return "§7⚪ Inconnu";
@@ -48,9 +57,8 @@ public class ReputationManager {
         return "§d🟣 Elite";
     }
 
-    // 🔥 FORMAT GLOBAL (à utiliser partout)
-    public static String format(String player) {
-        return "§6" + get(player) + " " + getBadge(player);
+    public static String format(String uuid) {
+        return "§6" + get(uuid) + " " + getBadge(uuid);
     }
 
     public static void save() {

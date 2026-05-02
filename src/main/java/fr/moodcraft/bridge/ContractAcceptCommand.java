@@ -10,18 +10,7 @@ public class ContractAcceptCommand implements CommandExecutor {
 
         if (!(sender instanceof Player p)) return true;
 
-        Contract c = ContractManager.getOpen();
-
-        if (c == null) {
-            p.sendMessage("§c❌ Aucun contrat disponible");
-            return true;
-        }
-
-        BookContract.give(p, c);
-
-        p.sendMessage("§e📜 Livre de contrat reçu !");
-        p.sendMessage("§7Signez le livre pour accepter.");
-
+        ContractMarketGUI.open(p);
         return true;
     }
 }

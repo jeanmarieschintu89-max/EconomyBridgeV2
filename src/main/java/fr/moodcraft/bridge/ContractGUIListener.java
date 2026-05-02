@@ -15,69 +15,47 @@ public class ContractGUIListener implements Listener {
         if (title == null) return;
 
         String clean = title.replaceAll("§.", "");
-
         if (!clean.equalsIgnoreCase("Contrats")) return;
 
+        if (!(e.getWhoClicked() instanceof Player p)) return;
+
         if (e.getClickedInventory() == null) return;
+
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
-        if (!(e.getWhoClicked() instanceof Player p)) return;
-
-        var item = e.getCurrentItem();
-        if (item == null || item.getType().isAir()) return;
+        if (e.isShiftClick()) return;
 
         int slot = e.getRawSlot();
 
-        // 🔊 feedback
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
         switch (slot) {
 
-            // =========================
-            // 📝 CRÉER CONTRAT
-            // =========================
-            case 11 -> {
+            // 📄 CRÉER
+            case 11:
                 p.closeInventory();
                 ContractCreateGUI.open(p);
-            }
+                break;
 
-                p.sendMessage("§8────────────");
-                p.sendMessage("§a📄 Création de contrat");
-                p.sendMessage("");
-                p.sendMessage("§7Commande:");
-                p.sendMessage("§e/contract <item> <quantité> <prix>");
-                p.sendMessage("");
-                p.sendMessage("§7Exemple:");
-                p.sendMessage("§f/contract diamond 32 5000");
-                p.sendMessage("§8────────────");
-            }
-
-            // =========================
-            // 📜 CONTRATS DISPONIBLES
-            // =========================
-            case 13 -> {
+            // 📜 MARCHÉ
+            case 13:
                 p.closeInventory();
                 ContractMarketGUI.open(p);
-            }
+                break;
 
-            // =========================
             // 📦 MES CONTRATS
-            // =========================
-            case 15 -> {
+            case 15:
                 p.closeInventory();
-                p.sendMessage("§7🚧 En développement...");
-                // 👉 futur: ContractPlayerGUI.open(p);
-            }
+                p.sendMessage("§7Fonction en cours...");
+                break;
 
-            // =========================
             // 🔙 RETOUR
-            // =========================
-            case 22 -> {
+            case 22:
                 p.closeInventory();
                 MainMenuGUI.open(p);
-            }
+                break;
         }
     }
 }

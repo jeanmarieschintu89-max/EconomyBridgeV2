@@ -31,25 +31,20 @@ public class ShopListener implements Listener {
         }
 
         // =========================
-        // 💰 PRIX
+        // 💰 PRIX FIABLE
         // =========================
-        double price = event.getShop().getPrice();
-
-        if (price <= 0) {
-            price = MarketEngine.getPrice(item);
-        }
-
-        double total = price * amount;
+        double unitPrice = MarketEngine.getPrice(item);
+        double total = unitPrice * amount;
 
         boolean isSellingToShop = event.getShop().isBuying();
 
         // =========================
-        // 📄 LOG
+        // 📄 LOG CENTRALISÉ
         // =========================
         if (isSellingToShop) {
-            TransactionLogger.log(player, "Vente " + item + " x" + amount, total);
+            EconomyListener.log(player, "Vente " + item + " x" + amount, total);
         } else {
-            TransactionLogger.log(player, "Achat " + item + " x" + amount, total);
+            EconomyListener.log(player, "Achat " + item + " x" + amount, total);
         }
 
         Bukkit.getLogger().info("[Market] " + player + " " +
@@ -57,9 +52,10 @@ public class ShopListener implements Listener {
                 " " + item + " x" + amount + " (" + total + ")");
 
         // =========================
-        // 📈 IMPACT (EQUILIBRE)
+        // 📈 IMPACT INTELLIGENT
         // =========================
-        int boosted = Math.max(1, amount * 2); // 🔥 moins violent que *3
+        int boosted = Math.max(1, (int) Math.sqrt(amount) * 3);
+        // 🔥 scaling doux (anti crash marché)
 
         if (isSellingToShop) {
 
@@ -67,7 +63,7 @@ public class ShopListener implements Listener {
             MarketEngine.applySell(item, boosted);
 
             // stock augmente
-            MarketState.stock.merge(item, +boosted * 1.0, Double::sum);
+            MarketState.stock.merge(item, (double) boosted, Double::sum);
 
         } else {
 
@@ -75,16 +71,15 @@ public class ShopListener implements Listener {
             MarketEngine.applyBuy(item, boosted);
 
             // stock diminue
-            MarketState.stock.merge(item, -boosted * 1.0, Double::sum);
+            MarketState.stock.merge(item, -(double) boosted, Double::sum);
         }
 
         // =========================
-        // 🔒 LIMITE STOCK
+        // 🔒 CLAMP STOCK PROPRE
         // =========================
         double stock = MarketState.stock.getOrDefault(item, 0.0);
 
-        if (stock < -10000) stock = -10000;
-        if (stock > 10000) stock = 10000;
+        stock = Math.max(-10000, Math.min(10000, stock));
 
         MarketState.stock.put(item, stock);
 

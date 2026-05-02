@@ -3,11 +3,12 @@ package fr.moodcraft.bridge;
 import com.ghostchu.quickshop.api.event.economy.ShopPurchaseEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class ShopListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBuy(ShopPurchaseEvent event) {
 
         if (event == null || event.getShop() == null || event.getShop().getItem() == null) return;
@@ -17,8 +18,11 @@ public class ShopListener implements Listener {
         String item = event.getShop().getItem().getType().name().toLowerCase();
         if (!PriceUpdater.ALLOWED.contains(item)) return;
 
-        // 👤 joueur
+        // =========================
+        // 👤 JOUEUR SAFE
+        // =========================
         String player = "Inconnu";
+
         if (event.getPurchaser() != null) {
             var offline = Bukkit.getOfflinePlayer(event.getPurchaser().getUniqueId());
             if (offline.getName() != null) {
@@ -26,17 +30,22 @@ public class ShopListener implements Listener {
             }
         }
 
-        // 💰 prix QuickShop
+        // =========================
+        // 💰 PRIX
+        // =========================
         double price = event.getShop().getPrice();
-        if (price <= 0) price = MarketEngine.getPrice(item);
+
+        if (price <= 0) {
+            price = MarketEngine.getPrice(item);
+        }
 
         double total = price * amount;
 
         boolean isSellingToShop = event.getShop().isBuying();
-        // true = le joueur vend au shop
-        // false = le joueur achète au shop
 
+        // =========================
         // 📄 LOG
+        // =========================
         if (isSellingToShop) {
             TransactionLogger.log(player, "Vente " + item + " x" + amount, total);
         } else {
@@ -44,29 +53,44 @@ public class ShopListener implements Listener {
         }
 
         Bukkit.getLogger().info("[Market] " + player + " " +
-                (isSellingToShop ? "vend" : "achète") +
-                " " + item + " x" + amount + " (" + total + "€)");
+                (isSellingToShop ? "vend" : "achete") +
+                " " + item + " x" + amount + " (" + total + ")");
 
         // =========================
-        // 📈 IMPACT CORRECT
+        // 📈 IMPACT (EQUILIBRE)
         // =========================
-        int boosted = amount * 3;
+        int boosted = Math.max(1, amount * 2); // 🔥 moins violent que *3
 
         if (isSellingToShop) {
+
+            // joueur vend → prix baisse
             MarketEngine.applySell(item, boosted);
+
+            // stock augmente
             MarketState.stock.merge(item, +boosted * 1.0, Double::sum);
+
         } else {
+
+            // joueur achète → prix monte
             MarketEngine.applyBuy(item, boosted);
+
+            // stock diminue
             MarketState.stock.merge(item, -boosted * 1.0, Double::sum);
         }
 
-        // 🔒 limite stock
+        // =========================
+        // 🔒 LIMITE STOCK
+        // =========================
         double stock = MarketState.stock.getOrDefault(item, 0.0);
+
         if (stock < -10000) stock = -10000;
         if (stock > 10000) stock = 10000;
+
         MarketState.stock.put(item, stock);
 
-        // 🔄 update shop
+        // =========================
+        // 🔄 UPDATE SHOP
+        // =========================
         PriceUpdater.updateSingle(event.getShop(), item);
     }
 }

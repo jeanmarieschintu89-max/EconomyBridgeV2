@@ -7,8 +7,6 @@ import org.bukkit.inventory.Inventory;
 
 import net.milkbowl.vault.economy.Economy;
 
-import java.text.DecimalFormat;
-
 public class BankGUI {
 
     public static void open(Player p) {
@@ -18,36 +16,18 @@ public class BankGUI {
 
         String id = p.getUniqueId().toString();
         double bank = BankStorage.get(id);
-        String iban = BankStorage.getIban(id);
 
-        DecimalFormat df = new DecimalFormat("#,##0.00");
+        Inventory inv = Bukkit.createInventory(null, 9, "§6Banque");
 
-        String money = df.format(balance).replace(",", " ");
-        String bankMoney = df.format(bank).replace(",", " ");
-
-        Inventory inv = Bukkit.createInventory(null, 9, "§6🏦 Banque");
-
-        inv.setItem(1, ItemBuilder.of(Material.NAME_TAG, "§b📤 Voir mon IBAN",
-                "§7Afficher ton IBAN dans le chat"));
-
-        inv.setItem(2, ItemBuilder.of(Material.REDSTONE, "§cRetirer 1000€",
-                "§7Banque → Portefeuille"));
-
-        inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§e🏦 Compte bancaire",
-                "§7IBAN: §b" + iban,
+        inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§eCompte",
+                "§8────────",
+                "§7Reputation:",
+                ReputationManager.format(p.getName()),
                 "",
-                "§7💵 Portefeuille: §a" + money + "€",
-                "§7🏦 Banque: §b" + bankMoney + "€"));
-
-        inv.setItem(6, ItemBuilder.of(Material.EMERALD, "§aDéposer 1000€",
-                "§7Portefeuille → Banque"));
-
-        inv.setItem(7, ItemBuilder.of(Material.PAPER, "§6📄 Historique complet",
-                "§7Voir toutes tes transactions",
-                "",
-                "§8Clique pour ouvrir"));
-
-        inv.setItem(8, ItemBuilder.of(Material.BARRIER, "§7Rafraîchir"));
+                "§7Argent:",
+                "§a" + balance + "€",
+                "§7Banque:",
+                "§b" + bank + "€"));
 
         p.openInventory(inv);
     }

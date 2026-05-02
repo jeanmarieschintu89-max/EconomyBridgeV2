@@ -17,7 +17,6 @@ public class BanqueItemGUI {
     public static void open(Player p) {
 
         var cfg = Main.getInstance().getConfig();
-
         Inventory inv = Bukkit.createInventory(null, 54, "§6⚙ Items Économie");
 
         int row = 0;
@@ -30,27 +29,29 @@ public class BanqueItemGUI {
             double exp = cfg.getDouble("rarity_settings." + item + ".exponent");
             double max = cfg.getDouble("rarity_settings." + item + ".max_boost");
 
-            Material mat = getMaterial(item);
+            Material mat = getMat(item);
 
-            // ===== BOOST =====
-            SafeGUI.safeSet(inv, base, SafeGUI.item(Material.RED_STAINED_GLASS_PANE, "§c- Boost"));
-            SafeGUI.safeSet(inv, base+1, SafeGUI.item(mat, "§e" + item,
+            // BOOST
+            inv.setItem(base, SafeGUI.item(Material.RED_STAINED_GLASS_PANE, "§c-"));
+            inv.setItem(base+1, SafeGUI.item(mat,
+                    "§e" + item,
+                    "§8────────────",
                     "§7Boost: §a" + boost,
                     "§7Exp: §b" + exp,
-                    "§7Max: §6" + max));
-            SafeGUI.safeSet(inv, base+2, SafeGUI.item(Material.LIME_STAINED_GLASS_PANE, "§a+ Boost"));
+                    "§7Max: §6" + max,
+                    "§8────────────",
+                    "§c⬅ -   §a+ ➡"));
+            inv.setItem(base+2, SafeGUI.item(Material.LIME_STAINED_GLASS_PANE, "§a+"));
 
-            // ===== EXP =====
-            SafeGUI.safeSet(inv, base+3, SafeGUI.item(Material.RED_STAINED_GLASS_PANE, "§c- Exp"));
-            SafeGUI.safeSet(inv, base+4, SafeGUI.item(Material.PAPER, "§bExponent",
-                    "§7Valeur: §b" + exp));
-            SafeGUI.safeSet(inv, base+5, SafeGUI.item(Material.LIME_STAINED_GLASS_PANE, "§a+ Exp"));
+            // EXP
+            inv.setItem(base+3, SafeGUI.item(Material.RED_STAINED_GLASS_PANE, "§c-"));
+            inv.setItem(base+4, SafeGUI.item(Material.PAPER, "§bExponent", "§7" + exp));
+            inv.setItem(base+5, SafeGUI.item(Material.LIME_STAINED_GLASS_PANE, "§a+"));
 
-            // ===== MAX =====
-            SafeGUI.safeSet(inv, base+6, SafeGUI.item(Material.RED_STAINED_GLASS_PANE, "§c- Max"));
-            SafeGUI.safeSet(inv, base+7, SafeGUI.item(Material.GOLD_INGOT, "§6Max Boost",
-                    "§7Valeur: §6" + max));
-            SafeGUI.safeSet(inv, base+8, SafeGUI.item(Material.LIME_STAINED_GLASS_PANE, "§a+ Max"));
+            // MAX
+            inv.setItem(base+6, SafeGUI.item(Material.RED_STAINED_GLASS_PANE, "§c-"));
+            inv.setItem(base+7, SafeGUI.item(Material.GOLD_INGOT, "§6Max", "§7" + max));
+            inv.setItem(base+8, SafeGUI.item(Material.LIME_STAINED_GLASS_PANE, "§a+"));
 
             row++;
             if (row >= 6) break;
@@ -59,7 +60,7 @@ public class BanqueItemGUI {
         p.openInventory(inv);
     }
 
-    private static Material getMaterial(String item) {
+    private static Material getMat(String item) {
         return switch (item) {
             case "netherite" -> Material.NETHERITE_INGOT;
             case "emerald" -> Material.EMERALD;

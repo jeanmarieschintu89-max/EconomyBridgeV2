@@ -14,7 +14,8 @@ public class ContractCreateListener implements Listener {
 
         String title = e.getView().getTitle();
 
-        if (title == null || !title.contains("Contrat")) return;
+        // 🔒 FIX STRICT
+        if (title == null || !title.equals("§6Contrat")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -36,7 +37,7 @@ public class ContractCreateListener implements Listener {
 
             case 10 -> {
                 p.closeInventory();
-                TargetPlayerGUI.open(p);
+                TargetPlayerGUI.openContract(p); // 🔥 IMPORTANT
             }
 
             case 11 -> {
@@ -51,6 +52,8 @@ public class ContractCreateListener implements Listener {
                 b.itemStack = item.clone();
                 b.item = item.getType().name().toLowerCase();
                 b.amount = item.getAmount();
+
+                p.sendMessage("§aObjet: §e" + b.item);
 
                 ContractCreateGUI.open(p);
             }

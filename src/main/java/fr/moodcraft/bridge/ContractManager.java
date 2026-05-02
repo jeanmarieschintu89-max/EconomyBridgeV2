@@ -8,7 +8,7 @@ public class ContractManager {
     private static int idCounter = 0;
 
     // =========================
-    // CREATE
+    // 🔥 CREATE
     // =========================
     public static int create(UUID owner, String item, int amount, double price) {
 
@@ -16,7 +16,7 @@ public class ContractManager {
 
         Contract c = new Contract(owner, item, amount, price);
         c.id = id;
-        c.status = Contract.Status.OPEN; // ✅ FIX
+        c.status = Contract.Status.OPEN;
 
         contracts.put(id, c);
 
@@ -24,7 +24,7 @@ public class ContractManager {
     }
 
     // =========================
-    // LIST OPEN
+    // 📜 LISTE DES CONTRATS OUVERTS
     // =========================
     public static List<Contract> getOpenContracts() {
         return contracts.values().stream()
@@ -33,8 +33,10 @@ public class ContractManager {
     }
 
     // =========================
-    // BACKWARD COMPAT
+    // 🧠 BACKWARD COMPAT
     // =========================
+
+    // ancien système (book)
     public static Contract getOpen() {
         return contracts.values().stream()
                 .filter(c -> c.status == Contract.Status.OPEN)
@@ -42,6 +44,7 @@ public class ContractManager {
                 .orElse(null);
     }
 
+    // contrat actif du worker
     public static Contract getByWorker(UUID uuid) {
         return contracts.values().stream()
                 .filter(c -> uuid.equals(c.worker) && c.status == Contract.Status.ACCEPTED)
@@ -50,11 +53,32 @@ public class ContractManager {
     }
 
     // =========================
+    // 🔍 GET PAR ID
+    // =========================
     public static Contract get(int id) {
         return contracts.get(id);
     }
 
+    // =========================
+    // ❌ REMOVE
+    // =========================
     public static void remove(int id) {
         contracts.remove(id);
+    }
+
+    // =========================
+    // 🛑 SÉCURITÉ BONUS
+    // =========================
+
+    // empêche double accept
+    public static boolean isAlreadyTaken(int id) {
+        Contract c = contracts.get(id);
+        return c != null && c.status != Contract.Status.OPEN;
+    }
+
+    // empêche multi contrats par joueur
+    public static boolean hasActiveContract(UUID player) {
+        return contracts.values().stream()
+                .anyMatch(c -> player.equals(c.worker) && c.status == Contract.Status.ACCEPTED);
     }
 }

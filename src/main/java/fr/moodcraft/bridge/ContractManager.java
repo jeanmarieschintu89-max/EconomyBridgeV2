@@ -4,33 +4,27 @@ import java.util.*;
 
 public class ContractManager {
 
-    public static Map<UUID, Contract> contracts = new HashMap<>();
+    public static final Map<UUID, Contract> contracts = new HashMap<>();
 
-    public static class Contract {
-        public String from;
-        public String to;
-        public String item;
-        public int amount;
-        public double price;
-
-        public boolean accepted = false;
-        public boolean signed = false; // ✔ FIX
-        public long expireAt;
-
-        public Contract(String from, String to, String item, int amount, double price) {
-            this.from = from;
-            this.to = to;
-            this.item = item;
-            this.amount = amount;
-            this.price = price;
-
-            this.expireAt = System.currentTimeMillis() + (1000L * 60 * 60 * 24);
-        }
+    public static Contract create(UUID owner, String item, int amount, double price) {
+        Contract c = new Contract(owner, item, amount, price);
+        contracts.put(c.id, c);
+        return c;
     }
 
-    public static UUID create(String from, String to, String item, int amount, double price) {
-        UUID id = UUID.randomUUID();
-        contracts.put(id, new Contract(from, to, item, amount, price));
-        return id;
+    public static Contract getByWorker(UUID worker) {
+        return contracts.values().stream()
+                .filter(c -> worker.equals(c.worker))
+                .findFirst().orElse(null);
+    }
+
+    public static Contract getOpen() {
+        return contracts.values().stream()
+                .filter(c -> c.status == Contract.Status.CREATED)
+                .findFirst().orElse(null);
+    }
+
+    public static void remove(UUID id) {
+        contracts.remove(id);
     }
 }

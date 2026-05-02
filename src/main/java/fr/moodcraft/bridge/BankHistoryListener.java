@@ -10,7 +10,10 @@ public class BankHistoryListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().contains("§6📄 Historique")) return;
+        String title = e.getView().getTitle();
+
+        // 🔥 FIX titre (compatible Bedrock)
+        if (title == null || !title.contains("Historique")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -19,15 +22,23 @@ public class BankHistoryListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        switch (e.getSlot()) {
+        int slot = e.getSlot();
 
-            case 21 -> BankHistoryGUI.open(p, 0);
-            case 23 -> BankHistoryGUI.open(p, 1);
+        // 🔙 RETOUR
+        if (slot == 22) {
+            p.closeInventory();
+            BankGUI.open(p);
+            return;
+        }
 
-            case 22 -> {
-                p.closeInventory();
-                BankGUI.open(p);
-            }
+        // 👉 (optionnel) pagination future
+        if (slot == 21) {
+            BankHistoryGUI.open(p, 0);
+            return;
+        }
+
+        if (slot == 23) {
+            BankHistoryGUI.open(p, 1);
         }
     }
 }

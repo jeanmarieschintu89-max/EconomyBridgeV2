@@ -9,75 +9,59 @@ public class TeleportGUI {
 
     public static void open(Player p) {
 
-        // 🔒 titre simple (Bedrock safe)
-        Inventory inv = Bukkit.createInventory(null, 27, "§8Teleport");
+        Inventory inv = Bukkit.createInventory(null, 27, "§bTeleport");
 
-        // 🌲 RESSOURCES
         SafeGUI.safeSet(inv, 10,
-                SafeGUI.item(Material.OAK_LOG, "§fRessources",
+                SafeGUI.item(Material.OAK_LOG, "§aRessources",
                         "§8────────",
-                        "§7Zones de farm",
-                        "§7minerais et bois",
+                        "§7Zone farm",
+                        "§7Recolte minerais",
                         "",
-                        "§7Recolter ressources",
-                        "",
-                        "§8Ouvrir"));
+                        "§8Clique pour tp"));
 
-        // 🛒 SHOP
         SafeGUI.safeSet(inv, 11,
-                SafeGUI.item(Material.EMERALD, "§fShop",
+                SafeGUI.item(Material.EMERALD, "§6Shop",
                         "§8────────",
-                        "§7Boutique du serveur",
+                        "§7Boutique serveur",
+                        "§7Acheter objets",
                         "",
-                        "§7Acheter des items",
-                        "",
-                        "§8Ouvrir"));
+                        "§8Clique pour tp"));
 
-        // 🎮 MINI-JEUX
         SafeGUI.safeSet(inv, 12,
-                SafeGUI.item(Material.DIAMOND_SWORD, "§fMini-jeux",
+                SafeGUI.item(Material.DIAMOND_SWORD, "§dMini-jeux",
                         "§8────────",
-                        "§7Zones de jeu",
+                        "§7Modes fun",
+                        "§7PVP / events",
                         "",
-                        "§7S'amuser et jouer",
-                        "",
-                        "§8Ouvrir"));
+                        "§8Clique pour tp"));
 
-        // 🎲 TP RANDOM
         SafeGUI.safeSet(inv, 13,
-                SafeGUI.item(Material.ENDER_EYE, "§fExploration",
+                SafeGUI.item(Material.ENDER_EYE, "§5TP Aleatoire",
                         "§8────────",
-                        "§7Teleportation aleatoire",
+                        "§7Exploration",
+                        "§7Position random",
                         "",
-                        "§7Explorer le monde",
-                        "",
-                        "§8Lancer"));
+                        "§8Clique"));
 
-        // 🏠 SPAWN
         SafeGUI.safeSet(inv, 14,
-                SafeGUI.item(Material.COMPASS, "§fSpawn",
+                SafeGUI.item(Material.COMPASS, "§eSpawn",
                         "§8────────",
-                        "§7Point principal",
+                        "§7Retour lobby",
                         "",
-                        "§7Retour au lobby",
-                        "",
-                        "§8Ouvrir"));
+                        "§8Clique pour tp"));
 
-        // 🏙️ VILLE
         SafeGUI.safeSet(inv, 15,
-                SafeGUI.item(Material.BRICKS, "§fVille",
+                SafeGUI.item(Material.BRICKS, "§aVille",
                         "§8────────",
-                        "§7Zone des villes",
+                        "§7Zone ville",
+                        "§7Construction",
                         "",
-                        "§7Gestion et territoire",
-                        "",
-                        "§8Ouvrir"));
+                        "§8Clique pour tp"));
 
-        // 🔙 RETOUR
         SafeGUI.safeSet(inv, 22,
-                SafeGUI.item(Material.BARRIER, "§fRetour",
+                SafeGUI.item(Material.BARRIER, "§cRetour",
                         "§8────────",
-                        "§7Retour menu principal"));
+                        "§7Retour menu"));
 
         p.openInventory(inv);
     }

@@ -10,14 +10,11 @@ public class ShopListener implements Listener {
     @EventHandler
     public void onBuy(ShopPurchaseEvent event) {
 
-        if (event == null || event.getShop() == null || event.getShop().getItem() == null) {
-            return;
-        }
+        if (event == null || event.getShop() == null || event.getShop().getItem() == null) return;
 
         int amount = Math.max(1, event.getAmount());
 
         String item = event.getShop().getItem().getType().name().toLowerCase();
-
         if (!PriceUpdater.ALLOWED.contains(item)) return;
 
         // 👤 joueur
@@ -29,39 +26,47 @@ public class ShopListener implements Listener {
             }
         }
 
-        // 💰 PRIX QUICKSHOP
+        // 💰 prix QuickShop
         double price = event.getShop().getPrice();
-
-        // 🔥 FIX 0€
-        if (price <= 0) {
-            price = MarketEngine.getPrice(item);
-        }
+        if (price <= 0) price = MarketEngine.getPrice(item);
 
         double total = price * amount;
 
+        boolean isSellingToShop = event.getShop().isBuying();
+        // true = le joueur vend au shop
+        // false = le joueur achète au shop
+
         // 📄 LOG
-        if (event.getShop().isBuying()) {
+        if (isSellingToShop) {
             TransactionLogger.log(player, "Vente " + item + " x" + amount, total);
         } else {
             TransactionLogger.log(player, "Achat " + item + " x" + amount, total);
         }
 
         Bukkit.getLogger().info("[Market] " + player + " " +
-                (event.getShop().isBuying() ? "vend" : "achète") +
+                (isSellingToShop ? "vend" : "achète") +
                 " " + item + " x" + amount + " (" + total + "€)");
 
-        // 📈 IMPACT
+        // =========================
+        // 📈 IMPACT CORRECT
+        // =========================
         int boosted = amount * 3;
-        MarketEngine.applyBuy(item, boosted);
 
-        // 📦 STOCK
-        double weight = MarketState.weight.getOrDefault(item, 1.0);
-        MarketState.stock.merge(item, -weight * amount, Double::sum);
-
-        if (MarketState.stock.get(item) < -10000) {
-            MarketState.stock.put(item, -10000.0);
+        if (isSellingToShop) {
+            MarketEngine.applySell(item, boosted);
+            MarketState.stock.merge(item, +boosted * 1.0, Double::sum);
+        } else {
+            MarketEngine.applyBuy(item, boosted);
+            MarketState.stock.merge(item, -boosted * 1.0, Double::sum);
         }
 
+        // 🔒 limite stock
+        double stock = MarketState.stock.getOrDefault(item, 0.0);
+        if (stock < -10000) stock = -10000;
+        if (stock > 10000) stock = 10000;
+        MarketState.stock.put(item, stock);
+
+        // 🔄 update shop
         PriceUpdater.updateSingle(event.getShop(), item);
     }
 }

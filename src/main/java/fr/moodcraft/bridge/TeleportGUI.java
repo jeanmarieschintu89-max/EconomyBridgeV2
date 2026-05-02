@@ -9,36 +9,35 @@ public class TeleportGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§b🧭 Téléportation");
+        // 🔒 titre court (IMPORTANT Bedrock)
+        Inventory inv = Bukkit.createInventory(null, 27, "§bTeleport");
 
-        // 🌲 Ressources
-        inv.setItem(10, ItemBuilder.of(Material.OAK_LOG, "§a🌲 Ressources",
-                "§8Clique pour tp"));
+        SafeGUI.safeSet(inv, 10,
+                SafeGUI.item(Material.OAK_LOG, "§aRessources",
+                        "§7Clique pour tp"));
 
-        // 🛒 Shop
-        inv.setItem(11, ItemBuilder.of(Material.EMERALD, "§6🛒 Shop",
-                "§8Clique pour tp"));
+        SafeGUI.safeSet(inv, 11,
+                SafeGUI.item(Material.EMERALD, "§6Shop",
+                        "§7Clique pour tp"));
 
-        // 🎲 TPR
-        inv.setItem(13, ItemBuilder.of(Material.ENDER_EYE, "§d🎲 Téléportation aléatoire",
-                "§7Exploration libre",
-                "",
-                "§8Clique pour tp"));
+        SafeGUI.safeSet(inv, 12,
+                SafeGUI.item(Material.DIAMOND_SWORD, "§dMini-jeux",
+                        "§7Clique pour tp"));
 
-        // 🎮 Mini-jeux
-        inv.setItem(12, ItemBuilder.of(Material.DIAMOND_SWORD, "§d🎮 Mini-jeux",
-                "§8Clique pour tp"));
+        SafeGUI.safeSet(inv, 13,
+                SafeGUI.item(Material.ENDER_EYE, "§dTP Aleatoire",
+                        "§7Exploration libre"));
 
-        // 🏠 Spawn
-        inv.setItem(14, ItemBuilder.of(Material.COMPASS, "§e🏠 Spawn",
-                "§8Clique pour tp"));
+        SafeGUI.safeSet(inv, 14,
+                SafeGUI.item(Material.COMPASS, "§eSpawn",
+                        "§7Clique pour tp"));
 
-        // 🏙️ Ville
-        inv.setItem(15, ItemBuilder.of(Material.BRICKS, "§a🏙️ Ville",
-                "§8Clique pour tp"));
+        SafeGUI.safeSet(inv, 15,
+                SafeGUI.item(Material.BRICKS, "§aVille",
+                        "§7Clique pour tp"));
 
-        // 🔙 Retour
-        inv.setItem(22, ItemBuilder.of(Material.BARRIER, "§cRetour"));
+        SafeGUI.safeSet(inv, 22,
+                SafeGUI.item(Material.BARRIER, "§cRetour"));
 
         p.openInventory(inv);
     }

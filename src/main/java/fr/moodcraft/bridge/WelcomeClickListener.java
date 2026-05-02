@@ -10,7 +10,10 @@ public class WelcomeClickListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().equals("§6Bienvenue sur MoodCraft")) return;
+        String title = e.getView().getTitle();
+
+        // 🔥 plus tolérant (Bedrock safe)
+        if (title == null || !title.contains("Bienvenue")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -18,15 +21,24 @@ public class WelcomeClickListener implements Listener {
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
+        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
         switch (e.getSlot()) {
 
-            case 22 -> { // 🎮 ouvrir menu principal
+            // 🎮 MENU PRINCIPAL
+            case 22 -> {
                 p.closeInventory();
-                p.performCommand("menu");
+
+                // 🔥 petit delay (évite bug Bedrock)
+                org.bukkit.Bukkit.getScheduler().runTaskLater(
+                        Main.getInstance(),
+                        () -> p.performCommand("menu"),
+                        2L
+                );
             }
 
-            case 26 -> { // ❌ fermer
+            // ❌ FERMER
+            case 26 -> {
                 p.closeInventory();
             }
         }

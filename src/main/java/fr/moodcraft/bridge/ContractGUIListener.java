@@ -1,20 +1,21 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Sound;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
-public class ContractCreateListener implements Listener {
+import java.util.*;
+
+public class ContractGUIListener implements Listener {
 
     @EventHandler
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
 
-        if (title == null || !title.contains("Contrat")) return;
+        if (title == null || !title.contains("Contrats")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -23,123 +24,74 @@ public class ContractCreateListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
-
         int slot = e.getRawSlot();
-        if (slot > 26) return;
 
-        var b = ContractBuilder.get(p);
+        // ➕ CREATION
+        if (slot == 49) {
+            p.closeInventory();
+            ContractCreateGUI.open(p);
+            return;
+        }
 
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
+        // 🔁 LISTE
+        List<UUID> list = new ArrayList<>();
 
-        switch (slot) {
+        for (UUID id : ContractManager.contracts.keySet()) {
+            var c = ContractManager.contracts.get(id);
 
-            // =========================
-            // 👤 JOUEUR (cible)
-            // =========================
-            case 10 -> {
-                p.closeInventory();
-                TargetPlayerGUI.open(p);
-            }
+            if (c == null) continue;
 
-            // =========================
-            // 📦 OBJET (main du joueur)
-            // =========================
-            case 11 -> {
-
-                ItemStack item = p.getInventory().getItemInMainHand();
-
-                if (item == null || item.getType().isAir()) {
-                    p.sendMessage("§cTu dois tenir un objet");
-                    return;
-                }
-
-                b.item = item.getType().name().toLowerCase();
-                b.amount = item.getAmount(); // 🔥 auto quantité
-
-                p.sendMessage("§aObjet sélectionné: §e" + b.item + " x" + b.amount);
-
-                ContractCreateGUI.open(p);
-            }
-
-            // =========================
-            // 📄 QUANTITÉ (option simple)
-            // =========================
-            case 12 -> {
-
-                if (b.amount <= 0) b.amount = 1;
-                else b.amount += 1;
-
-                p.sendMessage("§eQuantité: §f" + b.amount);
-
-                ContractCreateGUI.open(p);
-            }
-
-            // =========================
-            // ➖ PRIX
-            // =========================
-            case 20 -> {
-
-                b.price -= 100;
-                if (b.price < 0) b.price = 0;
-
-                ContractCreateGUI.open(p);
-            }
-
-            // =========================
-            // ➕ PRIX
-            // =========================
-            case 24 -> {
-
-                b.price += 100;
-
-                ContractCreateGUI.open(p);
-            }
-
-            // =========================
-            // ✔ VALIDER
-            // =========================
-            case 26 -> {
-
-                if (b.target == null) {
-                    p.sendMessage("§cChoisis un joueur");
-                    return;
-                }
-
-                if (b.item == null) {
-                    p.sendMessage("§cChoisis un objet");
-                    return;
-                }
-
-                if (b.amount <= 0) {
-                    p.sendMessage("§cQuantité invalide");
-                    return;
-                }
-
-                if (b.price <= 0) {
-                    p.sendMessage("§cPrix invalide");
-                    return;
-                }
-
-                ContractManager.create(
-                        p.getName(),
-                        b.target,
-                        b.item,
-                        b.amount,
-                        b.price
-                );
-
-                p.sendMessage("§a✔ Contrat créé");
-                p.closeInventory();
-            }
-
-            // =========================
-            // ❌ ANNULER
-            // =========================
-            case 18 -> {
-                p.closeInventory();
-                p.sendMessage("§cCréation annulée");
+            if (c.to.equalsIgnoreCase(p.getName()) || c.from.equalsIgnoreCase(p.getName())) {
+                list.add(id);
             }
         }
+
+        if (list.isEmpty()) return;
+
+        int col = slot % 9;
+        int row = slot / 9;
+
+        if (col >= list.size()) return;
+
+        UUID id = list.get(col);
+        var c = ContractManager.contracts.get(id);
+
+        if (c == null) return;
+
+        // ✔ ACCEPTER
+        if (row == 1) {
+
+            c.accepted = true;
+
+            var book = ContractItem.create(id, c);
+
+            p.getInventory().addItem(book.clone());
+
+            Player from = Bukkit.getPlayerExact(c.from);
+            if (from != null) {
+                from.getInventory().addItem(book.clone());
+            }
+
+            p.sendMessage("§a✔ Contrat accepté");
+        }
+
+        // ❌ REFUSER
+        else if (row == 2) {
+
+            ContractManager.contracts.remove(id);
+            ReputationManager.add(c.from, -1);
+
+            p.sendMessage("§cContrat refusé");
+        }
+
+        // 🗑 ANNULER
+        else if (row == 3) {
+
+            ContractManager.contracts.remove(id);
+
+            p.sendMessage("§cContrat annulé");
+        }
+
+        ContractGUI.open(p);
     }
 }

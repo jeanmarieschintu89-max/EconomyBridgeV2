@@ -108,6 +108,7 @@ public class Main extends JavaPlugin {
         // =========================
         BankStorage.save();
         ReputationManager.save();
+        MarketStorage.save();
 
         getLogger().info("💾 Données sauvegardées correctement");
     }

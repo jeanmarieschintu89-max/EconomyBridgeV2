@@ -1,11 +1,13 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+import java.util.UUID;
 
 public class BankStorage {
 
@@ -39,6 +41,10 @@ public class BankStorage {
     // =========================
     public static void set(String uuid, double value) {
         config.set(uuid + ".balance", value);
+
+        // 🔥 MAJ NOM AUTOMATIQUE
+        updateName(uuid);
+
         save();
     }
 
@@ -52,6 +58,7 @@ public class BankStorage {
         if (iban == null) {
             iban = generateIban();
             config.set(uuid + ".iban", iban);
+            updateName(uuid);
             save();
         }
 
@@ -73,6 +80,29 @@ public class BankStorage {
         }
 
         return null;
+    }
+
+    // =========================
+    // 👤 GET NAME
+    // =========================
+    public static String getName(String uuid) {
+        return config.getString(uuid + ".name", "Unknown");
+    }
+
+    // =========================
+    // 🔄 UPDATE NAME
+    // =========================
+    private static void updateName(String uuid) {
+
+        try {
+            UUID u = UUID.fromString(uuid);
+            var player = Bukkit.getOfflinePlayer(u);
+
+            if (player.getName() != null) {
+                config.set(uuid + ".name", player.getName());
+            }
+
+        } catch (Exception ignored) {}
     }
 
     // =========================

@@ -13,21 +13,27 @@ public class ContractCreateListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
+        if (title == null) return;
 
-        // 🔥 FIX TITRE (safe couleur)
-        if (title == null || !title.contains("Contrat")) return;
+        // 🔥 NORMALISATION (anti couleurs / Bedrock)
+        String clean = title.replaceAll("§.", "");
+
+        // 🔒 MATCH STRICT
+        if (!clean.equalsIgnoreCase("Contrat")) return;
 
         if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
+        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
+        var current = e.getCurrentItem();
+        if (current == null || current.getType().isAir()) return;
 
-        // 🔥 FIX SLOT (IMPORTANT)
-        int slot = e.getSlot();
+        int slot = e.getRawSlot();
 
         var b = ContractBuilder.get(p);
 
@@ -59,7 +65,7 @@ public class ContractCreateListener implements Listener {
                 b.item = item.getType().name().toLowerCase();
                 b.amount = item.getAmount();
 
-                p.sendMessage("§aObjet: §e" + b.item);
+                p.sendMessage("§aObjet: §f" + b.item);
 
                 ContractCreateGUI.open(p);
             }

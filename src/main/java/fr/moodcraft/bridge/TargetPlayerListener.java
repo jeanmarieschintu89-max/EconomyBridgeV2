@@ -1,6 +1,7 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,10 +16,8 @@ public class TargetPlayerListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        // 🔥 NORMALISATION TITRE (anti couleur / Bedrock)
         String clean = title.replaceAll("§.", "");
 
-        // ✅ accepte "Choisir joueur" OU "Choisir un joueur"
         if (!clean.equalsIgnoreCase("Choisir joueur") &&
             !clean.equalsIgnoreCase("Choisir un joueur")) return;
 
@@ -35,7 +34,8 @@ public class TargetPlayerListener implements Listener {
         String name = item.getItemMeta().getDisplayName();
         if (name == null) return;
 
-        name = name.replace("§a", "");
+        // 🔥 CLEAN PROPRE (toutes couleurs)
+        name = ChatColor.stripColor(name);
 
         Player target = Bukkit.getPlayerExact(name);
         if (target == null) {
@@ -46,22 +46,8 @@ public class TargetPlayerListener implements Listener {
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
         // =========================
-        // 🔀 CONTEXTE INTELLIGENT
+        // 💸 PRIORITÉ VIREMENT
         // =========================
-
-        // 🧾 CONTRAT
-        if (ContractBuilder.has(p)) {
-
-            var builder = ContractBuilder.get(p);
-            builder.target = target.getName();
-
-            p.sendMessage("§aCible: §f" + target.getName());
-
-            ContractCreateGUI.open(p);
-            return;
-        }
-
-        // 💸 VIREMENT
         if (TransferBuilder.has(p)) {
 
             var builder = TransferBuilder.get(p);
@@ -70,6 +56,20 @@ public class TargetPlayerListener implements Listener {
             p.sendMessage("§aDestinataire: §f" + target.getName());
 
             TransferConfirmGUI.open(p);
+            return;
+        }
+
+        // =========================
+        // 📄 CONTRAT
+        // =========================
+        if (ContractBuilder.has(p)) {
+
+            var builder = ContractBuilder.get(p);
+            builder.target = target.getName();
+
+            p.sendMessage("§aCible: §f" + target.getName());
+
+            ContractCreateGUI.open(p);
         }
     }
 }

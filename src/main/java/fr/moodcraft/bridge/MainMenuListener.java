@@ -11,7 +11,6 @@ public class MainMenuListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        // 🔒 BON GUI (CORRIGÉ)
         if (!e.getView().getTitle().equals("§6Menu")) return;
 
         if (e.getClickedInventory() == null) return;
@@ -22,7 +21,6 @@ public class MainMenuListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
-        // 🔊 SON SAFE (important Bedrock)
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
 
         switch (e.getSlot()) {
@@ -62,8 +60,8 @@ public class MainMenuListener implements Listener {
                 TeleportGUI.open(p);
             }
 
-            case 21 -> {
-                p.sendMessage("§7💡 Astuce: achète bas, vends haut !");
+            case 22 -> {
+                p.sendMessage("§7Conseil: achete bas et vends haut");
             }
 
             case 23 -> {
@@ -71,7 +69,7 @@ public class MainMenuListener implements Listener {
                     p.closeInventory();
                     p.performCommand("banqueadmin");
                 } else {
-                    p.sendMessage("§c❌ Accès refusé.");
+                    p.sendMessage("§cAcces refuse");
                 }
             }
         }

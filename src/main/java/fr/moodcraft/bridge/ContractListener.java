@@ -10,9 +10,6 @@ import java.util.*;
 
 public class ContractListener {
 
-    // =========================
-    // 🚀 LANCEMENT AUTO
-    // =========================
     public static void start() {
 
         Bukkit.getScheduler().runTaskTimer(
@@ -24,14 +21,11 @@ public class ContractListener {
                     }
 
                 },
-                20L,      // délai initial
-                20L * 2   // toutes les 2 secondes
+                20L,
+                40L
         );
     }
 
-    // =========================
-    // 🔍 CHECK CONTRATS
-    // =========================
     public static void checkContracts(Player p) {
 
         Economy eco = VaultHook.getEconomy();
@@ -54,12 +48,12 @@ public class ContractListener {
 
                 if (from != null) {
                     removeContractBook(from, id);
-                    from.sendMessage("§cContrat expire");
+                    from.sendMessage("§cContrat expiré");
                 }
 
                 if (to != null) {
                     removeContractBook(to, id);
-                    to.sendMessage("§cContrat expire");
+                    to.sendMessage("§cContrat expiré");
                 }
 
                 toRemove.add(id);
@@ -84,16 +78,18 @@ public class ContractListener {
 
             if (total >= c.amount) {
 
-                // 📦 retirer items
-                remove(p, mat, c.amount);
+                // 📦 retirer items proprement
+                removeExact(p, mat, c.amount);
 
                 // 💰 paiement
                 eco.depositPlayer(p, c.price);
 
                 // 📄 log
-                TransactionLogger.log(p.getName(),
+                TransactionLogger.log(
+                        p.getName(),
                         "Contrat " + c.item + " x" + c.amount,
-                        c.price);
+                        c.price
+                );
 
                 // ⭐ réputation
                 ReputationManager.add(c.from, 1);
@@ -106,13 +102,13 @@ public class ContractListener {
                     removeContractBook(from, id);
                 }
 
-                p.sendMessage("§aContrat complete");
+                p.sendMessage("§a✔ Contrat complété");
 
                 toRemove.add(id);
             }
         }
 
-        // 🔥 suppression après boucle
+        // 🔥 suppression finale
         for (UUID id : toRemove) {
             ContractManager.contracts.remove(id);
         }
@@ -123,7 +119,7 @@ public class ContractListener {
     // =========================
     public static void removeContractBook(Player p, UUID id) {
 
-        for (ItemStack item : p.getInventory()) {
+        for (ItemStack item : p.getInventory().getContents()) {
 
             if (item == null) continue;
             if (item.getType() != Material.WRITTEN_BOOK) continue;
@@ -145,18 +141,35 @@ public class ContractListener {
     // =========================
     private static int count(Player p, Material mat) {
         int total = 0;
-        for (ItemStack item : p.getInventory()) {
+
+        for (ItemStack item : p.getInventory().getContents()) {
             if (item != null && item.getType() == mat) {
                 total += item.getAmount();
             }
         }
+
         return total;
     }
 
     // =========================
-    // 📦 REMOVE
+    // 📦 REMOVE EXACT (FIX IMPORTANT)
     // =========================
-    private static void remove(Player p, Material mat, int amount) {
-        p.getInventory().removeItem(new ItemStack(mat, amount));
+    private static void removeExact(Player p, Material mat, int amount) {
+
+        int remaining = amount;
+
+        for (ItemStack item : p.getInventory().getContents()) {
+
+            if (item == null || item.getType() != mat) continue;
+
+            int take = Math.min(item.getAmount(), remaining);
+
+            item.setAmount(item.getAmount() - take);
+            remaining -= take;
+
+            if (remaining <= 0) break;
+        }
+
+        p.updateInventory(); // 🔥 sync visuel
     }
 }

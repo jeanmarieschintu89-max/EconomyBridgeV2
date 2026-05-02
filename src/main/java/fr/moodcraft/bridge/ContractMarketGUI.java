@@ -11,7 +11,7 @@ public class ContractMarketGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 54, "§eContrats disponibles");
+        Inventory inv = Bukkit.createInventory(null, 54, "§eMarché des contrats");
 
         List<Contract> list = ContractManager.getOpenContracts();
 
@@ -38,7 +38,7 @@ public class ContractMarketGUI {
             slot++;
         }
 
-        // 🔙 retour
+        // retour
         SafeGUI.safeSet(inv, 49, SafeGUI.item(Material.ARROW, "§cRetour"));
 
         p.openInventory(inv);

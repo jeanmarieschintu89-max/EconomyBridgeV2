@@ -3,6 +3,7 @@ package fr.moodcraft.bridge;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,41 +31,44 @@ public class GUIListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
+        if (title == null) return;
 
-        // 🔒 Vérifie le bon GUI
-        if (title == null || !title.contains("Bourse")) return;
+        // 🔥 NORMALISATION (anti Bedrock / couleurs)
+        String clean = title.replaceAll("§.", "");
 
-        // 🔒 Clique uniquement dans le GUI
+        if (!clean.equalsIgnoreCase("Bourse Minerais")) return;
+
         if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
+        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
-        // 🔥 Anti bug double clic / shift
+        // 🔥 anti spam / glitch
         if (e.isShiftClick() || e.isRightClick()) return;
 
-        // 🔒 joueur uniquement
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        // 🔒 item valide
-        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
+        ItemStack clicked = e.getCurrentItem();
+        if (clicked == null || clicked.getType().isAir()) return;
 
-        // 🔥 économie
+        // 🔥 économie safe
         if (econ == null) {
             loadEconomy();
             if (econ == null) {
-                p.sendMessage("§cErreur economie (Vault)");
+                p.sendMessage("§cErreur économie (Vault)");
                 return;
             }
         }
 
         // 🔒 permission
         if (!p.hasPermission("econ.use")) {
-            p.sendMessage("§cAcces refuse");
+            p.sendMessage("§cAccès refusé");
             return;
         }
 
-        Material mat = e.getCurrentItem().getType();
+        Material mat = clicked.getType();
         String id = map(mat);
 
         if (id == null) return;
@@ -72,13 +76,12 @@ public class GUIListener implements Listener {
         int amount = count(p, mat);
 
         if (amount <= 0) {
-            p.sendMessage("§cTu n'as rien a vendre");
+            p.sendMessage("§cTu n'as rien à vendre");
             return;
         }
 
         double price = MarketEngine.getPrice(id);
 
-        // 🔒 sécurité prix
         if (price <= 0) {
             p.sendMessage("§cPrix invalide");
             return;
@@ -86,24 +89,27 @@ public class GUIListener implements Listener {
 
         double gain = round(amount * price);
 
-        // 🔥 suppression SAFE
+        // =========================
+        // 📦 REMOVE SAFE
+        // =========================
         removeItems(p, mat, amount);
-        p.updateInventory();
 
         // 💰 paiement
         econ.depositPlayer(p, gain);
 
-        // 📄 LOG
-        TransactionLogger.log(p.getName(),
+        // 📄 LOG CENTRALISÉ
+        EconomyListener.log(p.getName(),
                 "Vente " + id + " x" + amount,
                 gain);
 
-        // 💬 message
+        // 💬 feedback
         p.sendMessage("§8────────────");
-        p.sendMessage("§aVente effectuee");
-        p.sendMessage("§7Quantite: §f" + amount);
+        p.sendMessage("§a✔ Vente effectuée");
+        p.sendMessage("§7Quantité: §f" + amount);
         p.sendMessage("§7Gain: §a+" + gain + "€");
         p.sendMessage("§8────────────");
+
+        p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.2f);
 
         // 📈 marché
         MarketEngine.applySell(id, amount);
@@ -111,46 +117,45 @@ public class GUIListener implements Listener {
     }
 
     // =========================
-    // 🔢 COMPTER ITEMS
+    // 🔢 COUNT
     // =========================
     private int count(Player p, Material mat) {
 
         int total = 0;
 
         for (ItemStack item : p.getInventory().getContents()) {
-            if (item == null) continue;
-            if (item.getType() != mat) continue;
-
-            total += item.getAmount();
+            if (item != null && item.getType() == mat) {
+                total += item.getAmount();
+            }
         }
 
         return total;
     }
 
     // =========================
-    // 🧹 RETIRER ITEMS (SAFE)
+    // 🧹 REMOVE SAFE
     // =========================
     private void removeItems(Player p, Material mat, int amount) {
 
-        int toRemove = amount;
+        int remaining = amount;
 
         for (ItemStack item : p.getInventory().getContents()) {
 
-            if (item == null) continue;
-            if (item.getType() != mat) continue;
+            if (item == null || item.getType() != mat) continue;
 
-            int remove = Math.min(item.getAmount(), toRemove);
+            int take = Math.min(item.getAmount(), remaining);
 
-            item.setAmount(item.getAmount() - remove);
+            item.setAmount(item.getAmount() - take);
+            remaining -= take;
 
-            toRemove -= remove;
-
-            if (toRemove <= 0) break;
+            if (remaining <= 0) break;
         }
+
+        p.updateInventory(); // 🔥 important
     }
 
     // =========================
-    // 🔗 MAP ITEM → ID
+    // 🔗 MAP
     // =========================
     private String map(Material mat) {
         switch (mat) {
@@ -171,7 +176,7 @@ public class GUIListener implements Listener {
     }
 
     // =========================
-    // 🔢 ARRONDI
+    // 🔢 ROUND
     // =========================
     private double round(double v) {
         return Math.round(v * 100.0) / 100.0;

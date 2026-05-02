@@ -5,40 +5,47 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-public class TeleportGUI {
+public class PriceGUI {
 
     public static void open(Player p) {
 
-        // 🔒 titre court (IMPORTANT Bedrock)
-        Inventory inv = Bukkit.createInventory(null, 27, "§bTeleport");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6Marche");
 
-        SafeGUI.safeSet(inv, 10,
-                SafeGUI.item(Material.OAK_LOG, "§aRessources",
-                        "§7Clique pour tp"));
+        try {
 
-        SafeGUI.safeSet(inv, 11,
-                SafeGUI.item(Material.EMERALD, "§6Shop",
-                        "§7Clique pour tp"));
+            set(inv, 10, "netherite", Material.NETHERITE_INGOT, "§5Netherite");
+            set(inv, 11, "emerald", Material.EMERALD, "§aEmerald");
+            set(inv, 12, "diamond", Material.DIAMOND, "§bDiamant");
 
-        SafeGUI.safeSet(inv, 12,
-                SafeGUI.item(Material.DIAMOND_SWORD, "§dMini-jeux",
-                        "§7Clique pour tp"));
+            set(inv, 13, "gold", Material.GOLD_INGOT, "§6Or");
+            set(inv, 14, "copper", Material.COPPER_INGOT, "§6Cuivre");
+            set(inv, 15, "iron", Material.IRON_INGOT, "§7Fer");
 
-        SafeGUI.safeSet(inv, 13,
-                SafeGUI.item(Material.ENDER_EYE, "§dTP Aleatoire",
-                        "§7Exploration libre"));
+            set(inv, 16, "glowstone", Material.GLOWSTONE_DUST, "§eGlowstone");
 
-        SafeGUI.safeSet(inv, 14,
-                SafeGUI.item(Material.COMPASS, "§eSpawn",
-                        "§7Clique pour tp"));
+            set(inv, 19, "quartz", Material.QUARTZ, "§fQuartz");
+            set(inv, 20, "amethyst", Material.AMETHYST_SHARD, "§dAmethyste");
+            set(inv, 21, "redstone", Material.REDSTONE, "§cRedstone");
+            set(inv, 22, "lapis", Material.LAPIS_LAZULI, "§9Lapis");
+            set(inv, 23, "coal", Material.COAL, "§8Charbon");
 
-        SafeGUI.safeSet(inv, 15,
-                SafeGUI.item(Material.BRICKS, "§aVille",
-                        "§7Clique pour tp"));
-
-        SafeGUI.safeSet(inv, 22,
-                SafeGUI.item(Material.BARRIER, "§cRetour"));
+        } catch (Exception e) {
+            inv.clear();
+            SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BARRIER, "§cErreur marche"));
+            e.printStackTrace();
+        }
 
         p.openInventory(inv);
+    }
+
+    private static void set(Inventory inv, int slot, String id, Material mat, String name) {
+
+        double price = MarketEngine.getPrice(id);
+        String trend = MarketState.trend.getOrDefault(id, "§7=");
+
+        SafeGUI.safeSet(inv, slot,
+                SafeGUI.item(mat, name,
+                        "§f" + String.format("%.2f", price) + "€ " + trend,
+                        "§7Clique pour vendre"));
     }
 }

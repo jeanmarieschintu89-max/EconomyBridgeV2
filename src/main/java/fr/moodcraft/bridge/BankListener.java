@@ -16,12 +16,15 @@ public class BankListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
+        // 🔥 NORMALISATION
         String clean = title.replaceAll("§.", "");
 
         if (!clean.equalsIgnoreCase("Banque")) return;
 
         if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
+        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
@@ -30,8 +33,7 @@ public class BankListener implements Listener {
         var item = e.getCurrentItem();
         if (item == null || item.getType().isAir()) return;
 
-        int slot = e.getSlot();
-        if (slot > 8) return;
+        int slot = e.getRawSlot();
 
         Economy eco = VaultHook.getEconomy();
         if (eco == null) {
@@ -45,26 +47,47 @@ public class BankListener implements Listener {
 
         switch (slot) {
 
+            // =========================
+            // 📤 IBAN
+            // =========================
             case 0 -> showIban(p, id);
 
+            // =========================
+            // 💸 RETRAIT
+            // =========================
             case 1 -> withdraw(p, eco, id);
 
+            // =========================
+            // 💸 VIREMENT
+            // =========================
             case 2 -> {
                 p.closeInventory();
 
-                // 🔥 FIX CRITIQUE
+                // 🔥 reset sécurité (évite conflits)
+                ContractBuilder.remove(p);
+
+                // 🔥 start flow propre
                 TransferBuilder.create(p);
 
                 BankTransferGUI.open(p);
             }
 
+            // =========================
+            // 💰 DEPOT
+            // =========================
             case 6 -> deposit(p, eco, id);
 
+            // =========================
+            // 📄 HISTORIQUE
+            // =========================
             case 7 -> {
                 p.closeInventory();
                 BankHistoryGUI.open(p, 0);
             }
 
+            // =========================
+            // 🔙 RETOUR
+            // =========================
             case 8 -> {
                 p.closeInventory();
                 MainMenuGUI.open(p);
@@ -94,7 +117,7 @@ public class BankListener implements Listener {
             BankStorage.set(id, bank - 1000);
             eco.depositPlayer(p, 1000);
 
-            TransactionLogger.log(p.getName(), "Retrait", 1000, null);
+            TransactionLogger.log(p.getName(), "Retrait", 1000);
 
             p.sendMessage("§8────────────");
             p.sendMessage("§aRetrait effectué");
@@ -117,7 +140,7 @@ public class BankListener implements Listener {
             double bank = BankStorage.get(id);
             BankStorage.set(id, bank + 1000);
 
-            TransactionLogger.log(p.getName(), "Depot", 1000, null);
+            TransactionLogger.log(p.getName(), "Depot", 1000);
 
             p.sendMessage("§8────────────");
             p.sendMessage("§bDépôt effectué");

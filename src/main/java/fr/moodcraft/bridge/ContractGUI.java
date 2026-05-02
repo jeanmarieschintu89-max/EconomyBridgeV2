@@ -9,30 +9,44 @@ public class ContractGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§e📜 Contrats");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6Contrats");
 
-        SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.WRITABLE_BOOK,
-                "§aCréer un contrat",
-                "§7/contract <item> <quantité> <prix>"
-        ));
+        // =========================
+        // 📄 CRÉER CONTRAT
+        // =========================
+        SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.WRITABLE_BOOK, "§aCréer un contrat",
+                "§7Créer une demande",
+                "",
+                "§eCommande:",
+                "§7/contract <item> <quantité> <prix>",
+                "",
+                "§8Clique pour info"));
 
-        SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.EMERALD,
-                "§aAccepter contrat",
-                "§7/contractaccept"
-        ));
+        // =========================
+        // 📜 VOIR CONTRATS
+        // =========================
+        SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BOOK, "§eContrats disponibles",
+                "§7Voir les contrats",
+                "",
+                "§aAccepter et gagner de l'argent",
+                "",
+                "§8Clique pour ouvrir"));
 
-        SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.CHEST,
-                "§bLivrer contrat",
-                "§7/contractdeliver"
-        ));
+        // =========================
+        // 📦 MES CONTRATS
+        // =========================
+        SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.CHEST, "§bMes contrats",
+                "§7Suivi de tes contrats",
+                "",
+                "§eVoir progression",
+                "",
+                "§8Clique pour ouvrir"));
 
-        SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.BOOK,
-                "§dHistorique",
-                "§7/contractlog"
-        ));
-
-        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.BARRIER,
-                "§cRetour"));
+        // =========================
+        // 🔙 RETOUR
+        // =========================
+        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.ARROW, "§cRetour",
+                "§7Retour au menu"));
 
         p.openInventory(inv);
     }

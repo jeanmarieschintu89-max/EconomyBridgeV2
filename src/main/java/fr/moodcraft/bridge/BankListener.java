@@ -15,7 +15,6 @@ public class BankListener implements Listener {
 
         String title = e.getView().getTitle();
 
-        // 🔒 SAFE Bedrock + couleur
         if (title == null || !title.contains("Banque")) return;
 
         if (e.getClickedInventory() == null) return;
@@ -43,41 +42,28 @@ public class BankListener implements Listener {
 
         switch (slot) {
 
-            // =========================
-            // 📤 IBAN
-            // =========================
-            case 1 -> showIban(p, id);
+            case 0 -> showIban(p, id);
 
-            // =========================
-            // 💸 RETRAIT
-            // =========================
-            case 2 -> withdraw(p, eco, id);
+            case 1 -> withdraw(p, eco, id);
 
-            // =========================
-            // 💰 DEPOT
-            // =========================
+            case 2 -> {
+                p.closeInventory();
+                BankTransferGUI.open(p);
+            }
+
             case 6 -> deposit(p, eco, id);
 
-            // =========================
-            // 📄 HISTORIQUE
-            // =========================
             case 7 -> {
                 p.closeInventory();
                 BankHistoryGUI.open(p, 0);
             }
 
-            // =========================
-            // 🔄 REFRESH
-            // =========================
             case 8 -> BankGUI.open(p);
         }
     }
 
-    // =========================
-    // 🔧 MÉTHODES PROPRES
-    // =========================
-
     private void showIban(Player p, String id) {
+
         String iban = BankStorage.getIban(id);
 
         p.closeInventory();

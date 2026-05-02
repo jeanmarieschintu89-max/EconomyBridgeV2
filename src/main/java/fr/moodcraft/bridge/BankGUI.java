@@ -18,9 +18,9 @@ public class BankGUI {
         double bank = BankStorage.get(id);
         String iban = BankStorage.getIban(id);
 
-        double total = balance + bank; // 🔥 AJOUT
+        double total = balance + bank;
 
-        Inventory inv = Bukkit.createInventory(null, 9, "§6Banque");
+        Inventory inv = Bukkit.createInventory(null, 9, "§fBanque"); // 🔥 FIX titre
 
         // =========================
         // 📤 IBAN
@@ -52,7 +52,7 @@ public class BankGUI {
                 "§aArgent: §f" + format(balance) + "€",
                 "§bBanque: §f" + format(bank) + "€",
                 "",
-                "§6Total: §f" + format(total) + "€",
+                "§eTotal: §f" + format(total) + "€", // 🔥 FIX §6 → §e
                 "",
                 "§7Statut:",
                 ReputationManager.format(p.getName())
@@ -72,7 +72,7 @@ public class BankGUI {
         // =========================
         // 📄 HISTORIQUE
         // =========================
-        inv.setItem(7, ItemBuilder.of(Material.PAPER, "§6Historique",
+        inv.setItem(7, ItemBuilder.of(Material.PAPER, "§eHistorique", // 🔥 FIX §6 → §e
                 "§8────────────",
                 "§7Consulte tes transactions",
                 "",

@@ -8,7 +8,7 @@ public class ContractManager {
     private static int idCounter = 0;
 
     // =========================
-    // 🔥 CREATE
+    // CREATE
     // =========================
     public static int create(UUID owner, String item, int amount, double price) {
 
@@ -16,7 +16,7 @@ public class ContractManager {
 
         Contract c = new Contract(owner, item, amount, price);
         c.id = id;
-        c.status = Contract.Status.PENDING; // ⚠️ adapte à ton enum
+        c.status = Contract.Status.OPEN; // ✅ FIX
 
         contracts.put(id, c);
 
@@ -24,27 +24,24 @@ public class ContractManager {
     }
 
     // =========================
-    // 🔥 LISTE
+    // LIST OPEN
     // =========================
     public static List<Contract> getOpenContracts() {
         return contracts.values().stream()
-                .filter(c -> c.status == Contract.Status.PENDING)
+                .filter(c -> c.status == Contract.Status.OPEN)
                 .toList();
     }
 
     // =========================
-    // 🔥 BACKWARD COMPAT
+    // BACKWARD COMPAT
     // =========================
-
-    // 👉 ancien système (book sign)
     public static Contract getOpen() {
         return contracts.values().stream()
-                .filter(c -> c.status == Contract.Status.PENDING)
+                .filter(c -> c.status == Contract.Status.OPEN)
                 .findFirst()
                 .orElse(null);
     }
 
-    // 👉 ancien système livraison
     public static Contract getByWorker(UUID uuid) {
         return contracts.values().stream()
                 .filter(c -> uuid.equals(c.worker) && c.status == Contract.Status.ACCEPTED)
@@ -53,15 +50,10 @@ public class ContractManager {
     }
 
     // =========================
-    // 🔍 GET
-    // =========================
     public static Contract get(int id) {
         return contracts.get(id);
     }
 
-    // =========================
-    // ❌ REMOVE
-    // =========================
     public static void remove(int id) {
         contracts.remove(id);
     }

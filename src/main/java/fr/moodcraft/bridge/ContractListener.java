@@ -8,16 +8,30 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class ContractListener implements org.bukkit.event.Listener {
+public class ContractListener {
 
-    @org.bukkit.event.EventHandler
-    public void onClick(org.bukkit.event.inventory.InventoryClickEvent e) {
+    // =========================
+    // 🚀 LANCEMENT AUTO
+    // =========================
+    public static void start() {
 
-        if (!(e.getWhoClicked() instanceof Player p)) return;
+        Bukkit.getScheduler().runTaskTimer(
+                Main.getInstance(),
+                () -> {
 
-        checkContracts(p);
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        checkContracts(p);
+                    }
+
+                },
+                20L,      // délai initial
+                20L * 2   // toutes les 2 secondes
+        );
     }
 
+    // =========================
+    // 🔍 CHECK CONTRATS
+    // =========================
     public static void checkContracts(Player p) {
 
         Economy eco = VaultHook.getEconomy();
@@ -25,7 +39,6 @@ public class ContractListener implements org.bukkit.event.Listener {
 
         List<UUID> toRemove = new ArrayList<>();
 
-        // 🔒 copie pour éviter problèmes
         for (UUID id : new ArrayList<>(ContractManager.contracts.keySet())) {
 
             var c = ContractManager.contracts.get(id);
@@ -41,12 +54,12 @@ public class ContractListener implements org.bukkit.event.Listener {
 
                 if (from != null) {
                     removeContractBook(from, id);
-                    from.sendMessage("§c⏳ Contrat expiré");
+                    from.sendMessage("§cContrat expire");
                 }
 
                 if (to != null) {
                     removeContractBook(to, id);
-                    to.sendMessage("§c⏳ Contrat expiré");
+                    to.sendMessage("§cContrat expire");
                 }
 
                 toRemove.add(id);
@@ -74,7 +87,7 @@ public class ContractListener implements org.bukkit.event.Listener {
                 // 📦 retirer items
                 remove(p, mat, c.amount);
 
-                // 💰 payer
+                // 💰 paiement
                 eco.depositPlayer(p, c.price);
 
                 // 📄 log
@@ -83,7 +96,7 @@ public class ContractListener implements org.bukkit.event.Listener {
                         c.price);
 
                 // ⭐ réputation
-                ReputationManager.add(c.from, +1);
+                ReputationManager.add(c.from, 1);
 
                 // 📜 supprimer livres
                 removeContractBook(p, id);
@@ -93,7 +106,8 @@ public class ContractListener implements org.bukkit.event.Listener {
                     removeContractBook(from, id);
                 }
 
-                p.sendMessage("§a✔ Contrat complété !");
+                p.sendMessage("§aContrat complete");
+
                 toRemove.add(id);
             }
         }
@@ -104,6 +118,9 @@ public class ContractListener implements org.bukkit.event.Listener {
         }
     }
 
+    // =========================
+    // 📜 REMOVE BOOK
+    // =========================
     public static void removeContractBook(Player p, UUID id) {
 
         for (ItemStack item : p.getInventory()) {
@@ -114,13 +131,18 @@ public class ContractListener implements org.bukkit.event.Listener {
 
             var meta = item.getItemMeta();
 
-            if (meta.getLore() != null && meta.getLore().contains("§8ID: " + id.toString())) {
+            if (meta.getLore() != null &&
+                meta.getLore().contains("§8ID: " + id.toString())) {
+
                 p.getInventory().remove(item);
                 break;
             }
         }
     }
 
+    // =========================
+    // 📦 COUNT
+    // =========================
     private static int count(Player p, Material mat) {
         int total = 0;
         for (ItemStack item : p.getInventory()) {
@@ -131,6 +153,9 @@ public class ContractListener implements org.bukkit.event.Listener {
         return total;
     }
 
+    // =========================
+    // 📦 REMOVE
+    // =========================
     private static void remove(Player p, Material mat, int amount) {
         p.getInventory().removeItem(new ItemStack(mat, amount));
     }

@@ -40,6 +40,8 @@ public class ContractGUIListener implements Listener {
             // =========================
             case 11 -> {
                 p.closeInventory();
+                ContractCreateGUI.open(p);
+            }
 
                 p.sendMessage("§8────────────");
                 p.sendMessage("§a📄 Création de contrat");

@@ -21,18 +21,14 @@ public class BankGUI {
 
         Inventory inv = Bukkit.createInventory(null, 9, "§fBanque");
 
-        // =========================
         // 📤 IBAN
-        // =========================
         inv.setItem(0, ItemBuilder.of(Material.NAME_TAG, "§bIBAN",
                 "§8────────────",
                 "§7Afficher ton IBAN",
                 "",
                 "§8Clique"));
 
-        // =========================
         // 💸 RETRAIT
-        // =========================
         inv.setItem(1, ItemBuilder.of(Material.REDSTONE, "§cRetirer 1000€",
                 "§8────────────",
                 "§7Banque → Portefeuille",
@@ -41,9 +37,7 @@ public class BankGUI {
                 "",
                 "§8Clique"));
 
-        // =========================
-        // 💸 VIREMENT (NEW)
-        // =========================
+        // 💸 VIREMENT
         inv.setItem(2, ItemBuilder.of(Material.PAPER, "§eVirement",
                 "§8────────────",
                 "§7Envoyer de l'argent",
@@ -53,9 +47,7 @@ public class BankGUI {
                 "",
                 "§8Clique"));
 
-        // =========================
-        // 💰 COMPTE (CENTRE)
-        // =========================
+        // 💰 COMPTE
         inv.setItem(4, ItemBuilder.of(Material.SUNFLOWER, "§eCompte",
                 "§8────────────",
                 "§7Situation financière",
@@ -69,9 +61,7 @@ public class BankGUI {
                 ReputationManager.format(p.getName())
         ));
 
-        // =========================
         // 💰 DEPOT
-        // =========================
         inv.setItem(6, ItemBuilder.of(Material.EMERALD, "§aDéposer 1000€",
                 "§8────────────",
                 "§7Portefeuille → Banque",
@@ -80,18 +70,14 @@ public class BankGUI {
                 "",
                 "§8Clique"));
 
-        // =========================
         // 📄 HISTORIQUE
-        // =========================
         inv.setItem(7, ItemBuilder.of(Material.BOOK, "§eHistorique",
                 "§8────────────",
                 "§7Voir tes transactions",
                 "",
                 "§8Clique"));
 
-        // =========================
         // 🔄 REFRESH
-        // =========================
         inv.setItem(8, ItemBuilder.of(Material.BARRIER, "§7Actualiser",
                 "§8────────────",
                 "§7Mettre à jour",

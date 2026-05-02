@@ -18,23 +18,14 @@ public class Main extends JavaPlugin {
 
         instance = this;
 
-        // =========================
-        // 📁 CONFIG
-        // =========================
         saveDefaultConfig();
 
-        // =========================
-        // 💾 STOCKAGE
-        // =========================
         BankStorage.init();
         TransactionLogger.init();
         ReputationManager.init();
         ContractHistoryManager.init();
         MarketStorage.init();
 
-        // =========================
-        // 🔄 LOAD DATA
-        // =========================
         loadBase();
         loadSection("activity", MarketState.activity);
         loadSection("impact", MarketState.impact);
@@ -46,7 +37,6 @@ public class Main extends JavaPlugin {
         // =========================
         registerEvents(
 
-                // CORE
                 new ShopListener(),
                 new MineListener(),
                 new GUIListener(),
@@ -69,21 +59,15 @@ public class Main extends JavaPlugin {
 
                 // ECONOMIE
                 new PayListener(),
-                new TransferListener(),
-                new BankTransferListener(),
+                new TransferListener(), // ✅ SEUL système virement
 
-                // =========================
-                // 📄 CONTRATS (🔥 FIX IMPORTANT)
-                // =========================
-                new ContractGUIListener(),      // menu liste contrats
-                new ContractCreateListener(),   // création
-                new TargetPlayerListener(),     // sélection joueur
-                new ContractSignListener()      // signature item
+                // CONTRATS
+                new ContractGUIListener(),
+                new ContractCreateListener(),
+                new TargetPlayerListener(),
+                new ContractSignListener()
         );
 
-        // =========================
-        // 📜 COMMANDES
-        // =========================
         registerCommand("prix", new PrixCommand());
         registerCommand("syncprix", new SyncCommand());
         registerCommand("trend", new GetTrendCommand());
@@ -99,18 +83,13 @@ public class Main extends JavaPlugin {
         registerCommand("iban", new IbanCommand());
         registerCommand("ibanpay", new IbanPayCommand());
 
-        // RÉPUTATION
         registerCommand("resetrep", new ReputationResetCommand());
 
-        // CONTRATS
         registerCommand("contrataccept", new ContractAcceptCommand());
         registerCommand("contrats", new ContractMenuCommand());
         registerCommand("delcontrat", new ContractDeleteCommand());
         registerCommand("contractlog", new ContractLogCommand());
 
-        // =========================
-        // 🔁 INIT MARKET
-        // =========================
         ShopIndex.rebuild();
 
         Bukkit.getScheduler().runTaskTimer(this,
@@ -125,9 +104,6 @@ public class Main extends JavaPlugin {
                 20L * 45
         );
 
-        // =========================
-        // 🔥 CONTRATS AUTO
-        // =========================
         ContractListener.start();
 
         getLogger().info("✅ EconomyBridge chargé (stable & clean)");
@@ -143,9 +119,6 @@ public class Main extends JavaPlugin {
         getLogger().info("💾 Données sauvegardées");
     }
 
-    // =========================
-    // 🔧 UTILS
-    // =========================
     private void registerEvents(org.bukkit.event.Listener... listeners) {
         for (var listener : listeners) {
             Bukkit.getPluginManager().registerEvents(listener, this);
@@ -160,9 +133,6 @@ public class Main extends JavaPlugin {
         }
     }
 
-    // =========================
-    // 📊 LOAD BASE
-    // =========================
     private void loadBase() {
 
         if (getConfig().getConfigurationSection("base") == null) return;
@@ -183,9 +153,6 @@ public class Main extends JavaPlugin {
         }
     }
 
-    // =========================
-    // 📊 LOAD SECTIONS
-    // =========================
     private void loadSection(String path, Map<String, Double> map) {
 
         if (getConfig().getConfigurationSection(path) == null) return;

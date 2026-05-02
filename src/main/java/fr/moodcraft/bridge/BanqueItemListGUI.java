@@ -4,13 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 public class BanqueItemListGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§bItems Marché");
+        Inventory inv = Bukkit.createInventory(null, 27, "§bItems");
 
         int slot = 0;
 
@@ -19,7 +18,9 @@ public class BanqueItemListGUI {
             Material mat = map(item);
             if (mat == null) continue;
 
-            inv.setItem(slot, new ItemStack(mat));
+            SafeGUI.safeSet(inv, slot,
+                    SafeGUI.item(mat, "§f" + item));
+
             slot++;
         }
 

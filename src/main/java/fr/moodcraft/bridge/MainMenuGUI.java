@@ -34,16 +34,15 @@ public class MainMenuGUI {
                     "§8Clique pour ouvrir"));
 
             // 📈 BOURSE (slot 10)
-            SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.GOLD_INGOT, "§6Bourse Minerais",
-                    "§8────────",
-                    "§7Marché dynamique",
-                    "§7Les prix changent",
-                    "§7selon les joueurs",
+            SafeGUI.safeSet(inv, 10,    SafeGUI.item(Material.GOLD_INGOT, "§6Bourse Minerais",
+                    "§8────────────",
+                    "§7Prix influencés",
+                    "§7par les échanges",
                     "",
-                    "§aAcheter → prix monte",
-                    "§cVendre → prix baisse",
+                    "§aProfite des hausses",
+                    "§cÉvite les baisses",
                     "",
-                    "§8Clique pour ouvrir"));
+                    "§8Clique pour en profiter"));
 
             // 🏦 BANQUE (slot 11)
             SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.ENDER_CHEST, "§bBanque",

@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class BankHistoryGUI {
@@ -13,15 +12,13 @@ public class BankHistoryGUI {
     public static void open(Player p, int page) {
 
         List<String> logs = TransactionLogger.getAll(p.getName());
-        Inventory inv = Bukkit.createInventory(null, 27, "§6Historique");
+        Inventory inv = Bukkit.createInventory(null, 27, "§fHistorique");
 
         if (logs == null || logs.isEmpty()) {
-            SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BARRIER, "§cVide"));
+            SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BARRIER, "§cVide §7"));
             p.openInventory(inv);
             return;
         }
-
-        DecimalFormat df = new DecimalFormat("#,##0.00");
 
         int perPage = 21;
         int start = logs.size() - (page * perPage) - 1;
@@ -70,13 +67,13 @@ public class BankHistoryGUI {
                 SafeGUI.safeSet(inv, slot,
                         SafeGUI.item(mat,
                                 "§eTransaction",
-                                "§8────────",
+                                "§8──────────── §7",
                                 "§7Type: §f" + type,
-                                "§7Montant: " + color + sign + df.format(amount) + "€",
+                                "§7Montant: " + color + sign + SafeGUI.money(amount),
                                 "",
-                                "§7Date:",
+                                "§7Date: §7",
                                 "§f" + date,
-                                "§8────────"
+                                "§8──────────── §7"
                         ));
 
                 slot++;
@@ -87,18 +84,18 @@ public class BankHistoryGUI {
         // ⬅ page précédente
         if (page > 0) {
             SafeGUI.safeSet(inv, 21,
-                    SafeGUI.item(Material.ARROW, "§aPage précédente"));
+                    SafeGUI.item(Material.ARROW, "§aPage précédente §7"));
         }
 
         // ➡ page suivante
         if (start - perPage >= 0) {
             SafeGUI.safeSet(inv, 23,
-                    SafeGUI.item(Material.ARROW, "§aPage suivante"));
+                    SafeGUI.item(Material.ARROW, "§aPage suivante §7"));
         }
 
         // 🔙 retour
         SafeGUI.safeSet(inv, 22,
-                SafeGUI.item(Material.BARRIER, "§cRetour"));
+                SafeGUI.item(Material.BARRIER, "§cRetour §7"));
 
         p.openInventory(inv);
     }

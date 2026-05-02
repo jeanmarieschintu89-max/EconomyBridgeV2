@@ -13,6 +13,7 @@ public class BankTransferListener implements Listener {
 
         String title = e.getView().getTitle();
 
+        // 🔒 Sécurité GUI
         if (title == null || !title.contains("Virement")) return;
 
         if (e.getClickedInventory() == null) return;
@@ -22,7 +23,8 @@ public class BankTransferListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
+        var item = e.getCurrentItem();
+        if (item == null || item.getType().isAir()) return;
 
         int slot = e.getRawSlot();
         if (slot > 26) return;
@@ -36,22 +38,27 @@ public class BankTransferListener implements Listener {
             // 💳 IBAN
             // =========================
             case 11 -> {
+
                 p.closeInventory();
 
                 p.sendMessage("§8────────────");
                 p.sendMessage("§eVirement IBAN");
-                p.sendMessage("§7Utilise la commande:");
+                p.sendMessage("§7Format:");
                 p.sendMessage("§f/ibanpay <iban> <montant>");
                 p.sendMessage("§8────────────");
+
+                // 🔥 OPTION LOG (facultatif)
+                TransactionLogger.log(p.getName(), "Ouverture IBAN", 0);
             }
 
             // =========================
-            // 👤 JOUEUR (ACTIF)
+            // 👤 JOUEUR
             // =========================
             case 13 -> {
+
                 p.closeInventory();
 
-                // 🔥 ouverture du vrai GUI
+                // 🔥 lance le vrai système GUI
                 TransferTargetGUI.open(p);
             }
 
@@ -59,6 +66,7 @@ public class BankTransferListener implements Listener {
             // 🔙 RETOUR
             // =========================
             case 15 -> {
+
                 p.closeInventory();
                 BankGUI.open(p);
             }

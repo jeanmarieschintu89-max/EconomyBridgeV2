@@ -115,7 +115,7 @@ public class Main extends JavaPlugin {
         // 🔥 CONTRATS AUTO
         ContractListener.start();
 
-        getLogger().info("✅ EconomyBridge chargé (version clean)");
+        getLogger().info("✅ EconomyBridge chargé (clean & stable)");
     }
 
     @Override

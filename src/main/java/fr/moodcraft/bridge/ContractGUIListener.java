@@ -17,7 +17,7 @@ public class ContractGUIListener implements Listener {
 
         String title = e.getView().getTitle();
 
-        // 🔥 FIX ROBUSTE
+        // 🔥 FIX SAFE Bedrock
         if (title == null || !title.contains("Contrat")) return;
 
         if (e.getClickedInventory() == null) return;
@@ -28,7 +28,8 @@ public class ContractGUIListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
-        int slot = e.getSlot();
+        int slot = e.getRawSlot(); // 🔥 IMPORTANT (évite bugs Bedrock)
+        if (slot > 53) return;
 
         // =========================
         // ➕ CREATION
@@ -45,27 +46,30 @@ public class ContractGUIListener implements Listener {
         List<UUID> list = new ArrayList<>();
 
         for (UUID id : ContractManager.contracts.keySet()) {
-            var c = ContractManager.contracts.get(id);
 
+            var c = ContractManager.contracts.get(id);
             if (c == null) continue;
 
-            // 🔥 IMPORTANT : inclure aussi le créateur
             if (c.to.equalsIgnoreCase(p.getName()) || c.from.equalsIgnoreCase(p.getName())) {
                 list.add(id);
             }
         }
 
-        if (list.isEmpty()) return;
+        if (list.isEmpty()) {
+            p.sendMessage("§7Aucun contrat disponible");
+            return;
+        }
 
         // =========================
         // 📍 CALCUL POSITION
         // =========================
-        int baseSlot = slot % 9;
+        int col = slot % 9;
         int row = slot / 9;
 
-        if (baseSlot < 0 || baseSlot >= list.size()) return;
+        // 👉 on ignore colonnes hors zone
+        if (col < 0 || col >= list.size()) return;
 
-        UUID id = list.get(baseSlot);
+        UUID id = list.get(col);
         var c = ContractManager.contracts.get(id);
 
         if (c == null) return;
@@ -110,6 +114,7 @@ public class ContractGUIListener implements Listener {
             p.sendMessage("§cContrat annulé");
         }
 
+        // 🔄 refresh
         ContractGUI.open(p);
     }
 }

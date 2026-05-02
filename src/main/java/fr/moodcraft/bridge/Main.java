@@ -27,6 +27,7 @@ public class Main extends JavaPlugin {
         // 💾 STOCKAGE
         // =========================
         BankStorage.init();
+        MarketStorage.init();
         TransactionLogger.init();
         ReputationManager.init();
         ContractHistoryManager.init(); // ✔ OK

@@ -66,7 +66,7 @@ public class ContractDeliverCommand implements CommandExecutor {
         owner.sendMessage("§7Joueur: §f" + worker.getName());
         owner.sendMessage("§8────────────");
 
-        ContractManager.remove(c.id);
+        ContractManager.remove(c.id); ✔
 
         return true;
     }

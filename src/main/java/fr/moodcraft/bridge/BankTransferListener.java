@@ -13,8 +13,8 @@ public class BankTransferListener implements Listener {
 
         String title = e.getView().getTitle();
 
-        // 🔒 Sécurité GUI
-        if (title == null || !title.contains("Virement")) return;
+        // 🔒 FIX STRICT
+        if (title == null || !title.equals("§eVirement")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -23,50 +23,29 @@ public class BankTransferListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        var item = e.getCurrentItem();
-        if (item == null || item.getType().isAir()) return;
+        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
         int slot = e.getRawSlot();
         if (slot > 26) return;
 
-        // 🔊 feedback
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
         switch (slot) {
 
-            // =========================
-            // 💳 IBAN
-            // =========================
             case 11 -> {
-
                 p.closeInventory();
-
                 p.sendMessage("§8────────────");
                 p.sendMessage("§eVirement IBAN");
-                p.sendMessage("§7Format:");
                 p.sendMessage("§f/ibanpay <iban> <montant>");
                 p.sendMessage("§8────────────");
-
-                // 🔥 OPTION LOG (facultatif)
-                TransactionLogger.log(p.getName(), "Ouverture IBAN", 0);
             }
 
-            // =========================
-            // 👤 JOUEUR
-            // =========================
             case 13 -> {
-
                 p.closeInventory();
-
-                // 🔥 lance le vrai système GUI
-                TransferTargetGUI.open(p);
+                TransferTargetGUI.open(p); // GUI VIREMENT
             }
 
-            // =========================
-            // 🔙 RETOUR
-            // =========================
             case 15 -> {
-
                 p.closeInventory();
                 BankGUI.open(p);
             }

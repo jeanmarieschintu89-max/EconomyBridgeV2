@@ -12,46 +12,67 @@ public class MainMenuListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
+        if (title == null) return;
 
-        // 🔥 SAFE (Bedrock + couleurs)
-        if (title == null || !title.contains("Menu")) return;
+        // 🔥 NORMALISATION (anti couleurs / Bedrock)
+        String clean = title.replaceAll("§.", "");
+
+        // 🔒 MATCH STRICT
+        if (!clean.equalsIgnoreCase("Menu")) return;
 
         if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
+        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
+
+        // 🔥 anti glitch (shift / double click)
+        if (e.isShiftClick()) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
         var item = e.getCurrentItem();
         if (item == null || item.getType().isAir()) return;
 
-        int slot = e.getRawSlot(); // 🔥 IMPORTANT
-        if (slot > 26) return;
+        int slot = e.getRawSlot();
 
-        // 🔊 son propre
+        // 🔊 feedback
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
         switch (slot) {
 
+            // 💰 COMPTES
             case 4 -> open(p, () -> BankGUI.open(p));
 
+            // 📈 BOURSE
             case 10 -> open(p, () -> PriceGUI.open(p));
 
+            // 🏦 BANQUE
             case 11 -> open(p, () -> BankGUI.open(p));
 
+            // 📄 CONTRATS
             case 12 -> command(p, "contrats");
 
+            // 🏙️ VILLE
             case 14 -> command(p, "townmenu");
 
+            // ⚒️ JOBS
             case 15 -> command(p, "jobs join");
 
+            // 🧭 TP
             case 16 -> open(p, () -> TeleportGUI.open(p));
 
+            // ℹ️ INFOS
             case 22 -> {
-                p.sendMessage("§8────────────\n§7Astuce marché\n§aEntrer bas\n§cSortir haut\n§8────────────");
+                p.sendMessage("§8────────────");
+                p.sendMessage("§7Astuce marché");
+                p.sendMessage("§aAcheter bas");
+                p.sendMessage("§cVendre haut");
+                p.sendMessage("§8────────────");
             }
 
+            // 🔧 ADMIN
             case 23 -> {
                 if (p.hasPermission("econ.admin")) {
                     command(p, "banqueadmin");
@@ -63,7 +84,7 @@ public class MainMenuListener implements Listener {
     }
 
     // =========================
-    // 🔧 UTILITAIRES PROPRES
+    // 🔧 UTILITAIRES
     // =========================
 
     private void open(Player p, Runnable action) {

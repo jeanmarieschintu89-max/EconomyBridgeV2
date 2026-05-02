@@ -15,18 +15,18 @@ public class ContractMarketListener implements Listener {
         if (title == null) return;
 
         String clean = title.replaceAll("§.", "");
+        if (!clean.equalsIgnoreCase("Marché des contrats")) return;
 
-        if (!clean.equalsIgnoreCase("Contrats disponibles")) return;
+        if (!(e.getWhoClicked() instanceof Player p)) return;
 
         if (e.getClickedInventory() == null) return;
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
-        if (!(e.getWhoClicked() instanceof Player p)) return;
-
         int slot = e.getRawSlot();
 
+        // retour
         if (slot == 49) {
             p.closeInventory();
             ContractGUI.open(p);
@@ -48,7 +48,7 @@ public class ContractMarketListener implements Listener {
         c.worker = p.getUniqueId();
         c.status = Contract.Status.ACCEPTED;
 
-        p.sendMessage("§aContrat accepté !");
+        p.sendMessage("§a✔ Contrat accepté !");
         p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
 
         p.closeInventory();

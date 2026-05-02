@@ -12,7 +12,7 @@ public class ContractGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 54, "§eContrats"); // 🔥 FIX titre
+        Inventory inv = Bukkit.createInventory(null, 54, "§eContrats");
 
         int slot = 0;
 
@@ -30,7 +30,6 @@ public class ContractGUI {
             long remaining = Math.max(0, (c.expireAt - System.currentTimeMillis()) / 1000);
             long minutes = remaining / 60;
 
-            // 📄 INFO
             SafeGUI.safeSet(inv, slot,
                     SafeGUI.item(Material.PAPER,
                             "§eContrat #" + id.toString().substring(0, 6),
@@ -38,40 +37,27 @@ public class ContractGUI {
                             "§7De: §f" + c.from,
                             "§7Objet: §f" + c.item + " x" + c.amount,
                             "§7Paiement: §a" + c.price + "€",
-                            "§7Réputation: §f" + rep + " " + badge, // 🔥 FIX §6 → §f
+                            "§7Réputation: §f" + rep + " " + badge,
                             "§7Expire dans: §e" + minutes + " min"
                     ));
 
-            // ✔ ACCEPTER
             SafeGUI.safeSet(inv, slot + 9,
-                    SafeGUI.item(Material.LIME_DYE, "§aAccepter",
-                            "§8────────────",
-                            "§7Valider ce contrat"));
+                    SafeGUI.item(Material.LIME_DYE, "§aAccepter"));
 
-            // ❌ REFUSER
             SafeGUI.safeSet(inv, slot + 18,
-                    SafeGUI.item(Material.RED_DYE, "§cRefuser",
-                            "§8────────────",
-                            "§7Refuser la proposition"));
+                    SafeGUI.item(Material.RED_DYE, "§cRefuser"));
 
-            // 🗑 ANNULER
             SafeGUI.safeSet(inv, slot + 27,
-                    SafeGUI.item(Material.BARRIER, "§cAnnuler",
-                            "§8────────────",
-                            "§7Supprimer ce contrat"));
+                    SafeGUI.item(Material.BARRIER, "§cAnnuler"));
 
             slot++;
         }
 
-        // 🔥 BOUTON CREATE (REFONTE PREMIUM)
         SafeGUI.safeSet(inv, 49,
                 SafeGUI.item(Material.WRITABLE_BOOK, "§eCréer un contrat",
                         "§8────────────",
                         "§7Proposer un échange",
                         "§7à un joueur",
-                        "",
-                        "§aConfigurer les paramètres",
-                        "§7Objet • Prix • Cible",
                         "",
                         "§8Clique pour créer"));
 

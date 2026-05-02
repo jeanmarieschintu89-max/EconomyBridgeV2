@@ -18,16 +18,45 @@ public class BanqueAdminListener implements Listener {
 
         e.setCancelled(true);
 
-        var cfg = Main.getInstance().getConfig();
+        int slot = e.getSlot();
+
+        // =========================
+        // ⚙ MENU NAVIGATION
+        // =========================
+
+        // Réglages moteur (ouvre ton menu existant)
+        if (slot == 10) {
+            BanqueConfigGUI.open(p);
+            return;
+        }
+
+        // 💎 Items
+        if (slot == 13) {
+            BanqueItemGUI.open(p);
+            return;
+        }
+
+        // 🌐 Config globale
+        if (slot == 16) {
+            BanqueConfigGUI.open(p);
+            return;
+        }
+
+        // 🔄 Reload
+        if (slot == 22) {
+            Main.getInstance().reloadConfig();
+            p.sendMessage("§aConfig reload !");
+            return;
+        }
+
+        // =========================
+        // ⚙ MODIFICATION DIRECTE (si tu gardes sliders engine)
+        // =========================
 
         handle(e, p, 9, "engine.base_return", 0.001);
         handle(e, p, 12, "engine.activity_cap", 0.001);
         handle(e, p, 15, "engine.max_change", 0.01);
         handle(e, p, 18, "engine.stock_decay", 0.01);
-
-        if (e.getSlot() == 26) {
-            BanqueItemGUI.open(p);
-        }
     }
 
     private void handle(InventoryClickEvent e, Player p, int baseSlot, String path, double step) {
@@ -37,14 +66,23 @@ public class BanqueAdminListener implements Listener {
 
         double value = cfg.getDouble(path);
 
-        if (slot == baseSlot) value -= step;
-        if (slot == baseSlot + 2) value += step;
+        // ➖
+        if (slot == baseSlot) {
+            value -= step;
+        }
+
+        // ➕
+        if (slot == baseSlot + 2) {
+            value += step;
+        }
 
         if (value < 0) value = 0;
 
         if (slot == baseSlot || slot == baseSlot + 2) {
+
             cfg.set(path, value);
             Main.getInstance().saveConfig();
+
             BanqueAdminGUI.open(p);
         }
     }

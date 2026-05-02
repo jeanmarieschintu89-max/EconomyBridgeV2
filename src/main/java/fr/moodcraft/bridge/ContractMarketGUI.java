@@ -5,38 +5,41 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.util.List;
+
 public class ContractMarketGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 54, "§e📜 Marché Contrats");
+        Inventory inv = Bukkit.createInventory(null, 54, "§eContrats disponibles");
+
+        List<Contract> list = ContractManager.getOpenContracts();
 
         int slot = 0;
 
-        for (Contract c : ContractManager.getOpenContracts()) {
+        for (Contract c : list) {
 
             if (slot >= 45) break;
 
+            String ownerName = Bukkit.getOfflinePlayer(c.owner).getName();
+
             SafeGUI.safeSet(inv, slot, SafeGUI.item(
                     Material.PAPER,
-                    "§aContrat #" + c.id,
-                    "§8────────────",
+                    "§6Contrat #" + c.id,
                     "§7Item: §f" + c.item,
                     "§7Quantité: §f" + c.amount,
+                    "§7Prix: §a" + c.price + "€",
                     "",
-                    "§6Prix: §f" + c.price + "€",
+                    "§7Client: §e" + ownerName,
                     "",
-                    "§eClique pour accepter"
+                    "§aClique pour accepter"
             ));
 
             slot++;
         }
 
-        // retour
-        SafeGUI.safeSet(inv, 49, SafeGUI.item(
-                Material.BARRIER,
-                "§cRetour"
-        ));
+        // 🔙 retour
+        SafeGUI.safeSet(inv, 49, SafeGUI.item(Material.ARROW, "§cRetour"));
 
         p.openInventory(inv);
     }

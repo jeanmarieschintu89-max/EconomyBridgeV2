@@ -45,6 +45,8 @@ public class BankAdminCommand implements CommandExecutor {
 
         BankStorage.set(id, newValue);
 
+        TransactionLogger.log(sender.getName(), "AdminBank", value);
+
         sender.sendMessage("§8────────────");
         sender.sendMessage("§a✔ Banque modifiée");
         sender.sendMessage("§7Joueur: §f" + target.getName());

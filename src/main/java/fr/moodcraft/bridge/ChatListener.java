@@ -11,9 +11,8 @@ public class ChatListener implements Listener {
 
         String player = e.getPlayer().getName();
 
-        int rep = ReputationManager.get(player);
-        String badge = ReputationManager.getBadge(player);
+        String rep = ReputationManager.format(player);
 
-        e.setFormat(badge + " §7" + player + " §8» §f" + e.getMessage());
+        e.setFormat("§7[" + rep + "] §f" + player + " §8» §f" + e.getMessage());
     }
 }

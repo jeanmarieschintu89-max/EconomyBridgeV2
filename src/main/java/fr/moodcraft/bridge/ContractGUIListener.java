@@ -15,7 +15,10 @@ public class ContractGUIListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().equals("§6Contrats")) return;
+        String title = e.getView().getTitle();
+
+        // 🔥 FIX BEDROCK
+        if (title == null || !title.contains("Contrat")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -27,14 +30,18 @@ public class ContractGUIListener implements Listener {
 
         int slot = e.getSlot();
 
-        // ➕ CREATION
-        if (slot == 22) {
+        // =========================
+        // ➕ CREATION (FIX)
+        // =========================
+        if (slot == 49) {
             p.closeInventory();
             ContractCreateGUI.open(p);
             return;
         }
 
-        // 🔁 liste contrats
+        // =========================
+        // 🔁 LISTE CONTRATS
+        // =========================
         List<UUID> list = new ArrayList<>();
 
         for (UUID id : ContractManager.contracts.keySet()) {
@@ -46,17 +53,21 @@ public class ContractGUIListener implements Listener {
 
         if (list.isEmpty()) return;
 
-        int index = slot;
+        // 🔥 FIX POSITION
+        int baseSlot = slot % 9;
+        int row = slot / 9;
 
-        if (index < 0 || index >= list.size()) return;
+        if (baseSlot >= list.size()) return;
 
-        UUID id = list.get(index);
+        UUID id = list.get(baseSlot);
         var c = ContractManager.contracts.get(id);
 
         if (c == null) return;
 
-        // ✔ ACCEPTER
-        if (e.isLeftClick()) {
+        // =========================
+        // ✔ ACCEPTER (ligne 2)
+        // =========================
+        if (row == 1) {
 
             c.accepted = true;
 
@@ -69,16 +80,28 @@ public class ContractGUIListener implements Listener {
                 from.getInventory().addItem(book.clone());
             }
 
-            p.sendMessage("§a✔ Contrat accepté");
+            p.sendMessage("§aContrat accepte");
         }
 
-        // ❌ REFUSER
-        if (e.isRightClick()) {
+        // =========================
+        // ❌ REFUSER (ligne 3)
+        // =========================
+        if (row == 2) {
 
             ContractManager.contracts.remove(id);
             ReputationManager.add(c.from, -1);
 
-            p.sendMessage("§c❌ Contrat refusé");
+            p.sendMessage("§cContrat refuse");
+        }
+
+        // =========================
+        // 🗑 ANNULER (ligne 4)
+        // =========================
+        if (row == 3) {
+
+            ContractManager.contracts.remove(id);
+
+            p.sendMessage("§cContrat annule");
         }
 
         ContractGUI.open(p);

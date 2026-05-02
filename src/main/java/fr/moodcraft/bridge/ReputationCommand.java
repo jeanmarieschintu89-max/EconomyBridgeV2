@@ -12,9 +12,8 @@ public class ReputationCommand implements CommandExecutor {
 
         if (!(sender instanceof Player p)) return true;
 
-        double rep = ReputationManager.get(p.getUniqueId());
+        double rep = ReputationManager.get(p.getUniqueId().toString());
 
-        // 🌟 rendu stylé
         String level;
 
         if (rep >= 50) level = "§6Légende";

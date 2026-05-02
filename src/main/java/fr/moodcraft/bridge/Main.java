@@ -85,6 +85,7 @@ public class Main extends JavaPlugin {
         registerCommand("ibanpay", new IbanPayCommand());
 
         registerCommand("resetrep", new ReputationResetCommand());
+        registerCommand("reputation", new ReputationCommand());
 
         // =========================
         // 🔥 CONTRATS (NOUVEAU)

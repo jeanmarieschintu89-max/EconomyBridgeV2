@@ -9,43 +9,51 @@ public class BanqueAdminGUI {
 
     public static void open(Player p) {
 
-        var cfg = Main.getInstance().getConfig();
+        Inventory inv = Bukkit.createInventory(null, 9, "§6Admin Economie");
 
-        double buy = cfg.getDouble("engine.buy_multiplier", 1.0);
-        double sell = cfg.getDouble("engine.sell_multiplier", 1.0);
-        double rarity = cfg.getDouble("engine.rarity.boost", 0.002);
-
-        Inventory inv = Bukkit.createInventory(null, 9, "§8Admin");
-
-        SafeGUI.safeSet(inv, 0, SafeGUI.item(Material.EMERALD_BLOCK, "§fInflation +5%",
+        // 0 → inflation
+        SafeGUI.safeSet(inv, 0, SafeGUI.item(Material.EMERALD_BLOCK, "§aInflation +5%",
                 "§8────────",
-                "§7Augmente tous les prix"));
+                "§7Augmente tous les prix",
+                "§7du marché",
+                "",
+                "§aEffet: hausse globale"));
 
-        SafeGUI.safeSet(inv, 1, SafeGUI.item(Material.REDSTONE_BLOCK, "§fDéflation -5%",
+        // 1 → déflation
+        SafeGUI.safeSet(inv, 1, SafeGUI.item(Material.REDSTONE_BLOCK, "§cDéflation -5%",
                 "§8────────",
-                "§7Réduit tous les prix"));
+                "§7Réduit tous les prix",
+                "",
+                "§cEffet: baisse globale"));
 
-        SafeGUI.safeSet(inv, 2, SafeGUI.item(Material.CHEST, "§fItems",
+        // 2 → items
+        SafeGUI.safeSet(inv, 2, SafeGUI.item(Material.CHEST, "§bConfigurer Items",
                 "§8────────",
-                "§7Configurer chaque ressource"));
+                "§7Réglage individuel",
+                "§7par ressource"));
 
-        SafeGUI.safeSet(inv, 3, SafeGUI.item(Material.BEACON, "§fReload",
+        // 3 → reload
+        SafeGUI.safeSet(inv, 3, SafeGUI.item(Material.BEACON, "§bReload Economie",
                 "§8────────",
-                "§7Recharge config"));
+                "§7Recharge config.yml",
+                "§cReset temporaire"));
 
-        SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.NETHER_STAR, "§fSync",
+        // 4 → sync
+        SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.NETHER_STAR, "§eSynchroniser",
                 "§8────────",
-                "§7Met à jour les shops"));
+                "§7Met à jour",
+                "§7tous les shops"));
 
-        SafeGUI.safeSet(inv, 6, SafeGUI.item(Material.COMPARATOR, "§fMarché",
+        // 6 → config globale
+        SafeGUI.safeSet(inv, 6, SafeGUI.item(Material.COMPARATOR, "§dConfig Marché",
                 "§8────────",
-                "§7Buy: §f" + buy,
-                "§7Sell: §f" + sell,
-                "§7Rareté: §f" + rarity));
+                "§7Paramètres globaux"));
 
-        SafeGUI.safeSet(inv, 8, SafeGUI.item(Material.BARRIER, "§fReset",
+        // 8 → reset
+        SafeGUI.safeSet(inv, 8, SafeGUI.item(Material.BARRIER, "§4Reset Economie",
                 "§8────────",
-                "§7Reset complet"));
+                "§cRemet tous les prix",
+                "§cà zéro"));
 
         p.openInventory(inv);
     }

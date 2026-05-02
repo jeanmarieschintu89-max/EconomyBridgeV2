@@ -22,24 +22,47 @@ public class BankTransferListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
+        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
+
         int slot = e.getRawSlot();
         if (slot > 26) return;
 
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
+        // 🔊 feedback clean
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
         switch (slot) {
 
+            // =========================
+            // 💳 IBAN
+            // =========================
             case 11 -> {
                 p.closeInventory();
-                p.sendMessage("§eUtilise §f/ibanpay <iban> <montant>");
+
+                p.sendMessage("§8────────────");
+                p.sendMessage("§eVirement IBAN");
+                p.sendMessage("§7Commande:");
+                p.sendMessage("§f/ibanpay <iban> <montant>");
+                p.sendMessage("§8────────────");
             }
 
+            // =========================
+            // 👤 JOUEUR (préparation futur)
+            // =========================
             case 13 -> {
                 p.closeInventory();
-                p.sendMessage("§eSélection joueur bientôt dispo");
-                // 👉 futur TargetPlayerGUI possible ici
+
+                p.sendMessage("§8────────────");
+                p.sendMessage("§eVirement joueur");
+                p.sendMessage("§7Fonction en préparation");
+                p.sendMessage("§8────────────");
+
+                // 👉 PLUS TARD:
+                // TargetPlayerGUI.open(p);
             }
 
+            // =========================
+            // 🔙 RETOUR
+            // =========================
             case 15 -> {
                 p.closeInventory();
                 BankGUI.open(p);

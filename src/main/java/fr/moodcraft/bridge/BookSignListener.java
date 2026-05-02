@@ -25,7 +25,7 @@ public class BookSignListener implements Listener {
         }
 
         // 🔒 sécurité : déjà pris
-        if (c.status != Contract.Status.CREATED) {
+        if (c.status != Contract.Status.OPEN) { // ✅ FIX ICI
             worker.sendMessage("§c❌ Ce contrat est déjà pris");
             return;
         }
@@ -35,7 +35,7 @@ public class BookSignListener implements Listener {
         c.status = Contract.Status.ACCEPTED;
 
         worker.sendMessage("§8────────────");
-        worker.sendMessage("§a✔ Contrat accepté !");
+        worker.sendMessage("§a[OK] Contrat accepté !");
         worker.sendMessage("§7Utilise §e/contractdeliver §7pour livrer");
         worker.sendMessage("§8────────────");
 

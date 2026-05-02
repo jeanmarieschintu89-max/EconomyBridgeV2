@@ -1,3 +1,6 @@
+- name: Clear Maven cache
+  run: rm -rf ~/.m2/repository
+
 name: Build Plugin
 
 on:

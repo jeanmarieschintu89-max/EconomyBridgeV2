@@ -10,7 +10,10 @@ public class BanqueConfigListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().equals("§dConfig")) return;
+        String title = e.getView().getTitle();
+
+        // 🔥 FIX TITRE (compatible couleurs + Bedrock)
+        if (title == null || !title.contains("Configuration")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -19,7 +22,8 @@ public class BanqueConfigListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        int slot = e.getSlot();
+        int slot = e.getRawSlot(); // 🔥 FIX IMPORTANT
+        if (slot > 8) return;
 
         boolean shift = e.isShiftClick();
         double step = shift ? 0.2 : 0.05;
@@ -28,52 +32,54 @@ public class BanqueConfigListener implements Listener {
 
             case 0 -> {
                 modifyConfig("engine.buy_multiplier", step);
-                p.sendMessage("§aBuy + " + step);
+                p.sendMessage("§aAchat augmenté");
             }
 
             case 1 -> {
                 modifyConfig("engine.buy_multiplier", -step);
-                p.sendMessage("§cBuy - " + step);
+                p.sendMessage("§cAchat réduit");
             }
 
             case 2 -> {
                 modifyConfig("engine.sell_multiplier", step);
-                p.sendMessage("§bSell + " + step);
+                p.sendMessage("§bVente augmentée");
             }
 
             case 3 -> {
                 modifyConfig("engine.sell_multiplier", -step);
-                p.sendMessage("§7Sell - " + step);
+                p.sendMessage("§7Vente réduite");
             }
 
             case 4 -> {
                 modifyConfigMultiply("engine.rarity.boost", shift ? 1.25 : 1.1);
-                p.sendMessage("§6Rareté +");
+                p.sendMessage("§6Rareté augmentée");
             }
 
             case 5 -> {
                 modifyConfigMultiply("engine.rarity.boost", shift ? 0.75 : 0.9);
-                p.sendMessage("§eRareté -");
+                p.sendMessage("§eRareté réduite");
             }
 
             case 6 -> {
                 modifyAll(MarketState.impact, shift ? 0.8 : 0.9);
-                p.sendMessage("§6Impact +");
+                p.sendMessage("§6Impact réduit (marché stable)");
             }
 
             case 7 -> {
                 modifyAll(MarketState.impact, shift ? 1.2 : 1.1);
-                p.sendMessage("§cImpact -");
+                p.sendMessage("§cImpact augmenté (marché instable)");
             }
 
             case 8 -> {
                 resetConfig();
-                p.sendMessage("§4✔ Reset config");
+                p.sendMessage("§4✔ Configuration reset");
             }
         }
 
         applyLive();
-        refresh(p);
+
+        // 🔥 refresh propre (IMPORTANT)
+        BanqueConfigGUI.open(p);
     }
 
     private void applyLive() {
@@ -81,11 +87,6 @@ public class BanqueConfigListener implements Listener {
         for (String item : MarketState.base.keySet()) {
             PriceUpdater.updateItem(item);
         }
-    }
-
-    private void refresh(Player p) {
-        p.closeInventory();
-        BanqueAdminGUI.open(p);
     }
 
     private void modifyAll(java.util.Map<String, Double> map, double factor) {

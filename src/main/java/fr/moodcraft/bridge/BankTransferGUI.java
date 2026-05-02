@@ -11,22 +11,23 @@ public class BankTransferGUI {
 
         Inventory inv = Bukkit.createInventory(null, 27, "§eVirement");
 
-        // IBAN
         SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.NAME_TAG, "§bPar IBAN",
                 "§8────────",
                 "§7Envoyer via IBAN",
                 "",
                 "§8Clique"));
 
-        // JOUEUR
         SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.PLAYER_HEAD, "§aPar joueur",
                 "§8────────",
                 "§7Choisir un joueur",
                 "",
                 "§8Clique"));
 
-        // RETOUR
-        SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.BARRIER, "§cRetour"));
+        SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.BARRIER, "§cRetour",
+                "§8────────",
+                "§7Retour à la banque",
+                "",
+                "§8Clique"));
 
         p.openInventory(inv);
     }

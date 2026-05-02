@@ -37,7 +37,7 @@ public class MainMenuGUI {
             SafeGUI.safeSet(inv, 10,    SafeGUI.item(Material.GOLD_INGOT, "§6Bourse Minerais",
                     "§8────────────",
                     "§7Prix influencés",
-                    "§7par les échanges",
+                    "§7par les joueurs",
                     "",
                     "§aProfite des hausses",
                     "§cÉvite les baisses",

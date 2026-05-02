@@ -14,10 +14,8 @@ public class MainMenuListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        // 🔥 NORMALISATION
         String clean = title.replaceAll("§.", "");
 
-        // 🔒 SUPPORT ANCIEN + NOUVEAU MENU
         if (!clean.equalsIgnoreCase("Menu") &&
             !clean.equalsIgnoreCase("✦ Menu MoodCraft")) return;
 
@@ -36,7 +34,6 @@ public class MainMenuListener implements Listener {
 
         int slot = e.getRawSlot();
 
-        // 🔊 feedback clean
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
         switch (slot) {
@@ -50,8 +47,16 @@ public class MainMenuListener implements Listener {
             // 🏦 BANQUE
             case 11 -> open(p, () -> BankGUI.open(p));
 
-            // 📜 CONTRATS
-            case 12 -> command(p, "contrats");
+            // 📜 CONTRATS (FIX)
+            case 12 -> open(p, () -> {
+                p.sendMessage("§8────────────");
+                p.sendMessage("§e📜 Contrats");
+                p.sendMessage("");
+                p.sendMessage("§7Créer : §e/contract <item> <quantité> <prix>");
+                p.sendMessage("§7Accepter : §e/contractaccept");
+                p.sendMessage("§7Livrer : §e/contractdeliver");
+                p.sendMessage("§8────────────");
+            });
 
             // 🏙️ VILLE
             case 14 -> command(p, "townmenu");
@@ -84,10 +89,6 @@ public class MainMenuListener implements Listener {
             case 26 -> p.closeInventory();
         }
     }
-
-    // =========================
-    // 🔧 UTILITAIRES
-    // =========================
 
     private void open(Player p, Runnable action) {
         p.closeInventory();

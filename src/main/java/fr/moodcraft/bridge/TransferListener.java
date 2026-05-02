@@ -17,7 +17,7 @@ public class TransferListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        // 🔥 NORMALISATION TITRE (anti bug couleurs / Bedrock)
+        // 🔥 NORMALISATION TITRE
         String clean = title.replaceAll("§.", "");
 
         if (e.getClickedInventory() == null) return;
@@ -28,8 +28,6 @@ public class TransferListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
         int slot = e.getSlot();
-
-        var b = TransferBuilder.get(p);
 
         // =========================
         // 💸 MENU PRINCIPAL
@@ -52,6 +50,10 @@ public class TransferListener implements Listener {
 
                 case 13 -> {
                     p.closeInventory();
+
+                    // 🔥 CREATE builder ici
+                    TransferBuilder.create(p);
+
                     TransferTargetGUI.open(p);
                 }
 
@@ -69,6 +71,9 @@ public class TransferListener implements Listener {
         // =========================
         if (clean.equalsIgnoreCase("Choisir joueur virement")) {
 
+            if (!TransferBuilder.has(p)) return;
+            var b = TransferBuilder.get(p);
+
             var item = e.getCurrentItem();
             if (item == null || !item.hasItemMeta()) return;
 
@@ -77,7 +82,6 @@ public class TransferListener implements Listener {
             b.target = name;
 
             p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
-
             p.sendMessage("§aCible: §f" + name);
 
             TransferConfirmGUI.open(p);
@@ -89,18 +93,21 @@ public class TransferListener implements Listener {
         // =========================
         if (clean.equalsIgnoreCase("Confirmation virement")) {
 
+            if (!TransferBuilder.has(p)) return;
+            var b = TransferBuilder.get(p);
+
             p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
             switch (slot) {
 
                 case 11 -> {
                     b.amount = Math.max(0, b.amount - 100);
-                    p.sendMessage("§c-" + 100 + "€");
+                    p.sendMessage("§c-100€");
                 }
 
                 case 15 -> {
                     b.amount += 100;
-                    p.sendMessage("§a+" + 100 + "€");
+                    p.sendMessage("§a+100€");
                 }
 
                 case 26 -> {
@@ -124,7 +131,8 @@ public class TransferListener implements Listener {
                     p.sendMessage("§a✔ Virement envoyé");
                     target.sendMessage("§a+" + b.amount + "€ reçu de " + p.getName());
 
-                    TransactionLogger.log(p.getName(), "Virement vers " + target.getName(), b.amount);
+                    // 🔥 LOG PROPRE
+                    TransactionLogger.log(p.getName(), "Virement", b.amount, target.getName());
 
                     TransferBuilder.remove(p);
                     p.closeInventory();
@@ -138,7 +146,7 @@ public class TransferListener implements Listener {
                 }
             }
 
-            // 🔄 refresh GUI (IMPORTANT)
+            // 🔄 refresh GUI
             TransferConfirmGUI.open(p);
         }
     }

@@ -12,6 +12,9 @@ public final class MarketState {
     public static final Map<String, Double> sell = new HashMap<>();
     public static final Map<String, String> trend = new HashMap<>();
 
+    // 🔥 AJOUTÉ : mémoire des anciens prix
+    public static final Map<String, Double> lastPrice = new HashMap<>();
+
     // 🔥 CONFIG
     public static final Map<String, Double> activity = new HashMap<>();
     public static final Map<String, Double> impact = new HashMap<>();
@@ -24,7 +27,32 @@ public final class MarketState {
         return price.getOrDefault(item, base.getOrDefault(item, 0.0));
     }
 
-    public static void setPrice(String item, double value) {
-        price.put(item, value);
+    public static void setPrice(String item, double newPrice) {
+
+        double oldPrice = price.getOrDefault(item, base.getOrDefault(item, newPrice));
+
+        double change = 0;
+        if (oldPrice > 0) {
+            change = (newPrice - oldPrice) / oldPrice;
+        }
+
+        String arrow;
+
+        if (change > 0.005) {
+            arrow = "§a▲ Hausse";
+        } else if (change < -0.005) {
+            arrow = "§c▼ Baisse";
+        } else {
+            arrow = "§7▬ Stable";
+        }
+
+        // 🔥 update tendance
+        trend.put(item, arrow);
+
+        // 🔥 sauvegarde ancien prix
+        lastPrice.put(item, oldPrice);
+
+        // 🔥 nouveau prix
+        price.put(item, newPrice);
     }
 }

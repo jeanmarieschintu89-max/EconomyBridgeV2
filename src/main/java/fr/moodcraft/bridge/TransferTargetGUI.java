@@ -9,7 +9,8 @@ public class TransferTargetGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§eChoisir joueur");
+        // 🔥 FIX TITRE (aligné listener)
+        Inventory inv = Bukkit.createInventory(null, 27, "§eChoisir joueur virement");
 
         int slot = 0;
 

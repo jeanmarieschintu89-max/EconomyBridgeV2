@@ -1,82 +1,52 @@
-package fr.moodcraft.bridge;
+@EventHandler
+public void click(InventoryClickEvent e) {
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.entity.Player;
+    String title = e.getView().getTitle();
+    if (title == null) return;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+    String clean = title.replaceAll("§.", "");
 
-public class BankHistoryListener implements Listener {
+    // 🔥 FIX STRICT
+    if (!clean.equalsIgnoreCase("Historique")) return;
 
-    private static final Map<String, Integer> pages = new HashMap<>();
+    if (e.getClickedInventory() == null) return;
 
-    @EventHandler
-    public void click(InventoryClickEvent e) {
+    // 🔥 CRITIQUE → protège inventaire joueur
+    if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
-        String title = e.getView().getTitle();
-        if (title == null) return;
+    e.setCancelled(true);
 
-        // 🔥 NORMALISATION (anti couleur / Bedrock)
-        String clean = title.replaceAll("§.", "");
+    if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        if (!clean.equalsIgnoreCase("Historique")) return;
+    int slot = e.getRawSlot();
 
-        if (e.getClickedInventory() == null) return;
+    String name = p.getName();
+    int page = pages.getOrDefault(name, 0);
 
-        // 🔥 NE BLOQUE QUE TON GUI
-        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
+    if (slot == 22) {
+        pages.remove(name);
+        p.closeInventory();
+        BankGUI.open(p);
+        return;
+    }
 
-        e.setCancelled(true);
+    if (slot == 21 && page > 0) {
+        page--;
+        pages.put(name, page);
+        BankHistoryGUI.open(p, page);
+        return;
+    }
 
-        if (!(e.getWhoClicked() instanceof Player p)) return;
+    if (slot == 23) {
+        var logs = TransactionLogger.getAll(name);
 
-        int slot = e.getRawSlot();
-
-        String name = p.getName();
-        int page = pages.getOrDefault(name, 0);
-
-        // =========================
-        // 🔙 RETOUR
-        // =========================
-        if (slot == 22) {
-            pages.remove(name);
-            p.closeInventory();
-            BankGUI.open(p);
+        if (logs == null || logs.size() <= (page + 1) * 21) {
+            p.sendMessage("§cAucune page suivante");
             return;
         }
 
-        // =========================
-        // ⬅ PAGE PRÉCÉDENTE
-        // =========================
-        if (slot == 21) {
-
-            if (page > 0) {
-                page--;
-                pages.put(name, page);
-                BankHistoryGUI.open(p, page);
-            }
-
-            return;
-        }
-
-        // =========================
-        // ➡ PAGE SUIVANTE
-        // =========================
-        if (slot == 23) {
-
-            List<String> logs = TransactionLogger.getAll(name);
-
-            if (logs == null || logs.size() <= (page + 1) * 21) {
-                p.sendMessage("§cAucune page suivante");
-                return;
-            }
-
-            page++;
-            pages.put(name, page);
-            BankHistoryGUI.open(p, page);
-        }
+        page++;
+        pages.put(name, page);
+        BankHistoryGUI.open(p, page);
     }
 }

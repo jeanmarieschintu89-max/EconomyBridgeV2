@@ -14,7 +14,8 @@ public class ContractManager {
         public double price;
 
         public boolean accepted = false;
-        public long expireAt; // ⏳ expiration
+        public boolean signed = false; // ✔ FIX
+        public long expireAt;
 
         public Contract(String from, String to, String item, int amount, double price) {
             this.from = from;
@@ -23,7 +24,6 @@ public class ContractManager {
             this.amount = amount;
             this.price = price;
 
-            // ⏳ 24h
             this.expireAt = System.currentTimeMillis() + (1000L * 60 * 60 * 24);
         }
     }

@@ -24,12 +24,48 @@ public class TransferListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        int slot = e.getRawSlot();
+        int slot = e.getSlot(); // 🔥 FIX
 
         var b = TransferBuilder.get(p);
 
         // =========================
-        // 👤 SELECT PLAYER (VIREMENT)
+        // 💸 MENU PRINCIPAL VIREMENT
+        // =========================
+        if (title.equals("§eVirement")) {
+
+            p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+
+            switch (slot) {
+
+                // IBAN
+                case 11 -> {
+                    p.closeInventory();
+
+                    p.sendMessage("§8────────────");
+                    p.sendMessage("§eVirement IBAN");
+                    p.sendMessage("§7Commande:");
+                    p.sendMessage("§f/ibanpay <iban> <montant>");
+                    p.sendMessage("§8────────────");
+                }
+
+                // JOUEUR
+                case 13 -> {
+                    p.closeInventory();
+                    TransferTargetGUI.open(p);
+                }
+
+                // RETOUR
+                case 15 -> {
+                    p.closeInventory();
+                    BankGUI.open(p);
+                }
+            }
+
+            return;
+        }
+
+        // =========================
+        // 👤 SELECT PLAYER
         // =========================
         if (title.equals("§eChoisir joueur virement")) {
 
@@ -51,9 +87,12 @@ public class TransferListener implements Listener {
         // =========================
         if (title.equals("§eConfirmation virement")) {
 
+            p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
+
             switch (slot) {
 
                 case 11 -> b.amount = Math.max(0, b.amount - 100);
+
                 case 15 -> b.amount += 100;
 
                 case 26 -> {
@@ -91,6 +130,7 @@ public class TransferListener implements Listener {
                 }
             }
 
+            // 🔄 refresh GUI
             TransferConfirmGUI.open(p);
         }
     }

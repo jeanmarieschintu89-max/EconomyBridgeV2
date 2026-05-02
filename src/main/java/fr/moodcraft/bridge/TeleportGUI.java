@@ -28,8 +28,9 @@ public class TeleportGUI {
                         "",
                         "§8Clique pour accéder"));
 
+        // 🔥 FIX ICI → plus d'attributs parasites
         SafeGUI.safeSet(inv, 12,
-                SafeGUI.item(Material.DIAMOND_SWORD, "§dMini-jeux",
+                SafeGUI.item(Material.NETHER_STAR, "§dMini-jeux", // ✔ remplacé épée
                         "§8────────────",
                         "§7Activités fun",
                         "",

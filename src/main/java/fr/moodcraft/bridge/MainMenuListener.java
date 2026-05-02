@@ -50,7 +50,7 @@ public class MainMenuListener implements Listener {
             case 11 -> open(p, () -> BankGUI.open(p));
 
             // 📜 CONTRATS (FIX FINAL)
-            case 12 -> open(p, () -> ContractGUI.open(p));
+            case 12 -> open(p, () -> ContractMarketGUI.open(p));
 
             // 🏙️ VILLE
             case 14 -> command(p, "townmenu");

@@ -14,54 +14,38 @@ public class TeleportGUI {
         SafeGUI.safeSet(inv, 10,
                 SafeGUI.item(Material.OAK_LOG, "§aRessources",
                         "§8────────",
-                        "§7Zone farm",
-                        "§7Recolte minerais",
-                        "",
-                        "§8Clique pour tp"));
+                        "§7Récolte tes minerais",
+                        "§7et ressources"));
 
         SafeGUI.safeSet(inv, 11,
                 SafeGUI.item(Material.EMERALD, "§6Shop",
                         "§8────────",
-                        "§7Boutique serveur",
-                        "§7Acheter objets",
-                        "",
-                        "§8Clique pour tp"));
+                        "§7Boutique d'items",
+                        "§7achat / vente"));
 
         SafeGUI.safeSet(inv, 12,
                 SafeGUI.item(Material.DIAMOND_SWORD, "§dMini-jeux",
                         "§8────────",
-                        "§7Modes fun",
-                        "§7PVP / events",
-                        "",
-                        "§8Clique pour tp"));
+                        "§7Amuse-toi",
+                        "§7et gagne des récompenses"));
 
         SafeGUI.safeSet(inv, 13,
-                SafeGUI.item(Material.ENDER_EYE, "§5TP Aleatoire",
+                SafeGUI.item(Material.ENDER_EYE, "§5Exploration",
                         "§8────────",
-                        "§7Exploration",
-                        "§7Position random",
-                        "",
-                        "§8Clique"));
+                        "§7Téléportation aléatoire"));
 
         SafeGUI.safeSet(inv, 14,
                 SafeGUI.item(Material.COMPASS, "§eSpawn",
                         "§8────────",
-                        "§7Retour lobby",
-                        "",
-                        "§8Clique pour tp"));
+                        "§7Retour au lobby"));
 
         SafeGUI.safeSet(inv, 15,
                 SafeGUI.item(Material.BRICKS, "§aVille",
                         "§8────────",
-                        "§7Zone ville",
-                        "§7Construction",
-                        "",
-                        "§8Clique pour tp"));
+                        "§7Accès à ta ville"));
 
         SafeGUI.safeSet(inv, 22,
-                SafeGUI.item(Material.BARRIER, "§cRetour",
-                        "§8────────",
-                        "§7Retour menu"));
+                SafeGUI.item(Material.BARRIER, "§cRetour"));
 
         p.openInventory(inv);
     }

@@ -1,9 +1,11 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class ContractCreateListener implements Listener {
 
@@ -12,7 +14,6 @@ public class ContractCreateListener implements Listener {
 
         String title = e.getView().getTitle();
 
-        // 🔥 FIX BEDROCK + NOM GUI
         if (title == null || !title.contains("Contrat")) return;
 
         if (e.getClickedInventory() == null) return;
@@ -23,58 +24,100 @@ public class ContractCreateListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
-        ContractBuilder builder = ContractBuilder.get(p);
-        int slot = e.getSlot();
+        int slot = e.getRawSlot();
+        if (slot > 26) return;
+
+        var b = ContractBuilder.get(p);
+
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
         // =========================
-        // ➕ AUGMENTER PRIX
+        // 👤 JOUEUR
+        // =========================
+        if (slot == 10) {
+            p.closeInventory();
+            TargetPlayerGUI.open(p);
+            return;
+        }
+
+        // =========================
+        // 📦 OBJET
+        // =========================
+        if (slot == 11) {
+
+            ItemStack item = p.getInventory().getItemInMainHand();
+
+            if (item == null || item.getType().isAir()) {
+                p.sendMessage("§cTu dois tenir un objet");
+                return;
+            }
+
+            b.itemStack = item.clone();
+            b.item = item.getType().name().toLowerCase();
+            b.amount = item.getAmount();
+
+            p.sendMessage("§aObjet: §e" + b.item + " x" + b.amount);
+
+            ContractCreateGUI.open(p);
+            return;
+        }
+
+        // =========================
+        // 📄 QUANTITÉ
+        // =========================
+        if (slot == 12) {
+            b.amount += 1;
+            p.sendMessage("§eQuantité: " + b.amount);
+            ContractCreateGUI.open(p);
+            return;
+        }
+
+        // =========================
+        // ➕ PRIX
         // =========================
         if (slot == 24) {
-            builder.price += 100;
-            p.sendMessage("§aPrix: " + builder.price);
+            b.price += 100;
             ContractCreateGUI.open(p);
             return;
         }
 
         // =========================
-        // ➖ DIMINUER PRIX
+        // ➖ PRIX
         // =========================
         if (slot == 20) {
-            builder.price = Math.max(0, builder.price - 100);
-            p.sendMessage("§cPrix: " + builder.price);
+            b.price = Math.max(0, b.price - 100);
             ContractCreateGUI.open(p);
             return;
         }
 
         // =========================
-        // ✔ CREER CONTRAT
+        // ✔ VALIDER
         // =========================
         if (slot == 26) {
 
-            if (builder.target == null || builder.item == null) {
-                p.sendMessage("§cDonnees incompletes");
+            if (b.target == null || b.item == null) {
+                p.sendMessage("§cDonnées incomplètes");
                 return;
             }
 
             var id = ContractManager.create(
                     p.getName(),
-                    builder.target,
-                    builder.item,
-                    builder.amount,
-                    builder.price
+                    b.target,
+                    b.item,
+                    b.amount,
+                    b.price
             );
 
             ContractHistoryManager.log(
                     id,
                     "CREATE",
                     p.getName(),
-                    builder.target,
-                    builder.item + " x" + builder.amount + " " + builder.price
+                    b.target,
+                    b.item + " x" + b.amount + " " + b.price
             );
 
-            p.sendMessage("§aContrat cree");
+            p.sendMessage("§a✔ Contrat créé");
             p.closeInventory();
-
             ContractBuilder.remove(p);
             return;
         }
@@ -84,7 +127,7 @@ public class ContractCreateListener implements Listener {
         // =========================
         if (slot == 18) {
             p.closeInventory();
-            p.sendMessage("§cContrat annule");
+            p.sendMessage("§cContrat annulé");
             ContractBuilder.remove(p);
         }
     }

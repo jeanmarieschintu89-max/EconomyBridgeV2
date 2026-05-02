@@ -1,17 +1,17 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.entity.Player;
 
 public class MainMenuListener implements Listener {
 
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().equals("§6Menu")) return;
+        if (!"§6Menu".equals(e.getView().getTitle())) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -32,7 +32,7 @@ public class MainMenuListener implements Listener {
 
             case 10 -> {
                 p.closeInventory();
-                p.performCommand("prix");
+                PriceGUI.open(p);
             }
 
             case 11 -> {
@@ -61,7 +61,7 @@ public class MainMenuListener implements Listener {
             }
 
             case 22 -> {
-                p.sendMessage("§7Conseil: achete bas et vends haut");
+                p.sendMessage("§7Astuce: §aacheter bas §7et §cvendre haut");
             }
 
             case 23 -> {

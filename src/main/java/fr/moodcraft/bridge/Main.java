@@ -63,6 +63,7 @@ public class Main extends JavaPlugin {
                 new TransferListener(),
 
                 // 🔥 NOUVEAU SYSTÈME CONTRATS
+                new ContractGUIListener(),
                 new BookSignListener() // ✅ signature livre
         );
 

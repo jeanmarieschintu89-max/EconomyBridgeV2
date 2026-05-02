@@ -40,7 +40,7 @@ public class ContractMarketListener implements Listener {
 
         if (c == null) return;
 
-        if (c.status != Contract.Status.CREATED) {
+        if (c.status != Contract.Status.OPEN) {
             p.sendMessage("§cDéjà pris");
             return;
         }

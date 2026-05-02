@@ -11,6 +11,10 @@ commands:
   # 📊 CONTRATS
   # =========================
 
+  rep:
+    description: Modifier la réputation
+    usage: /rep <joueur> <valeur>
+
   reputation:
     description: Voir sa réputation
     usage: /reputation

@@ -16,9 +16,7 @@ public class GUIListener implements Listener {
     public GUIListener() {
         if (econ == null) {
             var rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
-            if (rsp != null) {
-                econ = rsp.getProvider();
-            }
+            if (rsp != null) econ = rsp.getProvider();
         }
     }
 
@@ -26,8 +24,6 @@ public class GUIListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
-
-        // 🔥 BEDROCK SAFE
         if (title == null || !title.contains("Bourse")) return;
 
         if (e.getClickedInventory() == null) return;
@@ -38,70 +34,27 @@ public class GUIListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
-        if (!p.hasPermission("econ.use")) {
-            p.sendMessage("§cAcces refuse");
-            return;
-        }
-
-        if (econ == null) {
-            p.sendMessage("§cErreur economie");
-            return;
-        }
-
         Material mat = e.getCurrentItem().getType();
         String id = map(mat);
-
         if (id == null) return;
-
-        // =========================
-        // 🔥 VENTE UNIQUE
-        // =========================
 
         int amount = count(p, mat);
 
         if (amount <= 0) {
-            p.sendMessage("§cRien a vendre");
+            p.sendMessage("§cAucun item a vendre");
             return;
         }
 
         double price = MarketEngine.getPrice(id);
         double gain = amount * price;
 
-        // 📉 pénalité volume
-        double mult = 1;
-        if (amount > 512) mult = 0.6;
-        else if (amount > 256) mult = 0.8;
-
-        gain *= mult;
-
-        // 💸 taxe
-        double taxRate = Main.getInstance().getConfig().getDouble("tax", 20);
-        double tax = gain * taxRate / 100;
-        double finalGain = gain - tax;
-
-        double brut = round(gain);
-        double taxe = round(tax);
-        double net = round(finalGain);
-
-        // 📦 remove + pay
         p.getInventory().removeItem(new ItemStack(mat, amount));
-        econ.depositPlayer(p, net);
+        econ.depositPlayer(p, gain);
 
-        // 📄 LOG
-        TransactionLogger.log(p.getName(),
-                "Vente " + id + " x" + amount,
-                net);
+        TransactionLogger.log(p.getName(), "Vente " + id + " x" + amount, gain);
 
-        // 📢 message clean
-        p.sendMessage("§8────────────");
-        p.sendMessage("§a✔ Vente effectuée");
-        p.sendMessage("§7Quantite: §f" + amount);
-        p.sendMessage("§7Brut: §f" + brut + "€");
-        p.sendMessage("§7Taxe: §c-" + taxe + "€");
-        p.sendMessage("§7Gain: §a+" + net + "€");
-        p.sendMessage("§8────────────");
+        p.sendMessage("§aVente effectuee: §f" + amount + " §7-> §a+" + gain + "€");
 
-        // 📈 marché
         MarketEngine.applySell(id, amount);
         PriceUpdater.updateItem(id);
     }
@@ -109,9 +62,7 @@ public class GUIListener implements Listener {
     private int count(Player p, Material mat) {
         int total = 0;
         for (ItemStack item : p.getInventory()) {
-            if (item != null && item.getType() == mat) {
-                total += item.getAmount();
-            }
+            if (item != null && item.getType() == mat) total += item.getAmount();
         }
         return total;
     }
@@ -132,9 +83,5 @@ public class GUIListener implements Listener {
             case GLOWSTONE_DUST: return "glowstone";
         }
         return null;
-    }
-
-    private double round(double v) {
-        return Math.round(v * 100.0) / 100.0;
     }
 }

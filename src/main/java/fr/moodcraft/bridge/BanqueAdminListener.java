@@ -10,7 +10,10 @@ public class BanqueAdminListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().equals("§6Admin")) return;
+        String title = e.getView().getTitle();
+
+        // 🔥 FIX : compatible couleurs / Bedrock
+        if (title == null || !title.contains("Admin")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -24,6 +27,9 @@ public class BanqueAdminListener implements Listener {
 
         switch (slot) {
 
+            // =========================
+            // 📈 INFLATION
+            // =========================
             case 0 -> {
                 for (String item : MarketState.base.keySet()) {
                     double price = MarketState.getPrice(item) * 1.05;
@@ -35,23 +41,34 @@ public class BanqueAdminListener implements Listener {
                 p.closeInventory();
             }
 
+            // =========================
+            // 📉 DÉFLATION
+            // =========================
             case 1 -> {
                 for (String item : MarketState.base.keySet()) {
                     double price = MarketState.getPrice(item) * 0.95;
                     MarketState.setPrice(item, round(price));
                     PriceUpdater.updateItem(item);
                 }
-                p.sendMessage("§c✔ Deflation -5%");
+                p.sendMessage("§c✔ Déflation -5%");
                 applyLive();
                 p.closeInventory();
             }
 
-            case 2 -> BanqueItemListGUI.open(p);
+            // =========================
+            // 📦 CONFIG ITEMS
+            // =========================
+            case 2 -> {
+                p.closeInventory();
+                BanqueItemListGUI.open(p);
+            }
 
+            // =========================
+            // 🔄 RELOAD
+            // =========================
             case 3 -> {
 
                 Main plugin = Main.getInstance();
-
                 plugin.reloadConfig();
 
                 MarketState.base.clear();
@@ -71,7 +88,7 @@ public class BanqueAdminListener implements Listener {
 
                         MarketState.base.put(key, value);
 
-                        // 🔥 NE PAS ÉCRASER SAUVEGARDE
+                        // 🔒 NE PAS écraser sauvegarde
                         if (!MarketState.price.containsKey(key)) {
                             MarketState.price.put(key, value);
                         }
@@ -90,32 +107,47 @@ public class BanqueAdminListener implements Listener {
                 ShopIndex.rebuild();
                 applyLive();
 
-                p.sendMessage("§b✔ Economie rechargee");
+                p.sendMessage("§b✔ Économie rechargée");
                 p.closeInventory();
             }
 
+            // =========================
+            // 🔄 SYNC
+            // =========================
             case 4 -> {
                 for (String item : MarketState.base.keySet()) {
                     PriceUpdater.updateItem(item);
                 }
-                p.sendMessage("§e✔ Sync ok");
+                p.sendMessage("§e✔ Synchronisation effectuée");
             }
 
-            case 6 -> BanqueConfigGUI.open(p);
+            // =========================
+            // ⚙️ CONFIG GLOBALE
+            // =========================
+            case 6 -> {
+                p.closeInventory();
+                BanqueConfigGUI.open(p);
+            }
 
+            // =========================
+            // 🔥 RESET
+            // =========================
             case 8 -> {
                 for (String item : MarketState.base.keySet()) {
                     double base = MarketState.base.get(item);
                     MarketState.setPrice(item, base);
                     PriceUpdater.updateItem(item);
                 }
-                p.sendMessage("§4✔ Economie reset");
+                p.sendMessage("§4✔ Économie réinitialisée");
                 applyLive();
                 p.closeInventory();
             }
         }
     }
 
+    // =========================
+    // 🔥 APPLY LIVE
+    // =========================
     private void applyLive() {
         MarketEngine.tick();
         for (String item : MarketState.base.keySet()) {

@@ -16,7 +16,7 @@ public class ContractMarketListener implements Listener {
 
         String clean = title.replaceAll("§.", "");
 
-        if (!clean.equalsIgnoreCase("📜 Marché Contrats")) return;
+        if (!clean.equalsIgnoreCase("Contrats disponibles")) return;
 
         if (e.getClickedInventory() == null) return;
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
@@ -27,35 +27,29 @@ public class ContractMarketListener implements Listener {
 
         int slot = e.getRawSlot();
 
-        // retour
         if (slot == 49) {
             p.closeInventory();
-            MainMenuGUI.open(p);
+            ContractGUI.open(p);
             return;
         }
 
-        var item = e.getCurrentItem();
-        if (item == null || !item.hasItemMeta()) return;
+        Contract c = ContractManager.getOpenContracts().stream()
+                .skip(slot)
+                .findFirst()
+                .orElse(null);
 
-        String name = item.getItemMeta().getDisplayName();
-
-        if (!name.contains("#")) return;
-
-        int id = Integer.parseInt(name.split("#")[1]);
-
-        Contract c = ContractManager.get(id);
         if (c == null) return;
 
-        if (c.owner.equals(p.getUniqueId())) {
-            p.sendMessage("§c❌ Tu ne peux pas accepter ton contrat");
+        if (c.status != Contract.Status.CREATED) {
+            p.sendMessage("§cDéjà pris");
             return;
         }
 
         c.worker = p.getUniqueId();
         c.status = Contract.Status.ACCEPTED;
 
+        p.sendMessage("§aContrat accepté !");
         p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
-        p.sendMessage("§a✔ Contrat accepté !");
 
         p.closeInventory();
     }

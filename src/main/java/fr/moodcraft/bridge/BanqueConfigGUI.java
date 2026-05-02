@@ -15,66 +15,54 @@ public class BanqueConfigGUI {
         double sell = cfg.getDouble("engine.sell_multiplier", 1.0);
         double rarity = cfg.getDouble("engine.rarity.boost", 0.002);
 
-        Inventory inv = Bukkit.createInventory(null, 9, "§dConfig Marché");
+        Inventory inv = Bukkit.createInventory(null, 9, "§dConfig Marche");
 
         SafeGUI.safeSet(inv, 0, SafeGUI.item(Material.EMERALD, "§aBuy +",
-                "§8────────────",
-                "§7Augmente l'effet des achats",
-                "§a→ prix montent plus vite",
+                "§7Achat influence prix",
+                "§7→ monte plus vite",
                 "",
-                "§7Valeur: §a" + buy));
+                "§7Actuel: §a" + buy));
 
         SafeGUI.safeSet(inv, 1, SafeGUI.item(Material.REDSTONE, "§cBuy -",
-                "§8────────────",
-                "§7Réduit l'effet des achats",
-                "§7→ montée plus lente",
+                "§7Achat influence prix",
+                "§7→ monte moins vite",
                 "",
-                "§7Valeur: §a" + buy));
+                "§7Actuel: §a" + buy));
 
         SafeGUI.safeSet(inv, 2, SafeGUI.item(Material.DIAMOND, "§bSell +",
-                "§8────────────",
-                "§7Augmente l'effet des ventes",
-                "§c→ chute plus rapide",
+                "§7Vente influence prix",
+                "§7→ chute rapide",
                 "",
-                "§7Valeur: §c" + sell));
+                "§7Actuel: §c" + sell));
 
         SafeGUI.safeSet(inv, 3, SafeGUI.item(Material.COAL, "§7Sell -",
-                "§8────────────",
-                "§7Réduit l'effet des ventes",
-                "§a→ marché plus stable",
+                "§7Vente influence prix",
+                "§7→ stable",
                 "",
-                "§7Valeur: §c" + sell));
+                "§7Actuel: §c" + sell));
 
-        SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.GOLD_INGOT, "§6Rareté +",
-                "§8────────────",
-                "§7Boost les items rares",
-                "§e→ prix monte si stock faible",
+        SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.GOLD_INGOT, "§eRare +",
+                "§7Boost rarete",
+                "§7→ prix monte si stock faible",
                 "",
-                "§7Valeur: §e" + rarity));
+                "§7Actuel: §e" + rarity));
 
-        SafeGUI.safeSet(inv, 5, SafeGUI.item(Material.IRON_INGOT, "§eRareté -",
-                "§8────────────",
-                "§7Réduit l'effet rareté",
-                "§7→ moins de hausse naturelle",
+        SafeGUI.safeSet(inv, 5, SafeGUI.item(Material.IRON_INGOT, "§8Rare -",
+                "§7Moins d'effet rarete",
                 "",
-                "§7Valeur: §e" + rarity));
+                "§7Actuel: §e" + rarity));
 
         SafeGUI.safeSet(inv, 6, SafeGUI.item(Material.BLAZE_POWDER, "§6Impact +",
-                "§8────────────",
-                "§7Rend le marché plus stable",
-                "§a→ variations réduites"));
+                "§7Marche stable",
+                "§7→ variations reduites"));
 
         SafeGUI.safeSet(inv, 7, SafeGUI.item(Material.GUNPOWDER, "§cImpact -",
-                "§8────────────",
-                "§7Rend le marché instable",
-                "§c→ fortes variations"));
+                "§7Marche instable",
+                "§7→ variations fortes"));
 
-        SafeGUI.safeSet(inv, 8, SafeGUI.item(Material.TNT, "§4Reset Config",
-                "§8────────────",
-                "§7Remet les paramètres",
-                "§7par défaut",
-                "",
-                "§c⚠ Attention"));
+        SafeGUI.safeSet(inv, 8, SafeGUI.item(Material.TNT, "§4Reset",
+                "§7Remet config",
+                "§cAttention reset"));
 
         p.openInventory(inv);
     }

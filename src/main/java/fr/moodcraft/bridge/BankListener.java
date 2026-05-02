@@ -16,14 +16,12 @@ public class BankListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        // 🔥 NORMALISATION
         String clean = title.replaceAll("§.", "");
 
         if (!clean.equalsIgnoreCase("Banque")) return;
 
         if (e.getClickedInventory() == null) return;
 
-        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
@@ -63,10 +61,10 @@ public class BankListener implements Listener {
             case 2 -> {
                 p.closeInventory();
 
-                // 🔥 reset sécurité (évite conflits)
-                ContractBuilder.remove(p);
+                // 🔥 RESET UNIQUEMENT VIREMENT
+                TransferBuilder.remove(p);
 
-                // 🔥 start flow propre
+                // 🔥 START FLOW PROPRE
                 TransferBuilder.create(p);
 
                 BankTransferGUI.open(p);

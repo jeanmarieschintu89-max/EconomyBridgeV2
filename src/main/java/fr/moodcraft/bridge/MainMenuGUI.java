@@ -21,20 +21,19 @@ public class MainMenuGUI {
 
             // 💰 COMPTES (slot 4)
             SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.CLOCK, "§eComptes",
-                    "§8────────",
-                    "§7Reputation:",
+                    "§8────────────",
+                    "§7Situation financière",
+                    "",
+                    "§aArgent: §f" + SafeGUI.money(balance) + "€",
+                    "§bBanque: §f" + SafeGUI.money(bank) + "€",
+                    "",
+                    "§7Statut:",
                     ReputationManager.format(p.getName()),
-                    "",
-                    "§7Argent:",
-                    "§a" + SafeGUI.money(balance) + "€",
-                    "",
-                    "§7Banque:",
-                    "§b" + SafeGUI.money(bank) + "€",
                     "",
                     "§8Clique pour ouvrir"));
 
             // 📈 BOURSE (slot 10)
-            SafeGUI.safeSet(inv, 10,    SafeGUI.item(Material.GOLD_INGOT, "§6Bourse Minerais",
+            SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.GOLD_INGOT, "§6Bourse Minerais",
                     "§8────────────",
                     "§7Prix influencés",
                     "§7par les joueurs",
@@ -46,63 +45,70 @@ public class MainMenuGUI {
 
             // 🏦 BANQUE (slot 11)
             SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.ENDER_CHEST, "§bBanque",
-                    "§8────────",
-                    "§7Déposer et retirer",
-                    "§7ton argent",
+                    "§8────────────",
+                    "§7Gestion des fonds",
                     "",
-                    "§7Stock sécurisé",
+                    "§aDéposer en sécurité",
+                    "§eRetirer à tout moment",
                     "",
                     "§8Clique pour ouvrir"));
 
             // 📄 CONTRATS (slot 12)
             SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.WRITTEN_BOOK, "§6Contrats",
-                    "§8────────",
-                    "§7Missions entre joueurs",
+                    "§8────────────",
+                    "§7Accords entre joueurs",
                     "",
-                    "§aGagne de l'argent",
-                    "§cRefus = perte réputation",
+                    "§aRécompenses à la clé",
+                    "§cRefus → réputation ↓",
                     "",
                     "§8Clique pour ouvrir"));
 
             // 🏙️ VILLE (slot 14)
             SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.BELL, "§aVille",
-                    "§8────────",
-                    "§7Gestion de ta ville",
-                    "§7Territoire et économie",
+                    "§8────────────",
+                    "§7Gestion du territoire",
+                    "",
+                    "§aDéveloppe ta ville",
+                    "§7Économie locale active",
                     "",
                     "§8Clique pour ouvrir"));
 
             // ⚒️ JOBS (slot 15)
             SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.IRON_PICKAXE, "§7Jobs",
-                    "§8────────",
-                    "§7Travaille pour gagner",
-                    "§7de l'argent",
+                    "§8────────────",
+                    "§7Activités rémunérées",
                     "",
-                    "§7Impact la bourse",
+                    "§aGains réguliers",
+                    "§eInfluence le marché",
                     "",
                     "§8Clique pour rejoindre"));
 
             // 🧭 TELEPORT (slot 16)
-            SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.COMPASS, "§bTeleport",
-                    "§8────────",
-                    "§7Se déplacer rapidement",
-                    "§7entre les zones",
+            SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.COMPASS, "§bTéléportation",
+                    "§8────────────",
+                    "§7Télèportation rapide",
+                    "",
+                    "§aVille • Shop • Farm",
+                    "§7Exploration facilitée",
                     "",
                     "§8Clique pour ouvrir"));
 
             // ℹ️ INFOS (slot 22)
             SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.BOOK, "§dInfos",
-                    "§8────────",
-                    "§7Conseils utiles",
+                    "§8────────────",
+                    "§7Astuces du marché",
                     "",
-                    "§aAchete bas",
-                    "§cVends haut"));
+                    "§aAchete au bon moment",
+                    "§cVend au bon moment"));
 
             // 🔧 ADMIN (slot 23)
             if (p.hasPermission("econ.admin")) {
                 SafeGUI.safeSet(inv, 23, SafeGUI.item(Material.REDSTONE_BLOCK, "§cAdmin",
-                        "§8────────",
-                        "§7Configuration économie",
+                        "§8────────────",
+                        "§7Paramètres du serveur",
+                        "",
+                        "§eAjuster l'économie",
+                        "§7Gérer le marché",
                         "",
                         "§8Clique pour ouvrir"));
             }

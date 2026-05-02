@@ -10,18 +10,22 @@ public class ContractCreateListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().equals("§6✏ Création de contrat")) return;
+        // 🔒 GUI exact (attention au titre SafeGUI)
+        if (!e.getView().getTitle().equals("§6Creation")) return;
 
+        // 🔒 Clique uniquement dans le menu
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
 
         e.setCancelled(true);
 
+        // 🔒 joueur uniquement
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getCurrentItem() == null) return;
+
+        // 🔒 item valide
+        if (e.getCurrentItem() == null || e.getCurrentItem().getType().isAir()) return;
 
         ContractBuilder builder = ContractBuilder.get(p);
-
         int slot = e.getSlot();
 
         // =========================
@@ -62,8 +66,20 @@ public class ContractCreateListener implements Listener {
                     builder.price
             );
 
+            // 🔥 LOG HISTORIQUE
+            ContractHistoryManager.log(
+                    id,
+                    "CREATE",
+                    p.getName(),
+                    builder.target,
+                    builder.item + " x" + builder.amount + " " + builder.price + "€"
+            );
+
             p.sendMessage("§a✔ Contrat créé !");
             p.closeInventory();
+
+            // 🔥 IMPORTANT → éviter fuite mémoire
+            ContractBuilder.remove(p);
 
             return;
         }
@@ -74,6 +90,9 @@ public class ContractCreateListener implements Listener {
         if (slot == 18) {
             p.closeInventory();
             p.sendMessage("§cContrat annulé");
+
+            // 🔥 nettoyage
+            ContractBuilder.remove(p);
         }
     }
 }

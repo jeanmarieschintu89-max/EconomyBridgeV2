@@ -1,8 +1,10 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class ContractDeliverCommand implements CommandExecutor {
 
@@ -20,21 +22,49 @@ public class ContractDeliverCommand implements CommandExecutor {
 
         Player owner = Bukkit.getPlayer(c.owner);
 
-        if (!ItemUtils.has(worker, c.item, c.amount)) {
+        if (owner == null) {
+            worker.sendMessage("§c❌ Le client est hors ligne");
+            return true;
+        }
+
+        Material mat;
+
+        try {
+            mat = Material.valueOf(c.item.toUpperCase());
+        } catch (Exception e) {
+            worker.sendMessage("§c❌ Item invalide");
+            return true;
+        }
+
+        // 🔍 Vérification inventaire
+        if (!worker.getInventory().contains(mat, c.amount)) {
             worker.sendMessage("§c❌ Vous n'avez pas les objets demandés");
             return true;
         }
 
-        // 🔥 TRANSFERT CORRECT
-        ItemUtils.remove(worker, c.item, c.amount);
-        ItemUtils.give(owner, c.item, c.amount);
+        // 🔄 Retirer items worker
+        worker.getInventory().removeItem(new ItemStack(mat, c.amount));
 
-        BankAPI.add(worker, c.price);
+        // 📦 Donner au client
+        owner.getInventory().addItem(new ItemStack(mat, c.amount));
+
+        // 💰 Paiement (escrow → worker)
+        String workerId = worker.getUniqueId().toString();
+        double money = BankStorage.get(workerId);
+
+        BankStorage.set(workerId, money + c.price);
 
         c.status = Contract.Status.COMPLETED;
 
-        worker.sendMessage("§a✔ Paiement reçu !");
-        owner.sendMessage("§a✔ Vous avez reçu votre commande !");
+        worker.sendMessage("§8────────────");
+        worker.sendMessage("§a✔ Contrat terminé !");
+        worker.sendMessage("§7Paiement reçu : §a" + c.price + "€");
+        worker.sendMessage("§8────────────");
+
+        owner.sendMessage("§8────────────");
+        owner.sendMessage("§a✔ Commande reçue !");
+        owner.sendMessage("§7Merci pour votre contrat");
+        owner.sendMessage("§8────────────");
 
         ContractManager.remove(c.id);
 

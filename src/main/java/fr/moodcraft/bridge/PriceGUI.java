@@ -9,7 +9,8 @@ public class PriceGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6Marche");
+        // 🔥 NOUVEAU NOM (lisible Bedrock)
+        Inventory inv = Bukkit.createInventory(null, 27, "§bBourse Minerais");
 
         try {
 
@@ -31,7 +32,7 @@ public class PriceGUI {
 
         } catch (Exception e) {
             inv.clear();
-            SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BARRIER, "§cErreur marche"));
+            SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BARRIER, "§cErreur Bourse"));
             e.printStackTrace();
         }
 
@@ -45,7 +46,14 @@ public class PriceGUI {
 
         SafeGUI.safeSet(inv, slot,
                 SafeGUI.item(mat, name,
-                        "§f" + String.format("%.2f", price) + "€ " + trend,
-                        "§7Clique pour vendre"));
+                        "§7Prix actuel:",
+                        "§f" + String.format("%.2f", price),
+                        "",
+                        "§7Tendance:",
+                        trend,
+                        "",
+                        "§aClic gauche: vendre",
+                        "§bClic droit: acheter"
+                ));
     }
 }

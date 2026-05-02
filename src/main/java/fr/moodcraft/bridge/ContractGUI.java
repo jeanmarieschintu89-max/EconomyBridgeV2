@@ -1,23 +1,46 @@
-int rep = ReputationManager.get(c.from);
-String badge = ReputationManager.getBadge(c.from);
+package fr.moodcraft.bridge;
 
-inv.setItem(slot, ItemBuilder.of(Material.PAPER,
-        "§eContrat #" + id.toString().substring(0, 6),
-        "§7De: §f" + c.from,
-        "§7Objet: §f" + c.item + " x" + c.amount,
-        "§7Paiement: §a" + c.price + "€",
-        "",
-        "§7Réputation: §6" + rep,
-        "§7Statut: " + badge,
-        "",
-        c.accepted ? "§a✔ Accepté" : "§e⏳ En attente"
-));
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
-// ✔ ACCEPTER
-inv.setItem(slot + 9, ItemBuilder.of(Material.LIME_DYE, "§a✔ Accepter"));
+import java.util.Map;
+import java.util.UUID;
 
-// ❌ REFUSER
-inv.setItem(slot + 18, ItemBuilder.of(Material.RED_DYE, "§c❌ Refuser"));
+public class ContractGUI {
 
-// ❌ ANNULER (nouveau)
-inv.setItem(slot + 27, ItemBuilder.of(Material.BARRIER, "§4❌ Annuler contrat"));
+    public static void open(Player p) {
+
+        Inventory inv = Bukkit.createInventory(null, 54, "§6Contrats");
+
+        int slot = 0;
+
+        for (Map.Entry<UUID, ContractManager.Contract> entry : ContractManager.contracts.entrySet()) {
+
+            UUID id = entry.getKey();
+            var c = entry.getValue();
+
+            if (!c.to.equalsIgnoreCase(p.getName()) && !c.from.equalsIgnoreCase(p.getName())) continue;
+            if (slot >= 9) break;
+
+            int rep = ReputationManager.get(c.from);
+
+            SafeGUI.safeSet(inv, slot,
+                    SafeGUI.item(Material.PAPER,
+                            "§e#" + id.toString().substring(0, 6),
+                            "§7" + c.item + " x" + c.amount,
+                            "§a" + c.price + "€ | rep: " + rep));
+
+            SafeGUI.safeSet(inv, slot + 9, SafeGUI.item(Material.LIME_DYE, "§aAccepter"));
+            SafeGUI.safeSet(inv, slot + 18, SafeGUI.item(Material.RED_DYE, "§cRefuser"));
+            SafeGUI.safeSet(inv, slot + 27, SafeGUI.item(Material.BARRIER, "§4Annuler"));
+
+            slot++;
+        }
+
+        SafeGUI.safeSet(inv, 49, SafeGUI.item(Material.ANVIL, "§6Creer"));
+
+        p.openInventory(inv);
+    }
+}

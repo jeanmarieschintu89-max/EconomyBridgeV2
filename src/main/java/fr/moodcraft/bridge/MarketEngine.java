@@ -3,7 +3,7 @@ package fr.moodcraft.bridge;
 public final class MarketEngine {
 
     public static double getPrice(String item) {
-        return MarketState.getPrice(item);
+        return Math.max(1, MarketState.getPrice(item));
     }
 
     public static void applyBuy(String item, int amount) {
@@ -33,7 +33,7 @@ public final class MarketEngine {
 
         for (String item : MarketState.base.keySet()) {
 
-            double price = MarketState.getPrice(item);
+            double price = Math.max(1, MarketState.getPrice(item));
             double base = MarketState.base.getOrDefault(item, price);
             double stock = MarketState.stock.getOrDefault(item, 0.0);
             double buy = MarketState.buy.getOrDefault(item, 0.0);
@@ -43,7 +43,7 @@ public final class MarketEngine {
             // 📊 ACTIVITY
             // =========================
             double coef = MarketState.activity.getOrDefault(item, 0.001);
-            double activity = Math.sqrt(stock + 1) * coef;
+            double activity = Math.sqrt(Math.max(1, stock + 1)) * coef;
 
             double maxActivity = price * activityCapFactor;
             if (activity > maxActivity) activity = maxActivity;
@@ -52,7 +52,7 @@ public final class MarketEngine {
             if (buy > 0) price += activity;
 
             // =========================
-            // 🌟 RARITY PAR ITEM (CONFIG)
+            // 🌟 RARITY
             // =========================
             if (rarityEnabled) {
 
@@ -60,12 +60,10 @@ public final class MarketEngine {
 
                 if (stock < rare) {
 
-                    // 🎯 valeurs globales
                     double boost = rarityBoost;
                     double exponent = rarityExp;
                     double maxBoost = rarityMax;
 
-                    // 🔥 override par item
                     String path = "rarity_settings." + item;
 
                     if (cfg.contains(path)) {
@@ -86,7 +84,7 @@ public final class MarketEngine {
             // =========================
             // 💥 IMPACT
             // =========================
-            double div = MarketState.impact.getOrDefault(item, 20.0);
+            double div = Math.max(1, MarketState.impact.getOrDefault(item, 20.0));
             double delta = (buy - sell) / div;
 
             double maxChange = price * maxChangeFactor;
@@ -105,7 +103,9 @@ public final class MarketEngine {
             // 🧹 STOCK DECAY
             // =========================
             stock *= stockDecay;
+
             if (stock > 10000) stock = 10000;
+            if (stock < -10000) stock = -10000;
 
             MarketState.stock.put(item, stock);
 
@@ -125,6 +125,7 @@ public final class MarketEngine {
 
             TrendManager.updateTrend(item, price);
 
+            // reset cycle
             MarketState.buy.put(item, 0.0);
             MarketState.sell.put(item, 0.0);
 

@@ -9,57 +9,41 @@ public class BanqueItemGUI {
 
     public static void open(Player p, String item) {
 
-        Inventory inv = Bukkit.createInventory(null, 9, "§eConfig Item");
+        Inventory inv = Bukkit.createInventory(null, 9, "§eConfig: " + item);
 
         double impact = MarketState.impact.getOrDefault(item, 50.0);
         double activity = MarketState.activity.getOrDefault(item, 0.001);
         double rarity = MarketState.rarity.getOrDefault(item, 10.0);
         double weight = MarketState.weight.getOrDefault(item, 1.0);
 
-        SafeGUI.safeSet(inv, 0, SafeGUI.item(Material.BLAZE_POWDER, "§6Impact +",
-                "§7Variation prix",
-                "§7Plus stable",
+        SafeGUI.safeSet(inv, 0, SafeGUI.item(Material.BLAZE_POWDER, "§6Impact",
+                "§8────────",
+                "§7Force des variations de prix",
                 "",
-                "§7" + impact));
+                "§7Valeur:",
+                "§6" + impact));
 
-        SafeGUI.safeSet(inv, 1, SafeGUI.item(Material.GUNPOWDER, "§cImpact -",
-                "§7Variation prix",
-                "§7Plus violent",
+        SafeGUI.safeSet(inv, 2, SafeGUI.item(Material.SUGAR, "§aActivité",
+                "§8────────",
+                "§7Influence des échanges",
                 "",
-                "§7" + impact));
+                "§7Valeur:",
+                "§a" + activity));
 
-        SafeGUI.safeSet(inv, 2, SafeGUI.item(Material.SUGAR, "§aActivite +",
-                "§7Frequence changement",
-                "§7Prix bouge souvent",
+        SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.GOLD_INGOT, "§eRareté",
+                "§8────────",
+                "§7Si stock faible",
+                "§7le prix augmente",
                 "",
-                "§7" + activity));
+                "§7Valeur:",
+                "§e" + rarity));
 
-        SafeGUI.safeSet(inv, 3, SafeGUI.item(Material.COAL, "§7Activite -",
-                "§7Prix lent",
+        SafeGUI.safeSet(inv, 6, SafeGUI.item(Material.DIAMOND, "§bPoids",
+                "§8────────",
+                "§7Influence sur le stock",
                 "",
-                "§7" + activity));
-
-        SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.GOLD_INGOT, "§eRare +",
-                "§7Objet rare",
-                "§7Prix boost",
-                "",
-                "§7" + rarity));
-
-        SafeGUI.safeSet(inv, 5, SafeGUI.item(Material.IRON_INGOT, "§8Rare -",
-                "§7Moins rare",
-                "",
-                "§7" + rarity));
-
-        SafeGUI.safeSet(inv, 6, SafeGUI.item(Material.DIAMOND, "§bWeight +",
-                "§7Influence marche",
-                "§7Impact fort",
-                "",
-                "§7" + weight));
-
-        SafeGUI.safeSet(inv, 7, SafeGUI.item(Material.FLINT, "§cWeight -",
-                "§7Faible impact",
-                "",
-                "§7" + weight));
+                "§7Valeur:",
+                "§b" + weight));
 
         SafeGUI.safeSet(inv, 8, SafeGUI.item(Material.BARRIER, "§cRetour"));
 

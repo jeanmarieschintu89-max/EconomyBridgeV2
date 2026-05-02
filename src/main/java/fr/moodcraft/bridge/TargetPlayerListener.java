@@ -1,6 +1,7 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,9 +13,14 @@ public class TargetPlayerListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
+        if (title == null) return;
 
-        // 🔒 IMPORTANT → EXACT MATCH
-        if (title == null || !title.equals("§eChoisir joueur")) return;
+        // 🔥 NORMALISATION TITRE (anti couleur / Bedrock)
+        String clean = title.replaceAll("§.", "");
+
+        // ✅ accepte "Choisir joueur" OU "Choisir un joueur"
+        if (!clean.equalsIgnoreCase("Choisir joueur") &&
+            !clean.equalsIgnoreCase("Choisir un joueur")) return;
 
         if (e.getClickedInventory() == null) return;
         if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
@@ -22,9 +28,11 @@ public class TargetPlayerListener implements Listener {
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getCurrentItem() == null || !e.getCurrentItem().hasItemMeta()) return;
 
-        String name = e.getCurrentItem().getItemMeta().getDisplayName();
+        var item = e.getCurrentItem();
+        if (item == null || !item.hasItemMeta()) return;
+
+        String name = item.getItemMeta().getDisplayName();
         if (name == null) return;
 
         name = name.replace("§a", "");
@@ -35,29 +43,31 @@ public class TargetPlayerListener implements Listener {
             return;
         }
 
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+
         // =========================
-        // 🔀 DETECTER CONTEXTE
+        // 🔀 CONTEXTE INTELLIGENT
         // =========================
 
-        // 👉 si joueur vient du système CONTRAT
-        if (ContractBuilder.get(p) != null) {
+        // 🧾 CONTRAT
+        if (ContractBuilder.has(p)) {
 
             var builder = ContractBuilder.get(p);
             builder.target = target.getName();
 
-            p.sendMessage("§aCible définie: §e" + target.getName());
+            p.sendMessage("§aCible: §f" + target.getName());
 
             ContractCreateGUI.open(p);
             return;
         }
 
-        // 👉 sinon système VIREMENT
-        if (TransferBuilder.get(p) != null) {
+        // 💸 VIREMENT
+        if (TransferBuilder.has(p)) {
 
             var builder = TransferBuilder.get(p);
             builder.target = target.getName();
 
-            p.sendMessage("§aDestinataire: §e" + target.getName());
+            p.sendMessage("§aDestinataire: §f" + target.getName());
 
             TransferConfirmGUI.open(p);
         }

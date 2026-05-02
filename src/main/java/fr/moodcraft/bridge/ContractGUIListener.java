@@ -14,12 +14,17 @@ public class ContractGUIListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
+        if (title == null) return;
 
-        // 🔒 FIX STRICT
-        if (title == null || !title.equals("§eContrats")) return;
+        // 🔥 NORMALISATION (anti couleurs / Bedrock)
+        String clean = title.replaceAll("§.", "");
+
+        if (!clean.equalsIgnoreCase("Contrats")) return;
 
         if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
+        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
@@ -27,12 +32,18 @@ public class ContractGUIListener implements Listener {
 
         int slot = e.getRawSlot();
 
+        // =========================
+        // ➕ CREATION
+        // =========================
         if (slot == 49) {
             p.closeInventory();
             ContractCreateGUI.open(p);
             return;
         }
 
+        // =========================
+        // 🔁 RÉCUP LISTE CONTRATS
+        // =========================
         List<UUID> list = new ArrayList<>();
 
         for (UUID id : ContractManager.contracts.keySet()) {
@@ -47,6 +58,7 @@ public class ContractGUIListener implements Listener {
 
         if (list.isEmpty()) return;
 
+        // 🔥 mapping propre slot → contrat
         int col = slot % 9;
         int row = slot / 9;
 
@@ -57,6 +69,9 @@ public class ContractGUIListener implements Listener {
 
         if (c == null) return;
 
+        // =========================
+        // ✔ ACCEPTER
+        // =========================
         if (row == 1) {
 
             c.accepted = true;
@@ -73,6 +88,9 @@ public class ContractGUIListener implements Listener {
             p.sendMessage("§a✔ Contrat accepté");
         }
 
+        // =========================
+        // ❌ REFUSER
+        // =========================
         else if (row == 2) {
 
             ContractManager.contracts.remove(id);
@@ -81,6 +99,9 @@ public class ContractGUIListener implements Listener {
             p.sendMessage("§cContrat refusé");
         }
 
+        // =========================
+        // 🗑 ANNULER
+        // =========================
         else if (row == 3) {
 
             ContractManager.contracts.remove(id);
@@ -88,6 +109,7 @@ public class ContractGUIListener implements Listener {
             p.sendMessage("§cContrat annulé");
         }
 
+        // 🔄 refresh GUI
         ContractGUI.open(p);
     }
 }

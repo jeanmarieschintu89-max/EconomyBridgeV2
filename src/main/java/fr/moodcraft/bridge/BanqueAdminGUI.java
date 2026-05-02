@@ -9,32 +9,32 @@ public class BanqueAdminGUI {
 
     public static void open(Player p) {
 
-        var cfg = Main.getInstance().getConfig();
-
         Inventory inv = Bukkit.createInventory(null, 27, "§c⚙ Admin Économie");
 
-        add(inv, 9, "engine.base_return", "§eBase Return", 0.001);
-        add(inv, 12, "engine.activity_cap", "§bActivity Cap", 0.001);
-        add(inv, 15, "engine.max_change", "§cMax Change", 0.01);
-        add(inv, 18, "engine.stock_decay", "§fStock Decay", 0.01);
+        // ENGINE
+        SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.COMPARATOR,
+                "§e⚙ Réglages Marché",
+                "§7Base return",
+                "§7Activity cap",
+                "§7Max change",
+                "§7Stock decay"));
 
-        inv.setItem(26, SafeGUI.item(Material.EMERALD, "§aItems avancés"));
+        // ITEMS
+        SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.EMERALD,
+                "§a💎 Gestion Items",
+                "§7Modifier chaque item",
+                "§7Boost / Exp / Max"));
+
+        // CONFIG GLOBAL
+        SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.NETHER_STAR,
+                "§d🌐 Config globale",
+                "§7Rareté globale",
+                "§7Multiplicateurs"));
+
+        // RELOAD
+        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.SLIME_BALL,
+                "§a🔄 Reload Config"));
 
         p.openInventory(inv);
-    }
-
-    private static void add(Inventory inv, int slot, String path, String name, double step) {
-
-        var cfg = Main.getInstance().getConfig();
-        double value = cfg.getDouble(path);
-
-        inv.setItem(slot, SafeGUI.item(Material.RED_STAINED_GLASS_PANE, "§c-"));
-        inv.setItem(slot + 1, SafeGUI.item(Material.PAPER,
-                name,
-                "§8────────────",
-                "§7Valeur: §a" + value,
-                "§8────────────",
-                "§c⬅ -   §a+ ➡"));
-        inv.setItem(slot + 2, SafeGUI.item(Material.LIME_STAINED_GLASS_PANE, "§a+"));
     }
 }

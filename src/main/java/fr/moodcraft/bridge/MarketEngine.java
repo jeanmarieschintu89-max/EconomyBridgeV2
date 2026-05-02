@@ -40,22 +40,24 @@ public final class MarketEngine {
             double sell = MarketState.sell.getOrDefault(item, 0.0);
 
             // =========================
-            // 📦 UPDATE STOCK (FIX IMPORTANT)
+            // 📦 UPDATE STOCK
             // =========================
             stock += buy;
             stock -= sell;
 
             // =========================
-            // 📊 ACTIVITY
+            // 📊 ACTIVITY (fix réaliste)
             // =========================
+            double safeStock = Math.max(0, stock);
             double coef = MarketState.activity.getOrDefault(item, 0.001);
-            double activity = Math.sqrt(Math.max(1, stock + 1)) * coef;
+
+            double activity = Math.sqrt(safeStock + 1) * coef;
 
             double maxActivity = price * activityCapFactor;
             if (activity > maxActivity) activity = maxActivity;
 
-            if (sell > 0) price -= activity;
-            if (buy > 0) price += activity;
+            // ✔ impact proportionnel
+            price += (buy - sell) * activity;
 
             // =========================
             // 🌟 RARITY
@@ -126,18 +128,15 @@ public final class MarketEngine {
             if (price < 1) price = 1;
 
             // =========================
-            // 💹 TREND + PRICE (FIX IMPORTANT)
+            // 💹 FINAL PRICE + TREND
             // =========================
-            double rawPrice = price; // pour calcul tendance précis
-            price = round(price);    // affichage
+            price = round(price);
 
-            MarketState.setPrice(item, rawPrice); // calc tendance ici
-            MarketState.price.put(item, price);   // valeur affichée
+            MarketState.setPrice(item, price);
 
-            // ❌ SUPPRIMÉ (double calcul bug)
-            // TrendManager.updateTrend(item, price);
-
-            // reset cycle
+            // =========================
+            // 🔁 RESET
+            // =========================
             MarketState.buy.put(item, 0.0);
             MarketState.sell.put(item, 0.0);
 

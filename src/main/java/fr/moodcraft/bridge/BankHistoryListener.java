@@ -6,11 +6,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BankHistoryListener implements Listener {
 
-    // 🔥 stocke la page par joueur
     private static final Map<String, Integer> pages = new HashMap<>();
 
     @EventHandler
@@ -60,6 +60,14 @@ public class BankHistoryListener implements Listener {
         // ➡ PAGE SUIVANTE
         // =========================
         if (slot == 23) {
+
+            List<String> logs = TransactionLogger.getAll(name);
+
+            // 🔥 LIMITATION PROPRE
+            if (logs == null || logs.size() <= (page + 1) * 21) {
+                p.sendMessage("§cAucune page suivante");
+                return;
+            }
 
             page++;
             pages.put(name, page);

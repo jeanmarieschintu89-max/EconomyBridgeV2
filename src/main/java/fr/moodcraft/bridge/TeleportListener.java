@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,51 +11,57 @@ public class TeleportListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        if (!"§bTeleport".equals(e.getView().getTitle())) return;
+        String title = e.getView().getTitle();
+        if (title == null) return;
+
+        // 🔥 NORMALISATION (anti couleurs / Bedrock)
+        String clean = title.replaceAll("§.", "");
+
+        if (!clean.equalsIgnoreCase("Teleport")) return;
 
         if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
+        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
+        // 🔥 anti glitch
+        if (e.isShiftClick()) return;
+
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        switch (e.getSlot()) {
+        int slot = e.getRawSlot();
 
-            case 10 -> {
-                p.closeInventory();
-                p.performCommand("warp ressources");
-            }
+        // 🔊 feedback
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
-            case 11 -> {
-                p.closeInventory();
-                p.performCommand("warp shop");
-            }
+        switch (slot) {
 
-            case 12 -> {
-                p.closeInventory();
-                p.performCommand("warp mini-jeux");
-            }
+            case 10 -> run(p, "warp ressources");
 
-            case 13 -> {
-                p.closeInventory();
-                p.performCommand("tpr");
-            }
+            case 11 -> run(p, "warp shop");
 
-            case 14 -> {
-                p.closeInventory();
-                p.performCommand("spawn");
-            }
+            case 12 -> run(p, "warp mini-jeux");
 
-            case 15 -> {
-                p.closeInventory();
-                p.performCommand("t spawn");
-            }
+            case 13 -> run(p, "tpr");
+
+            case 14 -> run(p, "spawn");
+
+            case 15 -> run(p, "t spawn");
 
             case 22 -> {
                 p.closeInventory();
                 MainMenuGUI.open(p);
             }
         }
+    }
+
+    // =========================
+    // 🔧 EXEC PROPRE
+    // =========================
+    private void run(Player p, String cmd) {
+        p.closeInventory();
+        p.performCommand(cmd);
     }
 }

@@ -12,19 +12,26 @@ public class BanqueItemGUIListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
+        if (title == null) return;
 
-        if (title == null || !title.contains("Config:")) return;
+        // 🔥 NORMALISATION (anti couleurs / Bedrock)
+        String clean = title.replaceAll("§.", "");
+
+        if (!clean.startsWith("Config:")) return;
+
         if (e.getClickedInventory() == null) return;
-        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
+        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
         int slot = e.getRawSlot();
-        if (slot > 8) return;
 
-        String item = title.replace("§eConfig: ", "");
+        // 🔥 récup item propre
+        String item = clean.replace("Config: ", "").toLowerCase();
 
         boolean shift = e.isShiftClick();
 
@@ -49,7 +56,7 @@ public class BanqueItemGUIListener implements Listener {
 
             case 8 -> {
                 if (shift) {
-                    // RESET
+                    // 🔄 RESET
                     MarketState.impact.put(item, 50.0);
                     MarketState.activity.put(item, 0.001);
                     MarketState.rarity.put(item, 10.0);
@@ -63,6 +70,7 @@ public class BanqueItemGUIListener implements Listener {
             }
         }
 
+        // 🔄 APPLY LIVE
         MarketEngine.tick();
         PriceUpdater.updateItem(item);
 

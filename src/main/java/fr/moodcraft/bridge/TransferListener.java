@@ -20,9 +20,16 @@ public class TransferListener implements Listener {
 
         String clean = title.replaceAll("§.", "");
 
+        // 🔥 FILTRE AVANT TOUT (ULTRA IMPORTANT)
+        if (!clean.equalsIgnoreCase("Virement") &&
+            !clean.equalsIgnoreCase("Choisir joueur virement") &&
+            !clean.equalsIgnoreCase("Confirmation virement")) {
+            return;
+        }
+
         if (e.getClickedInventory() == null) return;
 
-        // 🔥 FIX CRITIQUE → bloque uniquement le GUI
+        // 🔥 NE BLOQUE QUE LE GUI (pas l’inventaire joueur)
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
@@ -149,7 +156,6 @@ public class TransferListener implements Listener {
                     p.sendMessage("§a✔ Virement envoyé");
                     target.sendMessage("§a+" + b.amount + "€ reçu de " + p.getName());
 
-                    // 🔥 LOG (version simple compatible)
                     TransactionLogger.log(
                             p.getName(),
                             "Virement vers " + target.getName(),

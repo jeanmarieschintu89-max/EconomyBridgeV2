@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 💣 CLEAN TOTAL AVANT TOUT (IMPORTANT)
+      - name: Clean Maven cache
+        run: rm -rf ~/.m2
+
       # 📥 Clone repo
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,7 +24,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-          cache: maven
 
       # 🔐 Auth GitHub Packages
       - name: Setup Maven auth
@@ -33,11 +36,7 @@ jobs:
               "password": "${{ secrets.GITHUB_TOKEN }}"
             }]
 
-      # 💣 FIX CRITIQUE → supprime Vault corrompu
-      - name: Fix Vault cache
-        run: rm -rf ~/.m2/repository/com/github/MilkBowl
-
-      # 🔄 Force re-download dépendances
+      # 🔄 BUILD FORCÉ (re-download tout)
       - name: Build with Maven
         run: mvn clean package -U
 

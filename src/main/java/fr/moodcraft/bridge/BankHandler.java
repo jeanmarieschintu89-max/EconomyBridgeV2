@@ -26,7 +26,7 @@ public class BankHandler implements GUIHandler {
 
             case 16 -> {
                 // historique
-                BankHistoryGUI.open(p);
+                BankHistoryGUI.open(p, 0);
             }
 
             case 8 -> {

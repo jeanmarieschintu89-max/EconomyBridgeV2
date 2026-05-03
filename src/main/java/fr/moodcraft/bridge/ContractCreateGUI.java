@@ -9,7 +9,7 @@ public class ContractCreateGUI {
 
     public static void open(Player p) {
 
-        ContractBuilder b = ContractBuilder.get(p);
+        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
         if (b == null) return;
 
         Inventory inv = Bukkit.createInventory(null, 27, "§fCréer contrat");
@@ -50,6 +50,7 @@ public class ContractCreateGUI {
 
         // 💎 TOTAL
         double total = b.amount * b.price;
+
         SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.EMERALD,
                 "§aTotal",
                 "§8────────────",

@@ -9,10 +9,10 @@ public class TargetPlayerHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
-        // 🔒 Sécurité slot
+        // 🔒 sécurité slot
         if (slot >= p.getOpenInventory().getTopInventory().getSize()) return;
 
-        // 📦 Récupération item correcte
+        // 📦 item
         ItemStack item = p.getOpenInventory().getTopInventory().getItem(slot);
 
         if (item == null || item.getItemMeta() == null) return;
@@ -20,7 +20,7 @@ public class TargetPlayerHandler implements GUIHandler {
         String name = item.getItemMeta().getDisplayName();
         if (name == null) return;
 
-        // 🧼 Nettoyage couleurs Minecraft
+        // 🧼 clean couleur
         String clean = name.replaceAll("§.", "");
 
         Player target = Bukkit.getPlayerExact(clean);
@@ -30,10 +30,10 @@ public class TargetPlayerHandler implements GUIHandler {
             return;
         }
 
-        // 💾 Stockage
+        // 💾 stockage cible
         TransferBuilder.get(p).target = target.getUniqueId();
 
-        // 🚀 Ouverture confirm
-        TransferConfirmGUI.open(p);
+        // 🔥 NOUVEAU FLOW → montant
+        TransferAmountGUI.open(p);
     }
 }

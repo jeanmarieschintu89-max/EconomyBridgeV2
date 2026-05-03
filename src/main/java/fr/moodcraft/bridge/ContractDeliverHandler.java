@@ -36,7 +36,7 @@ public class ContractDeliverHandler implements GUIHandler {
             return;
         }
 
-        if (!"IN_PROGRESS".equalsIgnoreCase(contract.status)) {
+        if (contract.status != Contract.Status.IN_PROGRESS) {
             p.sendMessage("§cContrat invalide");
             return;
         }

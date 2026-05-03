@@ -9,24 +9,19 @@ public class BankHistoryHandler implements GUIHandler {
 
         int page = BankHistoryGUI.getPage(p);
 
-        switch (slot) {
+        // ⬅ précédent
+        if (slot == 45) {
+            BankHistoryGUI.open(p, page - 1);
+        }
 
-            // ⬅ précédent
-            case 21 -> {
-                if (page > 0) {
-                    BankHistoryGUI.open(p, page - 1);
-                }
-            }
+        // ➡ suivant
+        if (slot == 53) {
+            BankHistoryGUI.open(p, page + 1);
+        }
 
-            // ➡ suivant
-            case 23 -> {
-                BankHistoryGUI.open(p, page + 1);
-            }
-
-            // 🔙 retour
-            case 22 -> {
-                BankGUI.open(p);
-            }
+        // 🔙 retour
+        if (slot == 49) {
+            BankGUI.open(p);
         }
     }
 }

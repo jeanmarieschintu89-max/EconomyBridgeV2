@@ -9,7 +9,7 @@ public class MarketItemListHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
-        ItemStack item = p.getOpenInventory().getItem(slot);
+        ItemStack item = p.getOpenInventory().getTopInventory().getItem(slot);
         if (item == null || item.getType() == Material.AIR) return;
 
         String name = item.getItemMeta() != null

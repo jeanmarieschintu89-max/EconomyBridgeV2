@@ -9,16 +9,25 @@ public class TeleportHandler implements GUIHandler {
 
         switch (slot) {
 
-            case 11 -> p.performCommand("spawn");
+            // 🌲 RESSOURCES
+            case 10 -> p.performCommand("warp ressources");
 
-            case 12 -> p.performCommand("warp shop");
+            // 🛒 ADMIN SHOP
+            case 11 -> p.performCommand("warp shop");
 
-            case 13 -> p.performCommand("warp ressources");
+            // 🎮 MINI-JEUX
+            case 12 -> p.performCommand("warp mini-jeux");
 
-            case 14 -> p.performCommand("warp mini-jeux");
+            // 🌍 EXPLORATION (RTP)
+            case 13 -> p.performCommand("rtp");
 
+            // 🏠 SPAWN
+            case 14 -> p.performCommand("spawn");
+
+            // 🏙️ VILLE
             case 15 -> p.performCommand("t spawn");
 
+            // 🔙 RETOUR
             case 22 -> MainMenuGUI.open(p);
         }
     }

@@ -9,11 +9,16 @@ import org.bukkit.Particle;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ReputationManager {
 
     private static File file;
     private static FileConfiguration config;
+
+    // 🔥 cache mémoire (performance + classement rapide)
+    private static final Map<String, Integer> cache = new HashMap<>();
 
     // =========================
     // INIT
@@ -32,20 +37,30 @@ public class ReputationManager {
         }
 
         config = YamlConfiguration.loadConfiguration(file);
+
+        // 🔥 load en mémoire
+        for (String key : config.getKeys(false)) {
+            cache.put(key, config.getInt(key));
+        }
     }
 
     // =========================
     // GET
     // =========================
     public static int get(String uuid) {
-        return config.getInt(uuid, 0);
+        return cache.getOrDefault(uuid, 0);
     }
 
     // =========================
     // SET
     // =========================
     public static void set(String uuid, int value) {
-        config.set(uuid, Math.max(0, value));
+
+        value = Math.max(0, value);
+
+        cache.put(uuid, value);
+        config.set(uuid, value);
+
         save();
     }
 
@@ -60,12 +75,11 @@ public class ReputationManager {
     // RESET
     // =========================
     public static void reset(String uuid) {
-        config.set(uuid, 0);
-        save();
+        set(uuid, 0);
     }
 
     // =========================
-    // 🎖️ RANK (AVEC ENDGAME)
+    // 🎖️ RANK
     // =========================
     public static String getRank(int rep) {
 
@@ -94,7 +108,38 @@ public class ReputationManager {
     }
 
     // =========================
-    // ✨ ADD AVEC FX + RANKUP
+    // 🏆 CLASSEMENT
+    // =========================
+    public static LinkedHashMap<String, Integer> getTop(int limit) {
+
+        return cache.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(limit)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (a, b) -> a,
+                        LinkedHashMap::new
+                ));
+    }
+
+    public static int getPosition(String uuid) {
+
+        List<Map.Entry<String, Integer>> list = cache.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .toList();
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getKey().equals(uuid)) {
+                return i + 1;
+            }
+        }
+
+        return -1;
+    }
+
+    // =========================
+    // ✨ ADD PREMIUM (FX + RANKUP)
     // =========================
     public static void addRepStyled(Player p, int value, String reason) {
 
@@ -134,12 +179,11 @@ public class ReputationManager {
             p.sendMessage("§7" + oldRank + " §8→ §a" + newRank);
             p.sendMessage("§8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 
-            // effets
             p.spawnParticle(Particle.TOTEM, p.getLocation(), 40);
             p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
             p.sendTitle("§6Nouveau Rang !", "§a" + newRank, 10, 40, 10);
 
-            // 🔥 BROADCAST SI RANG MAX
+            // 👑 broadcast rank max
             if (newRank.equals("Maître de MoodCraft")) {
                 Bukkit.broadcastMessage("§6👑 " + p.getName() + " est devenu Maître de MoodCraft !");
                 p.spawnParticle(Particle.FIREWORK, p.getLocation(), 80);
@@ -148,7 +192,7 @@ public class ReputationManager {
     }
 
     // =========================
-    // SAVE
+    // 💾 SAVE
     // =========================
     public static void save() {
         try {

@@ -1,12 +1,9 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class ContractPlayerListener implements Listener {
 
@@ -20,56 +17,55 @@ public class ContractPlayerListener implements Listener {
         if (!clean.equalsIgnoreCase("Mes contrats")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-
         if (e.getClickedInventory() == null) return;
+
+        // 🔒 protège inventaire joueur
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
         int slot = e.getRawSlot();
 
+        // 🔊 feedback
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
+
+        // 🔙 RETOUR
         if (slot == 49) {
             p.closeInventory();
             ContractGUI.open(p);
             return;
         }
 
-        Contract c = ContractManager.getAll().stream()
-                .filter(contract -> p.getUniqueId().equals(contract.worker))
-                .skip(slot)
-                .findFirst()
-                .orElse(null);
+        // 📦 CLICK CONTRAT
+        var item = e.getCurrentItem();
+        if (item == null || !item.hasItemMeta()) return;
 
-        if (c == null) return;
+        String name = item.getItemMeta().getDisplayName();
 
-        Material mat;
+        if (!name.contains("#")) return;
 
         try {
-            mat = Material.valueOf(c.item);
+            int id = Integer.parseInt(name.split("#")[1]);
+
+            Contract c = ContractManager.get(id);
+
+            if (c == null) {
+                p.sendMessage("§c❌ Contrat introuvable");
+                return;
+            }
+
+            // 🔒 sécurité
+            if (!p.getUniqueId().equals(c.worker)) {
+                p.sendMessage("§c❌ Ce contrat ne t'appartient pas");
+                return;
+            }
+
+            // 🔥 LIVRAISON (via commande existante)
+            p.closeInventory();
+            p.performCommand("contractdeliver");
+
         } catch (Exception ex) {
-            p.sendMessage("§cItem invalide");
-            return;
+            p.sendMessage("§cErreur lecture contrat");
         }
-
-        if (!p.getInventory().contains(mat, c.amount)) {
-            p.sendMessage("§cTu n'as pas les items");
-            return;
-        }
-
-        p.getInventory().removeItem(new ItemStack(mat, c.amount));
-
-        // paiement banque
-        String id = p.getUniqueId().toString();
-        BankStorage.set(id, BankStorage.get(id) + c.price);
-
-        ReputationManager.add(p.getName(), 1);
-
-        c.status = Contract.Status.COMPLETED;
-        ContractManager.remove(c.id);
-
-        p.sendMessage("§a✔ Contrat terminé !");
-        p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
-
-        p.closeInventory();
     }
 }

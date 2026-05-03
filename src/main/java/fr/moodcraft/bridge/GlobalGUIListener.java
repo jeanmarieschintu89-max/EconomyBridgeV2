@@ -1,3 +1,4 @@
+
 package fr.moodcraft.bridge;
 
 import org.bukkit.entity.Player;
@@ -11,10 +12,9 @@ public class GlobalGUIListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        // 🔥 GUI actif
         String id = GUIManager.get(p);
 
-        // 👉 PAS un GUI custom → on laisse faire (coffres OK)
+        // 👉 pas un GUI custom → on laisse tout libre
         if (id == null) return;
 
         if (e.getClickedInventory() == null) return;
@@ -22,17 +22,17 @@ public class GlobalGUIListener implements Listener {
         int slot = e.getRawSlot();
 
         // =========================
-        // 🎯 CONTRACT CREATE (cas spécial)
+        // 🎯 CONTRACT CREATE
         // =========================
         if (id.equals("contract_create")) {
 
-            // 👉 slot dépôt item
+            // 🔥 slot dépôt item (GUI)
             if (slot == 10) {
                 e.setCancelled(false);
                 return;
             }
 
-            // 👉 inventaire joueur autorisé
+            // 🔥 inventaire joueur autorisé
             if (e.getClickedInventory() == e.getView().getBottomInventory()) {
                 e.setCancelled(false);
                 return;
@@ -40,7 +40,7 @@ public class GlobalGUIListener implements Listener {
         }
 
         // =========================
-        // 🔒 BLOQUE INVENTAIRE JOUEUR (autres GUI)
+        // 🔒 BLOQUE INVENTAIRE JOUEUR POUR LES AUTRES GUI
         // =========================
         if (e.getClickedInventory() == e.getView().getBottomInventory()) {
             e.setCancelled(true);
@@ -48,7 +48,7 @@ public class GlobalGUIListener implements Listener {
         }
 
         // =========================
-        // 🔒 BLOQUE SI HORS GUI
+        // 🔒 BLOQUE HORS GUI
         // =========================
         if (slot >= e.getView().getTopInventory().getSize()) {
             e.setCancelled(true);
@@ -56,13 +56,9 @@ public class GlobalGUIListener implements Listener {
         }
 
         // =========================
-        // 🔒 BLOQUE TOUT LE RESTE
+        // 🔒 BLOQUE GUI + EXEC HANDLER
         // =========================
         e.setCancelled(true);
-
-        // =========================
-        // 🎮 EXEC HANDLER
-        // =========================
         GUIManager.handle(p, slot);
     }
 }

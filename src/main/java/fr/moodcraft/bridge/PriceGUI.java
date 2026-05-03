@@ -46,7 +46,7 @@ public class PriceGUI {
             e.printStackTrace();
         }
 
-        p.openInventory(inv);
+        GUIManager.open(p, "minerais", inv);
     }
 
     private static void set(Inventory inv, int slot, String id, Material mat, String name) {

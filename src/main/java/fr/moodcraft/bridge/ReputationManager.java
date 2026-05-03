@@ -16,7 +16,7 @@ public class ReputationManager {
     private static FileConfiguration config;
 
     // =========================
-    // ⚙️ INIT
+    // INIT
     // =========================
     public static void init() {
 
@@ -35,29 +35,29 @@ public class ReputationManager {
     }
 
     // =========================
-    // 📥 GET
+    // GET
     // =========================
     public static int get(String uuid) {
         return config.getInt(uuid, 0);
     }
 
     // =========================
-    // ➕ ADD SIMPLE
+    // SET
+    // =========================
+    public static void set(String uuid, int value) {
+        config.set(uuid, Math.max(0, value));
+        save();
+    }
+
+    // =========================
+    // ADD
     // =========================
     public static void add(String uuid, int value) {
         set(uuid, get(uuid) + value);
     }
 
     // =========================
-    // ✏️ SET
-    // =========================
-    public static void set(String uuid, int value) {
-        config.set(uuid, Math.max(0, value)); // pas négatif
-        save();
-    }
-
-    // =========================
-    // 🔄 RESET
+    // RESET
     // =========================
     public static void reset(String uuid) {
         config.set(uuid, 0);
@@ -65,10 +65,11 @@ public class ReputationManager {
     }
 
     // =========================
-    // 🎖️ RANK (MoodCraft)
+    // 🎖️ RANK (AVEC ENDGAME)
     // =========================
     public static String getRank(int rep) {
 
+        if (rep >= 500) return "§6👑 Maître de MoodCraft";
         if (rep >= 200) return "§6Maître du Marché";
         if (rep >= 120) return "§dÉlite Commerciale";
         if (rep >= 80) return "§bInfluenceur Éco";
@@ -79,9 +80,9 @@ public class ReputationManager {
         return "§7Visiteur";
     }
 
-    // version sans couleurs (comparaison interne)
     public static String getRankName(int rep) {
 
+        if (rep >= 500) return "Maître de MoodCraft";
         if (rep >= 200) return "Maître du Marché";
         if (rep >= 120) return "Élite Commerciale";
         if (rep >= 80) return "Influenceur Éco";
@@ -93,47 +94,7 @@ public class ReputationManager {
     }
 
     // =========================
-    // 🔜 PROCHAINE ÉTAPE
-    // =========================
-    public static int getNextRank(int rep) {
-
-        if (rep < 10) return 10;
-        if (rep < 25) return 25;
-        if (rep < 50) return 50;
-        if (rep < 80) return 80;
-        if (rep < 120) return 120;
-        if (rep < 200) return 200;
-
-        return -1;
-    }
-
-    // =========================
-    // 🏷️ BADGE VISUEL
-    // =========================
-    public static String getBadge(int rep) {
-
-        if (rep >= 200) return "§6👑";
-        if (rep >= 120) return "§d💎";
-        if (rep >= 80) return "§b⭐";
-        if (rep >= 50) return "§2✔";
-        if (rep >= 25) return "§a➤";
-        if (rep >= 10) return "§f•";
-
-        return "§7○";
-    }
-
-    // =========================
-    // 🎮 FORMAT COMPLET
-    // =========================
-    public static String format(String uuid) {
-
-        int rep = get(uuid);
-
-        return getBadge(rep) + " §e" + rep + " §7(" + getRank(rep) + ")";
-    }
-
-    // =========================
-    // ✨ AJOUT PREMIUM AVEC FX
+    // ✨ ADD AVEC FX + RANKUP
     // =========================
     public static void addRepStyled(Player p, int value, String reason) {
 
@@ -143,7 +104,6 @@ public class ReputationManager {
         String oldRank = getRankName(oldRep);
 
         int newRep = Math.max(0, oldRep + value);
-
         set(uuid, newRep);
 
         String newRank = getRankName(newRep);
@@ -174,19 +134,21 @@ public class ReputationManager {
             p.sendMessage("§7" + oldRank + " §8→ §a" + newRank);
             p.sendMessage("§8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 
-            // particules
-            p.spawnParticle(Particle.TOTEM, p.getLocation(), 30);
-
-            // son
+            // effets
+            p.spawnParticle(Particle.TOTEM, p.getLocation(), 40);
             p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
-
-            // titre
             p.sendTitle("§6Nouveau Rang !", "§a" + newRank, 10, 40, 10);
+
+            // 🔥 BROADCAST SI RANG MAX
+            if (newRank.equals("Maître de MoodCraft")) {
+                Bukkit.broadcastMessage("§6👑 " + p.getName() + " est devenu Maître de MoodCraft !");
+                p.spawnParticle(Particle.FIREWORK, p.getLocation(), 80);
+            }
         }
     }
 
     // =========================
-    // 💾 SAVE
+    // SAVE
     // =========================
     public static void save() {
         try {

@@ -20,7 +20,8 @@ public class BankHandler implements GUIHandler {
             }
 
             // 🔁 VIREMENT
-            case 2 -> TransferTypeGUI.open(p);
+            case 2 -> {
+                TransferTypeGUI.open(p);
             }
 
             // 💰 DEPOT

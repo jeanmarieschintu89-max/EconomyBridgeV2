@@ -28,6 +28,6 @@ public class TransferTargetGUI {
             slot++;
         }
 
-        p.openInventory(inv);
+        GUIManager.open(p, "bank_target", inv);
     }
 }

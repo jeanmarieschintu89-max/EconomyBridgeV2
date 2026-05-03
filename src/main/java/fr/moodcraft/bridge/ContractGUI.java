@@ -9,44 +9,57 @@ public class ContractGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6Contrats");
+        Inventory inv = Bukkit.createInventory(null, 27, "§fContrats");
 
         // =========================
         // 📄 CRÉER CONTRAT
         // =========================
-        SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.WRITABLE_BOOK, "§aCréer un contrat",
-                "§7Créer une demande",
+        SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.WRITABLE_BOOK,
+                "§eCréer un contrat",
+                "§8────────────",
+                "§7Publie une demande",
+                "§7pour un joueur",
                 "",
-                "§eCommande:",
-                "§7/contract <item> <quantité> <prix>",
-                "",
-                "§8Clique pour info"));
-
-        // =========================
-        // 📜 VOIR CONTRATS
-        // =========================
-        SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BOOK, "§eContrats disponibles",
-                "§7Voir les contrats",
-                "",
-                "§aAccepter et gagner de l'argent",
+                "§aDéfinir un objet",
+                "§aChoisir quantité & prix",
                 "",
                 "§8Clique pour ouvrir"));
 
         // =========================
+        // 📜 MARCHÉ DES CONTRATS
+        // =========================
+        SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BOOK,
+                "§eContrats disponibles",
+                "§8────────────",
+                "§7Liste des contrats",
+                "§7créés par les joueurs",
+                "",
+                "§aAccepter un contrat",
+                "§aGagner de l'argent",
+                "",
+                "§8Clique pour voir"));
+
+        // =========================
         // 📦 MES CONTRATS
         // =========================
-        SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.CHEST, "§bMes contrats",
-                "§7Suivi de tes contrats",
+        SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.CHEST,
+                "§eMes contrats",
+                "§8────────────",
+                "§7Contrats actifs",
+                "§7et progression",
                 "",
-                "§eVoir progression",
+                "§aVoir l'état",
+                "§aLivrer les commandes",
                 "",
                 "§8Clique pour ouvrir"));
 
         // =========================
         // 🔙 RETOUR
         // =========================
-        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.ARROW, "§cRetour",
-                "§7Retour au menu"));
+        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.ARROW,
+                "§cRetour",
+                "§8────────────",
+                "§7Retour au menu principal"));
 
         p.openInventory(inv);
     }

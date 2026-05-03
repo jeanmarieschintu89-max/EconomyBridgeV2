@@ -1,8 +1,7 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.inventory.InventoryDragEvent;
 
 public class InventoryGuardListener implements Listener {
@@ -12,9 +11,10 @@ public class InventoryGuardListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        // 🔥 Si c’est un GUI custom → on bloque
-        if (GUIManager.get(p) != null) {
-            e.setCancelled(true);
-        }
+        // 🧠 si pas un GUI custom → on laisse faire
+        if (GUIManager.get(p) == null) return;
+
+        // 🔒 bloque tout drag dans nos GUI
+        e.setCancelled(true);
     }
 }

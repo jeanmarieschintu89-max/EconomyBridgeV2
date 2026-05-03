@@ -110,6 +110,7 @@ public class Main extends JavaPlugin {
         registerCommand("rep", new RepCommand());
         registerCommand("resetrep", new ResetRepCommand());
         registerCommand("toprep", new TopRepCommand());
+        registerCommand("topgui", new TopGUICommand());
 
         // =========================
         // 🔁 TASKS

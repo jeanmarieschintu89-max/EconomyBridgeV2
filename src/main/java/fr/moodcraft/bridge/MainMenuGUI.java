@@ -11,7 +11,7 @@ public class MainMenuGUI {
 
         Inventory inv = Bukkit.createInventory(null, 27, "§6✦ MoodCraft");
 
-        double money = VaultHook.getBalance(p);
+        double money = BankStorage.get(p.getUniqueId().toString());
         double bank = BankStorage.get(p.getUniqueId().toString());
         double rep = ReputationManager.get(p.getUniqueId().toString());
 

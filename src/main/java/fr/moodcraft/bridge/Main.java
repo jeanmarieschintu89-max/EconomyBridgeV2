@@ -107,6 +107,8 @@ public class Main extends JavaPlugin {
         registerCommand("contractdeliver", new ContractDeliverCommand());
         registerCommand("delcontrat", new ContractDeleteCommand());
         registerCommand("contrats", new ContractMenuCommand());
+        registerCommand("rep", new RepCommand());
+        registerCommand("resetrep", new ResetRepCommand());
 
         // =========================
         // 🔁 TASKS

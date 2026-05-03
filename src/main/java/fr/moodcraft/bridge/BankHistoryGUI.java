@@ -5,18 +5,28 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BankHistoryGUI {
 
+    // 🔥 stockage des pages par joueur
+    private static final Map<Player, Integer> pages = new HashMap<>();
+
     public static void open(Player p, int page) {
+
+        pages.put(p, page); // 🔥 sauvegarde page
 
         List<String> logs = TransactionLogger.getAll(p.getName());
         Inventory inv = Bukkit.createInventory(null, 27, "§fHistorique");
 
+        // ❌ vide
         if (logs == null || logs.isEmpty()) {
-            SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BARRIER, "§cVide §7"));
-            p.openInventory(inv);
+            SafeGUI.safeSet(inv, 13,
+                    SafeGUI.item(Material.BARRIER, "§cVide"));
+
+            GUIManager.open(p, "bank_history", inv);
             return;
         }
 
@@ -67,13 +77,13 @@ public class BankHistoryGUI {
                 SafeGUI.safeSet(inv, slot,
                         SafeGUI.item(mat,
                                 "§eTransaction",
-                                "§8──────────── §7",
+                                "§8────────────",
                                 "§7Type: §f" + type,
                                 "§7Montant: " + color + sign + SafeGUI.money(amount),
                                 "",
-                                "§7Date: §7",
+                                "§7Date:",
                                 "§f" + date,
-                                "§8──────────── §7"
+                                "§8────────────"
                         ));
 
                 slot++;
@@ -81,22 +91,28 @@ public class BankHistoryGUI {
             } catch (Exception ignored) {}
         }
 
-        // ⬅ page précédente
+        // ⬅ précédent
         if (page > 0) {
             SafeGUI.safeSet(inv, 21,
-                    SafeGUI.item(Material.ARROW, "§aPage précédente §7"));
+                    SafeGUI.item(Material.ARROW, "§a⬅ Page précédente"));
         }
 
-        // ➡ page suivante
+        // ➡ suivant
         if (start - perPage >= 0) {
             SafeGUI.safeSet(inv, 23,
-                    SafeGUI.item(Material.ARROW, "§aPage suivante §7"));
+                    SafeGUI.item(Material.ARROW, "§aPage suivante ➡"));
         }
 
         // 🔙 retour
         SafeGUI.safeSet(inv, 22,
-                SafeGUI.item(Material.BARRIER, "§cRetour §7"));
+                SafeGUI.item(Material.BARRIER, "§c⬅ Retour"));
 
+        // 🔥 ouverture via GUIManager
         GUIManager.open(p, "bank_history", inv);
+    }
+
+    // 🔥 récupérer page actuelle
+    public static int getPage(Player p) {
+        return pages.getOrDefault(p, 0);
     }
 }

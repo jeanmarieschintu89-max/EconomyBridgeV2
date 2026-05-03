@@ -15,7 +15,7 @@ public class ReputationAddCommand implements CommandExecutor {
         }
 
         if (args.length < 2) {
-            sender.sendMessage("§c❌ Utilisation : /rep <joueur> <+1 | -1 | nombre>");
+            sender.sendMessage("§c❌ Utilisation : /rep <joueur> <nombre>");
             return true;
         }
 
@@ -26,19 +26,19 @@ public class ReputationAddCommand implements CommandExecutor {
             return true;
         }
 
-        double value;
+        int value;
 
         try {
-            value = Double.parseDouble(args[1]);
-        } catch (Exception e) {
+            value = Integer.parseInt(args[1]);
+        } catch (NumberFormatException e) {
             sender.sendMessage("§c❌ Valeur invalide");
             return true;
         }
 
         String id = target.getUniqueId().toString();
 
-        double current = ReputationManager.get(id);
-        double newValue = current + value;
+        int current = ReputationManager.get(id);
+        int newValue = current + value;
 
         if (newValue < 0) newValue = 0;
 

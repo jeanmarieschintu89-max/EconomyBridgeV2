@@ -13,46 +13,45 @@ public class ContractGUIListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        String clean = title.replaceAll("§.", "");
+        // 🔥 CLEAN (très important)
+        String clean = title.replaceAll("§.", "").trim();
+
         if (!clean.equalsIgnoreCase("Contrats")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getClickedInventory() == null) return;
-
-        // 🔒 bloque uniquement le GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
         int slot = e.getRawSlot();
 
-        // 🔊 feedback
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
         switch (slot) {
 
-            // 📄 CRÉER
+            // 📄 créer
             case 11 -> {
                 p.closeInventory();
                 ContractCreateGUI.open(p);
             }
 
-            // 📜 MARCHÉ
+            // 📜 marché
             case 13 -> {
                 p.closeInventory();
                 ContractMarketGUI.open(p);
             }
 
-            // 📦 MES CONTRATS
+            // 📦 mes contrats
             case 15 -> {
                 p.closeInventory();
-                ContractPlayerGUI.open(p); // 👉 important (à créer si pas déjà fait)
+                ContractPlayerGUI.open(p);
             }
 
-            // 🔙 RETOUR
+            // 🔙 retour
             case 22 -> {
                 p.closeInventory();
-                MainMenuGUI.open(p); // 👉 ou MenuCommand si tu préfères
+                MainMenuGUI.open(p);
             }
         }
     }

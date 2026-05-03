@@ -19,68 +19,38 @@ public class ContractCreateListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getClickedInventory() == null) return;
 
-        // 🔒 bloque uniquement le GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
-
-        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
-
-        int slot = e.getRawSlot();
-
-        // =========================
-        // 📦 ITEM (capture visuelle)
-        // =========================
-        if (slot == 10) {
-
-            var cursor = e.getCursor();
-
-            if (cursor != null && !cursor.getType().isAir()) {
-
-                b.item = cursor.getType().name().toLowerCase();
-
-                p.sendMessage("§a✔ Objet sélectionné: §f" + b.item);
-
-                p.setItemOnCursor(null);
-                e.setCancelled(true);
-
-                p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
-
-                ContractCreateGUI.open(p);
-                return;
-            }
-        }
 
         e.setCancelled(true);
 
-        // =========================
-        // 📊 QUANTITÉ
-        // =========================
+        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
+        int slot = e.getRawSlot();
+
         switch (slot) {
 
-            case 12 -> {
-                if (e.isShiftClick()) b.amount += 10;
-                else if (e.isLeftClick()) b.amount++;
-                else if (e.isRightClick() && b.amount > 1) b.amount--;
+            // 📦 ITEM SLOT
+            case 10 -> {
+                e.setCancelled(false);
+                return;
             }
 
-            // =========================
-            // 💰 PRIX
-            // =========================
-            case 14 -> {
-                if (e.isShiftClick()) b.price += 100;
-                else if (e.isLeftClick()) b.price += 10;
-                else if (e.isRightClick() && b.price > 10) b.price -= 10;
-            }
+            // ➖➕ QUANTITÉ
+            case 11 -> b.amount = Math.max(1, b.amount - 10);
+            case 12 -> b.amount = Math.max(1, b.amount - 1);
+            case 14 -> b.amount++;
+            case 15 -> b.amount += 10;
 
-            // =========================
+            // ➖➕ PRIX
+            case 18 -> b.price = Math.max(1, b.price - 100);
+            case 19 -> b.price = Math.max(1, b.price - 10);
+            case 21 -> b.price += 10;
+            case 22 -> b.price += 100;
+
             // ✅ VALIDER
-            // =========================
-            case 22 -> {
+            case 24 -> {
 
                 if (b.item == null || b.amount <= 0 || b.price <= 0) {
-                    p.sendMessage("§8────────────");
                     p.sendMessage("§c❌ Contrat invalide");
-                    p.sendMessage("§7Vérifie les paramètres");
-                    p.sendMessage("§8────────────");
                     return;
                 }
 
@@ -91,21 +61,13 @@ public class ContractCreateListener implements Listener {
                         b.price
                 );
 
-                p.sendMessage("§8────────────");
                 p.sendMessage("§a✔ Contrat créé !");
-                p.sendMessage("§7Objet: §f" + b.item);
-                p.sendMessage("§7Quantité: §a" + b.amount);
-                p.sendMessage("§7Prix: §6" + b.price + "€");
-                p.sendMessage("§8────────────");
-
                 ContractBuilder.remove(p.getUniqueId());
                 p.closeInventory();
                 return;
             }
 
-            // =========================
             // ❌ ANNULER
-            // =========================
             case 26 -> {
                 ContractBuilder.remove(p.getUniqueId());
                 p.closeInventory();
@@ -113,10 +75,8 @@ public class ContractCreateListener implements Listener {
             }
         }
 
-        // 🔊 feedback
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
-        // 🔄 refresh GUI
         ContractCreateGUI.open(p);
     }
 }

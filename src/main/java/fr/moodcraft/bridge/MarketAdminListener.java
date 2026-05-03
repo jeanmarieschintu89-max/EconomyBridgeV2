@@ -13,15 +13,14 @@ public class MarketAdminListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        String clean = title.replaceAll("§.", "").trim();
+        String clean = title.replaceAll("§.", "").trim().toLowerCase();
 
-        // 🔥 plus robuste
-        if (!clean.contains("Admin Marché")) return;
+        // 🔥 ultra robuste (emoji + couleurs safe)
+        if (!clean.contains("admin")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getClickedInventory() == null) return;
 
-        // 🔒 bloque seulement le GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
@@ -32,25 +31,28 @@ public class MarketAdminListener implements Listener {
 
         switch (slot) {
 
+            // 📦 ITEMS
             case 10 -> {
+                p.closeInventory();
+                MarketItemListGUI.open(p);
+            }
+
+            // 🌐 GLOBAL
+            case 13 -> {
                 p.closeInventory();
                 MarketGlobalGUI.open(p);
             }
 
-            case 12 -> {
-                p.closeInventory();
-                MarketItemListGUI.open(p); // 🔥 IMPORTANT
-            }
-
-            case 14 -> {
-                p.sendMessage("§7Simulation bientôt...");
-            }
-
+            // 🔥 RARETÉ (placeholder)
             case 16 -> {
-                p.performCommand("ecoreset");
+                p.sendMessage("§6⚙ Module rareté en préparation...");
             }
 
-            case 22 -> p.closeInventory();
+            // 🔙 RETOUR
+            case 22 -> {
+                p.closeInventory();
+                MainMenuGUI.open(p);
+            }
         }
     }
 }

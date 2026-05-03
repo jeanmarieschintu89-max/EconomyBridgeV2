@@ -12,6 +12,11 @@ commands:
   # 📊 CONTRATS
   # =========================
 
+  toprep:
+    description: Voir le classement réputation
+    usage: /toprep
+    permission: econ.use
+
   rep:
     permission: econ.admin
 

@@ -11,7 +11,10 @@ public class ContractCreateListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
-        if (title == null || !title.contains("Créer contrat")) return;
+        if (title == null) return;
+
+        String clean = title.replaceAll("§.", "");
+        if (!clean.equalsIgnoreCase("Créer contrat")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getClickedInventory() == null) return;
@@ -24,7 +27,7 @@ public class ContractCreateListener implements Listener {
         int slot = e.getRawSlot();
 
         // =========================
-        // 📦 ITEM (CAPTURE RÉELLE)
+        // 📦 ITEM (capture visuelle)
         // =========================
         if (slot == 10) {
 
@@ -34,11 +37,9 @@ public class ContractCreateListener implements Listener {
 
                 b.item = cursor.getType().name().toLowerCase();
 
-                p.sendMessage("§a✔ Item sélectionné: §f" + b.item);
+                p.sendMessage("§a✔ Objet sélectionné: §f" + b.item);
 
-                // enlève item du curseur
                 p.setItemOnCursor(null);
-
                 e.setCancelled(true);
 
                 p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
@@ -76,7 +77,10 @@ public class ContractCreateListener implements Listener {
             case 22 -> {
 
                 if (b.item == null || b.amount <= 0 || b.price <= 0) {
+                    p.sendMessage("§8────────────");
                     p.sendMessage("§c❌ Contrat invalide");
+                    p.sendMessage("§7Vérifie les paramètres");
+                    p.sendMessage("§8────────────");
                     return;
                 }
 
@@ -87,7 +91,13 @@ public class ContractCreateListener implements Listener {
                         b.price
                 );
 
+                p.sendMessage("§8────────────");
                 p.sendMessage("§a✔ Contrat créé !");
+                p.sendMessage("§7Objet: §f" + b.item);
+                p.sendMessage("§7Quantité: §a" + b.amount);
+                p.sendMessage("§7Prix: §6" + b.price + "€");
+                p.sendMessage("§8────────────");
+
                 ContractBuilder.remove(p.getUniqueId());
                 p.closeInventory();
                 return;

@@ -1,10 +1,10 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.ChatColor;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.entity.Player;
 
 public class BanqueItemListListener implements Listener {
 
@@ -19,7 +19,6 @@ public class BanqueItemListListener implements Listener {
         if (!clean.equalsIgnoreCase("Items Marché")) return;
 
         if (e.getClickedInventory() == null) return;
-
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
@@ -30,10 +29,14 @@ public class BanqueItemListListener implements Listener {
         if (item == null || item.getType().isAir()) return;
         if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return;
 
-        // 🔊 feedback
-        p.playSound(p.getLocation(), org.bukkit.Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+        // 🔊 son
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
-        // 🔥 NOUVEAU SYSTEME (plus de sélection par item ici)
-        BanqueItemGUI.open(p);
+        // 🔥 RÉCUP NOM ITEM
+        String name = item.getItemMeta().getDisplayName();
+        String cleanItem = name.replace("§b", "").toLowerCase();
+
+        // 🔥 OUVRIR MENU MODIF AVEC ITEM
+        BanqueItemGUI.open(p, cleanItem);
     }
 }

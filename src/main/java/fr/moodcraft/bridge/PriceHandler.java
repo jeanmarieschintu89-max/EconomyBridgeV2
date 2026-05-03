@@ -35,7 +35,7 @@ public class PriceHandler implements GUIHandler {
     }
 
     // =========================
-    // 💰 VENTE RÉELLE
+    // 💰 VENTE AVEC TAXE
     // =========================
     private void sell(Player p, String id, Material mat) {
 
@@ -47,7 +47,11 @@ public class PriceHandler implements GUIHandler {
         }
 
         double unit = MarketEngine.getPrice(id);
-        double total = unit * amount;
+        double gross = unit * amount;
+
+        double taxRate = 0.20;
+        double tax = gross * taxRate;
+        double total = gross - tax;
 
         // 💸 PAIEMENT
         VaultHook.getEconomy().depositPlayer(p, total);
@@ -60,11 +64,14 @@ public class PriceHandler implements GUIHandler {
 
         // 💬 MESSAGE
         p.sendMessage("§a✔ Vente: §f" + amount + "x " + id +
-                " §7→ §e" + String.format("%.2f", total) + "€");
+                "\n§7Brut: §f" + String.format("%.2f", gross) + "€" +
+                "\n§cTaxe (20%): §f-" + String.format("%.2f", tax) + "€" +
+                "\n§eNet: §f" + String.format("%.2f", total) + "€");
 
-        // 🎉 BONUS VISUEL
+        // 🎉 TITLE
         p.sendTitle("§a+" + String.format("%.2f", total) + "€",
-                "§7Vente effectuée", 5, 20, 5);
+                "§cTaxe: -" + String.format("%.2f", tax) + "€",
+                5, 20, 5);
     }
 
     // =========================

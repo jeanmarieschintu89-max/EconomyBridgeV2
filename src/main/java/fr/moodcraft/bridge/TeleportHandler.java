@@ -19,7 +19,7 @@ public class TeleportHandler implements GUIHandler {
             case 12 -> p.performCommand("warp mini-jeux");
 
             // 🌍 EXPLORATION (RTP)
-            case 13 -> p.performCommand("rtp");
+            case 13 -> p.performCommand("tpr");
 
             // 🏠 SPAWN
             case 14 -> p.performCommand("spawn");

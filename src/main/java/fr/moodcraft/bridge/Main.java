@@ -1,124 +1,186 @@
-@Override
-public void onEnable() {
+package fr.moodcraft.bridge;
 
-    instance = this;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
-    saveDefaultConfig();
+import java.util.Map;
 
-    // =========================
-    // 📦 INIT DATA
-    // =========================
-    BankStorage.init();
-    TransactionLogger.init();
-    ReputationManager.init();
-    ContractHistoryManager.init();
-    MarketStorage.init();
+public class Main extends JavaPlugin {
 
-    // =========================
-    // 📊 CONFIG MARCHÉ
-    // =========================
-    loadBase();
-    loadSection("activity", MarketState.activity);
-    loadSection("impact", MarketState.impact);
-    loadSection("rarity", MarketState.rarity);
-    loadSection("weight", MarketState.weight);
+    private static Main instance;
 
-    // =========================
-    // 📦 LISTENERS
-    // =========================
-    registerEvents(
+    public static Main getInstance() {
+        return instance;
+    }
 
-            new ShopListener(),
-            new MineListener(),
-            new GUIListener(),
+    @Override
+    public void onEnable() {
 
-            // 🏦 BANQUE
-            new BankListener(),
-            new InventoryGuardListener(),
-            new BankHistoryListener(),
+        instance = this;
 
-            // ⚙ ADMIN
-            new BanqueAdminListener(),
-            new BanqueConfigListener(),
+        saveDefaultConfig();
 
-            // 📦 ITEMS
-            new BanqueItemListListener(),
-            new BanqueItemGUIListener(),
+        // =========================
+        // 📦 INIT DATA
+        // =========================
+        BankStorage.init();
+        TransactionLogger.init();
+        ReputationManager.init();
+        ContractHistoryManager.init();
+        MarketStorage.init();
 
-            // 📜 MENUS
-            new MainMenuListener(),
-            new TeleportListener(),
+        // =========================
+        // 📊 CONFIG MARCHÉ
+        // =========================
+        loadBase();
+        loadSection("activity", MarketState.activity);
+        loadSection("impact", MarketState.impact);
+        loadSection("rarity", MarketState.rarity);
+        loadSection("weight", MarketState.weight);
 
-            // 💰 ECONOMIE
-            new PayListener(),
-            new TransferListener(),
+        // =========================
+        // 📦 LISTENERS
+        // =========================
+        registerEvents(
 
-            // 🔥 CONTRATS (FULL SYSTEM)
-            new ContractGUIListener(),
-            new ContractCreateListener(),
-            new ContractMarketListener(),
-            new ContractPlayerListener(),
-            new BookSignListener()
-    );
+                new ShopListener(),
+                new MineListener(),
+                new GUIListener(),
 
-    // =========================
-    // 📜 COMMANDES
-    // =========================
-    registerCommand("prix", new PrixCommand());
-    registerCommand("syncprix", new SyncCommand());
-    registerCommand("trend", new GetTrendCommand());
+                // 🏦 BANQUE
+                new BankListener(),
+                new InventoryGuardListener(),
+                new BankHistoryListener(),
 
-    registerCommand("ecoreset", new EcoResetCommand());
-    registerCommand("ecotest", new EcoTestCommand());
-    registerCommand("ecoreload", new EcoReloadCommand());
+                // ⚙ ADMIN
+                new BanqueAdminListener(),
+                new BanqueConfigListener(),
 
-    registerCommand("banqueadmin", new BanqueAdminCommand());
-    registerCommand("menu", new MenuCommand());
+                // 📦 ITEMS
+                new BanqueItemListListener(),
+                new BanqueItemGUIListener(),
 
-    registerCommand("transactions", new TransactionsCommand());
-    registerCommand("iban", new IbanCommand());
-    registerCommand("ibanpay", new IbanPayCommand());
+                // 📜 MENUS
+                new MainMenuListener(),
+                new TeleportListener(),
 
-    // ⭐ RÉPUTATION
-    registerCommand("resetrep", new ReputationResetCommand());
-    registerCommand("reputation", new ReputationCommand());
-    registerCommand("rep", new ReputationAddCommand());
+                // 💰 ECONOMIE
+                new PayListener(),
+                new TransferListener(),
 
-    // 💰 BANQUE ADMIN
-    registerCommand("bank", new BankAdminCommand());
+                // 🔥 CONTRATS
+                new ContractGUIListener(),
+                new ContractCreateListener(),
+                new ContractMarketListener(),
+                new ContractPlayerListener(),
+                new BookSignListener()
+        );
 
-    // 📄 CONTRATS
-    registerCommand("contract", new ContractCommand());
-    registerCommand("contractaccept", new ContractAcceptCommand());
-    registerCommand("contractdeliver", new ContractDeliverCommand());
-    registerCommand("delcontrat", new ContractDeleteCommand());
-    registerCommand("contrats", new ContractMenuCommand());
+        // =========================
+        // 📜 COMMANDES
+        // =========================
+        registerCommand("prix", new PrixCommand());
+        registerCommand("syncprix", new SyncCommand());
+        registerCommand("trend", new GetTrendCommand());
 
-    // =========================
-    // 🔁 TASKS
-    // =========================
+        registerCommand("ecoreset", new EcoResetCommand());
+        registerCommand("ecotest", new EcoTestCommand());
+        registerCommand("ecoreload", new EcoReloadCommand());
 
-    ShopIndex.rebuild();
+        registerCommand("banqueadmin", new BanqueAdminCommand());
+        registerCommand("menu", new MenuCommand());
 
-    Bukkit.getScheduler().runTaskTimer(this,
-            ShopIndex::rebuild,
-            20L * 60,
-            20L * 60
-    );
+        registerCommand("transactions", new TransactionsCommand());
+        registerCommand("iban", new IbanCommand());
+        registerCommand("ibanpay", new IbanPayCommand());
 
-    Bukkit.getScheduler().runTaskTimer(this,
-            MarketEngine::tick,
-            20L,
-            20L * 45
-    );
+        // ⭐ RÉPUTATION
+        registerCommand("resetrep", new ReputationResetCommand());
+        registerCommand("reputation", new ReputationCommand());
+        registerCommand("rep", new ReputationAddCommand());
 
-    // =========================
-    // 🚀 DEBUG VISUEL (ULTRA UTILE)
-    // =========================
-    getLogger().info("§a==============================");
-    getLogger().info("§a EconomyBridge chargé !");
-    getLogger().info("§e Contrats: §aOK");
-    getLogger().info("§e Banque: §aOK");
-    getLogger().info("§e Marché: §aOK");
-    getLogger().info("§a==============================");
+        // 💰 BANQUE ADMIN
+        registerCommand("bank", new BankAdminCommand());
+
+        // 📄 CONTRATS
+        registerCommand("contract", new ContractCommand());
+        registerCommand("contractaccept", new ContractAcceptCommand());
+        registerCommand("contractdeliver", new ContractDeliverCommand());
+        registerCommand("delcontrat", new ContractDeleteCommand());
+        registerCommand("contrats", new ContractMenuCommand());
+
+        // =========================
+        // 🔁 TASKS
+        // =========================
+        ShopIndex.rebuild();
+
+        Bukkit.getScheduler().runTaskTimer(this,
+                ShopIndex::rebuild,
+                20L * 60,
+                20L * 60
+        );
+
+        Bukkit.getScheduler().runTaskTimer(this,
+                MarketEngine::tick,
+                20L,
+                20L * 45
+        );
+
+        // =========================
+        // 🚀 DEBUG
+        // =========================
+        getLogger().info("==============================");
+        getLogger().info("EconomyBridge charge !");
+        getLogger().info("Contrats: OK");
+        getLogger().info("Banque: OK");
+        getLogger().info("Marche: OK");
+        getLogger().info("==============================");
+    }
+
+    @Override
+    public void onDisable() {
+        BankStorage.save();
+        ReputationManager.save();
+        MarketStorage.save();
+    }
+
+    private void registerEvents(org.bukkit.event.Listener... listeners) {
+        for (var listener : listeners) {
+            Bukkit.getPluginManager().registerEvents(listener, this);
+        }
+    }
+
+    private void registerCommand(String name, org.bukkit.command.CommandExecutor executor) {
+        if (getCommand(name) != null) {
+            getCommand(name).setExecutor(executor);
+        } else {
+            getLogger().warning("Commande non trouvee: " + name);
+        }
+    }
+
+    private void loadBase() {
+        if (getConfig().getConfigurationSection("base") == null) return;
+
+        for (String key : getConfig().getConfigurationSection("base").getKeys(false)) {
+            double value = getConfig().getDouble("base." + key);
+
+            MarketState.base.put(key, value);
+
+            if (!MarketState.price.containsKey(key)) {
+                MarketState.price.put(key, value);
+            }
+
+            MarketState.stock.putIfAbsent(key, 0.0);
+            MarketState.buy.putIfAbsent(key, 0.0);
+            MarketState.sell.putIfAbsent(key, 0.0);
+        }
+    }
+
+    private void loadSection(String path, Map<String, Double> map) {
+        if (getConfig().getConfigurationSection(path) == null) return;
+
+        for (String key : getConfig().getConfigurationSection(path).getKeys(false)) {
+            map.put(key, getConfig().getDouble(path + "." + key));
+        }
+    }
 }

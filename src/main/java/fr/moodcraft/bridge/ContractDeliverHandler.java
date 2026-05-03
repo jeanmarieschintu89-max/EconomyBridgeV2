@@ -93,7 +93,7 @@ public class ContractDeliverHandler implements GUIHandler {
         ReputationManager.add(p.getUniqueId().toString(), 2);
 
         contract.paid = true;
-        contract.status = "COMPLETED";
+        contract.status = Contract.Status.COMPLETED;
 
         ContractStorage.update(contract);
 

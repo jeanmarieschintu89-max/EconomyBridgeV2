@@ -11,6 +11,9 @@ public class ContractPlayerGUI {
 
     public static void open(Player p) {
 
+        // 🔥 IMPORTANT
+        ContractStorage.clearSlots();
+
         Inventory inv = Bukkit.createInventory(null, 54, "§fMes contrats");
 
         List<Contract> list = ContractManager.getAll();
@@ -19,10 +22,16 @@ public class ContractPlayerGUI {
 
         for (Contract c : list) {
 
-            if (!p.getUniqueId().equals(c.worker)) continue;
+            // 🔒 uniquement ses contrats en cours
+            if (!p.getUniqueId().equals(c.acceptor)) continue;
+            if (!"IN_PROGRESS".equalsIgnoreCase(c.status)) continue;
+
             if (slot >= 45) break;
 
             double total = c.amount * c.price;
+
+            // 🔗 mapping slot → contrat
+            ContractStorage.setSlot(slot, c);
 
             SafeGUI.safeSet(inv, slot, SafeGUI.item(
                     Material.CHEST,

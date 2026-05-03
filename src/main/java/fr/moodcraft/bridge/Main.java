@@ -44,31 +44,23 @@ public class Main extends JavaPlugin {
         // =========================
         registerEvents(
 
-                // 📦 CORE
+                // 📦 CORE (OK)
                 new ShopListener(),
                 new MineListener(),
 
-                // 📊 ADMIN MARKET
-                new MarketGlobalListener(),
-                new MarketItemListener(),
-
-                // 📄 CONTRATS
-                new ContractCreateListener(), // 🔥 dépôt item uniquement
+                // 📄 CONTRATS (OK si PAS GUI click)
                 new BookSignListener(),
 
-                // 📜 MENUS
-                new TeleportListener(),
-
-                // 💰 ECONOMIE
+                // 💰 ECONOMIE (OK)
                 new PayListener(),
 
-                // 🛡️ GUARD
+                // 🛡️ GUARD (IMPORTANT)
                 new InventoryGuardListener(),
 
-                // 🔥 RESET GUI (DOIT être AVANT)
+                // 🔥 RESET GUI
                 new InventoryCloseListener(),
 
-                // 🧠 GLOBAL GUI (DOIT être DERNIER)
+                // 🧠 SYSTEM CENTRAL
                 new GlobalGUIListener()
         );
 
@@ -94,6 +86,9 @@ public class Main extends JavaPlugin {
         GUIManager.register("bank_history", new BankHistoryHandler());
 
         GUIManager.register("main_menu", new MainMenuHandler());
+
+        // 👉 AJOUT IMPORTANT (tu l’avais oublié)
+        GUIManager.register("market_item_list", new MarketItemListHandler());
 
         // =========================
         // 📜 COMMANDES

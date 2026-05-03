@@ -11,7 +11,7 @@ public class InventoryCloseListener implements Listener {
 
         if (!(e.getPlayer() instanceof Player p)) return;
 
-        // 🔥 reset GUI actif
+        // 🔥 reset du GUI actif
         GUIManager.close(p);
     }
 }

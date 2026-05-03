@@ -11,6 +11,9 @@ public class ContractMarketGUI {
 
     public static void open(Player p) {
 
+        // 🔥 IMPORTANT
+        ContractStorage.clearSlots();
+
         Inventory inv = Bukkit.createInventory(null, 54, "§fMarché des contrats");
 
         List<Contract> list = ContractManager.getOpenContracts();
@@ -24,7 +27,7 @@ public class ContractMarketGUI {
             String ownerName = Bukkit.getOfflinePlayer(c.owner).getName();
             double total = c.amount * c.price;
 
-            // 🔥 AJOUT IMPORTANT (mapping slot → contrat)
+            // 🔗 mapping slot → contrat
             ContractStorage.setSlot(slot, c);
 
             SafeGUI.safeSet(inv, slot, SafeGUI.item(

@@ -49,6 +49,7 @@ public class Main extends JavaPlugin {
 
                 // 🏦 BANQUE
                 new BankListener(),
+                new BankTransferListener(),
                 new InventoryGuardListener(),
                 new BankHistoryListener(),
 

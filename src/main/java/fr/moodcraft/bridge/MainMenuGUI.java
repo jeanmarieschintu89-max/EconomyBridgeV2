@@ -27,7 +27,7 @@ public class MainMenuGUI {
                 : "§7Débutant";
 
         // =========================
-        // 👑 TOP 1 (pour affichage)
+        // 👑 TOP 1
         // =========================
         String topName = "Aucun";
 
@@ -36,6 +36,13 @@ public class MainMenuGUI {
             String uuid = top.keySet().iterator().next();
             topName = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
         }
+
+        // =========================
+        // 📍 POSITION JOUEUR
+        // =========================
+        int pos = ReputationManager.getPosition(p.getUniqueId().toString());
+
+        boolean isTop3 = pos > 0 && pos <= 3;
 
         // =========================
         // 👤 PROFIL
@@ -146,7 +153,7 @@ public class MainMenuGUI {
         // =========================
         // 👑 CLASSEMENT
         // =========================
-        SafeGUI.safeSet(inv, 23, SafeGUI.item(
+        var classementItem = SafeGUI.item(
                 Material.GOLDEN_HELMET,
                 "§6Classement",
                 "§8────────────",
@@ -154,8 +161,17 @@ public class MainMenuGUI {
                 "",
                 "§6👑 Leader: §f" + topName,
                 "",
+                pos > 0 ? "§7Ta position: §e#" + pos : "",
+                "",
                 "§e▶ Voir"
-        ));
+        );
+
+        // ✨ glow si top 3
+        if (isTop3) {
+            classementItem = SafeGUI.glow(classementItem);
+        }
+
+        SafeGUI.safeSet(inv, 23, classementItem);
 
         // =========================
         // ❌ FERMER

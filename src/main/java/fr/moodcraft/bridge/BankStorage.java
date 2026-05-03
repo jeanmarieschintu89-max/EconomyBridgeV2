@@ -42,10 +42,40 @@ public class BankStorage {
     public static void set(String uuid, double value) {
         config.set(uuid + ".balance", value);
 
-        // 🔥 MAJ NOM AUTOMATIQUE
         updateName(uuid);
-
         save();
+    }
+
+    // =========================
+    // ➕ ADD MONEY
+    // =========================
+    public static void add(String uuid, double amount) {
+        double current = get(uuid);
+        set(uuid, current + amount);
+    }
+
+    // =========================
+    // ➖ REMOVE MONEY
+    // =========================
+    public static boolean remove(String uuid, double amount) {
+
+        double current = get(uuid);
+
+        if (current < amount) return false;
+
+        set(uuid, current - amount);
+        return true;
+    }
+
+    // =========================
+    // 🔄 TRANSFER MONEY
+    // =========================
+    public static boolean transfer(String from, String to, double amount) {
+
+        if (!remove(from, amount)) return false;
+
+        add(to, amount);
+        return true;
     }
 
     // =========================

@@ -60,7 +60,9 @@ public class Main extends JavaPlugin {
                 new MarketItemListener(),
 
                 // 📄 CONTRATS
-                new ContractGUIListener(),
+                // ❌ SUPPRIMÉ → remplacé par GUIManager
+                // new ContractGUIListener(),
+
                 new ContractCreateListener(),
                 new ContractMarketListener(),
                 new ContractPlayerListener(),
@@ -78,21 +80,19 @@ public class Main extends JavaPlugin {
                 // 🛡️ GUARD
                 new InventoryGuardListener(),
 
-                // ⚠️ GUI GLOBAL (NOUVEAU SYSTÈME)
+                // 🧠 GUI GLOBAL SYSTEM
                 new GlobalGUIListener(),
 
-                // ⚠️ ANCIEN (on garde temporairement)
+                // ⚠️ ancien système (temporaire)
                 new GUIListener()
         );
 
         // =========================
-        // 🔥 GUI MANAGER REGISTER
+        // 🧠 GUI MANAGER REGISTER
         // =========================
         GUIManager.register("admin_market", new MarketAdminHandler());
-
-        // 👉 on ajoutera les autres après test
-        // GUIManager.register("contract_menu", new ContractGUIHandler());
-        // GUIManager.register("contract_create", new ContractCreateHandler());
+        GUIManager.register("contract_menu", new ContractGUIHandler());
+        GUIManager.register("contract_create", new ContractCreateHandler());
 
         // =========================
         // 📜 COMMANDES
@@ -156,6 +156,10 @@ public class Main extends JavaPlugin {
         ReputationManager.save();
         MarketStorage.save();
     }
+
+    // =========================
+    // 🔧 UTILS
+    // =========================
 
     private void registerEvents(Listener... listeners) {
         for (Listener listener : listeners) {

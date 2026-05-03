@@ -60,6 +60,6 @@ public class ContractPlayerGUI {
                 "§7Retour au menu contrats"
         ));
 
-        p.openInventory(inv);
+        GUIManager.open(p, "contract_player", inv);
     }
 }

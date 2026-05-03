@@ -1,3 +1,4 @@
+
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
@@ -61,8 +62,9 @@ public class Main extends JavaPlugin {
 
         // 💰 BANQUE
         GUIManager.register("bank_main", new BankHandler());
-        GUIManager.register("bank_transfer", new BankTransferHandler());
+        GUIManager.register("transfer_type", new TransferTypeHandler());     // ✅ NOUVEAU
         GUIManager.register("transfer_target", new TargetPlayerHandler());
+        GUIManager.register("transfer_amount", new TransferAmountHandler()); // ✅ NOUVEAU
         GUIManager.register("transfer_confirm", new TransferConfirmHandler());
         GUIManager.register("bank_history", new BankHistoryHandler());
 

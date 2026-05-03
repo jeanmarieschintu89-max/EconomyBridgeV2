@@ -29,14 +29,23 @@ public class ContractAmountListener implements Listener {
 
         switch (slot) {
 
+            // ➖
             case 10 -> b.amount = Math.max(1, b.amount - 10);
             case 11 -> b.amount = Math.max(1, b.amount - 1);
 
+            // ➕
             case 15 -> b.amount += 1;
             case 16 -> b.amount += 10;
 
-            case 22 -> b.amount = 64; // max stack (tu peux changer)
+            // 📄 VALIDER
+            case 13 -> {
+                p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.2f);
+                p.closeInventory();
+                ContractCreateGUI.open(p);
+                return;
+            }
 
+            // 🔙 RETOUR
             case 26 -> {
                 p.closeInventory();
                 ContractCreateGUI.open(p);
@@ -48,9 +57,10 @@ public class ContractAmountListener implements Listener {
             }
         }
 
+        // 🔊 feedback
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
-        // 🔥 refresh instant
+        // 🔥 refresh
         ContractAmountGUI.open(p);
     }
 }

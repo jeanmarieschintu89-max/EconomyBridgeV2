@@ -39,6 +39,6 @@ public class BankTransferGUI {
                 "§8────────────",
                 "§7Retour au menu banque"));
 
-        p.openInventory(inv);
+        GUIManager.open(p, "bank_transfer", inv);
     }
 }

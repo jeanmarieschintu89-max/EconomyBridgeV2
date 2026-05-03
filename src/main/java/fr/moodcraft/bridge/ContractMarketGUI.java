@@ -11,7 +11,7 @@ public class ContractMarketGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 54, "§eMarché des contrats");
+        Inventory inv = Bukkit.createInventory(null, 54, "§fMarché des contrats");
 
         List<Contract> list = ContractManager.getOpenContracts();
 
@@ -23,12 +23,18 @@ public class ContractMarketGUI {
 
             String ownerName = Bukkit.getOfflinePlayer(c.owner).getName();
 
+            double total = c.amount * c.price;
+
             SafeGUI.safeSet(inv, slot, SafeGUI.item(
                     Material.PAPER,
-                    "§6Contrat #" + c.id,
-                    "§7Item: §f" + c.item,
-                    "§7Quantité: §f" + c.amount,
-                    "§7Prix: §a" + c.price + "€",
+                    "§eContrat #" + c.id,
+                    "§8────────────",
+                    "§7Objet demandé",
+                    "§f" + c.item,
+                    "",
+                    "§7Quantité: §a" + c.amount,
+                    "§7Prix unité: §6" + c.price + "€",
+                    "§7Total: §a" + total + "€",
                     "",
                     "§7Client: §e" + ownerName,
                     "",
@@ -38,8 +44,25 @@ public class ContractMarketGUI {
             slot++;
         }
 
-        // retour
-        SafeGUI.safeSet(inv, 49, SafeGUI.item(Material.ARROW, "§cRetour"));
+        // 💡 aucun contrat
+        if (list.isEmpty()) {
+            SafeGUI.safeSet(inv, 22, SafeGUI.item(
+                    Material.BARRIER,
+                    "§cAucun contrat",
+                    "§8────────────",
+                    "§7Aucune demande active",
+                    "",
+                    "§7Reviens plus tard"
+            ));
+        }
+
+        // 🔙 RETOUR
+        SafeGUI.safeSet(inv, 49, SafeGUI.item(
+                Material.ARROW,
+                "§cRetour",
+                "§8────────────",
+                "§7Retour au menu contrats"
+        ));
 
         p.openInventory(inv);
     }

@@ -60,11 +60,9 @@ public class Main extends JavaPlugin {
                 new MarketItemListener(),
 
                 // 📄 CONTRATS
-                // ❌ SUPPRIMÉ → remplacé par GUIManager
-                // new ContractGUIListener(),
-
                 new ContractCreateListener(),
                 new ContractPriceListener(),
+                new ContractAmountListener(), // 🔥 AJOUT IMPORTANT
                 new BookSignListener(),
 
                 // 📜 MENUS
@@ -77,9 +75,11 @@ public class Main extends JavaPlugin {
                 // 🛡️ GUARD
                 new InventoryGuardListener(),
 
+                // 🔥 RESET GUI AVANT GLOBAL
+                new InventoryCloseListener(),
+
                 // 🧠 GUI GLOBAL SYSTEM
                 new GlobalGUIListener(),
-                new InventoryCloseListener(),
 
                 // ⚠️ ancien système (temporaire)
                 new GUIListener()

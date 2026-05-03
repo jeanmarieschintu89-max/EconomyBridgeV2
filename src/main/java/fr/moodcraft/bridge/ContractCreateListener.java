@@ -2,8 +2,7 @@ package fr.moodcraft.bridge;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.event.EventHandler;
+import org.bukkit.event.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class ContractCreateListener implements Listener {
@@ -14,7 +13,8 @@ public class ContractCreateListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        String clean = title.replaceAll("§.", "");
+        String clean = title.replaceAll("§.", "").trim();
+
         if (!clean.equalsIgnoreCase("Créer contrat")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
@@ -23,36 +23,27 @@ public class ContractCreateListener implements Listener {
 
         e.setCancelled(true);
 
-        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
+        ContractBuilder b = ContractBuilder.get(p);
         if (b == null) return;
 
-        int slot = e.getRawSlot();
+        switch (e.getRawSlot()) {
 
-        switch (slot) {
-
-            // 📦 ITEM
             case 10 -> {
-                e.setCancelled(false);
+                e.setCancelled(false); // permet dépôt item
                 return;
             }
 
-            // 📊 QUANTITÉ → menu
             case 12 -> {
-                p.closeInventory();
                 ContractAmountGUI.open(p);
                 return;
             }
 
-            // 💰 PRIX → menu
             case 14 -> {
-                p.closeInventory();
                 ContractPriceGUI.open(p);
                 return;
             }
 
-            // ✅ VALIDER
             case 22 -> {
-
                 if (b.item == null || b.amount <= 0 || b.price <= 0) {
                     p.sendMessage("§c❌ Contrat invalide");
                     return;
@@ -66,14 +57,13 @@ public class ContractCreateListener implements Listener {
                 );
 
                 p.sendMessage("§a✔ Contrat créé !");
-                ContractBuilder.remove(p.getUniqueId());
+                ContractBuilder.remove(p);
                 p.closeInventory();
                 return;
             }
 
-            // ❌ ANNULER
             case 26 -> {
-                ContractBuilder.remove(p.getUniqueId());
+                ContractBuilder.remove(p);
                 p.closeInventory();
                 return;
             }

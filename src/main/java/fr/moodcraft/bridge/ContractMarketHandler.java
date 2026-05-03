@@ -35,7 +35,7 @@ public class ContractMarketHandler implements GUIHandler {
 
         // ✅ ACCEPTATION
         contract.acceptor = p.getUniqueId();
-        contract.status = "IN_PROGRESS";
+        contract.status = Contract.Status.IN_PROGRESS;
 
         ContractStorage.update(contract);
 

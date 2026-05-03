@@ -12,19 +12,20 @@ public class InventoryCloseListener implements Listener {
 
         if (!(e.getPlayer() instanceof Player p)) return;
 
-        // mémorise l’ID au moment de la fermeture
         String oldId = GUIManager.get(p);
         if (oldId == null) return;
 
-        // ⏳ attendre 1 tick pour laisser le nouveau GUI s’ouvrir
+        // ⏳ On attend 1 tick (sinon conflit entre anciens/nouveaux GUI)
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
 
-            // si l’ID n’a pas changé → vrai close → on nettoie
             String current = GUIManager.get(p);
+
+            // 🧠 Si c’est le même GUI → vrai close
             if (oldId.equals(current)) {
                 GUIManager.close(p);
             }
-            // sinon: un autre GUI a été ouvert entre-temps → on NE TOUCHE PAS
+
+            // 🔥 Sinon → un autre GUI a été ouvert → ON GARDE
         });
     }
 }

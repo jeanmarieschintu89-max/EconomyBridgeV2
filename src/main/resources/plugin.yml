@@ -1,10 +1,11 @@
+
 name: EconomyBridge
 main: fr.moodcraft.bridge.Main
 version: 1.0
 api-version: 1.20
 
 depend: [Vault]
-softdepend: [Jobs] # 🔥 IMPORTANT (évite crash si Jobs absent)
+softdepend: [Jobs]
 
 commands:
 
@@ -12,19 +13,33 @@ commands:
   # 📊 CONTRATS
   # =========================
 
-  topgui:
-    description: Classement GUI
+  contract:
+    description: Commande principale contrats
+    usage: /contract
     permission: econ.use
+    aliases: [contrat]
 
-  toprep:
-    description: Voir le classement réputation
-    usage: /toprep
+  contrats:
+    description: Ouvrir le menu des contrats
+    usage: /contrats
     permission: econ.use
+    aliases: [ct]
 
-  rep:
-    permission: econ.admin
+  contrataccept:
+    description: Accepter un contrat
+    usage: /contrataccept <id>
+    permission: econ.use
+    aliases: [caccept]
 
-  resetrep:
+  contractdeliver:
+    description: Livrer un contrat
+    usage: /contractdeliver <id>
+    permission: econ.use
+    aliases: [cdeliver]
+
+  delcontrat:
+    description: Supprimer un contrat
+    usage: /delcontrat <id>
     permission: econ.admin
 
   contractlog:
@@ -32,34 +47,28 @@ commands:
     usage: /contractlog [joueur]
     permission: econ.admin
 
-  delcontrat:
-    description: Supprimer un contrat
-    usage: /delcontrat <id>
-    permission: econ.admin
-
-  contrats:
-    description: Ouvrir le menu des contrats
-    usage: /contrats
-    permission: econ.use
-
-  contrataccept:
-    description: Accepter un contrat
-    usage: /contrataccept <id>
-    permission: econ.use
-
-  contractdeliver:
-    description: Livrer un contrat
-    usage: /contractdeliver <id>
-    permission: econ.use
-
   # =========================
   # ⭐ RÉPUTATION
   # =========================
+
+  rep:
+    description: Modifier la réputation
+    usage: /rep <joueur> <valeur>
+    permission: econ.admin
 
   resetrep:
     description: Reset réputation joueur
     usage: /resetrep <joueur>
     permission: econ.admin
+
+  toprep:
+    description: Voir le classement réputation
+    usage: /toprep
+    permission: econ.use
+
+  topgui:
+    description: Classement GUI
+    permission: econ.use
 
   # =========================
   # 💰 MARCHÉ

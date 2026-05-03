@@ -48,7 +48,7 @@ public class BookSignListener implements Listener {
         c.item = b.item;
         c.amount = b.amount;
         c.price = b.price;
-        c.status = "OPEN";
+        c.status = Contract.Status.OPEN;
         c.paid = false;
 
         ContractStorage.add(c);

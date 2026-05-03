@@ -9,7 +9,7 @@ public class MarketAdminHandler implements GUIHandler {
 
         switch (slot) {
 
-            case 11 -> MarketItemListGUI.open(p);
+            case 11 -> PriceGUI.open(p);
 
             case 13 -> PriceGUI.open(p); // 🔥 FIX
 

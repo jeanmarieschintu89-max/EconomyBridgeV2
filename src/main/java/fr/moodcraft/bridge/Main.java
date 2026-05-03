@@ -68,7 +68,6 @@ public class Main extends JavaPlugin {
 
                 // 💰 ECONOMIE
                 new PayListener(),
-                new TransferListener(),
 
                 // 🔥 CONTRATS
                 new ContractGUIListener(),

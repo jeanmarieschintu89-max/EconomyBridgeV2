@@ -48,7 +48,7 @@ public class Main extends JavaPlugin {
                 new ShopListener(),
                 new MineListener(),
 
-                // 🏦 BANQUE
+                // 🏦 BANQUE (pas encore migré)
                 new BankListener(),
                 new BankTransferListener(),
                 new TargetPlayerListener(),
@@ -60,7 +60,7 @@ public class Main extends JavaPlugin {
                 new MarketItemListener(),
 
                 // 📄 CONTRATS
-                new ContractCreateListener(),
+                new ContractCreateListener(), // 🔥 garde pour dépôt item
                 new BookSignListener(),
 
                 // 📜 MENUS
@@ -73,14 +73,11 @@ public class Main extends JavaPlugin {
                 // 🛡️ GUARD
                 new InventoryGuardListener(),
 
-                // 🔥 RESET GUI AVANT GLOBAL
+                // 🔥 RESET GUI (DOIT être avant Global)
                 new InventoryCloseListener(),
 
                 // 🧠 GUI GLOBAL SYSTEM
-                new GlobalGUIListener(),
-
-                // ⚠️ ancien système (temporaire)
-                new GUIListener()
+                new GlobalGUIListener()
         );
 
         // =========================

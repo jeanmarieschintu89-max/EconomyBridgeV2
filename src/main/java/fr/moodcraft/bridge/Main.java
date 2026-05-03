@@ -48,13 +48,12 @@ public class Main extends JavaPlugin {
                 new ShopListener(),
                 new MineListener(),
 
-
                 // 📊 ADMIN MARKET
                 new MarketGlobalListener(),
                 new MarketItemListener(),
 
                 // 📄 CONTRATS
-                new ContractCreateListener(), // 🔥 garde pour dépôt item
+                new ContractCreateListener(), // 🔥 dépôt item uniquement
                 new BookSignListener(),
 
                 // 📜 MENUS
@@ -66,10 +65,10 @@ public class Main extends JavaPlugin {
                 // 🛡️ GUARD
                 new InventoryGuardListener(),
 
-                // 🔥 RESET GUI (DOIT être avant Global)
+                // 🔥 RESET GUI (DOIT être AVANT)
                 new InventoryCloseListener(),
 
-                // 🧠 GUI GLOBAL SYSTEM
+                // 🧠 GLOBAL GUI (DOIT être DERNIER)
                 new GlobalGUIListener()
         );
 
@@ -77,20 +76,24 @@ public class Main extends JavaPlugin {
         // 🧠 GUI MANAGER REGISTER
         // =========================
         GUIManager.register("admin_market", new MarketAdminHandler());
+
         GUIManager.register("contract_menu", new ContractGUIHandler());
         GUIManager.register("contract_create", new ContractCreateHandler());
         GUIManager.register("contract_price", new ContractPriceHandler());
         GUIManager.register("contract_amount", new ContractAmountHandler());
         GUIManager.register("contract_market", new ContractMarketHandler());
         GUIManager.register("contract_player", new ContractPlayerHandler());
+
         GUIManager.register("minerais", new PriceHandler());
         GUIManager.register("price_gui", new PriceHandler());
+
+        GUIManager.register("bank_main", new BankHandler());
         GUIManager.register("bank_transfer", new BankTransferHandler());
         GUIManager.register("bank_target", new TargetPlayerHandler());
         GUIManager.register("bank_confirm", new TransferConfirmHandler());
-        GUIManager.register("main_menu", new MainMenuHandler());
-        GUIManager.register("bank_main", new BankHandler());
         GUIManager.register("bank_history", new BankHistoryHandler());
+
+        GUIManager.register("main_menu", new MainMenuHandler());
 
         // =========================
         // 📜 COMMANDES

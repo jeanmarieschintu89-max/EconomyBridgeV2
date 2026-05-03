@@ -78,6 +78,6 @@ public class BankGUI {
         SafeGUI.safeSet(inv, 8, SafeGUI.item(Material.BARRIER, "§c⬅ Retour",
                 "§7Menu principal"));
 
-        p.openInventory(inv);
+        GUIManager.open(p, "bank_main", inv);
     }
 }

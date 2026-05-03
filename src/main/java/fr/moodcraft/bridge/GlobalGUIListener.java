@@ -11,27 +11,58 @@ public class GlobalGUIListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        // 🔥 CHECK SI C'EST UN GUI À NOUS
+        // 🔥 GUI actif
         String id = GUIManager.get(p);
 
-        if (id == null) return; // 👉 PAS un GUI → on laisse faire
+        // 👉 PAS un GUI custom → on laisse faire (coffres OK)
+        if (id == null) return;
 
         if (e.getClickedInventory() == null) return;
 
-        // 🔒 bloque uniquement NOTRE GUI
-        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) {
+        int slot = e.getRawSlot();
+
+        // =========================
+        // 🎯 CONTRACT CREATE (cas spécial)
+        // =========================
+        if (id.equals("contract_create")) {
+
+            // 👉 slot dépôt item
+            if (slot == 10) {
+                e.setCancelled(false);
+                return;
+            }
+
+            // 👉 inventaire joueur autorisé
+            if (e.getClickedInventory() == e.getView().getBottomInventory()) {
+                e.setCancelled(false);
+                return;
+            }
+        }
+
+        // =========================
+        // 🔒 BLOQUE INVENTAIRE JOUEUR (autres GUI)
+        // =========================
+        if (e.getClickedInventory() == e.getView().getBottomInventory()) {
             e.setCancelled(true);
             return;
         }
 
-        // 🔥 autoriser slot item (contract create)
-        if (id.equals("contract_create") && e.getRawSlot() == 10) {
-            e.setCancelled(false);
+        // =========================
+        // 🔒 BLOQUE SI HORS GUI
+        // =========================
+        if (slot >= e.getView().getTopInventory().getSize()) {
+            e.setCancelled(true);
             return;
         }
 
+        // =========================
+        // 🔒 BLOQUE TOUT LE RESTE
+        // =========================
         e.setCancelled(true);
 
-        GUIManager.handle(p, e.getRawSlot());
+        // =========================
+        // 🎮 EXEC HANDLER
+        // =========================
+        GUIManager.handle(p, slot);
     }
 }

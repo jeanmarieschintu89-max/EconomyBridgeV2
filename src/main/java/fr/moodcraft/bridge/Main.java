@@ -82,6 +82,7 @@ public class Main extends JavaPlugin {
 
                 // 🧠 GUI GLOBAL SYSTEM
                 new GlobalGUIListener(),
+                new InventoryCloseListener(),
 
                 // ⚠️ ancien système (temporaire)
                 new GUIListener()

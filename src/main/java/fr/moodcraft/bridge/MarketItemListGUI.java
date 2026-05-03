@@ -32,6 +32,6 @@ public class MarketItemListGUI {
             slot++;
         }
 
-        p.openInventory(inv);
+        GUIManager.open(p, "market_item_list", inv);
     }
 }

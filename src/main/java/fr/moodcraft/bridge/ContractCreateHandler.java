@@ -13,7 +13,7 @@ public class ContractCreateHandler implements GUIHandler {
         switch (slot) {
 
             case 10 -> {
-                // slot item → rien faire (autorisé)
+                // slot item → rien faire
                 return;
             }
 
@@ -21,6 +21,7 @@ public class ContractCreateHandler implements GUIHandler {
 
             case 14 -> ContractPriceGUI.open(p);
 
+            // ✍️ VALIDATION → DONNE LIVRE
             case 22 -> {
 
                 if (b.item == null || b.amount <= 0 || b.price <= 0) {
@@ -28,18 +29,13 @@ public class ContractCreateHandler implements GUIHandler {
                     return;
                 }
 
-                ContractManager.create(
-                        p.getUniqueId(),
-                        b.item,
-                        b.amount,
-                        b.price
-                );
+                // 🔥 NOUVEAU SYSTÈME
+                BookContract.give(p, b);
 
-                p.sendMessage("§a✔ Contrat créé !");
-                ContractBuilder.remove(p.getUniqueId());
                 p.closeInventory();
             }
 
+            // ❌ ANNULER
             case 26 -> {
                 ContractBuilder.remove(p.getUniqueId());
                 p.closeInventory();

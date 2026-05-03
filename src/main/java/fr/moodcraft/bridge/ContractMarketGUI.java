@@ -22,8 +22,10 @@ public class ContractMarketGUI {
             if (slot >= 45) break;
 
             String ownerName = Bukkit.getOfflinePlayer(c.owner).getName();
-
             double total = c.amount * c.price;
+
+            // 🔥 AJOUT IMPORTANT (mapping slot → contrat)
+            ContractStorage.setSlot(slot, c);
 
             SafeGUI.safeSet(inv, slot, SafeGUI.item(
                     Material.PAPER,

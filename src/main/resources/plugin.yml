@@ -12,6 +12,10 @@ commands:
   # 📊 CONTRATS
   # =========================
 
+  topgui:
+    description: Classement GUI
+    permission: econ.use
+
   toprep:
     description: Voir le classement réputation
     usage: /toprep

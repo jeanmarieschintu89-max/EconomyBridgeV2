@@ -32,12 +32,15 @@ public class ContractPriceGUI {
                 "§6" + b.price + "€"
         ));
 
-        // 💰 PRIX ACTUEL (centre)
+        // 💰 VALIDER (CENTRE)
         SafeGUI.safeSet(inv, 13, SafeGUI.item(
                 Material.GOLD_INGOT,
-                "§ePrix actuel",
+                "§aValider le prix",
                 "§8────────────",
-                "§6" + b.price + "€"
+                "§7Prix choisi:",
+                "§6" + b.price + "€",
+                "",
+                "§8Clique pour confirmer"
         ));
 
         // ➕ +10
@@ -61,7 +64,7 @@ public class ContractPriceGUI {
         // 🔙 RETOUR
         SafeGUI.safeSet(inv, 26, SafeGUI.item(
                 Material.ARROW,
-                "§cRetour"
+                "§c⬅ Retour"
         ));
 
         p.openInventory(inv);

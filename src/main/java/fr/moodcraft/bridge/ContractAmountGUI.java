@@ -67,6 +67,6 @@ public class ContractAmountGUI {
                 "§c⬅ Retour"
         ));
 
-        p.openInventory(inv);
+        GUIManager.open(p, "contract_amount", inv);
     }
 }

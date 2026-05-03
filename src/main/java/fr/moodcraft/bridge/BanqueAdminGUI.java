@@ -1,39 +1,35 @@
-package fr.moodcraft.bridge;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-
-public class BanqueAdminGUI {
+public class AdminMarketGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§c⚙ Admin Économie");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6⚙ Admin Marché");
 
-        // ENGINE
         SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.COMPARATOR,
-                "§e⚙ Réglages Marché",
-                "§7Base return",
-                "§7Activity cap",
-                "§7Max change",
-                "§7Stock decay"));
+                "§eParamètres globaux",
+                "§7Modifier le comportement du marché",
+                "",
+                "§aClique pour ouvrir"));
 
-        // ITEMS
-        SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.EMERALD,
-                "§a💎 Gestion Items",
-                "§7Modifier chaque item",
-                "§7Boost / Exp / Max"));
+        SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.CHEST,
+                "§bItems",
+                "§7Configurer chaque ressource",
+                "",
+                "§aClique pour ouvrir"));
 
-        // CONFIG GLOBAL
-        SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.NETHER_STAR,
-                "§d🌐 Config globale",
-                "§7Rareté globale",
-                "§7Multiplicateurs"));
+        SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.NETHER_STAR,
+                "§dSimulation",
+                "§7Tester le marché",
+                "",
+                "§aClique pour ouvrir"));
 
-        // RELOAD
-        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.SLIME_BALL,
-                "§a🔄 Reload Config"));
+        SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.BARRIER,
+                "§cReset / Debug",
+                "§7Réinitialiser / tester",
+                "",
+                "§aClique pour ouvrir"));
+
+        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.ARROW,
+                "§cRetour"));
 
         p.openInventory(inv);
     }

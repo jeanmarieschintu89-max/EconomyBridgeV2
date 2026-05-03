@@ -52,14 +52,14 @@ public class Main extends JavaPlugin {
                 new InventoryGuardListener(),
                 new BankHistoryListener(),
 
-                // ⚙ ADMIN
+                // 🔥 ADMIN MARKET (NOUVEAU)
                 new MarketAdminListener(),
                 new MarketGlobalListener(),
                 new MarketItemListener(),
 
-                // 📦 ITEMS
-                new BanqueItemListListener(),
-                new BanqueItemGUIListener(),
+                // ❌ SUPPRIMÉ (ANCIEN SYSTEME BUG)
+                // new BanqueItemListListener(),
+                // new BanqueItemGUIListener(),
 
                 // 📜 MENUS
                 new MainMenuListener(),
@@ -128,14 +128,14 @@ public class Main extends JavaPlugin {
         );
 
         // =========================
-        // 🚀 DEBUG
+        // 🚀 DEBUG PROPRE
         // =========================
-        getLogger().info("==============================");
-        getLogger().info("EconomyBridge charge !");
-        getLogger().info("Contrats: OK");
-        getLogger().info("Banque: OK");
-        getLogger().info("Marche: OK");
-        getLogger().info("==============================");
+        getLogger().info("=================================");
+        getLogger().info("✅ EconomyBridge chargé");
+        getLogger().info("📊 Marché dynamique actif");
+        getLogger().info("📜 Contrats actifs");
+        getLogger().info("🏦 Banque active");
+        getLogger().info("=================================");
     }
 
     @Override
@@ -155,7 +155,7 @@ public class Main extends JavaPlugin {
         if (getCommand(name) != null) {
             getCommand(name).setExecutor(executor);
         } else {
-            getLogger().warning("Commande non trouvee: " + name);
+            getLogger().warning("❌ Commande non trouvée: " + name);
         }
     }
 

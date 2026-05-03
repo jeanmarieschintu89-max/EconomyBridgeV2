@@ -1,0 +1,31 @@
+package fr.moodcraft.bridge;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+
+public class ContractAmountGUI {
+
+    public static void open(Player p) {
+
+        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
+
+        Inventory inv = Bukkit.createInventory(null, 27, "§fQuantité");
+
+        SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.RED_CONCRETE, "§c-10"));
+        SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.RED_STAINED_GLASS, "§c-1"));
+
+        SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.PAPER,
+                "§eQuantité actuelle",
+                "§a" + b.amount));
+
+        SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.GREEN_STAINED_GLASS, "§a+1"));
+        SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.LIME_CONCRETE, "§a+10"));
+
+        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.EMERALD_BLOCK, "§aMAX"));
+        SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.ARROW, "§cRetour"));
+
+        p.openInventory(inv);
+    }
+}

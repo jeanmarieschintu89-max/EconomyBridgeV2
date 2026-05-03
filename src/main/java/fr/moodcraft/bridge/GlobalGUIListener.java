@@ -13,31 +13,25 @@ public class GlobalGUIListener implements Listener {
 
         String id = GUIManager.get(p);
 
-        // 👉 pas un GUI custom → on laisse tout libre
+        // 👉 pas un GUI custom → libre
         if (id == null) return;
 
         if (e.getClickedInventory() == null) return;
 
         int slot = e.getRawSlot();
 
-        // 🔥 bloque shift click / double click
-        if (e.isShiftClick() || e.isRightClick()) {
-            e.setCancelled(true);
-            return;
-        }
-
         // =========================
-        // 🎯 CONTRACT CREATE
+        // 🎯 CONTRACT CREATE (SPÉCIAL)
         // =========================
         if (id.equals("contract_create")) {
 
-            // 🔥 slot dépôt item (GUI)
+            // slot item
             if (slot == 10) {
                 e.setCancelled(false);
                 return;
             }
 
-            // 🔥 inventaire joueur autorisé
+            // inventaire joueur
             if (e.getClickedInventory() == e.getView().getBottomInventory()) {
                 e.setCancelled(false);
                 return;
@@ -45,7 +39,27 @@ public class GlobalGUIListener implements Listener {
         }
 
         // =========================
-        // 🔒 BLOQUE INVENTAIRE JOUEUR (autres GUI)
+        // 💰 BANK GUI (SÉCURISÉ)
+        // =========================
+        if (id.startsWith("bank_")) {
+
+            // bloque inventaire joueur
+            if (e.getClickedInventory() == e.getView().getBottomInventory()) {
+                e.setCancelled(true);
+                return;
+            }
+        }
+
+        // =========================
+        // 🔒 BLOQUE SHIFT / DOUBLE CLICK
+        // =========================
+        if (e.isShiftClick() || e.isRightClick()) {
+            e.setCancelled(true);
+            return;
+        }
+
+        // =========================
+        // 🔒 BLOQUE INVENTAIRE JOUEUR
         // =========================
         if (e.getClickedInventory() == e.getView().getBottomInventory()) {
             e.setCancelled(true);
@@ -61,13 +75,10 @@ public class GlobalGUIListener implements Listener {
         }
 
         // =========================
-        // 🔒 BLOQUE + HANDLE
+        // 🎯 HANDLE
         // =========================
         e.setCancelled(true);
 
         GUIManager.handle(p, slot);
-
-        // 🔥 STOP ICI (TRÈS IMPORTANT)
-        return;
     }
 }

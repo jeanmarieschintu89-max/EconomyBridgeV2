@@ -9,45 +9,33 @@ public class BanqueItemListGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§bItems Marché");
+        Inventory inv = Bukkit.createInventory(null, 54, "§bItems Marché");
 
         int slot = 0;
 
         for (String item : MarketState.base.keySet()) {
 
-            Material mat = map(item);
-            if (mat == null) continue;
-
-            double price = MarketState.getPrice(item);
+            double price = MarketState.base.get(item);
 
             SafeGUI.safeSet(inv, slot,
-                    SafeGUI.item(mat,
-                            "§f" + item,
-                            "§8────────────",
-                            "§7Prix actuel:",
-                            "§a" + String.format("%.2f", price) + "€",
+                    SafeGUI.item(Material.DIAMOND,
+                            "§b" + item,
+                            "§7Prix: §f" + price + "€",
                             "",
-                            "§e➜ Cliquer pour config"));
+                            "§aClique pour modifier"));
 
             slot++;
+            if (slot >= 45) break;
         }
 
-        p.openInventory(inv);
-    }
+        for (int i = 45; i < 54; i++) {
+            SafeGUI.safeSet(inv, i,
+                    SafeGUI.item(Material.GRAY_STAINED_GLASS_PANE, " "));
+        }
 
-    private static Material map(String id) {
-        return switch (id) {
-            case "diamond" -> Material.DIAMOND;
-            case "emerald" -> Material.EMERALD;
-            case "netherite" -> Material.NETHERITE_INGOT;
-            case "gold" -> Material.GOLD_INGOT;
-            case "iron" -> Material.IRON_INGOT;
-            case "copper" -> Material.COPPER_INGOT;
-            case "coal" -> Material.COAL;
-            case "lapis" -> Material.LAPIS_LAZULI;
-            case "redstone" -> Material.REDSTONE;
-            case "quartz" -> Material.QUARTZ;
-            default -> null;
-        };
+        SafeGUI.safeSet(inv, 49,
+                SafeGUI.item(Material.ARROW, "§cRetour"));
+
+        p.openInventory(inv);
     }
 }

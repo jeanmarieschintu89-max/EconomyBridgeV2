@@ -93,6 +93,7 @@ public class Main extends JavaPlugin {
         GUIManager.register("bank_target", new TargetPlayerHandler());
         GUIManager.register("bank_confirm", new TransferConfirmHandler());
         GUIManager.register("main_menu", new MainMenuHandler());
+        GUIManager.register("bank_main", new BankHandler());
 
         // =========================
         // 📜 COMMANDES

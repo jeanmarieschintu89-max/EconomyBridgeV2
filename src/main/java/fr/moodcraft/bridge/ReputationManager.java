@@ -17,7 +17,7 @@ public class ReputationManager {
     private static File file;
     private static FileConfiguration config;
 
-    // 🔥 cache mémoire (performance + classement rapide)
+    // 🔥 cache mémoire
     private static final Map<String, Integer> cache = new HashMap<>();
 
     // =========================
@@ -38,7 +38,6 @@ public class ReputationManager {
 
         config = YamlConfiguration.loadConfiguration(file);
 
-        // 🔥 load en mémoire
         for (String key : config.getKeys(false)) {
             cache.put(key, config.getInt(key));
         }
@@ -108,6 +107,16 @@ public class ReputationManager {
     }
 
     // =========================
+    // 💬 FORMAT (FIX CHAT)
+    // =========================
+    public static String format(String uuid) {
+
+        int rep = get(uuid);
+
+        return "§a" + rep + " §7(" + getRank(rep) + ")";
+    }
+
+    // =========================
     // 🏆 CLASSEMENT
     // =========================
     public static LinkedHashMap<String, Integer> getTop(int limit) {
@@ -139,7 +148,7 @@ public class ReputationManager {
     }
 
     // =========================
-    // ✨ ADD PREMIUM (FX + RANKUP)
+    // ✨ ADD PREMIUM
     // =========================
     public static void addRepStyled(Player p, int value, String reason) {
 
@@ -153,25 +162,19 @@ public class ReputationManager {
 
         String newRank = getRankName(newRep);
 
-        // =========================
         // 💚 GAIN
-        // =========================
         if (value > 0) {
             p.sendMessage("§a+" + value + " réputation §8» §7" + reason);
             p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.2f);
         }
 
-        // =========================
         // ❤️ PERTE
-        // =========================
         if (value < 0) {
             p.sendMessage("§c" + value + " réputation §8» §7" + reason);
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 0.8f);
         }
 
-        // =========================
         // 🎉 RANK UP
-        // =========================
         if (!oldRank.equals(newRank)) {
 
             p.sendMessage("§8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
@@ -183,16 +186,16 @@ public class ReputationManager {
             p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
             p.sendTitle("§6Nouveau Rang !", "§a" + newRank, 10, 40, 10);
 
-            // 👑 broadcast rank max
+            // 👑 TOP RANK
             if (newRank.equals("Maître de MoodCraft")) {
                 Bukkit.broadcastMessage("§6👑 " + p.getName() + " est devenu Maître de MoodCraft !");
-                p.spawnParticle(Particle.FIREWORK, p.getLocation(), 80);
+                p.spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 80);
             }
         }
     }
 
     // =========================
-    // 💾 SAVE
+    // SAVE
     // =========================
     public static void save() {
         try {

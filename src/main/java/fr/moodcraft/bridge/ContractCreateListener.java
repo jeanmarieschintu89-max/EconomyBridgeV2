@@ -23,13 +23,13 @@ public class ContractCreateListener implements Listener {
 
         e.setCancelled(true);
 
-        ContractBuilder b = ContractBuilder.get(p);
+        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
         if (b == null) return;
 
         switch (e.getRawSlot()) {
 
             case 10 -> {
-                e.setCancelled(false); // permet dépôt item
+                e.setCancelled(false); // dépôt item autorisé
                 return;
             }
 
@@ -44,6 +44,7 @@ public class ContractCreateListener implements Listener {
             }
 
             case 22 -> {
+
                 if (b.item == null || b.amount <= 0 || b.price <= 0) {
                     p.sendMessage("§c❌ Contrat invalide");
                     return;
@@ -57,13 +58,13 @@ public class ContractCreateListener implements Listener {
                 );
 
                 p.sendMessage("§a✔ Contrat créé !");
-                ContractBuilder.remove(p);
+                ContractBuilder.remove(p.getUniqueId());
                 p.closeInventory();
                 return;
             }
 
             case 26 -> {
-                ContractBuilder.remove(p);
+                ContractBuilder.remove(p.getUniqueId());
                 p.closeInventory();
                 return;
             }

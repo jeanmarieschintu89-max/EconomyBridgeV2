@@ -22,10 +22,10 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
 
         // =========================
-        // 📦 INIT DATA
+        // 📦 INIT DATA (ORDRE IMPORTANT)
         // =========================
         BankStorage.init();
-        TransactionLogger.init();
+        TransactionStorage.init(); // 🔥 FIX (persistant)
         ReputationManager.init();
         ContractHistoryManager.init();
         MarketStorage.init();
@@ -52,10 +52,10 @@ public class Main extends JavaPlugin {
         );
 
         // =========================
-        // 🧠 GUI MANAGER REGISTER
+        // 🧠 GUI MANAGER
         // =========================
 
-        // 🏠 MENU PRINCIPAL
+        // 🏠 MENU
         GUIManager.register("main_menu", new MainMenuHandler());
 
         // 💰 BANQUE
@@ -67,7 +67,6 @@ public class Main extends JavaPlugin {
         GUIManager.register("bank_history", new BankHistoryHandler());
         GUIManager.register("bank_deposit", new DepositHandler());
         GUIManager.register("bank_withdraw", new WithdrawHandler());
-        GUIManager.register("contract_confirm", new ContractConfirmHandler());
 
         // 📊 BOURSE
         GUIManager.register("minerais", new PriceHandler());
@@ -78,9 +77,8 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_price", new ContractPriceHandler());
         GUIManager.register("contract_amount", new ContractAmountHandler());
         GUIManager.register("contract_market", new ContractMarketHandler());
-
-        // ✅ CORRECTION ICI (UN SEUL HANDLER)
         GUIManager.register("contract_player", new ContractDeliverHandler());
+        GUIManager.register("contract_confirm", new ContractConfirmHandler());
 
         // 🧭 AUTRES
         GUIManager.register("teleport", new TeleportHandler());
@@ -133,7 +131,7 @@ public class Main extends JavaPlugin {
         getLogger().info("=================================");
         getLogger().info("✅ EconomyBridge chargé");
         getLogger().info("🏦 Banque: OK");
-        getLogger().info("💸 Virements GUI: OK");
+        getLogger().info("💸 Transactions: PERSISTANTES");
         getLogger().info("📊 Marché: OK");
         getLogger().info("📜 Contrats: OK");
         getLogger().info("🧠 GUI Manager: ACTIF");
@@ -142,7 +140,10 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
+        // 🔥 SAUVEGARDE TOTALE
         BankStorage.save();
+        TransactionStorage.save(); // 🔥 FIX IMPORTANT
         ReputationManager.save();
         MarketStorage.save();
     }
@@ -169,6 +170,7 @@ public class Main extends JavaPlugin {
         if (getConfig().getConfigurationSection("base") == null) return;
 
         for (String key : getConfig().getConfigurationSection("base").getKeys(false)) {
+
             double value = getConfig().getDouble("base." + key);
 
             MarketState.base.put(key, value);

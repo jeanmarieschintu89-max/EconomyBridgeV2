@@ -9,21 +9,21 @@ public class InventoryGuardListener implements Listener {
     @EventHandler
     public void drag(InventoryDragEvent e) {
 
-        if (e.getView().getTitle() == null) return;
+        String title = e.getView().getTitle();
+        if (title == null) return;
 
-        String clean = e.getView().getTitle()
-                .replaceAll("§.", "")
-                .toLowerCase()
-                .trim();
+        String clean = title.replaceAll("§.", "").toLowerCase().trim();
 
-        // 🔥 UNIQUEMENT TES GUI PRÉCIS
+        // 🎯 LISTE CIBLÉE (safe)
         if (
             clean.contains("bourse minerais") ||
             clean.contains("banque") ||
             clean.contains("virement") ||
             clean.contains("contrats") ||
             clean.contains("admin marché") ||
-            clean.contains("paramètres marché")
+            clean.contains("paramètres marché") ||
+            clean.contains("quantité") ||
+            clean.contains("prix")
         ) {
             e.setCancelled(true);
         }

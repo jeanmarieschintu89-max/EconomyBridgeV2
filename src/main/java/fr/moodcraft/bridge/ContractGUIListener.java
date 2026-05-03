@@ -17,13 +17,16 @@ public class ContractGUIListener implements Listener {
                 .toLowerCase()
                 .trim();
 
-        // 🔥 FIX ROBUSTE
         if (!clean.contains("contrat")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getClickedInventory() != e.getView().getTopInventory()) return;
 
-        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
+        if (e.getClickedInventory() == null) return;
+
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) {
+            e.setCancelled(true);
+            return;
+        }
 
         e.setCancelled(true);
 

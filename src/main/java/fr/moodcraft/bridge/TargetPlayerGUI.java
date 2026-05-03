@@ -9,7 +9,7 @@ public class TargetPlayerGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 54, "§eChoisir un joueur");
+        Inventory inv = Bukkit.createInventory(null, 54, "§fChoix du joueur");
 
         int slot = 0;
 
@@ -21,7 +21,7 @@ public class TargetPlayerGUI {
                     SafeGUI.item(Material.PLAYER_HEAD,
                             "§a" + target.getName(),
                             "§8────────────",
-                            "§7Cliquer pour sélectionner"));
+                            "§7Clique pour sélectionner"));
 
             slot++;
         }

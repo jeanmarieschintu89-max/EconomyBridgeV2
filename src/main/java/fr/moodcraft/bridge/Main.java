@@ -55,6 +55,8 @@ public class Main extends JavaPlugin {
                 new TransferConfirmListener(),     // 🔥 confirmation
                 new InventoryGuardListener(),
                 new BankHistoryListener(),
+                new ContractAmountListener(),
+                new ContractPriceListener(),
 
                 // 🔥 ADMIN MARKET
                 new MarketAdminListener(),

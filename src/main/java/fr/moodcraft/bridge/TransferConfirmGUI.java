@@ -69,6 +69,6 @@ public class TransferConfirmGUI {
                 "§7Montant:",
                 "§f" + b.amount + "€"));
 
-        p.openInventory(inv);
+        GUIManager.open(p, "bank_confirm", inv);
     }
 }

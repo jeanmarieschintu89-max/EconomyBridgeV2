@@ -30,7 +30,7 @@ public class ContractCreateHandler implements GUIHandler {
                 }
 
                 // 📖 donne le livre
-                BookContract.give(p, b);
+                ContractConfirmGUI.open(p);
 
                 // 💬 message RP
                 p.sendMessage("§e✍️ Signe le livre pour finaliser ton contrat");

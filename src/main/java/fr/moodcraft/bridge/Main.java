@@ -48,9 +48,6 @@ public class Main extends JavaPlugin {
                 new ShopListener(),
                 new MineListener(),
 
-                // 🏦 BANQUE (pas encore migré)
-                new BankListener(),
-                new BankHistoryListener(),
 
                 // 📊 ADMIN MARKET
                 new MarketGlobalListener(),

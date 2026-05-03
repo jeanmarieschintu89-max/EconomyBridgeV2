@@ -16,37 +16,63 @@ public class ContractCreateListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getClickedInventory() == null) return;
 
+        // 🔒 bloque uniquement le GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
-
-        e.setCancelled(true);
 
         ContractBuilder b = ContractBuilder.get(p.getUniqueId());
 
         int slot = e.getRawSlot();
 
-        switch (slot) {
+        // =========================
+        // 📦 ITEM (CAPTURE RÉELLE)
+        // =========================
+        if (slot == 10) {
 
-            // 📦 ITEM SLOT
-            case 10 -> {
-                e.setCancelled(false); // permet de poser item
+            var cursor = e.getCursor();
+
+            if (cursor != null && !cursor.getType().isAir()) {
+
+                b.item = cursor.getType().name().toLowerCase();
+
+                p.sendMessage("§a✔ Item sélectionné: §f" + b.item);
+
+                // enlève item du curseur
+                p.setItemOnCursor(null);
+
+                e.setCancelled(true);
+
+                p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+
+                ContractCreateGUI.open(p);
                 return;
             }
+        }
 
-            // 📊 QUANTITÉ
+        e.setCancelled(true);
+
+        // =========================
+        // 📊 QUANTITÉ
+        // =========================
+        switch (slot) {
+
             case 12 -> {
-                if (e.isLeftClick()) b.amount++;
-                if (e.isRightClick() && b.amount > 1) b.amount--;
                 if (e.isShiftClick()) b.amount += 10;
+                else if (e.isLeftClick()) b.amount++;
+                else if (e.isRightClick() && b.amount > 1) b.amount--;
             }
 
+            // =========================
             // 💰 PRIX
+            // =========================
             case 14 -> {
-                if (e.isLeftClick()) b.price += 10;
-                if (e.isRightClick() && b.price > 10) b.price -= 10;
                 if (e.isShiftClick()) b.price += 100;
+                else if (e.isLeftClick()) b.price += 10;
+                else if (e.isRightClick() && b.price > 10) b.price -= 10;
             }
 
+            // =========================
             // ✅ VALIDER
+            // =========================
             case 22 -> {
 
                 if (b.item == null || b.amount <= 0 || b.price <= 0) {
@@ -67,7 +93,9 @@ public class ContractCreateListener implements Listener {
                 return;
             }
 
+            // =========================
             // ❌ ANNULER
+            // =========================
             case 26 -> {
                 ContractBuilder.remove(p.getUniqueId());
                 p.closeInventory();
@@ -75,8 +103,10 @@ public class ContractCreateListener implements Listener {
             }
         }
 
+        // 🔊 feedback
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
+        // 🔄 refresh GUI
         ContractCreateGUI.open(p);
     }
 }

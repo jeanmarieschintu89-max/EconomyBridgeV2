@@ -14,68 +14,62 @@ public class ContractCreateGUI {
         Inventory inv = Bukkit.createInventory(null, 27, "§fCréer contrat");
 
         // 📦 ITEM
+        Material mat;
+        try {
+            mat = b.item != null ? Material.valueOf(b.item.toUpperCase()) : Material.BARRIER;
+        } catch (Exception e) {
+            mat = Material.BARRIER;
+        }
+
         SafeGUI.safeSet(inv, 10, SafeGUI.item(
-                b.item != null ? Material.valueOf(b.item.toUpperCase()) : Material.BARRIER,
+                mat,
                 "§eObjet demandé",
                 "§8────────────",
-                "§7Sélection actuelle",
+                "§7Actuel:",
+                "§f" + (b.item == null ? "Aucun" : b.item),
                 "",
-                "§f" + (b.item == null ? "Aucun objet" : b.item),
-                "",
-                "§8Dépose un item"));
+                "§8Dépose un item ici"
+        ));
 
-        // 📊 QUANTITÉ
-        SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.PAPER,
+        // ➖➕ QUANTITÉ
+        SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.RED_CONCRETE, "§c-10"));
+        SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.RED_STAINED_GLASS_PANE, "§c-1"));
+
+        SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.PAPER,
                 "§eQuantité",
                 "§8────────────",
-                "§7Nombre demandé",
-                "",
-                "§a" + b.amount,
-                "",
-                "§a+1 clic gauche",
-                "§c-1 clic droit",
-                "§e+10 shift"));
+                "§a" + b.amount));
 
-        // 💰 PRIX
-        SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.GOLD_INGOT,
+        SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.LIME_STAINED_GLASS_PANE, "§a+1"));
+        SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.LIME_CONCRETE, "§a+10"));
+
+        // ➖➕ PRIX
+        SafeGUI.safeSet(inv, 18, SafeGUI.item(Material.RED_CONCRETE, "§c-100"));
+        SafeGUI.safeSet(inv, 19, SafeGUI.item(Material.RED_STAINED_GLASS_PANE, "§c-10"));
+
+        SafeGUI.safeSet(inv, 20, SafeGUI.item(Material.GOLD_INGOT,
                 "§ePrix unitaire",
                 "§8────────────",
-                "§7Prix par objet",
-                "",
-                "§6" + b.price + "€",
-                "",
-                "§a+10 clic gauche",
-                "§c-10 clic droit",
-                "§e+100 shift"));
+                "§6" + b.price + "€"));
 
-        // 💸 TOTAL
+        SafeGUI.safeSet(inv, 21, SafeGUI.item(Material.LIME_STAINED_GLASS_PANE, "§a+10"));
+        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.LIME_CONCRETE, "§a+100"));
+
+        // 💰 TOTAL
         double total = b.amount * b.price;
 
         SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.EMERALD,
-                "§aValeur totale",
+                "§aTotal",
                 "§8────────────",
-                "§7Montant final",
-                "",
-                "§a" + total + "€",
-                "",
-                "§7Résumé du contrat"));
+                "§a" + total + "€"));
 
         // ✅ VALIDER
-        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.LIME_CONCRETE,
-                "§aValider contrat",
-                "§8────────────",
-                "§7Créer la commande",
-                "",
-                "§aPaiement sécurisé",
-                "§7Attribué à un joueur",
-                "",
-                "§8Clique pour confirmer"));
+        SafeGUI.safeSet(inv, 24, SafeGUI.item(Material.LIME_CONCRETE,
+                "§aValider"));
 
         // ❌ ANNULER
         SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.BARRIER,
-                "§cAnnuler",
-                "§8────────────",
-                "§7Fermer le menu"));
+                "§cAnnuler"));
 
         p.openInventory(inv);
     }

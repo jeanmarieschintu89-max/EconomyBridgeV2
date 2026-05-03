@@ -1,10 +1,8 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEditBookEvent;
-import org.bukkit.entity.Player;
 
 public class BookSignListener implements Listener {
 
@@ -13,40 +11,35 @@ public class BookSignListener implements Listener {
 
         if (!e.isSigning()) return;
 
-        if (!"Contrat Officiel".equalsIgnoreCase(e.getNewBookMeta().getTitle())) return;
+        String title = e.getNewBookMeta().getTitle();
 
-        Player worker = e.getPlayer();
+        if (title == null || !title.equalsIgnoreCase("Contrat MoodCraft")) return;
 
-        Contract c = ContractManager.getOpen();
+        String[] pages = e.getNewBookMeta().getPages().toArray(new String[0]);
 
-        if (c == null) {
-            worker.sendMessage("§c❌ Aucun contrat disponible");
+        Player p = e.getPlayer();
+
+        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
+
+        if (b == null) {
+            p.sendMessage("§cErreur contrat.");
             return;
         }
 
-        // 🔒 sécurité : déjà pris
-        if (c.status != Contract.Status.OPEN) { // ✅ FIX ICI
-            worker.sendMessage("§c❌ Ce contrat est déjà pris");
-            return;
-        }
+        // 🔧 création finale
+        Contract c = new Contract();
 
-        // 🔥 attribution
-        c.worker = worker.getUniqueId();
-        c.status = Contract.Status.ACCEPTED;
+        c.id = ContractManager.nextId();
+        c.owner = p.getUniqueId();
+        c.item = b.item;
+        c.amount = b.amount;
+        c.price = b.price;
+        c.status = "OPEN";
 
-        worker.sendMessage("§8────────────");
-        worker.sendMessage("§a[OK] Contrat accepté !");
-        worker.sendMessage("§7Utilise §e/contractdeliver §7pour livrer");
-        worker.sendMessage("§8────────────");
+        ContractStorage.add(c);
 
-        // 📩 notifier le client
-        Player owner = Bukkit.getPlayer(c.owner);
+        ContractBuilder.remove(p.getUniqueId());
 
-        if (owner != null && owner.isOnline()) {
-            owner.sendMessage("§8────────────");
-            owner.sendMessage("§e📜 Ton contrat a été accepté !");
-            owner.sendMessage("§7Joueur: §f" + worker.getName());
-            owner.sendMessage("§8────────────");
-        }
+        p.sendMessage("§a✔ Contrat validé !");
     }
 }

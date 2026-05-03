@@ -2,9 +2,11 @@ package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Map;
 import java.util.UUID;
@@ -36,8 +38,15 @@ public class TopRepGUI {
                         "§7Réputation: §a" + rep,
                         "§7Statut: " + ReputationManager.getRank(rep),
                         "",
-                        i == 1 ? "§6👑 Leader du serveur" : ""
+                        "§e▶ Voir profil"
                 ));
+
+                // 🔥 STOCK UUID
+                meta.getPersistentDataContainer().set(
+                        new NamespacedKey(Main.getInstance(), "target"),
+                        PersistentDataType.STRING,
+                        uuid
+                );
 
                 item.setItemMeta(meta);
             }
@@ -48,6 +57,7 @@ public class TopRepGUI {
             i++;
         }
 
-        p.openInventory(inv);
+        // ⚠️ IMPORTANT
+        GUIManager.open(p, "top_gui", inv);
     }
 }

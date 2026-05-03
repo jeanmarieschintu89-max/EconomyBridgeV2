@@ -4,42 +4,36 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class ContractCreateGUI {
 
     public static void open(Player p) {
 
-        // 🔥 Récupération ou création automatique
-        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
-
-        if (b == null) {
-            b = new ContractBuilder();
-            ContractBuilder.set(p.getUniqueId(), b);
-        }
+        // 🔥 récupération propre
+        ContractBuilder b = ContractBuilder.getOrCreate(p.getUniqueId());
 
         Inventory inv = Bukkit.createInventory(null, 27, "§fCréer contrat");
 
         // =========================
-        // 📦 ITEM
+        // 📦 ITEM (ICÔNE RÉELLE)
         // =========================
-        Material mat;
+        ItemStack display;
 
-        try {
-            mat = b.item != null
-                    ? Material.valueOf(b.item.toUpperCase())
-                    : Material.BARRIER;
-        } catch (Exception e) {
-            mat = Material.BARRIER;
+        if (b.itemStack != null) {
+            display = b.itemStack.clone(); // 🔥 clone obligatoire
+        } else {
+            display = new ItemStack(Material.BARRIER);
         }
 
         SafeGUI.safeSet(inv, 10, SafeGUI.item(
-                mat,
+                display,
                 "§eObjet demandé",
                 "§8────────────",
                 "§7Actuel:",
                 "§f" + (b.item == null ? "Aucun" : b.item),
                 "",
-                "§8Dépose un item"
+                "§8Clique avec un item"
         ));
 
         // =========================

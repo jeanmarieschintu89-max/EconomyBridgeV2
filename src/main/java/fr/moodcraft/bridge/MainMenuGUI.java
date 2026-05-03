@@ -2,8 +2,10 @@ package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class MainMenuGUI {
 
@@ -28,16 +30,14 @@ public class MainMenuGUI {
                 : rep >= 20 ? "§aConfirmé"
                 : "§7Débutant";
 
-        // 🔥 MÉTIER ACTUEL (à adapter selon ton système)
         String job = "Aucun";
         try {
-            job = JobsHook.getJob(p); // adapte si ton système diffère
+            job = JobsHook.getJob(p);
         } catch (Exception ignored) {}
 
-        // 🔊 son ouverture
-        p.playSound(p.getLocation(), org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.2f);
+        // 🔊 ouverture
+        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.2f);
 
-        // 🪟 ouvrir vide
         p.openInventory(inv);
 
         // =========================
@@ -52,7 +52,6 @@ public class MainMenuGUI {
         // =========================
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
 
-            // 👤 PROFIL
             SafeGUI.safeSet(inv, 4, SafeGUI.item(
                     Material.PLAYER_HEAD,
                     "§e" + p.getName(),
@@ -67,69 +66,85 @@ public class MainMenuGUI {
                     "§7Statut: " + rank
             ));
 
-            // 💰 BANQUE
             SafeGUI.safeSet(inv, 10, SafeGUI.glow(SafeGUI.item(
                     Material.GOLD_INGOT,
                     "§6Banque",
                     "§8────────────",
                     "§7Solde: §6" + (int) bank + "€",
                     "",
-                    "§7Déposer, retirer",
-                    "§7et envoyer de l'argent",
-                    "",
                     "§e▶ Ouvrir"
             )));
 
-            // 📜 CONTRATS
-            SafeGUI.safeSet(inv, 12, SafeGUI.item(
+            SafeGUI.safeSet(inv, 12, SafeGUI.glow(SafeGUI.item(
                     Material.WRITABLE_BOOK,
                     "§aContrats",
-                    "§8────────────",
-                    "§7Missions entre joueurs",
-                    "",
-                    "§e▶ Accéder"
-            ));
+                    "§7Missions joueurs"
+            )));
 
-            // 📊 BOURSE
             SafeGUI.safeSet(inv, 14, SafeGUI.item(
                     Material.EMERALD,
                     "§aBourse Minerais",
-                    "§8────────────",
-                    "§7Prix des ressources",
-                    "",
-                    "§e▶ Voir"
+                    "§7Prix dynamiques"
             ));
 
-            // 🧭 TELEPORTATION
             SafeGUI.safeSet(inv, 16, SafeGUI.item(
                     Material.COMPASS,
                     "§dTéléportation",
-                    "§8────────────",
-                    "§7Se déplacer rapidement",
-                    "",
-                    "§e▶ Ouvrir"
+                    "§7Se déplacer"
             ));
 
-            // 🏙️ VILLE
             SafeGUI.safeSet(inv, 19, SafeGUI.item(
                     Material.BRICKS,
                     "§6Ville",
                     "§7Gestion territoire"
             ));
 
-            // 🛠️ MÉTIERS
             SafeGUI.safeSet(inv, 21, SafeGUI.item(
                     Material.IRON_AXE,
                     "§aMétiers",
-                    "§7Choisir un métier"
+                    "§7Choisir métier"
             ));
 
-            // ❌ FERMER
             SafeGUI.safeSet(inv, 26, SafeGUI.item(
                     Material.BARRIER,
                     "§cFermer"
             ));
 
         }, 6L);
+
+        // =========================
+        // ✨ ANIMATION GLOW
+        // =========================
+        Bukkit.getScheduler().runTaskTimer(Main.getInstance(), new Runnable() {
+
+            boolean state = false;
+            int ticks = 0;
+
+            @Override
+            public void run() {
+
+                if (p.getOpenInventory() == null ||
+                        !p.getOpenInventory().getTitle().equals("§6Menu")) {
+                    return;
+                }
+
+                ItemStack bankItem = inv.getItem(10);
+                ItemStack contractItem = inv.getItem(12);
+
+                if (bankItem != null) {
+                    inv.setItem(10, state ? SafeGUI.glow(bankItem) : SafeGUI.removeGlow(bankItem));
+                }
+
+                if (contractItem != null) {
+                    inv.setItem(12, state ? SafeGUI.glow(contractItem) : SafeGUI.removeGlow(contractItem));
+                }
+
+                state = !state;
+
+                ticks++;
+                if (ticks > 200) return;
+            }
+
+        }, 20L, 20L);
     }
 }

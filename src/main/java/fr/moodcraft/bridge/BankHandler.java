@@ -11,8 +11,12 @@ public class BankHandler implements GUIHandler {
 
             // 📄 IBAN
             case 0 -> {
-                p.performCommand("iban");
-            }
+    p.closeInventory();
+
+    Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+        Bukkit.dispatchCommand(p, "iban");
+    });
+}
 
             // 💸 RETRAIT
             case 1 -> {

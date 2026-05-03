@@ -78,6 +78,8 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_amount", new ContractAmountHandler());
         GUIManager.register("contract_market", new ContractMarketHandler());
         GUIManager.register("contract_player", new ContractPlayerHandler());
+        GUIManager.register("bank_deposit", new DepositHandler());
+        GUIManager.register("bank_withdraw", new WithdrawHandler());
 
         // 🧭 AUTRES
         GUIManager.register("teleport", new TeleportHandler());

@@ -11,7 +11,7 @@ public class MarketAdminHandler implements GUIHandler {
 
             case 11 -> MarketItemListGUI.open(p);
 
-            case 13 -> MarketGlobalGUI.open(p);
+            case 13 -> PriceGUI.open(p); // 🔥 FIX
 
             case 15 -> p.sendMessage("§7Rareté bientôt...");
 

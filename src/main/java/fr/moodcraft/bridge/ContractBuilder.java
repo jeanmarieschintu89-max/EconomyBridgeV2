@@ -1,12 +1,18 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.inventory.ItemStack;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class ContractBuilder {
 
+    // =========================
+    // 📦 DONNÉES CONTRAT
+    // =========================
     public String item;
+    public ItemStack itemStack; // 🔥 NOUVEAU (icone réelle)
     public int amount = 1;
     public double price = 100;
 

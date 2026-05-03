@@ -54,6 +54,7 @@ public class Main extends JavaPlugin {
 
                 // ⚙ ADMIN
                 new BanqueAdminListener(),
+                new BanqueItemListener(),
                 new BanqueConfigListener(),
 
                 // 📦 ITEMS

@@ -5,15 +5,12 @@ import org.bukkit.entity.Player;
 
 public class JobsHook {
 
-    private static boolean enabled = false;
+    public static String getJobWithLevel(Player p) {
 
-    public static void init() {
-        enabled = Bukkit.getPluginManager().getPlugin("Jobs") != null;
-    }
-
-    public static String getJob(Player p) {
-
-        if (!enabled) return "Aucun";
+        // 🔒 si plugin absent
+        if (Bukkit.getPluginManager().getPlugin("Jobs") == null) {
+            return "Aucun";
+        }
 
         try {
             var jobsPlayer = com.gamingmesh.jobs.Jobs.getPlayerManager().getJobsPlayer(p);
@@ -22,7 +19,12 @@ public class JobsHook {
                 return "Aucun";
             }
 
-            return jobsPlayer.getJobProgression().get(0).getJob().getName();
+            var prog = jobsPlayer.getJobProgression().get(0);
+
+            String name = prog.getJob().getName();
+            int level = prog.getLevel();
+
+            return name + " §7(Lv." + level + ")";
 
         } catch (Exception e) {
             return "Aucun";

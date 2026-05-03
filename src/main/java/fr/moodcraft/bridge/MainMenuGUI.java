@@ -14,135 +14,92 @@ public class MainMenuGUI {
         Inventory inv = Bukkit.createInventory(null, 27, "§6Menu");
 
         double bank = BankStorage.get(p.getUniqueId().toString());
+        double cash = 0;
 
-        double cash;
         try {
             cash = VaultHook.getBalance(p);
-        } catch (Exception e) {
-            cash = 0;
-        }
-
-        double total = cash + bank;
-        double rep = ReputationManager.get(p.getUniqueId().toString());
-
-        String repColor = rep >= 50 ? "§6" : rep >= 20 ? "§a" : "§7";
-        String rank = rep >= 50 ? "§6Elite"
-                : rep >= 20 ? "§aConfirmé"
-                : "§7Débutant";
-
-        String job = "Aucun";
-        try {
-            job = JobsHook.getJob(p);
         } catch (Exception ignored) {}
 
-        // 🔊 ouverture
-        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.2f);
+        double total = bank + cash;
+        double rep = ReputationManager.get(p.getUniqueId().toString());
+
+        String job = "Aucun";
+        try { job = JobsHook.getJob(p); } catch (Exception ignored) {}
 
         p.openInventory(inv);
+        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.2f);
 
-        // =========================
-        // STEP 1 : BORDURES
-        // =========================
+        // STEP 1 : bordures
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
             SafeGUI.fillBorders(inv, Material.GRAY_STAINED_GLASS_PANE);
         }, 2L);
 
-        // =========================
-        // STEP 2 : CONTENU
-        // =========================
-        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-
-            SafeGUI.safeSet(inv, 4, SafeGUI.item(
-                    Material.PLAYER_HEAD,
-                    "§e" + p.getName(),
-                    "§8────────────",
-                    "§7Liquide: §a" + (int) cash + "€",
-                    "§7Banque: §6" + (int) bank + "€",
-                    "§7Total: §e" + (int) total + "€",
-                    "",
-                    "§7Métier: §a" + job,
-                    "",
-                    "§7Réputation: " + repColor + rep,
-                    "§7Statut: " + rank
-            ));
-
-            SafeGUI.safeSet(inv, 10, SafeGUI.glow(SafeGUI.item(
-                    Material.GOLD_INGOT,
-                    "§6Banque",
-                    "§8────────────",
-                    "§7Solde: §6" + (int) bank + "€",
-                    "",
-                    "§e▶ Ouvrir"
-            )));
-
-            SafeGUI.safeSet(inv, 12, SafeGUI.glow(SafeGUI.item(
-                    Material.WRITABLE_BOOK,
-                    "§aContrats",
-                    "§7Missions joueurs"
-            )));
-
-            SafeGUI.safeSet(inv, 14, SafeGUI.item(
-                    Material.EMERALD,
-                    "§aBourse Minerais",
-                    "§7Prix dynamiques"
-            ));
-
-            SafeGUI.safeSet(inv, 16, SafeGUI.item(
-                    Material.COMPASS,
-                    "§dTéléportation",
-                    "§7Se déplacer"
-            ));
-
-            SafeGUI.safeSet(inv, 19, SafeGUI.item(
-                    Material.BRICKS,
-                    "§6Ville",
-                    "§7Gestion territoire"
-            ));
-
-            SafeGUI.safeSet(inv, 21, SafeGUI.item(
-                    Material.IRON_AXE,
-                    "§aMétiers",
-                    "§7Choisir métier"
-            ));
-
-            SafeGUI.safeSet(inv, 26, SafeGUI.item(
-                    Material.BARRIER,
-                    "§cFermer"
-            ));
-
-        }, 6L);
-
-        // =========================
-        // ✨ ANIMATION GLOW
-        // =========================
+        // STEP 2 : cascade
         Bukkit.getScheduler().runTaskTimer(Main.getInstance(), new Runnable() {
 
-            boolean state = false;
-            int ticks = 0;
+            int step = 0;
 
             @Override
             public void run() {
 
-                if (p.getOpenInventory() == null ||
-                        !p.getOpenInventory().getTitle().equals("§6Menu")) {
-                    return;
+                if (!p.getOpenInventory().getTitle().equals("§6Menu")) return;
+
+                switch (step) {
+
+                    case 0 -> SafeGUI.safeSet(inv, 4, SafeGUI.item(
+                            Material.PLAYER_HEAD,
+                            "§e" + p.getName(),
+                            "§7Total: §e" + (int) total + "€",
+                            "§7Métier: §a" + job,
+                            "§7Réputation: §e" + rep
+                    ));
+
+                    case 1 -> SafeGUI.safeSet(inv, 10, SafeGUI.glow(SafeGUI.item(
+                            Material.GOLD_INGOT, "§6Banque"
+                    )));
+
+                    case 2 -> SafeGUI.safeSet(inv, 12, SafeGUI.item(
+                            Material.WRITABLE_BOOK, "§aContrats"
+                    ));
+
+                    case 3 -> SafeGUI.safeSet(inv, 14, SafeGUI.item(
+                            Material.EMERALD, "§aBourse Minerais"
+                    ));
+
+                    case 4 -> SafeGUI.safeSet(inv, 16, SafeGUI.item(
+                            Material.COMPASS, "§dTéléportation"
+                    ));
+
+                    case 5 -> {
+                        SafeGUI.safeSet(inv, 19, SafeGUI.item(Material.BRICKS, "§6Ville"));
+                        SafeGUI.safeSet(inv, 21, SafeGUI.item(Material.IRON_AXE, "§aMétiers"));
+                        SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.BARRIER, "§cFermer"));
+                    }
                 }
 
-                ItemStack bankItem = inv.getItem(10);
-                ItemStack contractItem = inv.getItem(12);
+                step++;
+                if (step > 6) return;
 
-                if (bankItem != null) {
-                    inv.setItem(10, state ? SafeGUI.glow(bankItem) : SafeGUI.removeGlow(bankItem));
-                }
+            }
 
-                if (contractItem != null) {
-                    inv.setItem(12, state ? SafeGUI.glow(contractItem) : SafeGUI.removeGlow(contractItem));
-                }
+        }, 4L, 2L);
 
+        // GLOW PULSE
+        Bukkit.getScheduler().runTaskTimer(Main.getInstance(), new Runnable() {
+
+            boolean state = false;
+
+            @Override
+            public void run() {
+
+                if (!p.getOpenInventory().getTitle().equals("§6Menu")) return;
+
+                ItemStack item = inv.getItem(10);
+                if (item == null) return;
+
+                inv.setItem(10, state ? SafeGUI.glow(item) : SafeGUI.removeGlow(item));
                 state = !state;
 
-                ticks++;
-                if (ticks > 200) return;
             }
 
         }, 20L, 20L);

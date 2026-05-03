@@ -64,7 +64,6 @@ public class Main extends JavaPlugin {
                 // new ContractGUIListener(),
 
                 new ContractCreateListener(),
-                new ContractMarketListener(),
                 new ContractPlayerListener(),
                 new ContractPriceListener(),
                 new BookSignListener(),
@@ -95,6 +94,7 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_create", new ContractCreateHandler());
         GUIManager.register("contract_price", new ContractPriceHandler());
         GUIManager.register("contract_amount", new ContractAmountHandler());
+        GUIManager.register("contract_market", new ContractMarketHandler());
 
         // =========================
         // 📜 COMMANDES

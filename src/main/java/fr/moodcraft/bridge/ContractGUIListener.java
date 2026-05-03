@@ -15,7 +15,6 @@ public class ContractGUIListener implements Listener {
 
         String clean = title.replaceAll("§.", "").trim();
 
-        // 🔥 FIX ICI
         if (!clean.contains("Contrats")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
@@ -24,14 +23,17 @@ public class ContractGUIListener implements Listener {
 
         e.setCancelled(true);
 
-        int slot = e.getRawSlot();
-
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
-        switch (slot) {
+        switch (e.getRawSlot()) {
 
             case 11 -> {
                 p.closeInventory();
+
+                // 🔥 CRUCIAL
+                ContractBuilder.remove(p);
+                ContractBuilder.create(p);
+
                 ContractCreateGUI.open(p);
             }
 

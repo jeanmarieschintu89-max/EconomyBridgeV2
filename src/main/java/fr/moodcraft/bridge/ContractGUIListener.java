@@ -10,15 +10,19 @@ public class ContractGUIListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        String title = e.getView().getTitle();
-        if (title == null) return;
+        if (e.getView().getTitle() == null) return;
 
-        String clean = title.replaceAll("§.", "").trim();
+        String clean = e.getView().getTitle()
+                .replaceAll("§.", "")
+                .toLowerCase()
+                .trim();
 
-        if (!clean.contains("Contrats")) return;
+        // 🔥 FIX ROBUSTE
+        if (!clean.contains("contrat")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getClickedInventory() == null) return;
+
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
@@ -29,11 +33,8 @@ public class ContractGUIListener implements Listener {
 
             case 11 -> {
                 p.closeInventory();
-
-                // 🔥 FIX UUID
                 ContractBuilder.remove(p.getUniqueId());
                 ContractBuilder.create(p.getUniqueId());
-
                 ContractCreateGUI.open(p);
             }
 

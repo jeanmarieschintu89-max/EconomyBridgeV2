@@ -86,6 +86,7 @@ public class Main extends JavaPlugin {
         GUIManager.register("bank_history", new BankHistoryHandler());
 
         GUIManager.register("main_menu", new MainMenuHandler());
+        GUIManager.register("teleport", new TeleportHandler());
 
         // 👉 AJOUT IMPORTANT (tu l’avais oublié)
         GUIManager.register("market_item_list", new MarketItemListHandler());

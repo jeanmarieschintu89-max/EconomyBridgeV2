@@ -8,12 +8,12 @@ public class ContractCreateHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
-        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
-        if (b == null) return;
+        // 🔥 mieux : éviter null
+        ContractBuilder b = ContractBuilder.getOrCreate(p.getUniqueId());
 
         switch (slot) {
 
-            // 📦 SLOT ITEM (FIX)
+            // 📦 SLOT ITEM (ICÔNE)
             case 10 -> {
 
                 ItemStack cursor = p.getItemOnCursor();
@@ -23,10 +23,11 @@ public class ContractCreateHandler implements GUIHandler {
                     return;
                 }
 
-                // 🔒 sauvegarde (on copie juste le type)
+                // 🔥 copie réelle (TRÈS IMPORTANT)
+                b.itemStack = cursor.clone();
                 b.item = cursor.getType().name();
 
-                // 🔒 IMPORTANT : on ne consomme PAS l'item
+                // ❗ on ne touche PAS à l'inventaire joueur
                 p.setItemOnCursor(cursor);
 
                 p.sendMessage("§a✔ Objet sélectionné: §f" + b.item);
@@ -49,11 +50,8 @@ public class ContractCreateHandler implements GUIHandler {
                     return;
                 }
 
-                // 👉 GUI confirmation (plus de livre)
                 ContractConfirmGUI.open(p);
-
                 p.sendMessage("§e✔ Confirme ton contrat");
-
                 p.closeInventory();
             }
 

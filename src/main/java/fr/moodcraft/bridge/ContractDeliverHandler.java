@@ -9,13 +9,11 @@ public class ContractDeliverHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
-        // 🔙 retour
         if (slot == 49) {
             ContractGUI.open(p);
             return;
         }
 
-        // 🔒 anti spam clic
         if (ActionLock.isLocked(p.getUniqueId(), 1000)) {
             p.sendMessage("§cAction trop rapide...");
             return;
@@ -28,25 +26,21 @@ public class ContractDeliverHandler implements GUIHandler {
             return;
         }
 
-        // 🔒 bon joueur
         if (!p.getUniqueId().equals(contract.acceptor)) {
             p.sendMessage("§cCe contrat ne t'appartient pas");
             return;
         }
 
-        // 🔒 déjà payé (ANTI DUP)
         if (contract.paid) {
-            p.sendMessage("§cContrat déjà livré");
+            p.sendMessage("§cDéjà livré !");
             return;
         }
 
-        // 🔒 statut
         if (!"IN_PROGRESS".equalsIgnoreCase(contract.status)) {
             p.sendMessage("§cContrat invalide");
             return;
         }
 
-        // 🔍 item sécurisé
         Material mat;
         try {
             mat = Material.valueOf(contract.item.toUpperCase());
@@ -58,20 +52,17 @@ public class ContractDeliverHandler implements GUIHandler {
         int required = contract.amount;
         int count = 0;
 
-        // 🔍 scan inventaire
         for (ItemStack item : p.getInventory().getContents()) {
             if (item == null) continue;
             if (item.getType() != mat) continue;
-
             count += item.getAmount();
         }
 
         if (count < required) {
-            p.sendMessage("§cIl te manque des items (" + count + "/" + required + ")");
+            p.sendMessage("§cItems manquants (" + count + "/" + required + ")");
             return;
         }
 
-        // ❌ suppression sécurisée
         int toRemove = required;
 
         for (ItemStack item : p.getInventory().getContents()) {
@@ -86,32 +77,29 @@ public class ContractDeliverHandler implements GUIHandler {
                 item.setAmount(0);
             } else {
                 item.setAmount(amount - toRemove);
-                toRemove = 0;
+                break;
             }
 
             if (toRemove <= 0) break;
         }
 
-        // 💰 paiement
         double total = contract.amount * contract.price;
+        double tax = total * 0.05;
+        double gain = total - tax;
 
-        BankStorage.add(p.getUniqueId().toString(), total);
+        BankStorage.add(p.getUniqueId().toString(), gain);
 
-        // 🔒 anti duplication
+        // ⭐ réputation
+        ReputationManager.add(p.getUniqueId().toString(), 2);
+
         contract.paid = true;
         contract.status = "COMPLETED";
 
         ContractStorage.update(contract);
 
-        // 📜 log
-        // (déjà géré dans BankStorage.add)
-
         p.sendMessage("§a✔ Contrat livré !");
-        p.sendMessage("§7Objet: §f" + contract.item);
-        p.sendMessage("§7Quantité: §f" + contract.amount);
-        p.sendMessage("§6+" + total + "€");
+        p.sendMessage("§6+" + gain + "€ §7(taxe " + tax + "€)");
 
-        // 🔄 refresh
         ContractPlayerGUI.open(p);
     }
 }

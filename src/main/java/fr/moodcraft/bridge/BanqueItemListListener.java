@@ -27,16 +27,12 @@ public class BanqueItemListListener implements Listener {
 
         var item = e.getCurrentItem();
         if (item == null || item.getType().isAir()) return;
-        if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return;
 
-        // 🔊 son
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
-
-        // 🔥 RÉCUP NOM ITEM
         String name = item.getItemMeta().getDisplayName();
         String cleanItem = name.replace("§b", "").toLowerCase();
 
-        // 🔥 OUVRIR MENU MODIF AVEC ITEM
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+
         BanqueItemGUI.open(p, cleanItem);
     }
 }

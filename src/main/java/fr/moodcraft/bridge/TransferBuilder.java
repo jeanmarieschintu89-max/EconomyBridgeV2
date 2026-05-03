@@ -8,14 +8,13 @@ import java.util.UUID;
 
 public class TransferBuilder {
 
-    public String target;
+    public UUID target; // 🔥 FIX
     public double amount = 100;
 
-    // 🔥 UUID au lieu de Player (évite memory leak)
     private static final Map<UUID, TransferBuilder> map = new HashMap<>();
 
     // =========================
-    // 📥 GET (SANS CREATE AUTO)
+    // 📥 GET
     // =========================
     public static TransferBuilder get(Player p) {
         return map.get(p.getUniqueId());
@@ -31,7 +30,7 @@ public class TransferBuilder {
     }
 
     // =========================
-    // 🔍 HAS (IMPORTANT)
+    // 🔍 HAS
     // =========================
     public static boolean has(Player p) {
         return map.containsKey(p.getUniqueId());
@@ -45,7 +44,7 @@ public class TransferBuilder {
     }
 
     // =========================
-    // 🔄 RESET (OPTIONNEL)
+    // 🔄 RESET
     // =========================
     public static void reset(Player p) {
         TransferBuilder b = map.get(p.getUniqueId());

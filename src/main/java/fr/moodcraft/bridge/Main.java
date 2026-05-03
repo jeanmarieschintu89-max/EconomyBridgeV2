@@ -50,9 +50,6 @@ public class Main extends JavaPlugin {
 
                 // 🏦 BANQUE (pas encore migré)
                 new BankListener(),
-                new BankTransferListener(),
-                new TargetPlayerListener(),
-                new TransferConfirmListener(),
                 new BankHistoryListener(),
 
                 // 📊 ADMIN MARKET

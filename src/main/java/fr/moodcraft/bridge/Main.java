@@ -22,10 +22,10 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
 
         // =========================
-        // 📦 INIT DATA (ORDRE IMPORTANT)
+        // 📦 INIT DATA
         // =========================
         BankStorage.init();
-        TransactionStorage.init(); // 🔥 FIX (persistant)
+        TransactionStorage.init();
         ReputationManager.init();
         ContractHistoryManager.init();
         MarketStorage.init();
@@ -54,8 +54,6 @@ public class Main extends JavaPlugin {
         // =========================
         // 🧠 GUI MANAGER
         // =========================
-
-        // 🏠 MENU
         GUIManager.register("main_menu", new MainMenuHandler());
 
         // 💰 BANQUE
@@ -107,6 +105,8 @@ public class Main extends JavaPlugin {
         registerCommand("contractdeliver", new ContractDeliverCommand());
         registerCommand("delcontrat", new ContractDeleteCommand());
         registerCommand("contrats", new ContractMenuCommand());
+
+        // 🔥 réputation + classement
         registerCommand("rep", new RepCommand());
         registerCommand("resetrep", new ResetRepCommand());
         registerCommand("toprep", new TopRepCommand());
@@ -130,6 +130,15 @@ public class Main extends JavaPlugin {
         );
 
         // =========================
+        // 🏆 RÉCOMPENSE HEBDO TOP 3
+        // =========================
+        Bukkit.getScheduler().runTaskTimer(this,
+                new WeeklyRewardTask(),
+                20L * 60 * 60 * 24 * 7,
+                20L * 60 * 60 * 24 * 7
+        );
+
+        // =========================
         // 🚀 LOG
         // =========================
         getLogger().info("=================================");
@@ -138,6 +147,7 @@ public class Main extends JavaPlugin {
         getLogger().info("💸 Transactions: PERSISTANTES");
         getLogger().info("📊 Marché: OK");
         getLogger().info("📜 Contrats: OK");
+        getLogger().info("🏆 Classement + récompenses: ACTIF");
         getLogger().info("🧠 GUI Manager: ACTIF");
         getLogger().info("=================================");
     }
@@ -145,9 +155,8 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
 
-        // 🔥 SAUVEGARDE TOTALE
         BankStorage.save();
-        TransactionStorage.save(); // 🔥 FIX IMPORTANT
+        TransactionStorage.save();
         ReputationManager.save();
         MarketStorage.save();
     }
@@ -155,7 +164,6 @@ public class Main extends JavaPlugin {
     // =========================
     // 🔧 UTILS
     // =========================
-
     private void registerEvents(Listener... listeners) {
         for (Listener listener : listeners) {
             Bukkit.getPluginManager().registerEvents(listener, this);

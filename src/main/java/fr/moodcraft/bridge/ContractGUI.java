@@ -9,13 +9,13 @@ public class ContractGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§fContrats");
+        Inventory inv = Bukkit.createInventory(null, 27, "§f📄 Contrats");
 
         // =========================
         // 📄 CRÉER CONTRAT
         // =========================
         SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.WRITABLE_BOOK,
-                "§eCréer un contrat",
+                "§e📄 Créer un contrat",
                 "§8────────────",
                 "§7Publie une demande",
                 "§7pour un joueur",
@@ -29,7 +29,7 @@ public class ContractGUI {
         // 📜 MARCHÉ DES CONTRATS
         // =========================
         SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BOOK,
-                "§eContrats disponibles",
+                "§e📜 Contrats disponibles",
                 "§8────────────",
                 "§7Liste des contrats",
                 "§7créés par les joueurs",
@@ -43,7 +43,7 @@ public class ContractGUI {
         // 📦 MES CONTRATS
         // =========================
         SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.CHEST,
-                "§eMes contrats",
+                "§e📦 Mes contrats",
                 "§8────────────",
                 "§7Contrats actifs",
                 "§7et progression",
@@ -57,7 +57,7 @@ public class ContractGUI {
         // 🔙 RETOUR
         // =========================
         SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.ARROW,
-                "§cRetour",
+                "§c⬅ Retour",
                 "§8────────────",
                 "§7Retour au menu principal"));
 

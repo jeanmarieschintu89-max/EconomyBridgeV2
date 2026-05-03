@@ -1,3 +1,10 @@
+package fr.moodcraft.bridge;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+
 public class MarketItemListGUI {
 
     public static void open(Player p) {
@@ -8,12 +15,17 @@ public class MarketItemListGUI {
 
         for (String item : MarketState.base.keySet()) {
 
+            if (slot >= 54) break; // 🔒 sécurité
+
             double price = MarketState.base.get(item);
 
             SafeGUI.safeSet(inv, slot,
                     SafeGUI.item(Material.DIAMOND,
                             "§b" + item,
-                            "§7Prix: §f" + price + "€",
+                            "§8────────────",
+                            "§7Prix de base",
+                            "",
+                            "§f" + price + "€",
                             "",
                             "§aClique pour modifier"));
 

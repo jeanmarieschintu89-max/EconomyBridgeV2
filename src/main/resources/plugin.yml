@@ -13,12 +13,10 @@ commands:
   # =========================
 
   rep:
-    description: Modifier la réputation
-    usage: /rep <joueur> <valeur>
+    permission: econ.admin
 
-  reputation:
-    description: Voir sa réputation
-    usage: /reputation
+  resetrep:
+    permission: econ.admin
 
   contractlog:
     description: Voir historique contrats

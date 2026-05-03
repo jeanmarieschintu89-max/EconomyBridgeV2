@@ -12,6 +12,7 @@ public class JobsHook {
 
         List<String> lore = new ArrayList<>();
 
+        // 🔒 plugin absent
         if (Bukkit.getPluginManager().getPlugin("Jobs") == null) {
             lore.add("§7Aucun");
             return lore;
@@ -25,12 +26,21 @@ public class JobsHook {
                 return lore;
             }
 
+            int count = 0;
+
             for (var prog : jobsPlayer.getJobProgression()) {
+
+                // 🔥 limite à 2 métiers (évite lore trop long)
+                if (count >= 2) {
+                    lore.add("§7+ autres...");
+                    break;
+                }
 
                 String name = prog.getJob().getName();
                 int level = prog.getLevel();
 
                 lore.add("§a- " + name + " §7(Lv." + level + ")");
+                count++;
             }
 
         } catch (Exception e) {

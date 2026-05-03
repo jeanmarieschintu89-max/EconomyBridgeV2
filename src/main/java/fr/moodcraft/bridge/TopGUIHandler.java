@@ -24,11 +24,11 @@ public class TopGUIHandler implements GUIHandler {
 
         if (uuidStr == null) return;
 
-        UUID targetUUID = UUID.fromString(uuidStr);
+        UUID target = UUID.fromString(uuidStr);
 
         p.closeInventory();
 
-        // 👉 ouvre profil joueur
-        ProfileGUI.open(p, targetUUID);
+        // 🔥 ouvre profil
+        ProfileGUI.open(p, target);
     }
 }

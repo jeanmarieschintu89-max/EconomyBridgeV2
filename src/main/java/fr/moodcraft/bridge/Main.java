@@ -68,7 +68,6 @@ public class Main extends JavaPlugin {
 
         // 📊 BOURSE (minerais)
         GUIManager.register("minerais", new PriceHandler());
-        GUIManager.register("admin_market", new MarketAdminHandler());
 
         // 📜 CONTRATS
         GUIManager.register("contract_main", new ContractGUIHandler());

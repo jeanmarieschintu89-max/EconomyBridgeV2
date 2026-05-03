@@ -22,7 +22,7 @@ public class MainMenuGUI {
                 : rep >= 20 ? "§aConfirmé"
                 : "§7Débutant";
 
-        String job = JobsHook.getJob(p);
+        String job = JobsHook.getJobWithLevel(p);
 
         // =========================
         // 👤 PROFIL

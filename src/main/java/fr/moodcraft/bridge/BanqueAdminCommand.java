@@ -10,7 +10,7 @@ public class BanqueAdminCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        // ❌ console non autorisée
+        // ❌ console
         if (!(sender instanceof Player p)) {
             sender.sendMessage("§cCommande joueur uniquement.");
             return true;
@@ -29,15 +29,16 @@ public class BanqueAdminCommand implements CommandExecutor {
 
             switch (args[0].toLowerCase()) {
 
+                // 🔄 RELOAD CONFIG
                 case "reload" -> {
                     Main plugin = Main.getInstance();
-
                     plugin.reloadConfig();
 
                     p.sendMessage("§b✔ Config rechargée");
                     return true;
                 }
 
+                // 🧨 RESET ECONOMIE
                 case "reset" -> {
                     for (String item : MarketState.base.keySet()) {
                         double base = MarketState.base.get(item);
@@ -57,10 +58,10 @@ public class BanqueAdminCommand implements CommandExecutor {
         }
 
         // =========================
-        // 🏦 GUI
+        // 🎮 GUI (NOUVEAU SYSTEME)
         // =========================
         p.closeInventory();
-        BanqueAdminGUI.open(p);
+        MarketAdminGUI.open(p); // 🔥 IMPORTANT
 
         return true;
     }

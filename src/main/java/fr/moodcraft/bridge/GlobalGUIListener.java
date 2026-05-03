@@ -1,4 +1,3 @@
-
 package fr.moodcraft.bridge;
 
 import org.bukkit.entity.Player;
@@ -21,6 +20,12 @@ public class GlobalGUIListener implements Listener {
 
         int slot = e.getRawSlot();
 
+        // 🔥 bloque shift click / double click
+        if (e.isShiftClick() || e.isRightClick()) {
+            e.setCancelled(true);
+            return;
+        }
+
         // =========================
         // 🎯 CONTRACT CREATE
         // =========================
@@ -40,7 +45,7 @@ public class GlobalGUIListener implements Listener {
         }
 
         // =========================
-        // 🔒 BLOQUE INVENTAIRE JOUEUR POUR LES AUTRES GUI
+        // 🔒 BLOQUE INVENTAIRE JOUEUR (autres GUI)
         // =========================
         if (e.getClickedInventory() == e.getView().getBottomInventory()) {
             e.setCancelled(true);
@@ -56,9 +61,13 @@ public class GlobalGUIListener implements Listener {
         }
 
         // =========================
-        // 🔒 BLOQUE GUI + EXEC HANDLER
+        // 🔒 BLOQUE + HANDLE
         // =========================
         e.setCancelled(true);
+
         GUIManager.handle(p, slot);
+
+        // 🔥 STOP ICI (TRÈS IMPORTANT)
+        return;
     }
 }

@@ -13,7 +13,7 @@ public class BankTransferListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        String clean = title.replaceAll("§.", "").trim();
+        String clean = title.replaceAll("§.", "");
         if (!clean.equalsIgnoreCase("Virement bancaire")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
@@ -24,27 +24,21 @@ public class BankTransferListener implements Listener {
 
         int slot = e.getRawSlot();
 
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
         switch (slot) {
 
-            // 👤 VIREMENT JOUEUR (GUI)
             case 11 -> {
                 p.closeInventory();
                 TransferBuilder.create(p);
-                TransferTargetGUI.open(p);
+                TargetPlayerGUI.open(p); // 🔥 GUI joueur
             }
 
-            // 🏦 IBAN (chat pour l’instant ou GUI futur)
             case 15 -> {
                 p.closeInventory();
-                p.sendMessage("§8────────────");
-                p.sendMessage("§6🏦 Virement IBAN");
-                p.sendMessage("§7Entre un IBAN dans le chat");
-                p.sendMessage("§8────────────");
+                p.performCommand("ibanpay"); // OK ici
             }
 
-            // 🔙 RETOUR
             case 22 -> {
                 p.closeInventory();
                 BankGUI.open(p);

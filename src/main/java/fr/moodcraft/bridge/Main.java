@@ -1,4 +1,3 @@
-
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
@@ -62,13 +61,15 @@ public class Main extends JavaPlugin {
 
         // 💰 BANQUE
         GUIManager.register("bank_main", new BankHandler());
-        GUIManager.register("transfer_type", new TransferTypeHandler());     // ✅ NOUVEAU
+        GUIManager.register("transfer_type", new TransferTypeHandler());
         GUIManager.register("transfer_target", new TargetPlayerHandler());
-        GUIManager.register("transfer_amount", new TransferAmountHandler()); // ✅ NOUVEAU
+        GUIManager.register("transfer_amount", new TransferAmountHandler());
         GUIManager.register("transfer_confirm", new TransferConfirmHandler());
         GUIManager.register("bank_history", new BankHistoryHandler());
+        GUIManager.register("bank_deposit", new DepositHandler());
+        GUIManager.register("bank_withdraw", new WithdrawHandler());
 
-        // 📊 BOURSE (minerais)
+        // 📊 BOURSE
         GUIManager.register("minerais", new PriceHandler());
 
         // 📜 CONTRATS
@@ -77,9 +78,8 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_price", new ContractPriceHandler());
         GUIManager.register("contract_amount", new ContractAmountHandler());
         GUIManager.register("contract_market", new ContractMarketHandler());
-        GUIManager.register("contract_player", new ContractPlayerHandler());
-        GUIManager.register("bank_deposit", new DepositHandler());
-        GUIManager.register("bank_withdraw", new WithdrawHandler());
+
+        // ✅ CORRECTION ICI (UN SEUL HANDLER)
         GUIManager.register("contract_player", new ContractDeliverHandler());
 
         // 🧭 AUTRES

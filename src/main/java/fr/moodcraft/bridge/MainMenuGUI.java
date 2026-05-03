@@ -21,7 +21,6 @@ public class MainMenuGUI {
             double total = balance + bank;
 
             String id = p.getUniqueId().toString();
-            int rep = ReputationManager.get(id);
 
             // 💰 COMPTES (CENTRE)
             SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.CLOCK, "§6💰 Comptes",
@@ -77,10 +76,9 @@ public class MainMenuGUI {
                     "§8────────────",
                     "§7Développement",
                     "",
-                    "§aAméliore ton territoire",
-                    "§7Économie locale",
+                    "§7Fonction bientôt disponible",
                     "",
-                    "§eClique pour ouvrir"
+                    "§8Clique (info)"
             ));
 
             // ⚒️ JOBS
@@ -88,10 +86,9 @@ public class MainMenuGUI {
                     "§8────────────",
                     "§7Gains réguliers",
                     "",
-                    "§aRevenus stables",
-                    "§eImpact marché",
+                    "§7Fonction bientôt disponible",
                     "",
-                    "§eClique pour travailler"
+                    "§8Clique (info)"
             ));
 
             // 🧭 TELEPORT
@@ -115,16 +112,15 @@ public class MainMenuGUI {
                     "§7Observe le marché"
             ));
 
-            // 🔧 ADMIN
+            // 🔧 ADMIN (désactivé proprement)
             if (p.hasPermission("econ.admin")) {
                 SafeGUI.safeSet(inv, 23, SafeGUI.item(Material.REDSTONE_BLOCK, "§c⚙ Admin",
                         "§8────────────",
-                        "§7Gestion serveur",
+                        "§7Menu admin désactivé",
                         "",
-                        "§eModifier économie",
-                        "§7Configurer marché",
+                        "§7Fonction en cours de refonte",
                         "",
-                        "§eClique pour gérer"
+                        "§8Indisponible"
                 ));
             }
 

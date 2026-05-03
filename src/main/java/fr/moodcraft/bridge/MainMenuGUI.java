@@ -7,6 +7,7 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class MainMenuGUI {
 
@@ -26,6 +27,17 @@ public class MainMenuGUI {
                 : "§7Débutant";
 
         // =========================
+        // 👑 TOP 1 (pour affichage)
+        // =========================
+        String topName = "Aucun";
+
+        var top = ReputationManager.getTop(1);
+        if (!top.isEmpty()) {
+            String uuid = top.keySet().iterator().next();
+            topName = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
+        }
+
+        // =========================
         // 👤 PROFIL
         // =========================
         List<String> lore = new ArrayList<>();
@@ -40,7 +52,7 @@ public class MainMenuGUI {
         lore.addAll(JobsHook.getJobsLore(p));
 
         lore.add("");
-        lore.add("§7Réputation: " + repColor + rep);
+        lore.add("§7Réputation: " + repColor + (int) rep);
         lore.add("§7Statut: " + rank);
 
         SafeGUI.safeSet(inv, 4, SafeGUI.item(
@@ -129,6 +141,20 @@ public class MainMenuGUI {
                 "§7fermier, chasseur",
                 "",
                 "§e▶ Ouvrir"
+        ));
+
+        // =========================
+        // 👑 CLASSEMENT
+        // =========================
+        SafeGUI.safeSet(inv, 23, SafeGUI.item(
+                Material.GOLDEN_HELMET,
+                "§6Classement",
+                "§8────────────",
+                "§7Top commerçants",
+                "",
+                "§6👑 Leader: §f" + topName,
+                "",
+                "§e▶ Voir"
         ));
 
         // =========================

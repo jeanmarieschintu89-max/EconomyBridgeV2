@@ -13,59 +13,76 @@ public class GlobalGUIListener implements Listener {
 
         String id = GUIManager.get(p);
 
-        // 👉 pas un GUI custom → on laisse faire
-        if (id == null) return;
+        // 🔍 DEBUG 1
+        p.sendMessage("§7[DEBUG] GUI=" + id);
 
-        if (e.getClickedInventory() == null) return;
+        // 👉 pas un GUI custom → on laisse faire
+        if (id == null) {
+            p.sendMessage("§c[DEBUG] GUI NULL → non géré");
+            return;
+        }
+
+        if (e.getClickedInventory() == null) {
+            p.sendMessage("§c[DEBUG] clickedInventory = null");
+            return;
+        }
 
         int slot = e.getRawSlot();
+
+        // 🔍 DEBUG 2
+        p.sendMessage("§e[DEBUG] slot=" + slot);
 
         // =========================
         // 🎯 CONTRACT CREATE (SPÉCIAL)
         // =========================
         if (id.equals("contract_create")) {
 
-            // slot dépôt
             if (slot == 10) {
+                p.sendMessage("§a[DEBUG] dépôt autorisé");
                 e.setCancelled(false);
                 return;
             }
 
-            // inventaire joueur autorisé
             if (e.getClickedInventory() == e.getView().getBottomInventory()) {
+                p.sendMessage("§a[DEBUG] inventaire joueur autorisé");
                 e.setCancelled(false);
                 return;
             }
         }
 
         // =========================
-        // 🔒 BLOQUE SHIFT / DOUBLE CLICK
+        // 🔒 SHIFT / RIGHT CLICK
         // =========================
         if (e.isShiftClick() || e.isRightClick()) {
+            p.sendMessage("§c[DEBUG] shift/right bloqué");
             e.setCancelled(true);
             return;
         }
 
         // =========================
-        // 🔒 BLOQUE INVENTAIRE JOUEUR
+        // 🔒 INVENTAIRE JOUEUR
         // =========================
         if (e.getClickedInventory() == e.getView().getBottomInventory()) {
+            p.sendMessage("§c[DEBUG] clic inventaire joueur bloqué");
             e.setCancelled(true);
             return;
         }
 
         // =========================
-        // 🔒 BLOQUE HORS GUI
+        // 🔒 HORS GUI
         // =========================
         if (slot >= e.getView().getTopInventory().getSize()) {
+            p.sendMessage("§c[DEBUG] hors GUI");
             e.setCancelled(true);
             return;
         }
 
         // =========================
-        // 🎯 HANDLE (LE PLUS IMPORTANT)
+        // 🎯 HANDLE
         // =========================
         e.setCancelled(true);
+
+        p.sendMessage("§a[DEBUG] handle → " + id + " | slot=" + slot);
 
         GUIManager.handle(p, slot);
     }

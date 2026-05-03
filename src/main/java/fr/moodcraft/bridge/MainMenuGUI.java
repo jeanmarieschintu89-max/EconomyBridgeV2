@@ -139,6 +139,6 @@ public class MainMenuGUI {
             e.printStackTrace();
         }
 
-        p.openInventory(inv);
+        GUIManager.open(p, "main_menu", inv);
     }
 }

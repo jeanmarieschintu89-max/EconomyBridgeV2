@@ -21,7 +21,7 @@ public class ContractCreateHandler implements GUIHandler {
 
             case 14 -> ContractPriceGUI.open(p);
 
-            // ✍️ VALIDATION → DONNE LIVRE
+            // ✍️ VALIDATION → LIVRE + MESSAGE
             case 22 -> {
 
                 if (b.item == null || b.amount <= 0 || b.price <= 0) {
@@ -29,8 +29,11 @@ public class ContractCreateHandler implements GUIHandler {
                     return;
                 }
 
-                // 🔥 NOUVEAU SYSTÈME
+                // 📖 donne le livre
                 BookContract.give(p, b);
+
+                // 💬 message RP
+                p.sendMessage("§e✍️ Signe le livre pour finaliser ton contrat");
 
                 p.closeInventory();
             }

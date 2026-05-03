@@ -1,73 +1,51 @@
 package fr.moodcraft.bridge;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+
+import java.util.*;
 
 public class GUIManager {
 
     private static final Map<UUID, String> open = new HashMap<>();
+    private static final Set<UUID> opening = new HashSet<>();
 
     // =========================
     // 📂 OPEN GUI
     // =========================
     public static void open(Player p, String id, Inventory inv) {
 
-        open.put(p.getUniqueId(), id);
+        UUID uuid = p.getUniqueId();
 
-        System.out.println("[DEBUG OPEN] " + p.getName() + " → " + id);
+        opening.add(uuid);              // 🔥 on marque "en train d'ouvrir"
+        open.put(uuid, id);             // on enregistre l'ID
 
         p.openInventory(inv);
+
+        // ⏳ après 1 tick, on enlève le flag
+        Bukkit.getScheduler().runTask(Main.getInstance(), () ->
+                opening.remove(uuid)
+        );
     }
 
     // =========================
-    // 🔍 GET GUI ID
+    // 🔍 GET
     // =========================
     public static String get(Player p) {
-        String id = open.get(p.getUniqueId());
-
-        System.out.println("[DEBUG GET] " + p.getName() + " → " + id);
-
-        return id;
+        return open.get(p.getUniqueId());
     }
 
     // =========================
-    // ❌ CLOSE GUI
+    // ❌ CLOSE
     // =========================
     public static void close(Player p) {
 
-        System.out.println("[DEBUG CLOSE] " + p.getName());
+        UUID uuid = p.getUniqueId();
 
-        open.remove(p.getUniqueId());
-    }
+        // 🚫 si un GUI est en cours d'ouverture → on ignore le close
+        if (opening.contains(uuid)) return;
 
-    // =========================
-    // 🎯 HANDLE CLICK
-    // =========================
-    public static void handle(Player p, int slot) {
-
-        String id = get(p);
-        if (id == null) return;
-
-        GUIHandler handler = switch (id) {
-
-            case "main_menu" -> new MainMenuHandler();
-            case "bank_main" -> new BankHandler();
-            case "transfer_target" -> new TargetPlayerHandler();
-            case "transfer_confirm" -> new TransferConfirmHandler();
-            case "market_list" -> new MarketItemListHandler();
-            case "teleport" -> new TeleportHandler();
-
-            default -> null;
-        };
-
-        if (handler != null) {
-            handler.onClick(p, slot);
-        } else {
-            System.out.println("[DEBUG] Aucun handler pour " + id);
-        }
+        open.remove(uuid);
     }
 }

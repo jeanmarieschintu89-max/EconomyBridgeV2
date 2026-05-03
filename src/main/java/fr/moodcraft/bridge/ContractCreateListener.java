@@ -1,12 +1,9 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class ContractCreateListener implements Listener {
 
@@ -14,97 +11,72 @@ public class ContractCreateListener implements Listener {
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
-        if (title == null) return;
-
-        String clean = title.replaceAll("§.", "");
-        if (!clean.equalsIgnoreCase("Créer contrat")) return;
+        if (title == null || !title.contains("Créer contrat")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
+        if (e.getClickedInventory() == null) return;
 
-        // ❗ important : top inventory uniquement
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
+
+        e.setCancelled(true);
+
+        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
 
         int slot = e.getRawSlot();
 
-        ContractBuilder builder = ContractBuilder.get(p.getUniqueId());
-
-        // =========================
-        // 📦 SLOT ITEM (autorisé)
-        // =========================
-        if (slot == 10) {
-            e.setCancelled(false);
-
-            // récupérer l'item après dépôt
-            p.getServer().getScheduler().runTaskLater(Main.getInstance(), () -> {
-                ItemStack item = e.getInventory().getItem(10);
-
-                if (item != null && item.getType() != Material.AIR) {
-                    builder.item = item.getType().name();
-                    p.sendMessage("§aItem sélectionné: §f" + builder.item);
-                }
-            }, 1L);
-
-            return;
-        }
-
-        // bloque le reste
-        e.setCancelled(true);
-
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
-
         switch (slot) {
 
-            // =========================
+            // 📦 ITEM SLOT
+            case 10 -> {
+                e.setCancelled(false); // permet de poser item
+                return;
+            }
+
             // 📊 QUANTITÉ
-            // =========================
             case 12 -> {
-                builder.amount += 1;
-                p.sendMessage("§bQuantité: §f" + builder.amount);
+                if (e.isLeftClick()) b.amount++;
+                if (e.isRightClick() && b.amount > 1) b.amount--;
+                if (e.isShiftClick()) b.amount += 10;
             }
 
-            // =========================
             // 💰 PRIX
-            // =========================
             case 14 -> {
-                builder.price += 100;
-                p.sendMessage("§6Prix: §f" + builder.price + "€");
+                if (e.isLeftClick()) b.price += 10;
+                if (e.isRightClick() && b.price > 10) b.price -= 10;
+                if (e.isShiftClick()) b.price += 100;
             }
 
-            // =========================
-            // ✅ VALIDATION
-            // =========================
-            case 16 -> {
+            // ✅ VALIDER
+            case 22 -> {
 
-                if (builder.item == null) {
-                    p.sendMessage("§c❌ Aucun item défini");
+                if (b.item == null || b.amount <= 0 || b.price <= 0) {
+                    p.sendMessage("§c❌ Contrat invalide");
                     return;
                 }
 
                 ContractManager.create(
                         p.getUniqueId(),
-                        builder.item,
-                        builder.amount,
-                        builder.price
+                        b.item,
+                        b.amount,
+                        b.price
                 );
 
-                p.sendMessage("§8────────────");
                 p.sendMessage("§a✔ Contrat créé !");
-                p.sendMessage("§7Item: §f" + builder.item);
-                p.sendMessage("§7Quantité: §f" + builder.amount);
-                p.sendMessage("§7Prix: §f" + builder.price + "€");
-                p.sendMessage("§8────────────");
-
                 ContractBuilder.remove(p.getUniqueId());
                 p.closeInventory();
+                return;
             }
 
-            // =========================
-            // 🔙 RETOUR
-            // =========================
-            case 22 -> {
+            // ❌ ANNULER
+            case 26 -> {
+                ContractBuilder.remove(p.getUniqueId());
                 p.closeInventory();
-                ContractGUI.open(p);
+                return;
             }
         }
+
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+
+        ContractCreateGUI.open(p);
     }
 }

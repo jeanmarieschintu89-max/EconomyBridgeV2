@@ -61,6 +61,7 @@ public class ContractGUI {
                 "§8────────────",
                 "§7Retour au menu principal"));
 
-        p.openInventory(inv);
+        // 🔥 FIX ICI (IMPORTANT)
+        GUIManager.open(p, "contract_menu", inv);
     }
 }

@@ -5,135 +5,123 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import net.milkbowl.vault.economy.Economy;
-
 public class MainMenuGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6✦ Menu MoodCraft");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6✦ MoodCraft");
 
-        try {
+        double money = VaultHook.getBalance(p);
+        double bank = BankStorage.get(p.getUniqueId().toString());
+        double rep = ReputationManager.get(p.getUniqueId().toString());
 
-            Economy eco = VaultHook.getEconomy();
-            double balance = eco != null ? eco.getBalance(p) : 0;
-            double bank = BankStorage.get(p.getUniqueId().toString());
-            double total = balance + bank;
+        // =========================
+        // 🧱 BORDURES
+        // =========================
+        SafeGUI.fillBorders(inv, Material.GRAY_STAINED_GLASS_PANE);
 
-            String id = p.getUniqueId().toString();
+        // =========================
+        // 👤 PROFIL (slot 4)
+        // =========================
+        String repColor = rep >= 50 ? "§6" : rep >= 20 ? "§a" : "§7";
 
-            // 💰 COMPTES (CENTRE)
-            SafeGUI.safeSet(inv, 4, SafeGUI.item(Material.CLOCK, "§6💰 Comptes",
-                    "§8────────────",
-                    "§7Vue globale",
-                    "",
-                    "§aLiquide: §f" + SafeGUI.money(balance),
-                    "§bBanque: §f" + SafeGUI.money(bank),
-                    "",
-                    "§6Total: §f" + SafeGUI.money(total),
-                    "",
-                    "§7Réputation:",
-                    ReputationManager.format(id),
-                    "",
-                    "§eClique pour gérer"
-            ));
+        SafeGUI.safeSet(inv, 4, SafeGUI.item(
+                Material.PLAYER_HEAD,
+                "§e✦ " + p.getName(),
+                "§8────────────",
+                "§7💵 Liquide: §a" + (int) money + "€",
+                "§7🏦 Banque: §6" + (int) bank + "€",
+                "",
+                "§7⭐ Réputation: " + repColor + rep
+        ));
 
-            // 📈 BOURSE
-            SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.GOLD_INGOT, "§e📈 Bourse",
-                    "§8────────────",
-                    "§7Prix dynamiques",
-                    "",
-                    "§aProfite des hausses",
-                    "§cAttention aux chutes",
-                    "",
-                    "§eClique pour trader"
-            ));
+        // =========================
+        // 💰 BANQUE (slot 10)
+        // =========================
+        SafeGUI.safeSet(inv, 10, SafeGUI.glow(SafeGUI.item(
+                Material.GOLD_INGOT,
+                "§6✦ Banque",
+                "§8────────────",
+                "§7🏦 Solde: §6" + (int) bank + "€",
+                "",
+                "§7Gère ton argent",
+                "",
+                "§e▶ Dépôt",
+                "§e▶ Retrait",
+                "§e▶ Virement"
+        )));
 
-            // 🏦 BANQUE
-            SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.ENDER_CHEST, "§b🏦 Banque",
-                    "§8────────────",
-                    "§7Gestion sécurisée",
-                    "",
-                    "§aDéposer",
-                    "§eRetirer",
-                    "",
-                    "§eClique pour ouvrir"
-            ));
+        // =========================
+        // 📜 CONTRATS (slot 12)
+        // =========================
+        SafeGUI.safeSet(inv, 12, SafeGUI.glow(SafeGUI.item(
+                Material.WRITABLE_BOOK,
+                "§a✦ Contrats",
+                "§8────────────",
+                "§7📦 Missions & commandes",
+                "",
+                "§7Crée ou accepte",
+                "§7des contrats",
+                "",
+                "§e▶ Accéder"
+        )));
 
-            // 📜 CONTRATS
-            SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.WRITTEN_BOOK, "§e📜 Contrats",
-                    "§8────────────",
-                    "§7Travaux entre joueurs",
-                    "",
-                    "§aRécompenses",
-                    "§7Influence réputation",
-                    "",
-                    "§eClique pour accéder"
-            ));
+        // =========================
+        // 📊 BOURSE (slot 14)
+        // =========================
+        SafeGUI.safeSet(inv, 14, SafeGUI.item(
+                Material.EMERALD,
+                "§a✦ Bourse",
+                "§8────────────",
+                "§7📈 Marché dynamique",
+                "",
+                "§7Prix en évolution",
+                "",
+                "§e▶ Voir"
+        ));
 
-            // 🏙️ VILLE
-            SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.BELL, "§a🏙 Ville",
-                    "§8────────────",
-                    "§7Développement",
-                    "",
-                    "§7Fonction bientôt disponible",
-                    "",
-                    "§8Clique (info)"
-            ));
+        // =========================
+        // 🧭 EXPLORATION (slot 16)
+        // =========================
+        SafeGUI.safeSet(inv, 16, SafeGUI.item(
+                Material.ENDER_PEARL,
+                "§d✦ Exploration",
+                "§8────────────",
+                "§7🌍 Déplacements",
+                "",
+                "§e▶ Spawn",
+                "§e▶ Téléportation"
+        ));
 
-            // ⚒️ JOBS
-            SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.IRON_PICKAXE, "§7⚒ Jobs",
-                    "§8────────────",
-                    "§7Gains réguliers",
-                    "",
-                    "§7Fonction bientôt disponible",
-                    "",
-                    "§8Clique (info)"
-            ));
+        // =========================
+        // 🏙️ VILLE (slot 19)
+        // =========================
+        SafeGUI.safeSet(inv, 19, SafeGUI.item(
+                Material.BRICKS,
+                "§6✦ Ville",
+                "§8────────────",
+                "§7🏙️ Gestion territoriale",
+                "",
+                "§e▶ Terrains",
+                "§e▶ Membres"
+        ));
 
-            // 🧭 TELEPORT
-            SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.COMPASS, "§b🧭 Téléportation",
-                    "§8────────────",
-                    "§7Déplacements rapides",
-                    "",
-                    "§aVille • Shop • Farm",
-                    "",
-                    "§eClique pour voyager"
-            ));
-
-            // ℹ️ INFOS
-            SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.BOOK, "§dℹ Infos",
-                    "§8────────────",
-                    "§7Conseils économiques",
-                    "",
-                    "§aAcheter bas",
-                    "§cVendre haut",
-                    "",
-                    "§7Observe le marché"
-            ));
-
-            // 🔧 ADMIN (désactivé proprement)
-            if (p.hasPermission("econ.admin")) {
-                SafeGUI.safeSet(inv, 23, SafeGUI.item(Material.REDSTONE_BLOCK, "§c⚙ Admin",
-                        "§8────────────",
-                        "§7Menu admin désactivé",
-                        "",
-                        "§7Fonction en cours de refonte",
-                        "",
-                        "§8Indisponible"
-                ));
-            }
-
-            // ❌ FERMER
-            SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.BARRIER, "§cFermer",
-                    "§7Quitter le menu"));
-
-        } catch (Exception e) {
-            inv.clear();
-            SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.BARRIER, "§cMenu indisponible"));
-            p.sendMessage("§cErreur ouverture menu");
-            e.printStackTrace();
-        }
+        // =========================
+        // 🛠️ MÉTIERS (slot 21)
+        // =========================
+        SafeGUI.safeSet(inv, 21, SafeGUI.item(
+                Material.IRON_AXE,
+                "§a✦ Métiers",
+                "§8────────────",
+                "§7💼 Activités",
+                "",
+                "§e🪓 Bûcheron",
+                "§e⛏️ Mineur",
+                "§e🌾 Fermier",
+                "§e🏹 Chasseur",
+                "",
+                "§e▶ Choisir"
+        ));
 
         GUIManager.open(p, "main_menu", inv);
     }

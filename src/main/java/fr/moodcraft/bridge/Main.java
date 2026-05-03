@@ -80,6 +80,7 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_player", new ContractPlayerHandler());
         GUIManager.register("bank_deposit", new DepositHandler());
         GUIManager.register("bank_withdraw", new WithdrawHandler());
+        GUIManager.register("contract_player", new ContractDeliverHandler());
 
         // 🧭 AUTRES
         GUIManager.register("teleport", new TeleportHandler());

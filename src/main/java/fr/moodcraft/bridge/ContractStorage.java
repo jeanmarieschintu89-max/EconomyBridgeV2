@@ -43,7 +43,12 @@ public class ContractStorage {
         List<Contract> list = new ArrayList<>();
 
         for (Contract c : contracts.values()) {
-            if ("OPEN".equalsIgnoreCase(c.status)) {
+
+            // ❌ AVANT
+            // if ("OPEN".equalsIgnoreCase(c.status))
+
+            // ✅ MAINTENANT
+            if (c.status == Contract.Status.OPEN) {
                 list.add(c);
             }
         }

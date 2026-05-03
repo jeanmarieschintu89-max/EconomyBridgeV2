@@ -9,17 +9,25 @@ public class ContractGUIHandler implements GUIHandler {
 
         switch (slot) {
 
+            // 📄 CRÉER CONTRAT
             case 11 -> {
-                ContractBuilder.remove(p.getUniqueId());
-                ContractBuilder.create(p.getUniqueId());
                 ContractCreateGUI.open(p);
             }
 
-            case 13 -> ContractMarketGUI.open(p);
+            // 📜 CONTRATS DISPONIBLES
+            case 13 -> {
+                ContractMarketGUI.open(p);
+            }
 
-            case 15 -> ContractPlayerGUI.open(p);
+            // 📦 MES CONTRATS
+            case 15 -> {
+                ContractPlayerGUI.open(p);
+            }
 
-            case 22 -> MainMenuGUI.open(p);
+            // 🔙 RETOUR
+            case 22 -> {
+                MainMenuGUI.open(p);
+            }
         }
     }
 }

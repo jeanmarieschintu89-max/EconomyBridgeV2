@@ -50,8 +50,13 @@ public class BankStorage {
     // ➕ ADD MONEY
     // =========================
     public static void add(String uuid, double amount) {
+
+        if (amount <= 0) return; // 🔒 sécurité
+
         double current = get(uuid);
         set(uuid, current + amount);
+
+        log(uuid, "ADD", amount, "-", "manual");
     }
 
     // =========================
@@ -59,11 +64,16 @@ public class BankStorage {
     // =========================
     public static boolean remove(String uuid, double amount) {
 
+        if (amount <= 0) return false; // 🔒 sécurité
+
         double current = get(uuid);
 
         if (current < amount) return false;
 
         set(uuid, current - amount);
+
+        log(uuid, "REMOVE", amount, "-", "manual");
+
         return true;
     }
 
@@ -72,10 +82,33 @@ public class BankStorage {
     // =========================
     public static boolean transfer(String from, String to, double amount) {
 
+        if (amount <= 0) return false; // 🔒 sécurité
+
         if (!remove(from, amount)) return false;
 
         add(to, amount);
+
+        log(from, "TRANSFER_OUT", amount, to, "transfer");
+        log(to, "TRANSFER_IN", amount, from, "transfer");
+
         return true;
+    }
+
+    // =========================
+    // 📝 LOG TRANSACTION
+    // =========================
+    private static void log(String uuid, String type, double amount, String target, String reason) {
+
+        String path = "logs." + System.currentTimeMillis();
+
+        config.set(path + ".uuid", uuid);
+        config.set(path + ".type", type);
+        config.set(path + ".amount", amount);
+        config.set(path + ".target", target);
+        config.set(path + ".reason", reason);
+        config.set(path + ".time", System.currentTimeMillis());
+
+        save();
     }
 
     // =========================

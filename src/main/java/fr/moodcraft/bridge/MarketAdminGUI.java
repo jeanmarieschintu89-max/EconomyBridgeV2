@@ -45,6 +45,7 @@ public class MarketAdminGUI {
                         "§8────────────",
                         "§7Retour menu principal"));
 
-        p.openInventory(inv);
+        // 🔥 CHANGEMENT ICI
+        GUIManager.open(p, "admin_market", inv);
     }
 }

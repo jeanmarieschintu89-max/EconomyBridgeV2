@@ -91,7 +91,6 @@ public class Main extends JavaPlugin {
         registerCommand("ecotest", new EcoTestCommand());
         registerCommand("ecoreload", new EcoReloadCommand());
 
-        registerCommand("banqueadmin", new BanqueAdminCommand());
         registerCommand("menu", new MenuCommand());
 
         registerCommand("transactions", new TransactionsCommand());

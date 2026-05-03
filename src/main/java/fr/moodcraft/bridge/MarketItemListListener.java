@@ -1,17 +1,35 @@
-@EventHandler
-public void click(InventoryClickEvent e) {
+package fr.moodcraft.bridge;
 
-    String title = e.getView().getTitle();
-    if (title == null || !title.contains("Items Marché")) return;
+import org.bukkit.event.Listener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.entity.Player;
 
-    if (!(e.getWhoClicked() instanceof Player p)) return;
+public class MarketItemListListener implements Listener {
 
-    e.setCancelled(true);
+    @EventHandler
+    public void click(InventoryClickEvent e) {
 
-    var item = e.getCurrentItem();
-    if (item == null || !item.hasItemMeta()) return;
+        String title = e.getView().getTitle();
+        if (title == null) return;
 
-    String name = item.getItemMeta().getDisplayName().replace("§b", "");
+        String clean = title.replaceAll("§.", "");
+        if (!clean.contains("Items Marché")) return;
 
-    MarketItemGUI.open(p, name.toLowerCase());
+        if (!(e.getWhoClicked() instanceof Player p)) return;
+        if (e.getClickedInventory() == null) return;
+
+        // 🔒 sécurité GUI
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
+
+        e.setCancelled(true);
+
+        var item = e.getCurrentItem();
+        if (item == null || !item.hasItemMeta()) return;
+
+        String name = item.getItemMeta().getDisplayName().replace("§b", "").toLowerCase();
+
+        // 🔥 ouvre config item
+        MarketItemGUI.open(p, name);
+    }
 }

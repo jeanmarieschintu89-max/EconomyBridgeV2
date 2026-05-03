@@ -66,7 +66,6 @@ public class Main extends JavaPlugin {
                 new ContractCreateListener(),
                 new ContractMarketListener(),
                 new ContractPlayerListener(),
-                new ContractAmountListener(),
                 new ContractPriceListener(),
                 new BookSignListener(),
 

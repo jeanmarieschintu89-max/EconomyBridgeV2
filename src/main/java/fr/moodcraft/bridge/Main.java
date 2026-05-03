@@ -92,6 +92,9 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_player", new ContractPlayerHandler());
         GUIManager.register("minerais", new PriceHandler());
         GUIManager.register("price_gui", new PriceHandler());
+        GUIManager.register("bank_transfer", new BankTransferHandler());
+        GUIManager.register("bank_target", new TargetPlayerHandler());
+        GUIManager.register("bank_confirm", new TransferConfirmHandler());
 
         // =========================
         // 📜 COMMANDES

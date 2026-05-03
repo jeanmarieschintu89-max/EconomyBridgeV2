@@ -16,12 +16,10 @@ public class MainMenuListener implements Listener {
 
         String clean = title.replaceAll("§.", "");
 
-        // 🔒 Support ancien + nouveau titre
         if (!clean.equalsIgnoreCase("Menu") &&
             !clean.equalsIgnoreCase("✦ Menu MoodCraft")) return;
 
         if (e.getClickedInventory() == null) return;
-
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
@@ -35,33 +33,25 @@ public class MainMenuListener implements Listener {
 
         int slot = e.getRawSlot();
 
-        // 🔊 feedback
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
         switch (slot) {
 
-            // 💰 COMPTES
-            case 4 -> open(p, () -> BankGUI.open(p));
+            case 4 -> open(p, BankGUI::open);
 
-            // 📈 BOURSE
-            case 10 -> open(p, () -> PriceGUI.open(p));
+            case 10 -> open(p, PriceGUI::open);
 
-            // 🏦 BANQUE
-            case 11 -> open(p, () -> BankGUI.open(p));
+            case 11 -> open(p, BankGUI::open);
 
-            // 📜 CONTRATS (FIX FINAL)
-            case 12 -> open(p, () -> ContractMarketGUI.open(p));
+            // 🔥 FIX ICI
+            case 12 -> open(p, ContractGUI::open);
 
-            // 🏙️ VILLE
             case 14 -> command(p, "townmenu");
 
-            // ⚒️ JOBS
             case 15 -> command(p, "jobs join");
 
-            // 🧭 TP
-            case 16 -> open(p, () -> TeleportGUI.open(p));
+            case 16 -> open(p, TeleportGUI::open);
 
-            // ℹ️ INFOS
             case 22 -> {
                 p.sendMessage("§8────────────");
                 p.sendMessage("§6📊 Conseil marché");
@@ -70,7 +60,6 @@ public class MainMenuListener implements Listener {
                 p.sendMessage("§8────────────");
             }
 
-            // 🔧 ADMIN
             case 23 -> {
                 if (p.hasPermission("econ.admin")) {
                     command(p, "banqueadmin");
@@ -79,18 +68,13 @@ public class MainMenuListener implements Listener {
                 }
             }
 
-            // ❌ FERMER
             case 26 -> p.closeInventory();
         }
     }
 
-    // =========================
-    // 🔧 UTILITAIRES
-    // =========================
-
-    private void open(Player p, Runnable action) {
+    private void open(Player p, java.util.function.Consumer<Player> action) {
         p.closeInventory();
-        action.run();
+        action.accept(p);
     }
 
     private void command(Player p, String cmd) {

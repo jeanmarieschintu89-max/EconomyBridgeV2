@@ -90,6 +90,7 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_amount", new ContractAmountHandler());
         GUIManager.register("contract_market", new ContractMarketHandler());
         GUIManager.register("contract_player", new ContractPlayerHandler());
+        GUIManager.register("minerais", new MineraisHandler());
 
         // =========================
         // 📜 COMMANDES

@@ -10,12 +10,10 @@ public class PriceHandler implements GUIHandler {
 
         switch (slot) {
 
-            // 🔙 MENU PRINCIPAL
             case 4:
                 MainMenuGUI.open(p);
                 return;
 
-            // 💎 MINERAIS
             case 10: sell(p, "netherite", Material.NETHERITE_INGOT); return;
             case 11: sell(p, "emerald", Material.EMERALD); return;
             case 12: sell(p, "diamond", Material.DIAMOND); return;
@@ -34,9 +32,6 @@ public class PriceHandler implements GUIHandler {
         }
     }
 
-    // =========================
-    // 💰 VENTE AVEC TAXE
-    // =========================
     private void sell(Player p, String id, Material mat) {
 
         int amount = count(p, mat);
@@ -53,30 +48,20 @@ public class PriceHandler implements GUIHandler {
         double tax = gross * taxRate;
         double total = gross - tax;
 
-        // 💸 PAIEMENT
         VaultHook.getEconomy().depositPlayer(p, total);
 
-        // 🧹 RETRAIT ITEMS
         remove(p, mat, amount);
 
-        // 📊 IMPACT MARCHÉ
-        MarketEngine.recordSell(id, amount);
-
-        // 💬 MESSAGE
         p.sendMessage("§a✔ Vente: §f" + amount + "x " + id +
                 "\n§7Brut: §f" + String.format("%.2f", gross) + "€" +
                 "\n§cTaxe (20%): §f-" + String.format("%.2f", tax) + "€" +
                 "\n§eNet: §f" + String.format("%.2f", total) + "€");
 
-        // 🎉 TITLE
         p.sendTitle("§a+" + String.format("%.2f", total) + "€",
                 "§cTaxe: -" + String.format("%.2f", tax) + "€",
                 5, 20, 5);
     }
 
-    // =========================
-    // 📦 COMPTER ITEMS
-    // =========================
     private int count(Player p, Material mat) {
         int total = 0;
 
@@ -89,9 +74,6 @@ public class PriceHandler implements GUIHandler {
         return total;
     }
 
-    // =========================
-    // 🧹 RETIRER ITEMS
-    // =========================
     private void remove(Player p, Material mat, int amount) {
 
         int left = amount;

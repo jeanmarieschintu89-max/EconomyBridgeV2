@@ -13,6 +13,17 @@ public class PriceGUI {
 
         try {
 
+            // 🔙 MENU PRINCIPAL
+            SafeGUI.safeSet(inv, 4, SafeGUI.item(
+                    Material.NETHER_STAR,
+                    "§b☰ Menu principal",
+                    "§8────────────",
+                    "§7Retour au menu",
+                    "§7principal",
+                    "",
+                    "§8Clique pour ouvrir"
+            ));
+
             set(inv, 10, "netherite", Material.NETHERITE_INGOT, "§5◆ Netherite");
             set(inv, 11, "emerald", Material.EMERALD, "§a◆ Émeraude");
             set(inv, 12, "diamond", Material.DIAMOND, "§b◆ Diamant");

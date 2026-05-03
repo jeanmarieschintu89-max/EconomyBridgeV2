@@ -24,7 +24,7 @@ public class BankListener implements Listener {
         if (!clean.contains("banque")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getClickedInventory() == null) return;
+        if (e.getClickedInventory() != e.getView().getTopInventory()) return;
 
         // 🔒 bloque UNIQUEMENT le GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;

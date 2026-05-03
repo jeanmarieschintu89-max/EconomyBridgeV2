@@ -30,7 +30,7 @@ commands:
     permission: econ.admin
 
   contrats:
-    description: Voir les contrats
+    description: Ouvrir le menu des contrats
     usage: /contrats
     permission: econ.use
 
@@ -41,13 +41,13 @@ commands:
 
   contractdeliver:
     description: Livrer un contrat
-
-  contrats:
-    description: Ouvrir menu contrats
+    usage: /contractdeliver <id>
+    permission: econ.use
 
   # =========================
   # ⭐ RÉPUTATION
   # =========================
+
   resetrep:
     description: Reset réputation joueur
     usage: /resetrep <joueur>
@@ -56,6 +56,7 @@ commands:
   # =========================
   # 💰 MARCHÉ
   # =========================
+
   prix:
     description: Ouvre le marché
     usage: /prix
@@ -93,10 +94,12 @@ commands:
   bank:
     description: Modifier la banque d'un joueur
     usage: /bank <joueur> <montant>
+    permission: econ.admin
 
   # =========================
   # ⚙️ ADMIN ECO
   # =========================
+
   ecoreset:
     description: Reset complet de l'économie
     usage: /ecoreset
@@ -115,6 +118,7 @@ commands:
   # =========================
   # 🧭 MENU
   # =========================
+
   menu:
     description: Ouvre le menu principal
     usage: /menu

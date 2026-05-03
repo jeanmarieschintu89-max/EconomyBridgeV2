@@ -1,70 +1,72 @@
-package fr.moodcraft.bridge;
+public static void open(Player p) {
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
+    ContractBuilder b = ContractBuilder.get(p.getUniqueId());
 
-public class ContractCreateGUI {
+    Inventory inv = Bukkit.createInventory(null, 27, "§fCréer contrat");
 
-    public static void open(Player p) {
+    // 📦 ITEM
+    SafeGUI.safeSet(inv, 10, SafeGUI.item(
+            b.item != null ? Material.valueOf(b.item.toUpperCase()) : Material.BARRIER,
+            "§eObjet demandé",
+            "§8──────────── §7",
+            "§7Sélection actuelle §7",
+            "",
+            "§f" + (b.item == null ? "Aucun objet" : b.item),
+            "",
+            "§8Dépose un item §7"));
 
-        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
+    // 📊 QUANTITÉ
+    SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.PAPER,
+            "§eQuantité",
+            "§8──────────── §7",
+            "§7Nombre demandé §7",
+            "",
+            "§a" + b.amount,
+            "",
+            "§a+1 clic gauche §7",
+            "§c-1 clic droit §7",
+            "§e+10 shift §7"));
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6Créer contrat");
+    // 💰 PRIX
+    SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.GOLD_INGOT,
+            "§ePrix unitaire",
+            "§8──────────── §7",
+            "§7Prix par objet §7",
+            "",
+            "§6" + b.price + "€",
+            "",
+            "§a+10 clic gauche §7",
+            "§c-10 clic droit §7",
+            "§e+100 shift §7"));
 
-        // 📦 ITEM
-        SafeGUI.safeSet(inv, 10, SafeGUI.item(
-                b.item != null ? Material.valueOf(b.item.toUpperCase()) : Material.BARRIER,
-                "§bItem",
-                "§7Actuel: §f" + (b.item == null ? "Aucun" : b.item),
-                "",
-                "§aDépose un item ici"
-        ));
+    // 💸 TOTAL
+    double total = b.amount * b.price;
 
-        // 📊 QUANTITÉ
-        SafeGUI.safeSet(inv, 12, SafeGUI.item(Material.PAPER,
-                "§eQuantité",
-                "§f" + b.amount,
-                "",
-                "§a+1 clic gauche",
-                "§c-1 clic droit",
-                "§6+10 shift"
-        ));
+    SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.EMERALD,
+            "§aValeur totale",
+            "§8──────────── §7",
+            "§7Montant final §7",
+            "",
+            "§a" + total + "€",
+            "",
+            "§7Résumé du contrat §7"));
 
-        // 💰 PRIX
-        SafeGUI.safeSet(inv, 14, SafeGUI.item(Material.GOLD_INGOT,
-                "§6Prix unitaire",
-                "§f" + b.price + "€",
-                "",
-                "§a+10 clic gauche",
-                "§c-10 clic droit",
-                "§6+100 shift"
-        ));
+    // ✅ VALIDER
+    SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.LIME_CONCRETE,
+            "§aValider contrat",
+            "§8──────────── §7",
+            "§7Créer la commande §7",
+            "",
+            "§aPaiement sécurisé §7",
+            "§7Attribué à un joueur §7",
+            "",
+            "§8Clique pour confirmer §7"));
 
-        // 💸 TOTAL
-        double total = b.amount * b.price;
+    // ❌ ANNULER
+    SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.BARRIER,
+            "§cAnnuler",
+            "§8──────────── §7",
+            "§7Fermer le menu §7"));
 
-        SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.EMERALD,
-                "§aTotal",
-                "§f" + total + "€",
-                "",
-                "§7Résumé du contrat"
-        ));
-
-        // ✅ VALIDER
-        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.LIME_CONCRETE,
-                "§aValider contrat",
-                "",
-                "§7Créer la demande",
-                "",
-                "§aClique pour confirmer"
-        ));
-
-        // ❌ RETOUR
-        SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.BARRIER,
-                "§cAnnuler"));
-
-        p.openInventory(inv);
-    }
+    p.openInventory(inv);
 }

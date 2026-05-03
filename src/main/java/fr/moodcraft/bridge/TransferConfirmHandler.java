@@ -12,18 +12,11 @@ public class TransferConfirmHandler implements GUIHandler {
 
         switch (slot) {
 
-            // ❌ ANNULER
             case 3 -> {
                 BankGUI.open(p);
             }
 
-            // ✅ CONFIRMER
             case 5 -> {
-
-                if (!"player".equals(data.type)) {
-                    p.sendMessage("§cType non supporté");
-                    return;
-                }
 
                 Player target = Bukkit.getPlayer(data.target);
 
@@ -37,26 +30,29 @@ public class TransferConfirmHandler implements GUIHandler {
                     return;
                 }
 
-                double bank = BankStorage.get(p.getUniqueId().toString());
+                String senderId = p.getUniqueId().toString();
+                String targetId = target.getUniqueId().toString();
 
-                if (bank < data.amount) {
+                double senderBank = BankStorage.get(senderId);
+
+                if (senderBank < data.amount) {
                     p.sendMessage("§cFonds insuffisants");
                     return;
                 }
 
-                // 💸 TRANSFERT
-                BankStorage.add(p.getUniqueId().toString(), -data.amount);
-                BankStorage.add(target.getUniqueId().toString(), data.amount);
+                // 💸 TRANSFERT (version compatible)
+                BankStorage.set(senderId, senderBank - data.amount);
+                BankStorage.set(targetId, BankStorage.get(targetId) + data.amount);
 
                 // 🧾 LOG
                 TransactionLogger.log(
-                        p.getUniqueId(),
+                        senderId,
                         "Virement envoyé à " + target.getName(),
                         -data.amount
                 );
 
                 TransactionLogger.log(
-                        target.getUniqueId(),
+                        targetId,
                         "Virement reçu de " + p.getName(),
                         data.amount
                 );

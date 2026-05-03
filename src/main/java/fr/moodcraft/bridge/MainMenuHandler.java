@@ -15,6 +15,10 @@ public class MainMenuHandler implements GUIHandler {
             case 16 -> { p.closeInventory(); TeleportGUI.open(p); }
             case 19 -> { p.closeInventory(); p.performCommand("townmenu"); }
             case 21 -> { p.closeInventory(); p.performCommand("jobs join"); }
+
+            // 👑 CLASSEMENT
+            case 23 -> { p.closeInventory(); TopRepGUI.open(p); }
+
             case 26 -> p.closeInventory();
         }
     }

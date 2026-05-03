@@ -64,6 +64,6 @@ public class ContractMarketGUI {
                 "§7Retour au menu contrats"
         ));
 
-        p.openInventory(inv);
+        GUIManager.open(p, "contract_market", inv);
     }
 }

@@ -10,18 +10,17 @@ public class ContractCreateGUI {
 
     public static void open(Player p) {
 
-        // 🔥 récupération propre
         ContractBuilder b = ContractBuilder.getOrCreate(p.getUniqueId());
 
         Inventory inv = Bukkit.createInventory(null, 27, "§fCréer contrat");
 
         // =========================
-        // 📦 ITEM (ICÔNE RÉELLE)
+        // 📦 ITEM (ICÔNE)
         // =========================
         ItemStack display;
 
         if (b.itemStack != null) {
-            display = b.itemStack.clone(); // 🔥 clone obligatoire
+            display = b.itemStack.clone();
         } else {
             display = new ItemStack(Material.BARRIER);
         }
@@ -57,14 +56,45 @@ public class ContractCreateGUI {
                 "§8Clique pour modifier"));
 
         // =========================
-        // 💎 TOTAL
+        // 📜 PREVIEW CONTRAT (AVEC RÉPUTATION)
         // =========================
         double total = b.amount * b.price;
 
-        SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.EMERALD,
-                "§aTotal",
+        double rep = ReputationManager.get(p.getUniqueId().toString());
+        double bonusPercent = rep * 0.01;
+
+        double tax = total * 0.05;
+        double gain = (total - tax) * (1 + bonusPercent);
+
+        ItemStack preview;
+
+        if (b.itemStack != null) {
+            preview = b.itemStack.clone();
+            preview.setAmount(Math.min(b.amount, 64));
+        } else {
+            preview = new ItemStack(Material.BARRIER);
+        }
+
+        String repColor = rep >= 50 ? "§6" : rep >= 20 ? "§a" : "§7";
+
+        SafeGUI.safeSet(inv, 16, SafeGUI.item(
+                preview,
+                "§a📜 Aperçu du contrat",
                 "§8────────────",
-                "§a" + total + "€"));
+                "§7Objet: §f" + (b.item == null ? "Aucun" : b.item),
+                "§7Quantité: §a" + b.amount,
+                "§7Prix/unité: §6" + b.price + "€",
+                "",
+                "§7Total: §a" + total + "€",
+                "§7Taxe: §c-" + tax + "€",
+                "",
+                "§7Réputation: " + repColor + rep,
+                "§7Bonus: §a+" + (int)(bonusPercent * 100) + "%",
+                "",
+                "§7Gain final: §6" + (int) gain + "€",
+                "",
+                "§e✔ Prêt à être créé"
+        ));
 
         // =========================
         // ✅ VALIDER
@@ -83,7 +113,7 @@ public class ContractCreateGUI {
                 "§7Retour menu"));
 
         // =========================
-        // 🚀 OUVERTURE GUI
+        // 🚀 OUVERTURE
         // =========================
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
             GUIManager.open(p, "contract_create", inv);

@@ -3,31 +3,40 @@ package fr.moodcraft.bridge;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class JobsHook {
 
-    public static String getJobWithLevel(Player p) {
+    public static List<String> getJobsLore(Player p) {
 
-        // 🔒 si plugin absent
+        List<String> lore = new ArrayList<>();
+
         if (Bukkit.getPluginManager().getPlugin("Jobs") == null) {
-            return "Aucun";
+            lore.add("§7Aucun");
+            return lore;
         }
 
         try {
             var jobsPlayer = com.gamingmesh.jobs.Jobs.getPlayerManager().getJobsPlayer(p);
 
             if (jobsPlayer == null || jobsPlayer.getJobProgression().isEmpty()) {
-                return "Aucun";
+                lore.add("§7Aucun");
+                return lore;
             }
 
-            var prog = jobsPlayer.getJobProgression().get(0);
+            for (var prog : jobsPlayer.getJobProgression()) {
 
-            String name = prog.getJob().getName();
-            int level = prog.getLevel();
+                String name = prog.getJob().getName();
+                int level = prog.getLevel();
 
-            return name + " §7(Lv." + level + ")";
+                lore.add("§a- " + name + " §7(Lv." + level + ")");
+            }
 
         } catch (Exception e) {
-            return "Aucun";
+            lore.add("§7Aucun");
         }
+
+        return lore;
     }
 }

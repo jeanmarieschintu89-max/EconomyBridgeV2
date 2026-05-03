@@ -5,6 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainMenuGUI {
 
     public static void open(Player p) {
@@ -22,23 +25,28 @@ public class MainMenuGUI {
                 : rep >= 20 ? "§aConfirmé"
                 : "§7Débutant";
 
-        String job = JobsHook.getJobWithLevel(p);
-
         // =========================
         // 👤 PROFIL
         // =========================
+        List<String> lore = new ArrayList<>();
+
+        lore.add("§8────────────");
+        lore.add("§7Liquide: §a" + (int) cash + "€");
+        lore.add("§7Banque: §6" + (int) bank + "€");
+        lore.add("§7Total: §e" + (int) total + "€");
+        lore.add("");
+
+        lore.add("§7Métiers:");
+        lore.addAll(JobsHook.getJobsLore(p));
+
+        lore.add("");
+        lore.add("§7Réputation: " + repColor + rep);
+        lore.add("§7Statut: " + rank);
+
         SafeGUI.safeSet(inv, 4, SafeGUI.item(
                 Material.PLAYER_HEAD,
                 "§e" + p.getName(),
-                "§8────────────",
-                "§7Liquide: §a" + (int) cash + "€",
-                "§7Banque: §6" + (int) bank + "€",
-                "§7Total: §e" + (int) total + "€",
-                "",
-                "§7Métier: §a" + job,
-                "",
-                "§7Réputation: " + repColor + rep,
-                "§7Statut: " + rank
+                lore.toArray(new String[0])
         ));
 
         // =========================

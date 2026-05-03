@@ -41,11 +41,10 @@ public class Main extends JavaPlugin {
 
         // =========================
         // 📦 LISTENERS
-        // ⚠️ IMPORTANT : ordre contrôlé
         // =========================
         registerEvents(
 
-                // 📦 CORE (ne doit PAS bloquer globalement)
+                // 📦 CORE
                 new ShopListener(),
                 new MineListener(),
 
@@ -77,12 +76,24 @@ public class Main extends JavaPlugin {
                 // 💰 ECONOMIE
                 new PayListener(),
 
-                // 🛡️ GUARD (drag uniquement)
+                // 🛡️ GUARD
                 new InventoryGuardListener(),
 
-                // ⚠️ GLOBAL GUI → TOUJOURS EN DERNIER
+                // ⚠️ GUI GLOBAL (NOUVEAU SYSTÈME)
+                new GlobalGUIListener(),
+
+                // ⚠️ ANCIEN (on garde temporairement)
                 new GUIListener()
         );
+
+        // =========================
+        // 🔥 GUI MANAGER REGISTER
+        // =========================
+        GUIManager.register("admin_market", new MarketAdminHandler());
+
+        // 👉 on ajoutera les autres après test
+        // GUIManager.register("contract_menu", new ContractGUIHandler());
+        // GUIManager.register("contract_create", new ContractCreateHandler());
 
         // =========================
         // 📜 COMMANDES
@@ -102,15 +113,8 @@ public class Main extends JavaPlugin {
         registerCommand("iban", new IbanCommand());
         registerCommand("ibanpay", new IbanPayCommand());
 
-        // ⭐ RÉPUTATION
-        registerCommand("resetrep", new ReputationResetCommand());
-        registerCommand("reputation", new ReputationCommand());
-        registerCommand("rep", new ReputationAddCommand());
-
-        // 💰 BANQUE ADMIN
         registerCommand("bank", new BankAdminCommand());
 
-        // 📄 CONTRATS
         registerCommand("contract", new ContractCommand());
         registerCommand("contractaccept", new ContractAcceptCommand());
         registerCommand("contractdeliver", new ContractDeliverCommand());
@@ -143,6 +147,7 @@ public class Main extends JavaPlugin {
         getLogger().info("💸 Virements GUI: OK");
         getLogger().info("📊 Marché: OK");
         getLogger().info("📜 Contrats: OK");
+        getLogger().info("🧠 GUI Manager: ACTIF");
         getLogger().info("=================================");
     }
 
@@ -152,10 +157,6 @@ public class Main extends JavaPlugin {
         ReputationManager.save();
         MarketStorage.save();
     }
-
-    // =========================
-    // 🔧 UTILS
-    // =========================
 
     private void registerEvents(Listener... listeners) {
         for (Listener listener : listeners) {

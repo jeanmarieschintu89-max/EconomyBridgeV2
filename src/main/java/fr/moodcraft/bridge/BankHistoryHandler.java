@@ -7,15 +7,26 @@ public class BankHistoryHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
+        int page = BankHistoryGUI.getPage(p);
+
         switch (slot) {
 
-            // 🔙 RETOUR banque
-            case 8:
-                BankGUI.open(p);
-                break;
+            // ⬅ précédent
+            case 21 -> {
+                if (page > 0) {
+                    BankHistoryGUI.open(p, page - 1);
+                }
+            }
 
-            default:
-                break;
+            // ➡ suivant
+            case 23 -> {
+                BankHistoryGUI.open(p, page + 1);
+            }
+
+            // 🔙 retour
+            case 22 -> {
+                BankGUI.open(p);
+            }
         }
     }
 }

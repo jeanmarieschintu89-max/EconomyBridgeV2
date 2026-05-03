@@ -20,7 +20,7 @@ public class TransferConfirmListener implements Listener {
         if (!clean.contains("confirmation")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getClickedInventory() == null) return;
+        if (e.getClickedInventory() != e.getView().getTopInventory()) return;
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);

@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class MainMenuHandler implements GUIHandler {
@@ -7,42 +8,43 @@ public class MainMenuHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
+        // 🔊 son clic
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
+
         switch (slot) {
 
-            // 👤 PROFIL (optionnel)
-            case 4 -> {
-                p.sendMessage("§7Profil joueur");
+            case 4 -> p.sendMessage("§7Profil joueur");
+
+            case 10 -> {
+                p.closeInventory();
+                BankGUI.open(p);
             }
 
-            // 💰 BANQUE (slot 10)
-            case 10 -> BankGUI.open(p);
-
-            // 📜 CONTRATS (slot 12)
-            case 12 -> ContractGUI.open(p);
-
-            // 📊 BOURSE (slot 14)
-            case 14 -> PriceGUI.open(p);
-
-            // 🧭 EXPLORATION (slot 16)
-            case 16 -> TeleportGUI.open(p);
-
-            // 🏙️ VILLE (slot 19)
-            case 19 -> p.performCommand("townmenu");
-
-            // 🛠️ MÉTIERS (slot 21)
-            case 21 -> p.performCommand("jobs join");
-
-            // ℹ️ INFOS (slot 22)
-            case 22 -> p.sendMessage("§7Conseil: achète bas, vends haut.");
-
-            // 🔧 ADMIN (slot 23)
-            case 23 -> {
-                if (p.hasPermission("econ.admin")) {
-                    p.sendMessage("§7Menu admin en cours de refonte...");
-                }
+            case 12 -> {
+                p.closeInventory();
+                ContractGUI.open(p);
             }
 
-            // ❌ FERMER (slot 26)
+            case 14 -> {
+                p.closeInventory();
+                PriceGUI.open(p);
+            }
+
+            case 16 -> {
+                p.closeInventory();
+                TeleportGUI.open(p);
+            }
+
+            case 19 -> {
+                p.closeInventory();
+                p.performCommand("townmenu");
+            }
+
+            case 21 -> {
+                p.closeInventory();
+                p.performCommand("jobs join");
+            }
+
             case 26 -> p.closeInventory();
         }
     }

@@ -2,37 +2,38 @@ package fr.moodcraft.bridge;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.milkbowl.vault.economy.Economy;
 
 public class BankListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void click(InventoryClickEvent e) {
 
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        // 🔥 NORMALISATION ROBUSTE (anti couleurs + emoji + espaces)
-        String clean = title.replaceAll("§.", "").trim();
+        // 🔥 NORMALISATION ULTRA SAFE
+        String clean = title.replaceAll("§.", "")
+                .toLowerCase()
+                .trim();
 
-        // 🔐 accepte tous les styles de titre contenant "Banque"
-        if (!clean.contains("Banque")) return;
+        // 🔐 MATCH LARGE (évite 100% des bugs de titre)
+        if (!clean.contains("banque")) return;
 
+        if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getClickedInventory() == null) return;
 
-        // 🔒 bloque uniquement le GUI (pas l'inventaire joueur)
+        // 🔒 bloque UNIQUEMENT le GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
+        // 🔥 ON BLOQUE TOUJOURS
         e.setCancelled(true);
 
         // 🔥 anti glitch
         if (e.isShiftClick()) return;
-
-        if (!(e.getWhoClicked() instanceof Player p)) return;
 
         var item = e.getCurrentItem();
         if (item == null || item.getType().isAir()) return;
@@ -47,7 +48,6 @@ public class BankListener implements Listener {
 
         String id = p.getUniqueId().toString();
 
-        // 🔊 feedback
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
         switch (slot) {
@@ -82,16 +82,9 @@ public class BankListener implements Listener {
                 p.closeInventory();
                 MainMenuGUI.open(p);
             }
-
-            default -> {
-                // ignore les autres slots
-            }
         }
     }
 
-    // =========================
-    // 📄 IBAN
-    // =========================
     private void showIban(Player p, String id) {
 
         String iban = BankStorage.getIban(id);
@@ -107,9 +100,6 @@ public class BankListener implements Listener {
         p.sendMessage("§8════════════");
     }
 
-    // =========================
-    // 💸 RETRAIT
-    // =========================
     private void withdraw(Player p, Economy eco, String id) {
 
         double bank = BankStorage.get(id);
@@ -133,9 +123,6 @@ public class BankListener implements Listener {
         BankGUI.open(p);
     }
 
-    // =========================
-    // 💰 DEPOT
-    // =========================
     private void deposit(Player p, Economy eco, String id) {
 
         if (eco.getBalance(p) >= 1000) {

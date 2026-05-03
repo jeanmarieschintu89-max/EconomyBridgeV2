@@ -43,6 +43,7 @@ public class Main extends JavaPlugin {
         // =========================
         registerEvents(
 
+                // 📦 CORE
                 new ShopListener(),
                 new MineListener(),
                 new GUIListener(),
@@ -50,17 +51,15 @@ public class Main extends JavaPlugin {
                 // 🏦 BANQUE
                 new BankListener(),
                 new BankTransferListener(),
+                new TargetPlayerListener(),        // 🔥 sélection joueur
+                new TransferConfirmListener(),     // 🔥 confirmation
                 new InventoryGuardListener(),
                 new BankHistoryListener(),
 
-                // 🔥 ADMIN MARKET (NOUVEAU)
+                // 🔥 ADMIN MARKET
                 new MarketAdminListener(),
                 new MarketGlobalListener(),
                 new MarketItemListener(),
-
-                // ❌ SUPPRIMÉ (ANCIEN SYSTEME BUG)
-                // new BanqueItemListListener(),
-                // new BanqueItemGUIListener(),
 
                 // 📜 MENUS
                 new MainMenuListener(),
@@ -128,13 +127,14 @@ public class Main extends JavaPlugin {
         );
 
         // =========================
-        // 🚀 DEBUG PROPRE
+        // 🚀 LOG
         // =========================
         getLogger().info("=================================");
         getLogger().info("✅ EconomyBridge chargé");
-        getLogger().info("📊 Marché dynamique actif");
-        getLogger().info("📜 Contrats actifs");
-        getLogger().info("🏦 Banque active");
+        getLogger().info("🏦 Banque: OK");
+        getLogger().info("💸 Virements GUI: OK");
+        getLogger().info("📊 Marché: OK");
+        getLogger().info("📜 Contrats: OK");
         getLogger().info("=================================");
     }
 
@@ -144,6 +144,10 @@ public class Main extends JavaPlugin {
         ReputationManager.save();
         MarketStorage.save();
     }
+
+    // =========================
+    // 🔧 UTILS
+    // =========================
 
     private void registerEvents(org.bukkit.event.Listener... listeners) {
         for (var listener : listeners) {

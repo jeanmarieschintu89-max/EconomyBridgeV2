@@ -9,50 +9,41 @@ public class MarketAdminGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6⚙ Admin Marché");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6Admin Marché");
 
-        // 📦 ITEMS
-        SafeGUI.safeSet(inv, 10,
+        // 📦 Items
+        SafeGUI.safeSet(inv, 11,
                 SafeGUI.item(Material.CHEST,
-                        "§b📦 Gestion des items",
+                        "§bItems",
                         "§8────────────",
-                        "§7Configurer chaque",
-                        "§7ressource du marché",
-                        "",
-                        "§aPrix / stock / poids",
+                        "§7Configurer chaque item",
                         "",
                         "§8Clique pour ouvrir"));
 
-        // 🌐 GLOBAL
+        // ⚙️ Global
         SafeGUI.safeSet(inv, 13,
                 SafeGUI.item(Material.COMPARATOR,
-                        "§e🌐 Paramètres globaux",
+                        "§eParamètres globaux",
                         "§8────────────",
                         "§7Configurer le moteur",
-                        "§7économique",
-                        "",
-                        "§aInflation / tendances",
                         "",
                         "§8Clique pour ouvrir"));
 
-        // 🔥 RARETÉ
-        SafeGUI.safeSet(inv, 16,
+        // 🔥 Rareté
+        SafeGUI.safeSet(inv, 15,
                 SafeGUI.item(Material.BLAZE_POWDER,
-                        "§6🔥 Rareté",
+                        "§6Rareté",
                         "§8────────────",
-                        "§7Modifier la valeur",
-                        "§7des ressources rares",
+                        "§7Ajustements spéciaux",
                         "",
-                        "§aBoost dynamique",
-                        "",
-                        "§8Clique pour gérer"));
+                        "§8Clique"));
 
-        // 🔙 RETOUR
+        // 🔙 Retour
         SafeGUI.safeSet(inv, 22,
                 SafeGUI.item(Material.ARROW,
-                        "§c⬅ Retour",
+                        "§cRetour",
                         "§8────────────",
-                        "§7Retour au menu principal"));
+                        "§7Retour menu principal"));
 
         p.openInventory(inv);
     }

@@ -9,47 +9,39 @@ public class MainMenuHandler implements GUIHandler {
 
         switch (slot) {
 
-            case 4 -> {
-                BankGUI.open(p);
-            }
+            // 💰 COMPTES → ouvre banque
+            case 4 -> BankGUI.open(p);
 
-            case 10 -> {
-                PriceGUI.open(p); // ou ton GUI bourse
-            }
+            // 📈 BOURSE
+            case 10 -> PriceGUI.open(p);
 
-            case 11 -> {
-                BankGUI.open(p);
-            }
+            // 🏦 BANQUE
+            case 11 -> BankGUI.open(p);
 
-            case 12 -> {
-                ContractGUI.open(p);
-            }
+            // 📜 CONTRATS
+            case 12 -> ContractGUI.open(p);
 
-            case 14 -> {
-                p.sendMessage("§7Ville bientôt...");
-            }
+            // 🏙️ VILLE (placeholder)
+            case 14 -> p.sendMessage("§7Ville bientôt disponible...");
 
-            case 15 -> {
-                p.sendMessage("§7Jobs bientôt...");
-            }
+            // ⚒️ JOBS (placeholder)
+            case 15 -> p.sendMessage("§7Jobs bientôt disponible...");
 
-            case 16 -> {
-                TeleportGUI.open(p);
-            }
+            // 🧭 TELEPORT
+            case 16 -> TeleportGUI.open(p);
 
-            case 22 -> {
-                p.sendMessage("§7Observe le marché...");
-            }
+            // ℹ️ INFOS
+            case 22 -> p.sendMessage("§7Conseil: achète bas, vends haut.");
 
+            // 🔧 ADMIN (désactivé proprement)
             case 23 -> {
                 if (p.hasPermission("econ.admin")) {
-                    MarketAdminGUI.open(p);
+                    p.sendMessage("§7Menu admin en cours de refonte...");
                 }
             }
 
-            case 26 -> {
-                p.closeInventory();
-            }
+            // ❌ FERMER
+            case 26 -> p.closeInventory();
         }
     }
 }

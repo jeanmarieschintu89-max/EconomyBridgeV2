@@ -1,6 +1,5 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class TeleportHandler implements GUIHandler {
@@ -10,30 +9,17 @@ public class TeleportHandler implements GUIHandler {
 
         switch (slot) {
 
-            case 11 -> {
-                if (Bukkit.getWorld("world") != null) {
-                    p.teleport(Bukkit.getWorld("world").getSpawnLocation());
-                    p.sendMessage("§aTéléporté au spawn");
-                }
-            }
+            case 11 -> p.performCommand("spawn");
 
-            case 13 -> {
-                if (Bukkit.getWorld("world_nether") != null) {
-                    p.teleport(Bukkit.getWorld("world_nether").getSpawnLocation());
-                    p.sendMessage("§cTéléporté au Nether");
-                }
-            }
+            case 12 -> p.performCommand("warp shop");
 
-            case 15 -> {
-                if (Bukkit.getWorld("world_the_end") != null) {
-                    p.teleport(Bukkit.getWorld("world_the_end").getSpawnLocation());
-                    p.sendMessage("§dTéléporté à l'End");
-                }
-            }
+            case 13 -> p.performCommand("warp ressources");
 
-            case 22 -> {
-                MainMenuGUI.open(p);
-            }
+            case 14 -> p.performCommand("warp mini-jeux");
+
+            case 15 -> p.performCommand("t spawn");
+
+            case 22 -> MainMenuGUI.open(p);
         }
     }
 }

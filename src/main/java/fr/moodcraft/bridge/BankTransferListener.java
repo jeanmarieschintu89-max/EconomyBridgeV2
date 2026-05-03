@@ -10,10 +10,7 @@ public class BankTransferListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        String title = e.getView().getTitle();
-        if (title == null) return;
-
-        String clean = title.replaceAll("§.", "");
+        String clean = e.getView().getTitle().replaceAll("§.", "").trim();
         if (!clean.equalsIgnoreCase("Virement bancaire")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
@@ -22,21 +19,19 @@ public class BankTransferListener implements Listener {
 
         e.setCancelled(true);
 
-        int slot = e.getRawSlot();
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
-
-        switch (slot) {
+        switch (e.getRawSlot()) {
 
             case 11 -> {
                 p.closeInventory();
                 TransferBuilder.create(p);
-                TargetPlayerGUI.open(p); // 🔥 GUI joueur
+                TargetPlayerGUI.open(p);
             }
 
             case 15 -> {
                 p.closeInventory();
-                p.performCommand("ibanpay"); // OK ici
+                p.performCommand("ibanpay");
             }
 
             case 22 -> {

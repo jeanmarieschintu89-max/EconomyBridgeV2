@@ -32,12 +32,15 @@ public class ContractAmountGUI {
                 "§a" + b.amount
         ));
 
-        // 📊 CENTRE
+        // 📄 VALIDER (centre)
         SafeGUI.safeSet(inv, 13, SafeGUI.item(
                 Material.PAPER,
-                "§eQuantité",
+                "§aValider la quantité",
                 "§8────────────",
-                "§a" + b.amount
+                "§7Quantité choisie:",
+                "§a" + b.amount,
+                "",
+                "§8Clique pour confirmer"
         ));
 
         // ➕ +1
@@ -58,19 +61,10 @@ public class ContractAmountGUI {
                 "§a" + b.amount
         ));
 
-        // 💎 MAX
-        SafeGUI.safeSet(inv, 22, SafeGUI.item(
-                Material.EMERALD_BLOCK,
-                "§aMAX",
-                "§8────────────",
-                "§7Quantité actuelle:",
-                "§a" + b.amount
-        ));
-
         // 🔙 RETOUR
         SafeGUI.safeSet(inv, 26, SafeGUI.item(
                 Material.ARROW,
-                "§cRetour"
+                "§c⬅ Retour"
         ));
 
         p.openInventory(inv);

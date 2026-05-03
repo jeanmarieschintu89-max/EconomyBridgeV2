@@ -9,7 +9,7 @@ public class TransferConfirmGUI {
 
     public static void open(Player p) {
 
-        var b = TransferBuilder.get(p.getUniqueId())
+        TransferBuilder b = TransferBuilder.get(p);
         if (b == null) return;
 
         Inventory inv = Bukkit.createInventory(null, 27, "§eConfirmation virement");
@@ -30,13 +30,13 @@ public class TransferConfirmGUI {
                 "§7Montant actuel:",
                 "§f" + b.amount + "€"));
 
-        // 💰 CENTRE (INFO)
+        // 💰 CENTRE
         SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.GOLD_INGOT, "§eMontant",
                 "§8────────",
                 "§f" + b.amount + "€",
                 "",
                 "§7Cible:",
-                "§a" + (b.target == null ? "Non défini" : b.target),
+                "§a" + (b.target == null ? "Non défini" : b.target.toString()),
                 "",
                 "§7Utilise les boutons"));
 

@@ -33,25 +33,38 @@ public class GUIListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        // 🔥 NORMALISATION (anti Bedrock / couleurs)
-        String clean = title.replaceAll("§.", "");
+        String clean = title.replaceAll("§.", "").trim();
 
+        // =========================
+        // 📊 BOURSE MINERAIS
+        // =========================
         if (!clean.equalsIgnoreCase("Bourse Minerais")) return;
 
         if (e.getClickedInventory() == null) return;
 
-        // 🔥 FIX CRITIQUE → ne bloque QUE le GUI
+        // 🔒 bloque uniquement le GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
-
-        // 🔥 anti spam / glitch
-        if (e.isShiftClick() || e.isRightClick()) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
         ItemStack clicked = e.getCurrentItem();
         if (clicked == null || clicked.getType().isAir()) return;
+
+        int slot = e.getRawSlot();
+
+        // =========================
+        // 🔙 MENU PRINCIPAL
+        // =========================
+        if (slot == 4) {
+            p.closeInventory();
+            MainMenuGUI.open(p);
+            return;
+        }
+
+        // 🔥 anti spam / geyser
+        if (e.isShiftClick() || e.isRightClick()) return;
 
         // 🔥 économie safe
         if (econ == null) {
@@ -97,7 +110,7 @@ public class GUIListener implements Listener {
         // 💰 paiement
         econ.depositPlayer(p, gain);
 
-        // 📄 LOG CENTRALISÉ
+        // 📄 LOG
         EconomyListener.log(p.getName(),
                 "Vente " + id + " x" + amount,
                 gain);
@@ -151,7 +164,7 @@ public class GUIListener implements Listener {
             if (remaining <= 0) break;
         }
 
-        p.updateInventory(); // 🔥 important
+        p.updateInventory();
     }
 
     // =========================

@@ -7,36 +7,26 @@ import org.bukkit.inventory.meta.BookMeta;
 
 public class BookContract {
 
-    public static void give(Player p, Contract c) {
+    public static void give(Player p, ContractBuilder b) {
 
         ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
         BookMeta meta = (BookMeta) book.getItemMeta();
 
-        meta.setTitle("Contrat Officiel");
-        meta.setAuthor("Banque MoodCraft");
+        meta.setTitle("Contrat MoodCraft");
+        meta.setAuthor(p.getName());
 
         meta.addPage(
-                "§l📜 CONTRAT OFFICIEL\n\n" +
-                "§7Objet : §e" + c.item +
-                "\n§7Quantité : §f" + c.amount +
-                "\n§7Paiement : §a" + c.price + "€\n\n" +
-                "§8────────────\n" +
-                "§7Mission :\n" +
-                "§7Fournir les ressources demandées\n\n" +
-                "§a✍ Signez pour accepter"
-        );
-
-        meta.addPage(
-                "§l📦 LIVRAISON\n\n" +
-                "§7Une fois signé :\n\n" +
-                "§7• Rassemblez les objets\n" +
-                "§7• Utilisez §e/contractdeliver\n\n" +
-                "§8────────────\n\n" +
-                "§a✔ Paiement sécurisé\n" +
-                "§a✔ Transaction garantie"
+                "§6Contrat\n\n" +
+                "Objet: " + b.item + "\n" +
+                "Quantité: " + b.amount + "\n" +
+                "Prix: " + b.price + "\n\n" +
+                "§7Signe pour valider"
         );
 
         book.setItemMeta(meta);
+
         p.getInventory().addItem(book);
+
+        p.sendMessage("§e✍️ Signe le livre pour valider ton contrat");
     }
 }

@@ -70,6 +70,6 @@ public class TeleportGUI {
                         "",
                         "§8Clique pour revenir"));
 
-        p.openInventory(inv);
+        GUIManager.open(p, "teleport", inv);
     }
 }

@@ -5,76 +5,34 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.List;
-
 public class BanqueItemGUI {
 
-    private static final List<String> ITEMS = List.of(
-            "netherite","emerald","diamond","gold","iron","copper",
-            "redstone","lapis","coal","quartz","glowstone","amethyst"
-    );
+    public static void open(Player p, String item) {
 
-    public static void open(Player p) {
+        Inventory inv = Bukkit.createInventory(null, 27, "§6Edit: " + item);
 
-        var cfg = Main.getInstance().getConfig();
-        Inventory inv = Bukkit.createInventory(null, 54, "§6⚙ Items Économie");
+        double price = MarketState.base.getOrDefault(item, 0.0);
 
-        int row = 0;
+        SafeGUI.safeSet(inv, 13,
+                SafeGUI.item(Material.DIAMOND,
+                        "§b" + item,
+                        "§7Prix actuel: §f" + price + "€"));
 
-        for (String item : ITEMS) {
+        SafeGUI.safeSet(inv, 10,
+                SafeGUI.item(Material.LIME_WOOL, "§a+10€"));
 
-            int base = row * 9;
+        SafeGUI.safeSet(inv, 11,
+                SafeGUI.item(Material.LIME_WOOL, "§a+100€"));
 
-            double boost = cfg.getDouble("rarity_settings." + item + ".boost");
-            double exp = cfg.getDouble("rarity_settings." + item + ".exponent");
-            double max = cfg.getDouble("rarity_settings." + item + ".max_boost");
+        SafeGUI.safeSet(inv, 15,
+                SafeGUI.item(Material.RED_WOOL, "§c-10€"));
 
-            Material mat = getMat(item);
+        SafeGUI.safeSet(inv, 16,
+                SafeGUI.item(Material.RED_WOOL, "§c-100€"));
 
-            // BOOST
-            inv.setItem(base, SafeGUI.item(Material.RED_STAINED_GLASS_PANE, "§c-"));
-            inv.setItem(base+1, SafeGUI.item(mat,
-                    "§e" + item,
-                    "§8────────────",
-                    "§7Boost: §a" + boost,
-                    "§7Exp: §b" + exp,
-                    "§7Max: §6" + max,
-                    "§8────────────",
-                    "§c⬅ -   §a+ ➡"));
-            inv.setItem(base+2, SafeGUI.item(Material.LIME_STAINED_GLASS_PANE, "§a+"));
-
-            // EXP
-            inv.setItem(base+3, SafeGUI.item(Material.RED_STAINED_GLASS_PANE, "§c-"));
-            inv.setItem(base+4, SafeGUI.item(Material.PAPER, "§bExponent", "§7" + exp));
-            inv.setItem(base+5, SafeGUI.item(Material.LIME_STAINED_GLASS_PANE, "§a+"));
-
-            // MAX
-            inv.setItem(base+6, SafeGUI.item(Material.RED_STAINED_GLASS_PANE, "§c-"));
-            inv.setItem(base+7, SafeGUI.item(Material.GOLD_INGOT, "§6Max", "§7" + max));
-            inv.setItem(base+8, SafeGUI.item(Material.LIME_STAINED_GLASS_PANE, "§a+"));
-
-            row++;
-            if (row >= 6) break;
-        }
+        SafeGUI.safeSet(inv, 22,
+                SafeGUI.item(Material.ARROW, "§cRetour"));
 
         p.openInventory(inv);
-    }
-
-    private static Material getMat(String item) {
-        return switch (item) {
-            case "netherite" -> Material.NETHERITE_INGOT;
-            case "emerald" -> Material.EMERALD;
-            case "diamond" -> Material.DIAMOND;
-            case "gold" -> Material.GOLD_INGOT;
-            case "iron" -> Material.IRON_INGOT;
-            case "copper" -> Material.COPPER_INGOT;
-            case "redstone" -> Material.REDSTONE;
-            case "lapis" -> Material.LAPIS_LAZULI;
-            case "coal" -> Material.COAL;
-            case "quartz" -> Material.QUARTZ;
-            case "glowstone" -> Material.GLOWSTONE_DUST;
-            case "amethyst" -> Material.AMETHYST_SHARD;
-            default -> Material.STONE;
-        };
     }
 }

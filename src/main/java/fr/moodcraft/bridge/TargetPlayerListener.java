@@ -11,10 +11,7 @@ public class TargetPlayerListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        String title = e.getView().getTitle();
-        if (title == null) return;
-
-        String clean = title.replaceAll("§.", "");
+        String clean = e.getView().getTitle().replaceAll("§.", "").trim();
         if (!clean.equalsIgnoreCase("Choix du joueur")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
@@ -26,18 +23,21 @@ public class TargetPlayerListener implements Listener {
         var item = e.getCurrentItem();
         if (item == null || !item.hasItemMeta()) return;
 
-        String name = item.getItemMeta().getDisplayName().replace("§e", "");
+        String name = item.getItemMeta().getDisplayName().replace("§a", "");
 
         Player target = Bukkit.getPlayerExact(name);
         if (target == null) {
-            p.sendMessage("§c❌ Joueur introuvable");
+            p.sendMessage("§c❌ Joueur hors ligne");
             return;
         }
 
-        TransferBuilder.setTarget(p, target);
+        TransferBuilder builder = TransferBuilder.get(p);
+        if (builder == null) return;
+
+        builder.target = target.getUniqueId();
 
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
-        TransferConfirmGUI.open(p); // 🔥 étape suivante
+        TransferConfirmGUI.open(p);
     }
 }

@@ -15,11 +15,16 @@ public class ContractCreateListener implements Listener {
 
         String clean = title.replaceAll("§.", "").trim();
 
-        if (!clean.equalsIgnoreCase("Créer contrat")) return;
+        if (!clean.contains("Créer contrat")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getClickedInventory() != e.getView().getTopInventory()) return;
-        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
+
+        if (e.getClickedInventory() == null) return;
+
+        if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) {
+            e.setCancelled(true);
+            return;
+        }
 
         e.setCancelled(true);
 
@@ -29,7 +34,7 @@ public class ContractCreateListener implements Listener {
         switch (e.getRawSlot()) {
 
             case 10 -> {
-                e.setCancelled(false); // dépôt item autorisé
+                e.setCancelled(false); // autorise dépôt
                 return;
             }
 

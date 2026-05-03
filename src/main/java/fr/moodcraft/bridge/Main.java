@@ -53,28 +53,26 @@ public class Main extends JavaPlugin {
         );
 
         // =========================
-        // 🧠 GUI MANAGER REGISTER (FIXED)
+        // 🧠 GUI MANAGER REGISTER
         // =========================
 
-        // 🏠 MAIN
+        // 🏠 MENU PRINCIPAL
         GUIManager.register("main_menu", new MainMenuHandler());
 
-        // 💰 BANK
+        // 💰 BANQUE
         GUIManager.register("bank_main", new BankHandler());
         GUIManager.register("bank_transfer", new BankTransferHandler());
-        GUIManager.register("transfer_target", new TargetPlayerHandler());   // FIX ID
-        GUIManager.register("transfer_confirm", new TransferConfirmHandler()); // FIX ID
+        GUIManager.register("transfer_target", new TargetPlayerHandler());
+        GUIManager.register("transfer_confirm", new TransferConfirmHandler());
         GUIManager.register("bank_history", new BankHistoryHandler());
 
-        // 📊 MARKET
-        GUIManager.register("minerais", new PriceHandler()); // utilisé dans PriceGUI
-        GUIManager.register("market_global", new MarketGlobalHandler());
+        // 📊 MARCHÉ / BOURSE
+        GUIManager.register("minerais", new PriceHandler());
         GUIManager.register("market_item_list", new MarketItemListHandler());
-        GUIManager.register("market_item", new MarketItemHandler()); // AJOUT MANQUANT
         GUIManager.register("admin_market", new MarketAdminHandler());
 
-        // 📜 CONTRACTS
-        GUIManager.register("contract_main", new ContractGUIHandler()); // FIX ID
+        // 📜 CONTRATS
+        GUIManager.register("contract_main", new ContractGUIHandler());
         GUIManager.register("contract_create", new ContractCreateHandler());
         GUIManager.register("contract_price", new ContractPriceHandler());
         GUIManager.register("contract_amount", new ContractAmountHandler());

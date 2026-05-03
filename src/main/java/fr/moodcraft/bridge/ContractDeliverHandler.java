@@ -9,8 +9,15 @@ public class ContractDeliverHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
+        // 🔙 retour
         if (slot == 49) {
             ContractGUI.open(p);
+            return;
+        }
+
+        // 🔒 anti spam clic
+        if (ActionLock.isLocked(p.getUniqueId(), 1000)) {
+            p.sendMessage("§cAction trop rapide...");
             return;
         }
 
@@ -21,18 +28,37 @@ public class ContractDeliverHandler implements GUIHandler {
             return;
         }
 
-        // 🔒 vérifier que c’est le bon joueur
+        // 🔒 bon joueur
         if (!p.getUniqueId().equals(contract.acceptor)) {
             p.sendMessage("§cCe contrat ne t'appartient pas");
             return;
         }
 
-        // 🔍 check inventaire
-        Material mat = Material.valueOf(contract.item);
-        int required = contract.amount;
+        // 🔒 déjà payé (ANTI DUP)
+        if (contract.paid) {
+            p.sendMessage("§cContrat déjà livré");
+            return;
+        }
 
+        // 🔒 statut
+        if (!"IN_PROGRESS".equalsIgnoreCase(contract.status)) {
+            p.sendMessage("§cContrat invalide");
+            return;
+        }
+
+        // 🔍 item sécurisé
+        Material mat;
+        try {
+            mat = Material.valueOf(contract.item.toUpperCase());
+        } catch (Exception e) {
+            p.sendMessage("§cItem invalide");
+            return;
+        }
+
+        int required = contract.amount;
         int count = 0;
 
+        // 🔍 scan inventaire
         for (ItemStack item : p.getInventory().getContents()) {
             if (item == null) continue;
             if (item.getType() != mat) continue;
@@ -41,11 +67,11 @@ public class ContractDeliverHandler implements GUIHandler {
         }
 
         if (count < required) {
-            p.sendMessage("§cTu n'as pas assez d'items");
+            p.sendMessage("§cIl te manque des items (" + count + "/" + required + ")");
             return;
         }
 
-        // ❌ retirer les items
+        // ❌ suppression sécurisée
         int toRemove = required;
 
         for (ItemStack item : p.getInventory().getContents()) {
@@ -57,10 +83,10 @@ public class ContractDeliverHandler implements GUIHandler {
 
             if (amount <= toRemove) {
                 toRemove -= amount;
-                p.getInventory().remove(item);
+                item.setAmount(0);
             } else {
                 item.setAmount(amount - toRemove);
-                break;
+                toRemove = 0;
             }
 
             if (toRemove <= 0) break;
@@ -71,13 +97,21 @@ public class ContractDeliverHandler implements GUIHandler {
 
         BankStorage.add(p.getUniqueId().toString(), total);
 
-        // 📦 statut
+        // 🔒 anti duplication
+        contract.paid = true;
         contract.status = "COMPLETED";
+
         ContractStorage.update(contract);
 
+        // 📜 log
+        // (déjà géré dans BankStorage.add)
+
         p.sendMessage("§a✔ Contrat livré !");
+        p.sendMessage("§7Objet: §f" + contract.item);
+        p.sendMessage("§7Quantité: §f" + contract.amount);
         p.sendMessage("§6+" + total + "€");
 
+        // 🔄 refresh
         ContractPlayerGUI.open(p);
     }
 }

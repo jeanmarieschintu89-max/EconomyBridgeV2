@@ -9,7 +9,7 @@ public class MainMenuHandler implements GUIHandler {
 
         switch (slot) {
 
-            // 💰 COMPTES → ouvre banque
+            // 💰 COMPTES
             case 4 -> BankGUI.open(p);
 
             // 📈 BOURSE
@@ -21,11 +21,11 @@ public class MainMenuHandler implements GUIHandler {
             // 📜 CONTRATS
             case 12 -> ContractGUI.open(p);
 
-            // 🏙️ VILLE (placeholder)
-            case 14 -> p.sendMessage("§7Ville bientôt disponible...");
+            // 🏙️ VILLE
+            case 14 -> p.performCommand("townmenu");
 
-            // ⚒️ JOBS (placeholder)
-            case 15 -> p.sendMessage("§7Jobs bientôt disponible...");
+            // ⚒️ JOBS
+            case 15 -> p.performCommand("jobs join");
 
             // 🧭 TELEPORT
             case 16 -> TeleportGUI.open(p);
@@ -33,7 +33,7 @@ public class MainMenuHandler implements GUIHandler {
             // ℹ️ INFOS
             case 22 -> p.sendMessage("§7Conseil: achète bas, vends haut.");
 
-            // 🔧 ADMIN (désactivé proprement)
+            // 🔧 ADMIN
             case 23 -> {
                 if (p.hasPermission("econ.admin")) {
                     p.sendMessage("§7Menu admin en cours de refonte...");

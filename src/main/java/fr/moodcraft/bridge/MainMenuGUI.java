@@ -9,7 +9,7 @@ public class MainMenuGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6✦ MoodCraft");
+        Inventory inv = Bukkit.createInventory(null, 27, "Menu");
 
         double bank = BankStorage.get(p.getUniqueId().toString());
         double cash = 0;

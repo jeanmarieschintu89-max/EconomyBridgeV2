@@ -10,7 +10,7 @@ public class TransferConfirmHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
-        TransferBuilder b = TransferBuilder.get(p);
+        TransferBuilder b = TransferBuilder.get(p.getUniqueId())
         if (b == null) return;
 
         Economy eco = VaultHook.getEconomy();

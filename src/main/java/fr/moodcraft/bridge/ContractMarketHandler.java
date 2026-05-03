@@ -7,13 +7,13 @@ public class ContractMarketHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
-        // 🔙 retour
-        if (slot == 22) {
+        // 🔙 retour (CORRIGÉ)
+        if (slot == 49) {
             ContractGUI.open(p);
             return;
         }
 
-        // 🎯 récupérer contrat via slot
+        // 🎯 récupérer contrat
         Contract contract = ContractStorage.getBySlot(slot);
 
         if (contract == null) {
@@ -27,7 +27,13 @@ public class ContractMarketHandler implements GUIHandler {
             return;
         }
 
-        // ✅ accepter
+        // ❌ déjà pris
+        if (!"OPEN".equalsIgnoreCase(contract.status)) {
+            p.sendMessage("§cCe contrat est déjà pris");
+            return;
+        }
+
+        // ✅ ACCEPTATION
         contract.acceptor = p.getUniqueId();
         contract.status = "IN_PROGRESS";
 
@@ -36,7 +42,7 @@ public class ContractMarketHandler implements GUIHandler {
         p.sendMessage("§a✔ Contrat accepté !");
         p.sendMessage("§7Objet: §f" + contract.item);
         p.sendMessage("§7Quantité: §f" + contract.amount);
-        p.sendMessage("§7Gain: §6" + contract.price + "€");
+        p.sendMessage("§7Gain total: §6" + (contract.amount * contract.price) + "€");
 
         // 🔄 refresh
         ContractMarketGUI.open(p);

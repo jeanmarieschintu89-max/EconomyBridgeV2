@@ -11,15 +11,25 @@ public class GlobalGUIListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        // 🔒 sécurité
+        // 🔥 CHECK SI C'EST UN GUI À NOUS
+        String id = GUIManager.get(p);
+
+        if (id == null) return; // 👉 PAS un GUI → on laisse faire
+
         if (e.getClickedInventory() == null) return;
 
+        // 🔒 bloque uniquement NOTRE GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) {
             e.setCancelled(true);
             return;
         }
 
-        // 🔥 bloque tous les GUI
+        // 🔥 autoriser slot item (contract create)
+        if (id.equals("contract_create") && e.getRawSlot() == 10) {
+            e.setCancelled(false);
+            return;
+        }
+
         e.setCancelled(true);
 
         GUIManager.handle(p, e.getRawSlot());

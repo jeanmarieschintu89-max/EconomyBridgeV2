@@ -1,10 +1,26 @@
+package fr.moodcraft.bridge;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+
 public class TransferConfirmGUI {
 
     public static void open(Player p) {
 
         var b = TransferBuilder.get(p);
+        if (b == null) return;
 
         Inventory inv = Bukkit.createInventory(null, 27, "§eConfirmation virement");
+
+        // ➖ -1000
+        SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.RED_CONCRETE, "§4-1000",
+                "§8────────",
+                "§7Réduire fortement",
+                "",
+                "§7Montant actuel:",
+                "§f" + b.amount + "€"));
 
         // ➖ -100
         SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.REDSTONE, "§c-100",
@@ -14,7 +30,7 @@ public class TransferConfirmGUI {
                 "§7Montant actuel:",
                 "§f" + b.amount + "€"));
 
-        // 💰 CENTRE (INFO SEULEMENT)
+        // 💰 CENTRE (INFO)
         SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.GOLD_INGOT, "§eMontant",
                 "§8────────",
                 "§f" + b.amount + "€",
@@ -22,7 +38,7 @@ public class TransferConfirmGUI {
                 "§7Cible:",
                 "§a" + (b.target == null ? "Non défini" : b.target),
                 "",
-                "§7❗ Utilise les boutons pour modifier"));
+                "§7Utilise les boutons"));
 
         // ➕ +100
         SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.EMERALD, "§a+100",
@@ -32,12 +48,20 @@ public class TransferConfirmGUI {
                 "§7Montant actuel:",
                 "§f" + b.amount + "€"));
 
+        // ➕ +1000
+        SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.LIME_CONCRETE, "§2+1000",
+                "§8────────",
+                "§7Augmenter fortement",
+                "",
+                "§7Montant actuel:",
+                "§f" + b.amount + "€"));
+
         // ❌ ANNULER
         SafeGUI.safeSet(inv, 18, SafeGUI.item(Material.BARRIER, "§cAnnuler",
                 "§8────────",
                 "§7Annuler le virement"));
 
-        // ✅ VALIDER (SEUL bouton qui valide)
+        // ✅ VALIDER
         SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.LIME_DYE, "§aValider",
                 "§8────────",
                 "§7Confirmer le virement",

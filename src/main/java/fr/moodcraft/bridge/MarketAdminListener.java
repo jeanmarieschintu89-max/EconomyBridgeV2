@@ -22,7 +22,7 @@ public class MarketAdminListener implements Listener {
         if (!clean.equals("admin marché")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (e.getClickedInventory() == null) return;
+        if (e.getClickedInventory() != e.getView().getTopInventory()) return;
 
         // 🔒 uniquement GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;

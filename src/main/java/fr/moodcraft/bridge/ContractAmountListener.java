@@ -10,7 +10,10 @@ public class ContractAmountListener implements Listener {
     @EventHandler
     public void click(InventoryClickEvent e) {
 
-        String clean = e.getView().getTitle().replaceAll("§.", "");
+        String title = e.getView().getTitle();
+        if (title == null) return;
+
+        String clean = title.replaceAll("§.", "").trim();
         if (!clean.equalsIgnoreCase("Quantité")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
@@ -22,21 +25,32 @@ public class ContractAmountListener implements Listener {
         ContractBuilder b = ContractBuilder.get(p.getUniqueId());
         if (b == null) return;
 
-        switch (e.getRawSlot()) {
+        int slot = e.getRawSlot();
+
+        switch (slot) {
 
             case 10 -> b.amount = Math.max(1, b.amount - 10);
             case 11 -> b.amount = Math.max(1, b.amount - 1);
+
             case 15 -> b.amount += 1;
             case 16 -> b.amount += 10;
-            case 22 -> b.amount = 64;
+
+            case 22 -> b.amount = 64; // max stack (tu peux changer)
 
             case 26 -> {
+                p.closeInventory();
                 ContractCreateGUI.open(p);
+                return;
+            }
+
+            default -> {
                 return;
             }
         }
 
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
+
+        // 🔥 refresh instant
         ContractAmountGUI.open(p);
     }
 }

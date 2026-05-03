@@ -16,7 +16,7 @@ public class BankHandler implements GUIHandler {
 
             // 💸 RETRAIT
             case 1 -> {
-                p.performCommand("bank withdraw 1000"); // ajuste si besoin
+                p.performCommand("bank " + p.getName() + " -1000");
             }
 
             // 🔁 VIREMENT
@@ -26,7 +26,7 @@ public class BankHandler implements GUIHandler {
 
             // 💰 DEPOT
             case 6 -> {
-                p.performCommand("bank deposit 1000"); // ajuste si besoin
+                p.performCommand("bank " + p.getName() + " 1000");
             }
 
             // 📜 HISTORIQUE

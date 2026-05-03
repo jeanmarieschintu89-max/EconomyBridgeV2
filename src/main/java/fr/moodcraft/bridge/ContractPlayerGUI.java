@@ -11,7 +11,7 @@ public class ContractPlayerGUI {
 
     public static void open(Player p) {
 
-        // 🔥 IMPORTANT
+        // 🔥 reset mapping slots
         ContractStorage.clearSlots();
 
         Inventory inv = Bukkit.createInventory(null, 54, "§fMes contrats");
@@ -24,7 +24,12 @@ public class ContractPlayerGUI {
 
             // 🔒 uniquement ses contrats en cours
             if (!p.getUniqueId().equals(c.acceptor)) continue;
-            if (!"IN_PROGRESS".equalsIgnoreCase(c.status)) continue;
+
+            // ❌ AVANT (cassé)
+            // if (!"IN_PROGRESS".equalsIgnoreCase(c.status)) continue;
+
+            // ✅ MAINTENANT (enum propre)
+            if (c.status != Contract.Status.IN_PROGRESS) continue;
 
             if (slot >= 45) break;
 

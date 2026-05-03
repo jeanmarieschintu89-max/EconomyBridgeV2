@@ -61,8 +61,6 @@ public class Main extends JavaPlugin {
 
                 // 📄 CONTRATS
                 new ContractCreateListener(),
-                new ContractPriceListener(),
-                new ContractAmountListener(), // 🔥 AJOUT IMPORTANT
                 new BookSignListener(),
 
                 // 📜 MENUS

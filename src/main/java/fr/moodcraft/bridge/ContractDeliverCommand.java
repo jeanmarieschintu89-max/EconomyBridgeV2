@@ -15,7 +15,7 @@ public class ContractDeliverCommand implements CommandExecutor {
 
         Contract c = ContractManager.getByWorker(worker.getUniqueId());
 
-        if (c == null || c.status != Contract.Status.ACCEPTED) {
+        if (c == null || Contract.Status.IN_PROGRESS {
             worker.sendMessage("§c❌ Aucun contrat actif");
             return true;
         }

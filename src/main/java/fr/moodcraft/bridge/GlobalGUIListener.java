@@ -13,7 +13,7 @@ public class GlobalGUIListener implements Listener {
 
         String id = GUIManager.get(p);
 
-        // 👉 pas un GUI custom → libre
+        // 👉 pas un GUI custom → on laisse faire
         if (id == null) return;
 
         if (e.getClickedInventory() == null) return;
@@ -25,27 +25,15 @@ public class GlobalGUIListener implements Listener {
         // =========================
         if (id.equals("contract_create")) {
 
-            // slot item
+            // slot dépôt
             if (slot == 10) {
                 e.setCancelled(false);
                 return;
             }
 
-            // inventaire joueur
+            // inventaire joueur autorisé
             if (e.getClickedInventory() == e.getView().getBottomInventory()) {
                 e.setCancelled(false);
-                return;
-            }
-        }
-
-        // =========================
-        // 💰 BANK GUI (SÉCURISÉ)
-        // =========================
-        if (id.startsWith("bank_")) {
-
-            // bloque inventaire joueur
-            if (e.getClickedInventory() == e.getView().getBottomInventory()) {
-                e.setCancelled(true);
                 return;
             }
         }
@@ -75,7 +63,7 @@ public class GlobalGUIListener implements Listener {
         }
 
         // =========================
-        // 🎯 HANDLE
+        // 🎯 HANDLE (LE PLUS IMPORTANT)
         // =========================
         e.setCancelled(true);
 

@@ -64,6 +64,6 @@ public class ContractCreateGUI {
         SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.BARRIER,
                 "§cAnnuler"));
 
-        p.openInventory(inv);
+        GUIManager.open(p, "contract_create", inv);
     }
 }

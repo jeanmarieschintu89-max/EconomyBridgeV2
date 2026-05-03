@@ -1,3 +1,7 @@
+package fr.moodcraft.bridge;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 public class PriceHandler implements GUIHandler {
 
@@ -6,40 +10,95 @@ public class PriceHandler implements GUIHandler {
 
         switch (slot) {
 
-            // 🔙 MENU
+            // 🔙 MENU PRINCIPAL
             case 4:
                 MainMenuGUI.open(p);
                 return;
 
             // 💎 MINERAIS
-            case 10: sell(p, "netherite"); return;
-            case 11: sell(p, "emerald"); return;
-            case 12: sell(p, "diamond"); return;
+            case 10: sell(p, "netherite", Material.NETHERITE_INGOT); return;
+            case 11: sell(p, "emerald", Material.EMERALD); return;
+            case 12: sell(p, "diamond", Material.DIAMOND); return;
 
-            case 13: sell(p, "gold"); return;
-            case 14: sell(p, "copper"); return;
-            case 15: sell(p, "iron"); return;
+            case 13: sell(p, "gold", Material.GOLD_INGOT); return;
+            case 14: sell(p, "copper", Material.COPPER_INGOT); return;
+            case 15: sell(p, "iron", Material.IRON_INGOT); return;
 
-            case 16: sell(p, "glowstone"); return;
+            case 16: sell(p, "glowstone", Material.GLOWSTONE_DUST); return;
 
-            case 19: sell(p, "quartz"); return;
-            case 20: sell(p, "amethyst"); return;
-            case 21: sell(p, "redstone"); return;
-            case 22: sell(p, "lapis"); return;
-            case 23: sell(p, "coal"); return;
+            case 19: sell(p, "quartz", Material.QUARTZ); return;
+            case 20: sell(p, "amethyst", Material.AMETHYST_SHARD); return;
+            case 21: sell(p, "redstone", Material.REDSTONE); return;
+            case 22: sell(p, "lapis", Material.LAPIS_LAZULI); return;
+            case 23: sell(p, "coal", Material.COAL); return;
         }
     }
 
-    private void sell(Player p, String id) {
+    // =========================
+    // 💰 VENTE RÉELLE
+    // =========================
+    private void sell(Player p, String id, Material mat) {
 
-        double price = MarketEngine.getPrice(id);
+        int amount = count(p, mat);
 
-        // 👉 ici tu peux connecter à ton système QuickShop / banque
-        p.sendMessage("§aVente de §f" + id + " §aau prix de §f" + String.format("%.2f", price) + "€");
+        if (amount <= 0) {
+            p.sendMessage("§cTu n'as aucun " + mat.name().toLowerCase());
+            return;
+        }
 
-        // Exemple simple :
-        // Economy.depositPlayer(p, price);
+        double unit = MarketEngine.getPrice(id);
+        double total = unit * amount;
 
-        MarketEngine.recordSell(id, 1);
+        // 💸 PAIEMENT
+        VaultHook.getEconomy().depositPlayer(p, total);
+
+        // 🧹 RETRAIT ITEMS
+        remove(p, mat, amount);
+
+        // 📊 IMPACT MARCHÉ
+        MarketEngine.recordSell(id, amount);
+
+        // 💬 MESSAGE
+        p.sendMessage("§a✔ Vente: §f" + amount + "x " + id +
+                " §7→ §e" + String.format("%.2f", total) + "€");
+
+        // 🎉 BONUS VISUEL
+        p.sendTitle("§a+" + String.format("%.2f", total) + "€",
+                "§7Vente effectuée", 5, 20, 5);
+    }
+
+    // =========================
+    // 📦 COMPTER ITEMS
+    // =========================
+    private int count(Player p, Material mat) {
+        int total = 0;
+
+        for (var item : p.getInventory().getContents()) {
+            if (item != null && item.getType() == mat) {
+                total += item.getAmount();
+            }
+        }
+
+        return total;
+    }
+
+    // =========================
+    // 🧹 RETIRER ITEMS
+    // =========================
+    private void remove(Player p, Material mat, int amount) {
+
+        int left = amount;
+
+        for (var item : p.getInventory().getContents()) {
+
+            if (item == null || item.getType() != mat) continue;
+
+            int take = Math.min(item.getAmount(), left);
+            item.setAmount(item.getAmount() - take);
+
+            left -= take;
+
+            if (left <= 0) break;
+        }
     }
 }

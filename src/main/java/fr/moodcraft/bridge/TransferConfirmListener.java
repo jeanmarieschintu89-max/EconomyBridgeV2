@@ -9,11 +9,15 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class TransferConfirmListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void click(InventoryClickEvent e) {
 
-        String clean = e.getView().getTitle().replaceAll("§.", "").trim();
-        if (!clean.equalsIgnoreCase("Confirmation virement")) return;
+        String title = e.getView().getTitle();
+        if (title == null) return;
+
+        String clean = title.replaceAll("§.", "").toLowerCase().trim();
+
+        if (!clean.contains("confirmation")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getClickedInventory() == null) return;
@@ -22,7 +26,47 @@ public class TransferConfirmListener implements Listener {
         e.setCancelled(true);
 
         TransferBuilder builder = TransferBuilder.get(p);
-        if (builder == null || !builder.isValid()) {
+        if (builder == null) return;
+
+        int slot = e.getRawSlot();
+
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
+
+        // =========================
+        // ➖ -100
+        // =========================
+        if (slot == 11) {
+            builder.amount = Math.max(1, builder.amount - 100);
+            TransferConfirmGUI.open(p);
+            return;
+        }
+
+        // =========================
+        // ➕ +100
+        // =========================
+        if (slot == 15) {
+            builder.amount += 100;
+            TransferConfirmGUI.open(p);
+            return;
+        }
+
+        // =========================
+        // ❌ ANNULER
+        // =========================
+        if (slot == 18) {
+            TransferBuilder.remove(p);
+            p.closeInventory();
+            return;
+        }
+
+        // =========================
+        // ✔ VALIDER (SEUL AUTORISÉ)
+        // =========================
+        if (slot != 26) return;
+
+        // 🔥 PAIEMENT UNIQUEMENT ICI
+
+        if (!builder.isValid()) {
             p.sendMessage("§c❌ Données invalides");
             return;
         }

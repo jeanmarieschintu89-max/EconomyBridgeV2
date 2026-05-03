@@ -37,6 +37,14 @@ public class ContractPriceListener implements Listener {
             case 15 -> b.price += 10;
             case 16 -> b.price += 100;
 
+            // 💰 VALIDER (lingot)
+            case 13 -> {
+                p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.2f);
+                p.closeInventory();
+                ContractCreateGUI.open(p);
+                return;
+            }
+
             // 🔙 retour
             case 26 -> {
                 p.closeInventory();
@@ -45,14 +53,14 @@ public class ContractPriceListener implements Listener {
             }
 
             default -> {
-                return; // ignore autres slots
+                return;
             }
         }
 
-        // 🔊 feedback propre
+        // 🔊 clic normal
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
-        // 🔥 refresh instant (super important)
+        // 🔥 refresh instant
         ContractPriceGUI.open(p);
     }
 }

@@ -1,8 +1,10 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class GlobalGUIListener implements Listener {
 
@@ -13,45 +15,70 @@ public class GlobalGUIListener implements Listener {
 
         String id = GUIManager.get(p);
 
-        // 🔍 DEBUG
-        p.sendMessage("§7[DEBUG] GUI=" + id);
-
-        // ❌ pas un GUI custom
-        if (id == null) {
-            p.sendMessage("§c[DEBUG] GUI NULL → ignoré");
-            return;
-        }
-
+        if (id == null) return;
         if (e.getClickedInventory() == null) return;
 
         int slot = e.getRawSlot();
 
-        p.sendMessage("§e[DEBUG] slot=" + slot);
+        // =========================
+        // 🎯 CONTRACT CREATE (ITEM SLOT)
+        // =========================
+        if (id.equals("contract_create")) {
 
-        // 🔒 bloque shift / right
+            // ✅ autorise inventaire joueur
+            if (e.getClickedInventory() == e.getView().getBottomInventory()) {
+                e.setCancelled(false);
+                return;
+            }
+
+            // ✅ autorise slot item
+            if (slot == 10) {
+
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+
+                    ItemStack item = e.getView().getTopInventory().getItem(10);
+
+                    if (item == null || item.getType().isAir()) return;
+
+                    ContractBuilder b = ContractBuilder.get(p.getUniqueId());
+
+                    if (b == null) return;
+
+                    b.item = item.getType().name();
+
+                    p.sendMessage("§aObjet sélectionné: §f" + b.item);
+
+                    // 🔄 refresh GUI
+                    ContractCreateGUI.open(p);
+                });
+
+                return; // ❗ IMPORTANT
+            }
+        }
+
+        // =========================
+        // 🔒 BLOCK GLOBAL
+        // =========================
+
         if (e.isShiftClick() || e.isRightClick()) {
             e.setCancelled(true);
             return;
         }
 
-        // 🔒 bloque inventaire joueur
         if (e.getClickedInventory() == e.getView().getBottomInventory()) {
             e.setCancelled(true);
             return;
         }
 
-        // 🔒 hors GUI
         if (slot >= e.getView().getTopInventory().getSize()) {
             e.setCancelled(true);
             return;
         }
 
         // =========================
-        // 🎯 HANDLE
+        // 🎯 HANDLE NORMAL
         // =========================
         e.setCancelled(true);
-
-        p.sendMessage("§a[DEBUG] handle → " + id);
 
         GUIManager.handle(p, slot);
     }

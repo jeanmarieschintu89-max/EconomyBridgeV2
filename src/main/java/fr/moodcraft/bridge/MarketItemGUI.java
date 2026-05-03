@@ -80,6 +80,6 @@ public class MarketItemGUI {
                         "§8────────────",
                         "§7Retour à la liste"));
 
-        p.openInventory(inv);
+        GUIManager.open(p, "market_item", inv);
     }
 }

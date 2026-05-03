@@ -10,21 +10,68 @@ public class ContractAmountGUI {
     public static void open(Player p) {
 
         ContractBuilder b = ContractBuilder.get(p.getUniqueId());
+        if (b == null) return;
 
         Inventory inv = Bukkit.createInventory(null, 27, "§fQuantité");
 
-        SafeGUI.safeSet(inv, 10, SafeGUI.item(Material.RED_CONCRETE, "§c-10"));
-        SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.RED_STAINED_GLASS, "§c-1"));
+        // ➖ -10
+        SafeGUI.safeSet(inv, 10, SafeGUI.item(
+                Material.RED_CONCRETE,
+                "§c-10",
+                "§8────────────",
+                "§7Quantité actuelle:",
+                "§a" + b.amount
+        ));
 
-        SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.PAPER,
-                "§eQuantité actuelle",
-                "§a" + b.amount));
+        // ➖ -1
+        SafeGUI.safeSet(inv, 11, SafeGUI.item(
+                Material.RED_STAINED_GLASS,
+                "§c-1",
+                "§8────────────",
+                "§7Quantité actuelle:",
+                "§a" + b.amount
+        ));
 
-        SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.GREEN_STAINED_GLASS, "§a+1"));
-        SafeGUI.safeSet(inv, 16, SafeGUI.item(Material.LIME_CONCRETE, "§a+10"));
+        // 📊 CENTRE
+        SafeGUI.safeSet(inv, 13, SafeGUI.item(
+                Material.PAPER,
+                "§eQuantité",
+                "§8────────────",
+                "§a" + b.amount
+        ));
 
-        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.EMERALD_BLOCK, "§aMAX"));
-        SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.ARROW, "§cRetour"));
+        // ➕ +1
+        SafeGUI.safeSet(inv, 15, SafeGUI.item(
+                Material.GREEN_STAINED_GLASS,
+                "§a+1",
+                "§8────────────",
+                "§7Quantité actuelle:",
+                "§a" + b.amount
+        ));
+
+        // ➕ +10
+        SafeGUI.safeSet(inv, 16, SafeGUI.item(
+                Material.LIME_CONCRETE,
+                "§a+10",
+                "§8────────────",
+                "§7Quantité actuelle:",
+                "§a" + b.amount
+        ));
+
+        // 💎 MAX
+        SafeGUI.safeSet(inv, 22, SafeGUI.item(
+                Material.EMERALD_BLOCK,
+                "§aMAX",
+                "§8────────────",
+                "§7Quantité actuelle:",
+                "§a" + b.amount
+        ));
+
+        // 🔙 RETOUR
+        SafeGUI.safeSet(inv, 26, SafeGUI.item(
+                Material.ARROW,
+                "§cRetour"
+        ));
 
         p.openInventory(inv);
     }

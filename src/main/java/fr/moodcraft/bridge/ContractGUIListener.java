@@ -30,9 +30,9 @@ public class ContractGUIListener implements Listener {
             case 11 -> {
                 p.closeInventory();
 
-                // 🔥 CRUCIAL
-                ContractBuilder.remove(p);
-                ContractBuilder.create(p);
+                // 🔥 FIX UUID
+                ContractBuilder.remove(p.getUniqueId());
+                ContractBuilder.create(p.getUniqueId());
 
                 ContractCreateGUI.open(p);
             }

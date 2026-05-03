@@ -2,8 +2,7 @@ package fr.moodcraft.bridge;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class ContractGUIListener implements Listener {
@@ -18,51 +17,43 @@ public class ContractGUIListener implements Listener {
         if (!clean.equalsIgnoreCase("Contrats")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
-
         if (e.getClickedInventory() == null) return;
+
+        // 🔒 bloque uniquement le GUI
         if (e.getRawSlot() >= e.getView().getTopInventory().getSize()) return;
 
         e.setCancelled(true);
 
-        if (e.isShiftClick()) return;
-
         int slot = e.getRawSlot();
 
+        // 🔊 feedback
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.1f);
 
         switch (slot) {
 
-            // =========================
             // 📄 CRÉER
-            // =========================
-            case 11:
+            case 11 -> {
                 p.closeInventory();
                 ContractCreateGUI.open(p);
-                break;
+            }
 
-            // =========================
             // 📜 MARCHÉ
-            // =========================
-            case 13:
+            case 13 -> {
                 p.closeInventory();
                 ContractMarketGUI.open(p);
-                break;
+            }
 
-            // =========================
-            // 📦 MES CONTRATS (FIX)
-            // =========================
-            case 15:
+            // 📦 MES CONTRATS
+            case 15 -> {
                 p.closeInventory();
-                ContractPlayerGUI.open(p); // 🔥 FIX ICI
-                break;
+                ContractPlayerGUI.open(p); // 👉 important (à créer si pas déjà fait)
+            }
 
-            // =========================
             // 🔙 RETOUR
-            // =========================
-            case 22:
+            case 22 -> {
                 p.closeInventory();
-                MainMenuGUI.open(p);
-                break;
+                MainMenuGUI.open(p); // 👉 ou MenuCommand si tu préfères
+            }
         }
     }
 }

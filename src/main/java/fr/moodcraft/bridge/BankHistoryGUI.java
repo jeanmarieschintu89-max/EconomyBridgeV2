@@ -97,6 +97,6 @@ public class BankHistoryGUI {
         SafeGUI.safeSet(inv, 22,
                 SafeGUI.item(Material.BARRIER, "§cRetour §7"));
 
-        p.openInventory(inv);
+        GUIManager.open(p, "bank_history", inv);
     }
 }

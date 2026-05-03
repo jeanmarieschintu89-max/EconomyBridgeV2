@@ -45,7 +45,6 @@ public class Main extends JavaPlugin {
         registerEvents(
                 new ShopListener(),
                 new MineListener(),
-                new BookSignListener(),
                 new PayListener(),
                 new InventoryGuardListener(),
                 new InventoryCloseListener(),
@@ -68,6 +67,7 @@ public class Main extends JavaPlugin {
         GUIManager.register("bank_history", new BankHistoryHandler());
         GUIManager.register("bank_deposit", new DepositHandler());
         GUIManager.register("bank_withdraw", new WithdrawHandler());
+        GUIManager.register("contract_confirm", new ContractConfirmHandler());
 
         // 📊 BOURSE
         GUIManager.register("minerais", new PriceHandler());

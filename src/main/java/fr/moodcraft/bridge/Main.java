@@ -56,6 +56,9 @@ public class Main extends JavaPlugin {
                 new BanqueAdminListener(),
                 new BanqueItemListener(),
                 new BanqueConfigListener(),
+                new MarketAdminListener(),
+                new MarketGlobalListener(),
+                new MarketItemListener(),
 
                 // 📦 ITEMS
                 new BanqueItemListListener(),

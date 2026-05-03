@@ -15,7 +15,7 @@ public class TargetPlayerHandler implements GUIHandler {
             return;
         }
 
-        TransferBuilder.get(p).target = target.getName();
+        TransferBuilder.get(p).target = target.getUniqueId();
 
         TransferConfirmGUI.open(p);
     }

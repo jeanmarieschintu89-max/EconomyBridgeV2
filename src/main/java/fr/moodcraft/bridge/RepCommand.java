@@ -28,23 +28,24 @@ public class RepCommand implements CommandExecutor {
             return true;
         }
 
-        double value;
+        int value;
 
         try {
-            value = Double.parseDouble(args[1]);
-        } catch (Exception e) {
+            value = Integer.parseInt(args[1]);
+        } catch (NumberFormatException e) {
             sender.sendMessage("§cValeur invalide");
             return true;
         }
 
-        double current = ReputationManager.get(target.getUniqueId().toString());
-        double newValue = current + value;
+        String uuid = target.getUniqueId().toString();
 
-        ReputationManager.set(target.getUniqueId().toString(), newValue);
-        ReputationManager.save();
+        int current = ReputationManager.get(uuid);
+        int newValue = current + value;
 
-        sender.sendMessage("§a✔ Réputation modifiée: " + target.getName() + " → " + newValue);
-        target.sendMessage("§eTa réputation a changé: §f" + newValue);
+        ReputationManager.set(uuid, newValue);
+
+        sender.sendMessage("§a✔ Réputation modifiée: §e" + target.getName() + " §7→ §a" + newValue);
+        target.sendMessage("§eTa réputation a changé: §a" + newValue);
 
         return true;
     }

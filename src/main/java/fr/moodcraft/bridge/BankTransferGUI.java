@@ -9,34 +9,35 @@ public class BankTransferGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§fVirement");
+        Inventory inv = Bukkit.createInventory(null, 27, "§fVirement bancaire");
 
-        // 💳 IBAN
-        SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.NAME_TAG, "§bPar IBAN",
-                "§8──────────── §7",
-                "§7Envoyer de l'argent §7",
-                "§7via un IBAN §7",
+        // 👤 VIREMENT JOUEUR
+        SafeGUI.safeSet(inv, 11, SafeGUI.item(Material.PLAYER_HEAD,
+                "§eVirement vers joueur",
+                "§8────────────",
+                "§7Envoyer de l'argent à",
+                "§7un joueur en ligne",
                 "",
-                "§eCommande: §f/ibanpay §7",
+                "§aRapide et sécurisé",
                 "",
-                "§8Clique pour utiliser §7"));
+                "§8Clique pour choisir"));
 
-        // 👤 JOUEUR
-        SafeGUI.safeSet(inv, 13, SafeGUI.item(Material.PLAYER_HEAD, "§aPar joueur",
-                "§8──────────── §7",
-                "§7Choisir un joueur §7",
-                "§7connecté §7",
+        // 🏦 IBAN
+        SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.PAPER,
+                "§eVirement par IBAN",
+                "§8────────────",
+                "§7Envoyer vers un compte",
+                "§7via identifiant bancaire",
                 "",
-                "§aVirement rapide §7",
+                "§aFonctionne hors ligne",
                 "",
-                "§8Clique pour sélectionner §7"));
+                "§8Clique pour entrer IBAN"));
 
         // 🔙 RETOUR
-        SafeGUI.safeSet(inv, 15, SafeGUI.item(Material.BARRIER, "§cRetour",
-                "§8──────────── §7",
-                "§7Retour à la banque §7",
-                "",
-                "§8Clique pour revenir §7"));
+        SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.ARROW,
+                "§cRetour",
+                "§8────────────",
+                "§7Retour au menu banque"));
 
         p.openInventory(inv);
     }

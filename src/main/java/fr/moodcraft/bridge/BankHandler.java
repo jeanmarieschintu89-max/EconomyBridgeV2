@@ -1,4 +1,3 @@
-
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
@@ -22,10 +21,14 @@ public class BankHandler implements GUIHandler {
 
             // 💸 RETRAIT
             case 1 -> {
-                p.closeInventory();
-
                 Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+
                     Bukkit.dispatchCommand(p, "bank " + p.getName() + " -1000");
+
+                    // 🔥 UPDATE LIVE
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                        BankGUI.update(p);
+                    }, 2L);
                 });
             }
 
@@ -36,10 +39,14 @@ public class BankHandler implements GUIHandler {
 
             // 💰 DEPOT
             case 6 -> {
-                p.closeInventory();
-
                 Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+
                     Bukkit.dispatchCommand(p, "bank " + p.getName() + " 1000");
+
+                    // 🔥 UPDATE LIVE
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                        BankGUI.update(p);
+                    }, 2L);
                 });
             }
 

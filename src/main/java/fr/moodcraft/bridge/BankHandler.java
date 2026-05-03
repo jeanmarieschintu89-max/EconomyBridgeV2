@@ -1,5 +1,7 @@
+
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class BankHandler implements GUIHandler {
@@ -11,16 +13,20 @@ public class BankHandler implements GUIHandler {
 
             // 📄 IBAN
             case 0 -> {
-    p.closeInventory();
+                p.closeInventory();
 
-    Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-        Bukkit.dispatchCommand(p, "iban");
-    });
-}
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                    Bukkit.dispatchCommand(p, "iban");
+                });
+            }
 
             // 💸 RETRAIT
             case 1 -> {
-                p.performCommand("bank " + p.getName() + " -1000");
+                p.closeInventory();
+
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                    Bukkit.dispatchCommand(p, "bank " + p.getName() + " -1000");
+                });
             }
 
             // 🔁 VIREMENT
@@ -30,7 +36,11 @@ public class BankHandler implements GUIHandler {
 
             // 💰 DEPOT
             case 6 -> {
-                p.performCommand("bank " + p.getName() + " 1000");
+                p.closeInventory();
+
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                    Bukkit.dispatchCommand(p, "bank " + p.getName() + " 1000");
+                });
             }
 
             // 📜 HISTORIQUE

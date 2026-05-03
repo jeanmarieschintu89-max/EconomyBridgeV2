@@ -58,7 +58,6 @@ public class Main extends JavaPlugin {
                 new BookSignListener(),
 
                 // 📜 MENUS
-                new MainMenuListener(),
                 new TeleportListener(),
 
                 // 💰 ECONOMIE

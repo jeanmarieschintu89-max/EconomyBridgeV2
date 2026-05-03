@@ -9,7 +9,7 @@ public class TransferConfirmGUI {
 
     public static void open(Player p) {
 
-        var b = TransferBuilder.get(p);
+        var b = TransferBuilder.get(p.getUniqueId())
         if (b == null) return;
 
         Inventory inv = Bukkit.createInventory(null, 27, "§eConfirmation virement");

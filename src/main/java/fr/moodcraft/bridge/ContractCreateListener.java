@@ -39,7 +39,7 @@ public class ContractCreateListener implements Listener {
             ItemStack item = e.getCurrentItem();
 
             if (item != null && !item.getType().isAir()) {
-                b.item = item.clone();
+                b.item = item.getType().name();
             }
 
             return;

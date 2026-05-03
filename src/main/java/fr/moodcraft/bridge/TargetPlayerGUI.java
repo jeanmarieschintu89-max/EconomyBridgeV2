@@ -26,6 +26,6 @@ public class TargetPlayerGUI {
             slot++;
         }
 
-        p.openInventory(inv);
+        GUIManager.open(p, "bank_target", inv);
     }
 }

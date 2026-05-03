@@ -1,7 +1,5 @@
 package fr.moodcraft.bridge;
 
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class TransferConfirmHandler implements GUIHandler {
@@ -10,61 +8,76 @@ public class TransferConfirmHandler implements GUIHandler {
     public void onClick(Player p, int slot) {
 
         TransferBuilder b = TransferBuilder.get(p);
-        if (b == null) b = TransferBuilder.create(p);
-
-        Economy eco = VaultHook.getEconomy();
+        if (b == null) return;
 
         switch (slot) {
 
-            case 11:
-                b.amount -= 100;
-                break;
+            // ➖ -1000
+            case 10 -> {
+                b.amount = Math.max(0, b.amount - 1000);
+                TransferConfirmGUI.open(p);
+            }
 
-            case 15:
+            // ➖ -100
+            case 11 -> {
+                b.amount = Math.max(0, b.amount - 100);
+                TransferConfirmGUI.open(p);
+            }
+
+            // ➕ +100
+            case 15 -> {
                 b.amount += 100;
-                break;
+                TransferConfirmGUI.open(p);
+            }
 
-            case 18:
+            // ➕ +1000
+            case 16 -> {
+                b.amount += 1000;
+                TransferConfirmGUI.open(p);
+            }
+
+            // ❌ ANNULER
+            case 18 -> {
+                TransferBuilder.remove(p);
                 p.closeInventory();
-                return;
+                p.sendMessage("§cVirement annulé");
+            }
 
-            case 26:
+            // ✅ VALIDER
+            case 26 -> {
 
-                if (b.amount <= 0) {
-                    p.sendMessage("§cMontant invalide");
+                if (!b.isValid()) {
+                    p.sendMessage("§cDonnées invalides");
                     return;
                 }
 
-                if (b.target == null) {
-                    p.sendMessage("§cAucune cible");
+                var eco = VaultHook.getEconomy();
+                double balance = eco.getBalance(p);
+
+                if (balance < b.amount) {
+                    p.sendMessage("§cPas assez d'argent");
                     return;
                 }
 
-                Player target = Bukkit.getPlayer(b.target);
+                Player target = p.getServer().getPlayer(b.target);
 
                 if (target == null) {
-                    p.sendMessage("§cJoueur hors ligne");
-                    return;
-                }
-
-                if (eco.getBalance(p) < b.amount) {
-                    p.sendMessage("§cPas assez d'argent");
+                    p.sendMessage("§cJoueur introuvable");
                     return;
                 }
 
                 eco.withdrawPlayer(p, b.amount);
                 eco.depositPlayer(target, b.amount);
 
-                p.sendMessage("§a✔ Virement envoyé");
-                target.sendMessage("§a✔ Tu as reçu " + b.amount + "€");
+                TransactionLogger.log(p.getName(), "Virement envoyé", b.amount);
+                TransactionLogger.log(target.getName(), "Virement reçu", b.amount);
+
+                p.sendMessage("§aVirement envoyé !");
+                target.sendMessage("§aTu as reçu un virement de §f" + b.amount + "€");
 
                 TransferBuilder.remove(p);
                 p.closeInventory();
-                return;
+            }
         }
-
-        if (b.amount < 0) b.amount = 0;
-
-        TransferConfirmGUI.open(p);
     }
 }

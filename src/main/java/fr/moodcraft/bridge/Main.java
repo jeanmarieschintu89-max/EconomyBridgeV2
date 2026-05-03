@@ -56,7 +56,6 @@ public class Main extends JavaPlugin {
                 new BankHistoryListener(),
 
                 // 📊 ADMIN MARKET
-                new MarketAdminListener(),
                 new MarketGlobalListener(),
                 new MarketItemListener(),
 

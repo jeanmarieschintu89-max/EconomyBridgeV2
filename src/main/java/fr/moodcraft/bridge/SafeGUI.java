@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SafeGUI {
@@ -30,13 +29,7 @@ public class SafeGUI {
                 List<String> fixed = new ArrayList<>();
 
                 for (String line : lore) {
-
-                    if (line == null) {
-                        fixed.add("");
-                        continue;
-                    }
-
-                    fixed.add("§r§7" + line);
+                    fixed.add(line == null ? "" : "§r§7" + line);
                 }
 
                 meta.setLore(fixed);
@@ -49,11 +42,11 @@ public class SafeGUI {
     }
 
     // =========================
-    // 🔥 ITEM VIA ITEMSTACK (NOUVEAU)
+    // 🔥 ITEM VIA ITEMSTACK
     // =========================
     public static ItemStack item(ItemStack base, String name, String... lore) {
 
-        ItemStack it = base.clone();
+        ItemStack it = base.clone(); // 🔥 IMPORTANT (évite bugs)
         ItemMeta meta = it.getItemMeta();
 
         if (meta != null) {
@@ -65,13 +58,7 @@ public class SafeGUI {
                 List<String> fixed = new ArrayList<>();
 
                 for (String line : lore) {
-
-                    if (line == null) {
-                        fixed.add("");
-                        continue;
-                    }
-
-                    fixed.add("§r§7" + line);
+                    fixed.add(line == null ? "" : "§r§7" + line);
                 }
 
                 meta.setLore(fixed);
@@ -84,19 +71,36 @@ public class SafeGUI {
     }
 
     // =========================
-    // ✨ GLOW (OPTION PRO)
+    // ✨ GLOW
     // =========================
     public static ItemStack glow(ItemStack item) {
 
-        ItemMeta meta = item.getItemMeta();
+        ItemStack clone = item.clone(); // 🔥 IMPORTANT
+        ItemMeta meta = clone.getItemMeta();
 
         if (meta != null) {
             meta.addEnchant(Enchantment.DURABILITY, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            item.setItemMeta(meta);
+            clone.setItemMeta(meta);
         }
 
-        return item;
+        return clone;
+    }
+
+    // =========================
+    // ❌ REMOVE GLOW
+    // =========================
+    public static ItemStack removeGlow(ItemStack item) {
+
+        ItemStack clone = item.clone(); // 🔥 IMPORTANT
+        ItemMeta meta = clone.getItemMeta();
+
+        if (meta != null) {
+            meta.getEnchants().keySet().forEach(meta::removeEnchant);
+            clone.setItemMeta(meta);
+        }
+
+        return clone;
     }
 
     // =========================
@@ -107,12 +111,11 @@ public class SafeGUI {
             inv.setItem(slot, item);
         } catch (Exception e) {
             inv.setItem(slot, new ItemStack(Material.BARRIER));
-            e.printStackTrace();
         }
     }
 
     // =========================
-    // 🧱 BORDURES (BONUS)
+    // 🧱 BORDURES
     // =========================
     public static void fillBorders(Inventory inv, Material mat) {
 
@@ -122,9 +125,8 @@ public class SafeGUI {
 
         for (int i = 0; i < size; i++) {
 
-            // bord haut / bas / côtés
             if (i < 9 || i >= size - 9 || i % 9 == 0 || i % 9 == 8) {
-                inv.setItem(i, pane);
+                inv.setItem(i, pane.clone()); // 🔥 clone pour éviter bugs
             }
         }
     }

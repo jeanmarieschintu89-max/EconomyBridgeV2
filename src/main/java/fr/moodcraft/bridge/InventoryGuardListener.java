@@ -12,16 +12,17 @@ public class InventoryGuardListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        String clean = title.replaceAll("§.", "");
+        String clean = title.replaceAll("§.", "").toLowerCase().trim();
 
-        // 🔥 On bloque les DRAG uniquement dans TES GUI
-        if (clean.equalsIgnoreCase("Bourse Minerais")
-            || clean.equalsIgnoreCase("Menu")
-            || clean.equalsIgnoreCase("Banque")
-            || clean.startsWith("Config:")
-            || clean.equalsIgnoreCase("Items Marché")
-            || clean.equalsIgnoreCase("Virement")
-            || clean.equalsIgnoreCase("Contrat")
+        // 🔥 BLOQUE tous tes GUI (version intelligente)
+        if (clean.contains("bourse")
+            || clean.contains("menu")
+            || clean.contains("banque")
+            || clean.contains("config")
+            || clean.contains("marché")
+            || clean.contains("virement")
+            || clean.contains("contrat")
+            || clean.contains("admin")
         ) {
             e.setCancelled(true);
         }

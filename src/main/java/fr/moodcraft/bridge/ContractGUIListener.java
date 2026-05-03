@@ -13,10 +13,10 @@ public class ContractGUIListener implements Listener {
         String title = e.getView().getTitle();
         if (title == null) return;
 
-        // 🔥 CLEAN (très important)
         String clean = title.replaceAll("§.", "").trim();
 
-        if (!clean.equalsIgnoreCase("Contrats")) return;
+        // 🔥 FIX ICI
+        if (!clean.contains("Contrats")) return;
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (e.getClickedInventory() == null) return;
@@ -30,25 +30,21 @@ public class ContractGUIListener implements Listener {
 
         switch (slot) {
 
-            // 📄 créer
             case 11 -> {
                 p.closeInventory();
                 ContractCreateGUI.open(p);
             }
 
-            // 📜 marché
             case 13 -> {
                 p.closeInventory();
                 ContractMarketGUI.open(p);
             }
 
-            // 📦 mes contrats
             case 15 -> {
                 p.closeInventory();
                 ContractPlayerGUI.open(p);
             }
 
-            // 🔙 retour
             case 22 -> {
                 p.closeInventory();
                 MainMenuGUI.open(p);

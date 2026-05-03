@@ -31,10 +31,15 @@ public class TransferConfirmListener implements Listener {
 
         int slot = e.getRawSlot();
 
-        // 🔊 feedback
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
         switch (slot) {
+
+            // ➖ -1000
+            case 10 -> {
+                builder.amount = Math.max(1, builder.amount - 1000);
+                TransferConfirmGUI.open(p);
+            }
 
             // ➖ -100
             case 11 -> {
@@ -48,14 +53,20 @@ public class TransferConfirmListener implements Listener {
                 TransferConfirmGUI.open(p);
             }
 
+            // ➕ +1000
+            case 16 -> {
+                builder.amount += 1000;
+                TransferConfirmGUI.open(p);
+            }
+
             // ❌ ANNULER
             case 18 -> {
                 TransferBuilder.remove(p);
                 p.closeInventory();
             }
 
-            // ✅ VALIDER (UNIQUEMENT ICI)
-            case 13 -> {
+            // ✅ VALIDER
+            case 26 -> {
 
                 if (!builder.isValid()) {
                     p.sendMessage("§c❌ Données invalides");
@@ -82,7 +93,12 @@ public class TransferConfirmListener implements Listener {
                 eco.withdrawPlayer(p, builder.amount);
                 eco.depositPlayer(target, builder.amount);
 
+                p.sendMessage("§8────────────");
                 p.sendMessage("§a✔ Virement envoyé");
+                p.sendMessage("§7Montant: §f" + builder.amount + "€");
+                p.sendMessage("§7Vers: §a" + target.getName());
+                p.sendMessage("§8────────────");
+
                 target.sendMessage("§a✔ Tu as reçu " + builder.amount + "€");
 
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.2f);

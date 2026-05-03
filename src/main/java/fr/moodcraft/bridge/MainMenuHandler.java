@@ -1,14 +1,11 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class MainMenuHandler implements GUIHandler {
 
     @Override
     public void onClick(Player p, int slot) {
-
-        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
 
         switch (slot) {
 

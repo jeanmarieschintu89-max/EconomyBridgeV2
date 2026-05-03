@@ -66,9 +66,8 @@ public class Main extends JavaPlugin {
         GUIManager.register("transfer_confirm", new TransferConfirmHandler());
         GUIManager.register("bank_history", new BankHistoryHandler());
 
-        // 📊 MARCHÉ / BOURSE
+        // 📊 BOURSE (minerais)
         GUIManager.register("minerais", new PriceHandler());
-        GUIManager.register("market_item_list", new MarketItemListHandler());
         GUIManager.register("admin_market", new MarketAdminHandler());
 
         // 📜 CONTRATS

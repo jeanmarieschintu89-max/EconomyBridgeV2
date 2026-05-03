@@ -12,15 +12,18 @@ public class MarketItemListHandler implements GUIHandler {
         ItemStack item = p.getOpenInventory().getItem(slot);
         if (item == null || item.getType() == Material.AIR) return;
 
-        String name = item.getItemMeta() != null 
-                ? item.getItemMeta().getDisplayName() 
+        String name = item.getItemMeta() != null
+                ? item.getItemMeta().getDisplayName()
                 : null;
 
         if (name == null) return;
 
         String clean = name.replaceAll("§.", "").toLowerCase();
 
-        // 👉 Exemple: ouvrir GUI item
-        MarketItemGUI.open(p, clean);
+        // 🔥 FIX : redirection vers la bourse
+        PriceGUI.open(p);
+
+        // (optionnel debug)
+        p.sendMessage("§7Item sélectionné: §f" + clean);
     }
 }

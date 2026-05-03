@@ -1,6 +1,7 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Map;
@@ -40,28 +41,34 @@ public class Main extends JavaPlugin {
 
         // =========================
         // 📦 LISTENERS
+        // ⚠️ IMPORTANT : ordre contrôlé
         // =========================
         registerEvents(
 
-                // 📦 CORE
+                // 📦 CORE (ne doit PAS bloquer globalement)
                 new ShopListener(),
                 new MineListener(),
-                new GUIListener(),
 
                 // 🏦 BANQUE
                 new BankListener(),
                 new BankTransferListener(),
-                new TargetPlayerListener(),        // 🔥 sélection joueur
-                new TransferConfirmListener(),     // 🔥 confirmation
-                new InventoryGuardListener(),
+                new TargetPlayerListener(),
+                new TransferConfirmListener(),
                 new BankHistoryListener(),
-                new ContractAmountListener(),
-                new ContractPriceListener(),
 
-                // 🔥 ADMIN MARKET
+                // 📊 ADMIN MARKET
                 new MarketAdminListener(),
                 new MarketGlobalListener(),
                 new MarketItemListener(),
+
+                // 📄 CONTRATS
+                new ContractGUIListener(),
+                new ContractCreateListener(),
+                new ContractMarketListener(),
+                new ContractPlayerListener(),
+                new ContractAmountListener(),
+                new ContractPriceListener(),
+                new BookSignListener(),
 
                 // 📜 MENUS
                 new MainMenuListener(),
@@ -70,12 +77,11 @@ public class Main extends JavaPlugin {
                 // 💰 ECONOMIE
                 new PayListener(),
 
-                // 🔥 CONTRATS
-                new ContractGUIListener(),
-                new ContractCreateListener(),
-                new ContractMarketListener(),
-                new ContractPlayerListener(),
-                new BookSignListener()
+                // 🛡️ GUARD (drag uniquement)
+                new InventoryGuardListener(),
+
+                // ⚠️ GLOBAL GUI → TOUJOURS EN DERNIER
+                new GUIListener()
         );
 
         // =========================
@@ -151,8 +157,8 @@ public class Main extends JavaPlugin {
     // 🔧 UTILS
     // =========================
 
-    private void registerEvents(org.bukkit.event.Listener... listeners) {
-        for (var listener : listeners) {
+    private void registerEvents(Listener... listeners) {
+        for (Listener listener : listeners) {
             Bukkit.getPluginManager().registerEvents(listener, this);
         }
     }

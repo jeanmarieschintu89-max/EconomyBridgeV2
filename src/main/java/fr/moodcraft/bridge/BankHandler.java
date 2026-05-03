@@ -9,26 +9,32 @@ public class BankHandler implements GUIHandler {
 
         switch (slot) {
 
-            case 10 -> {
-                // dépôt
-                p.sendMessage("§aDéposer bientôt...");
+            // 📄 IBAN
+            case 0 -> {
+                p.performCommand("iban");
             }
 
-            case 12 -> {
-                // retrait
-                p.sendMessage("§eRetirer bientôt...");
+            // 💸 RETRAIT
+            case 1 -> {
+                p.performCommand("bank withdraw 1000"); // adapte si besoin
             }
 
-            case 14 -> {
-                // virement
+            // 🔁 VIREMENT
+            case 2 -> {
                 TransferTargetGUI.open(p);
             }
 
-            case 16 -> {
-                // historique
+            // 💰 DEPOT
+            case 6 -> {
+                p.performCommand("bank deposit 1000"); // adapte si besoin
+            }
+
+            // 📜 HISTORIQUE
+            case 7 -> {
                 BankHistoryGUI.open(p, 0);
             }
 
+            // 🔙 RETOUR
             case 8 -> {
                 MainMenuGUI.open(p);
             }

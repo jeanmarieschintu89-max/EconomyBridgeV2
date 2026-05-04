@@ -11,10 +11,9 @@ import java.util.UUID;
 
 public class InputListener implements Listener {
 
-    // 🔥 stockage temporaire IBAN
     private static final Map<UUID, String> ibanCache = new HashMap<>();
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent e) {
 
         Player p = e.getPlayer();
@@ -31,28 +30,21 @@ public class InputListener implements Listener {
 
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
 
-                switch (type) {
+                if (type.equals("iban_input")) {
 
-                    case "iban_input" -> {
-
-                        if (msg.length() < 6) {
-                            p.sendMessage("§cIBAN invalide.");
-                            return;
-                        }
-
-                        ibanCache.put(p.getUniqueId(), msg);
-
-                        p.sendMessage("§a✔ IBAN enregistré: §e" + msg);
-
-                        // 👉 on enchaîne sur le montant
-                        AmountInputManager.wait(p, AmountInputManager.Type.WITHDRAW);
-
-                        p.sendMessage("§eEntre maintenant le montant à envoyer.");
+                    if (msg.length() < 6) {
+                        p.sendMessage("§cIBAN invalide.");
+                        return;
                     }
 
-                    default -> {
-                        p.sendMessage("§cInput inconnu.");
-                    }
+                    ibanCache.put(p.getUniqueId(), msg);
+
+                    p.sendMessage("§a✔ IBAN enregistré: §e" + msg);
+
+                    // 👉 maintenant montant
+                    AmountInputManager.wait(p, AmountInputManager.Type.WITHDRAW);
+
+                    p.sendMessage("§eEntre le montant à envoyer.");
                 }
 
                 InputManager.clear(p);
@@ -62,13 +54,14 @@ public class InputListener implements Listener {
         }
 
         // =========================
-        // 💰 AMOUNT INPUT (IBAN)
+        // 💰 AMOUNT INPUT
         // =========================
         if (AmountInputManager.has(p)) {
 
             e.setCancelled(true);
 
             String msg = e.getMessage();
+            AmountInputManager.Type type = AmountInputManager.getType(p);
 
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
 
@@ -80,32 +73,68 @@ public class InputListener implements Listener {
                         return;
                     }
 
-                    String iban = ibanCache.get(p.getUniqueId());
+                    switch (type) {
 
-                    if (iban == null) {
-                        p.sendMessage("§cErreur IBAN.");
-                        return;
+                        // =========================
+                        // 💰 DÉPÔT
+                        // =========================
+                        case DEPOSIT -> {
+
+                            double cash = VaultHook.getBalance(p);
+
+                            if (cash < amount) {
+                                p.sendMessage("§cPas assez d'argent.");
+                                return;
+                            }
+
+                            VaultHook.remove(p, amount);
+                            BankStorage.add(p.getUniqueId().toString(), amount);
+
+                            p.sendMessage("§a✔ Déposé: §e" + (int) amount + "€");
+                        }
+
+                        // =========================
+                        // 💸 RETRAIT
+                        // =========================
+                        case WITHDRAW -> {
+
+                            // 🔥 cas IBAN actif
+                            if (ibanCache.containsKey(p.getUniqueId())) {
+
+                                String iban = ibanCache.get(p.getUniqueId());
+                                double bank = BankStorage.get(p.getUniqueId().toString());
+
+                                if (bank < amount) {
+                                    p.sendMessage("§cFonds insuffisants.");
+                                    return;
+                                }
+
+                                BankStorage.remove(p.getUniqueId().toString(), amount);
+
+                                p.sendMessage("§a✔ Virement envoyé !");
+                                p.sendMessage("§7Montant: §e" + (int) amount + "€");
+                                p.sendMessage("§7IBAN: §e" + iban);
+
+                                ibanCache.remove(p.getUniqueId());
+
+                            } else {
+
+                                double bank = BankStorage.get(p.getUniqueId().toString());
+
+                                if (bank < amount) {
+                                    p.sendMessage("§cFonds insuffisants.");
+                                    return;
+                                }
+
+                                BankStorage.remove(p.getUniqueId().toString(), amount);
+                                VaultHook.add(p, amount);
+
+                                p.sendMessage("§a✔ Retiré: §e" + (int) amount + "€");
+                            }
+                        }
                     }
 
-                    double bank = BankStorage.get(p.getUniqueId().toString());
-
-                    if (bank < amount) {
-                        p.sendMessage("§cFonds insuffisants.");
-                        return;
-                    }
-
-                    // 💸 VIREMENT
-                    BankStorage.remove(p.getUniqueId().toString(), amount);
-
-                    p.sendMessage("§a✔ Virement envoyé !");
-                    p.sendMessage("§7Montant: §e" + (int) amount + "€");
-                    p.sendMessage("§7Vers IBAN: §e" + iban);
-
-                    // 🔥 nettoyage complet
-                    ibanCache.remove(p.getUniqueId());
                     AmountInputManager.clear(p);
-                    p.removeMetadata("input_active", Main.getInstance());
-
                     BankGUI.open(p);
 
                 } catch (Exception ex) {

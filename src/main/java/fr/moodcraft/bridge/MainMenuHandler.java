@@ -9,57 +9,44 @@ public class MainMenuHandler implements GUIHandler {
 
         switch (slot) {
 
-            // 👤 PROFIL (optionnel)
-            case 4 -> {
-                p.sendMessage("§7Profil joueur");
-            }
+            case 4 -> p.sendMessage("§7Profil joueur");
 
-            // 💰 BANQUE
             case 10 -> {
                 p.closeInventory();
                 BankGUI.open(p);
             }
 
-            // 📜 CONTRATS
             case 12 -> {
                 p.closeInventory();
                 ContractGUI.open(p);
             }
 
-            // 📊 BOURSE
             case 14 -> {
                 p.closeInventory();
                 PriceGUI.open(p);
             }
 
-            // 🧭 TELEPORT
             case 16 -> {
                 p.closeInventory();
                 TeleportGUI.open(p);
             }
 
-            // 🏙️ VILLE
             case 19 -> {
                 p.closeInventory();
                 p.performCommand("townmenu");
             }
 
-            // 🛠️ MÉTIERS
             case 21 -> {
                 p.closeInventory();
                 p.performCommand("jobs join");
             }
 
-            // 👑 CLASSEMENT (NOUVEAU)
+            // 👑 CLASSEMENT FIX
             case 23 -> {
-                p.closeInventory();
-                TopRepGUI.open(p);
+                TopRepGUI.open(p); // ✔ PAS DE CLOSE
             }
 
-            // ❌ FERMER
-            case 26 -> {
-                p.closeInventory();
-            }
+            case 26 -> p.closeInventory();
         }
     }
 }

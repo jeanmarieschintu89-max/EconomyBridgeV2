@@ -6,9 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class BankStorage {
 
@@ -42,7 +40,7 @@ public class BankStorage {
     // =========================
     public static void set(String uuid, double value) {
 
-        if (value < 0) value = 0; // 🔒 sécurité
+        if (value < 0) value = 0;
 
         config.set(uuid + ".balance", value);
 
@@ -51,22 +49,21 @@ public class BankStorage {
     }
 
     // =========================
-    // ➕ ADD MONEY
+    // ➕ DEPOT
     // =========================
-    public static void add(String uuid, double amount) {
+    public static void deposit(String uuid, double amount) {
 
-        if (amount <= 0) return; // 🔒 sécurité
+        if (amount <= 0) return;
 
-        double current = get(uuid);
-        set(uuid, current + amount);
+        set(uuid, get(uuid) + amount);
 
-        log(uuid, "ADD", amount, "-", "add");
+        log(uuid, "DEPOSIT", amount, "-", "bank");
     }
 
     // =========================
-    // ➖ REMOVE MONEY
+    // ➖ RETRAIT
     // =========================
-    public static boolean remove(String uuid, double amount) {
+    public static boolean withdraw(String uuid, double amount) {
 
         if (amount <= 0) return false;
 
@@ -76,34 +73,57 @@ public class BankStorage {
 
         set(uuid, current - amount);
 
-        log(uuid, "REMOVE", amount, "-", "remove");
+        log(uuid, "WITHDRAW", amount, "-", "bank");
 
         return true;
     }
 
     // =========================
-    // 🔄 TRANSFER MONEY
+    // 🔄 TRANSFER
     // =========================
     public static boolean transfer(String from, String to, double amount) {
 
         if (amount <= 0) return false;
 
-        if (!remove(from, amount)) return false;
+        if (!withdraw(from, amount)) return false;
 
-        add(to, amount);
+        deposit(to, amount);
 
-        log(from, "TRANSFER_OUT", amount, to, "transfer");
-        log(to, "TRANSFER_IN", amount, from, "transfer");
+        log(from, "TRANSFER_SENT", amount, to, "iban");
+        log(to, "TRANSFER_RECEIVED", amount, from, "iban");
 
         return true;
     }
 
     // =========================
-    // 📝 LOG TRANSACTION
+    // 🛒 ACHAT
+    // =========================
+    public static boolean purchase(String uuid, double amount, String target) {
+
+        if (!withdraw(uuid, amount)) return false;
+
+        log(uuid, "PURCHASE", amount, target, "shop");
+        return true;
+    }
+
+    // =========================
+    // 💰 VENTE
+    // =========================
+    public static void sale(String uuid, double amount, String target) {
+
+        deposit(uuid, amount);
+
+        log(uuid, "SALE", amount, target, "shop");
+    }
+
+    // =========================
+    // 📝 LOG
     // =========================
     private static void log(String uuid, String type, double amount, String target, String reason) {
 
-        String path = "logs." + System.currentTimeMillis();
+        String id = UUID.randomUUID().toString();
+
+        String path = "logs." + id;
 
         config.set(path + ".uuid", uuid);
         config.set(path + ".type", type);
@@ -116,25 +136,22 @@ public class BankStorage {
     }
 
     // =========================
-    // 📜 GET LOG KEYS
+    // 📜 GET LOGS
     // =========================
     public static Set<String> getLogs() {
 
         if (config.getConfigurationSection("logs") == null)
-            return java.util.Collections.emptySet();
+            return Collections.emptySet();
 
         return config.getConfigurationSection("logs").getKeys(false);
     }
 
-    // =========================
-    // 📜 GET LOG VALUE
-    // =========================
     public static String getLog(String key, String field) {
         return String.valueOf(config.get("logs." + key + "." + field));
     }
 
     // =========================
-    // 🏦 GET IBAN
+    // 🏦 IBAN
     // =========================
     public static String getIban(String uuid) {
 
@@ -150,9 +167,6 @@ public class BankStorage {
         return iban;
     }
 
-    // =========================
-    // 🔍 FIND UUID BY IBAN
-    // =========================
     public static String getUUIDByIban(String iban) {
 
         for (String key : config.getKeys(false)) {
@@ -168,15 +182,12 @@ public class BankStorage {
     }
 
     // =========================
-    // 👤 GET NAME
+    // 👤 NAME
     // =========================
     public static String getName(String uuid) {
         return config.getString(uuid + ".name", "Unknown");
     }
 
-    // =========================
-    // 🔄 UPDATE NAME
-    // =========================
     private static void updateName(String uuid) {
 
         try {
@@ -191,7 +202,7 @@ public class BankStorage {
     }
 
     // =========================
-    // 🔢 GENERATE IBAN
+    // 🔢 IBAN
     // =========================
     private static String generateIban() {
 

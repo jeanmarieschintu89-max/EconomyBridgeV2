@@ -7,19 +7,25 @@ public class TransferTypeHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
+        TransferBuilder data = TransferBuilder.get(p);
+
         switch (slot) {
 
-            case 2 -> {
-                TransferBuilder.get(p).type = "player";
+            case 11 -> { // 👤 joueur
+                data.action = TransferBuilder.Action.PLAYER_TRANSFER;
                 TransferTargetGUI.open(p);
             }
 
-            case 6 -> {
-                TransferBuilder.get(p).type = "iban";
-                p.sendMessage("§eEntre l'IBAN dans le chat (à faire plus tard)");
+            case 15 -> { // 🏦 IBAN
+                data.action = TransferBuilder.Action.IBAN_TRANSFER;
+                p.closeInventory();
+                p.performCommand("ibanpay");
             }
 
-            case 8 -> BankGUI.open(p);
+            case 26 -> { // 🔙 retour
+                p.closeInventory();
+                BankGUI.open(p);
+            }
         }
     }
 }

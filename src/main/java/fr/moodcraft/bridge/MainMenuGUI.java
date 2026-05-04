@@ -1,9 +1,12 @@
+
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +16,7 @@ public class MainMenuGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "Menu");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6Menu");
 
         double bank = BankStorage.get(p.getUniqueId().toString());
         double cash = VaultHook.getBalance(p);
@@ -37,13 +40,15 @@ public class MainMenuGUI {
             topName = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
         }
 
-        // =========================
-        // 📍 POSITION JOUEUR
-        // =========================
         int pos = ReputationManager.getPosition(p.getUniqueId().toString());
 
         // =========================
-        // 👤 PROFIL
+        // 🔲 BORDURES
+        // =========================
+        SafeGUI.fillBorders(inv, Material.GRAY_STAINED_GLASS_PANE);
+
+        // =========================
+        // 👤 PROFIL (skin réel)
         // =========================
         List<String> lore = new ArrayList<>();
 
@@ -53,30 +58,30 @@ public class MainMenuGUI {
         lore.add("§7Total: §e" + (int) total + "€");
         lore.add("");
 
-        lore.add("§7Métiers:");
-        lore.addAll(JobsHook.getJobsLore(p));
-
-        lore.add("");
         lore.add("§7Réputation: " + repColor + (int) rep);
         lore.add("§7Statut: " + rank);
+        lore.add("");
+        lore.add("§e▶ Voir profil");
 
-        SafeGUI.safeSet(inv, 4, SafeGUI.item(
-                Material.PLAYER_HEAD,
-                "§e" + p.getName(),
-                lore.toArray(new String[0])
-        ));
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        if (head.getItemMeta() instanceof SkullMeta meta) {
+            meta.setOwningPlayer(p);
+            meta.setDisplayName("§e" + p.getName());
+            meta.setLore(lore);
+            head.setItemMeta(meta);
+        }
+
+        inv.setItem(4, head);
 
         // =========================
         // 💰 BANQUE
         // =========================
         SafeGUI.safeSet(inv, 10, SafeGUI.item(
-                Material.GOLD_INGOT,
+                Material.CHEST,
                 "§6Banque",
-                "§8────────────",
-                "§7Solde: §6" + (int) bank + "€",
+                "§7Gérer ton argent",
                 "",
-                "§7Dépôt, retrait",
-                "§7et virements",
+                "§7Solde: §6" + (int) bank + "€",
                 "",
                 "§e▶ Ouvrir"
         ));
@@ -85,12 +90,11 @@ public class MainMenuGUI {
         // 📜 CONTRATS
         // =========================
         SafeGUI.safeSet(inv, 12, SafeGUI.item(
-                Material.WRITABLE_BOOK,
+                Material.BOOK,
                 "§aContrats",
-                "§8────────────",
-                "§7Missions entre joueurs",
+                "§7Marché entre joueurs",
                 "",
-                "§7Gagne de l'argent",
+                "§7Créer / accepter",
                 "",
                 "§e▶ Accéder"
         ));
@@ -99,12 +103,11 @@ public class MainMenuGUI {
         // 📊 BOURSE
         // =========================
         SafeGUI.safeSet(inv, 14, SafeGUI.item(
-                Material.EMERALD,
-                "§aBourse Minerais",
-                "§8────────────",
+                Material.AMETHYST_SHARD,
+                "§dBourse",
                 "§7Prix dynamiques",
                 "",
-                "§7Diamant, fer, or...",
+                "§7Minerais & ressources",
                 "",
                 "§e▶ Voir"
         ));
@@ -113,12 +116,11 @@ public class MainMenuGUI {
         // 🧭 TELEPORT
         // =========================
         SafeGUI.safeSet(inv, 16, SafeGUI.item(
-                Material.COMPASS,
+                Material.ENDER_PEARL,
                 "§dTéléportation",
-                "§8────────────",
-                "§7Se déplacer",
+                "§7Se déplacer rapidement",
                 "",
-                "§7Spawn et lieux",
+                "§7Spawn & lieux",
                 "",
                 "§e▶ Ouvrir"
         ));
@@ -127,10 +129,9 @@ public class MainMenuGUI {
         // 🏙️ VILLE
         // =========================
         SafeGUI.safeSet(inv, 19, SafeGUI.item(
-                Material.BRICKS,
+                Material.OAK_DOOR,
                 "§6Ville",
-                "§8────────────",
-                "§7Gestion territoire",
+                "§7Gestion territoriale",
                 "",
                 "§e▶ Accéder"
         ));
@@ -139,28 +140,25 @@ public class MainMenuGUI {
         // 🛠️ MÉTIERS
         // =========================
         SafeGUI.safeSet(inv, 21, SafeGUI.item(
-                Material.IRON_AXE,
+                Material.DIAMOND_PICKAXE,
                 "§aMétiers",
-                "§8────────────",
-                "§7Bûcheron, mineur,",
-                "§7fermier, chasseur",
+                "§7Progression jobs",
                 "",
                 "§e▶ Ouvrir"
         ));
 
         // =========================
-        // 👑 CLASSEMENT (FIX CLEAN)
+        // 🏆 CLASSEMENT
         // =========================
         SafeGUI.safeSet(inv, 23, SafeGUI.item(
-                Material.GOLDEN_HELMET,
-                "§6✦ Classement",
-                "§8────────────",
+                Material.NETHER_STAR,
+                "§6Classement",
                 "§7Top commerçants",
                 "",
-                "§6👑 Leader: §f" + topName,
-                pos > 0 ? "§7Ta position: §e#" + pos : "",
+                "§6👑 " + topName,
+                pos > 0 ? "§7Position: §e#" + pos : "",
                 "",
-                "§e▶ Consulter"
+                "§e▶ Voir"
         ));
 
         // =========================
@@ -171,7 +169,6 @@ public class MainMenuGUI {
                 "§cFermer"
         ));
 
-        // 🔥 IMPORTANT
         GUIManager.open(p, "main_menu", inv);
     }
 }

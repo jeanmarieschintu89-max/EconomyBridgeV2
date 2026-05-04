@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -8,41 +9,32 @@ public class ContractCreateHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
-        // 🔥 mieux : éviter null
         ContractBuilder b = ContractBuilder.getOrCreate(p.getUniqueId());
 
         switch (slot) {
 
-            // 📦 SLOT ITEM (ICÔNE)
+            // 📦 ITEM (MAIN HAND)
             case 10 -> {
 
-                ItemStack cursor = p.getItemOnCursor();
+                ItemStack hand = p.getInventory().getItemInMainHand();
 
-                if (cursor == null || cursor.getType().isAir()) {
-                    p.sendMessage("§c❌ Mets un objet avec ta souris");
+                if (hand == null || hand.getType().isAir()) {
+                    p.sendMessage("§c❌ Tiens un objet dans ta main !");
                     return;
                 }
 
-                // 🔥 copie réelle (TRÈS IMPORTANT)
-                b.itemStack = cursor.clone();
-                b.item = cursor.getType().name();
-
-                // ❗ on ne touche PAS à l'inventaire joueur
-                p.setItemOnCursor(cursor);
+                b.itemStack = hand.clone();
+                b.item = hand.getType().name();
 
                 p.sendMessage("§a✔ Objet sélectionné: §f" + b.item);
+                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1.2f);
 
-                // 🔄 refresh GUI
                 ContractCreateGUI.open(p);
             }
 
-            // 📊 QUANTITÉ
             case 12 -> ContractAmountGUI.open(p);
-
-            // 💰 PRIX
             case 14 -> ContractPriceGUI.open(p);
 
-            // ✍️ VALIDATION
             case 22 -> {
 
                 if (b.item == null || b.amount <= 0 || b.price <= 0) {
@@ -51,11 +43,9 @@ public class ContractCreateHandler implements GUIHandler {
                 }
 
                 ContractConfirmGUI.open(p);
-                p.sendMessage("§e✔ Confirme ton contrat");
                 p.closeInventory();
             }
 
-            // ❌ ANNULER
             case 26 -> {
                 ContractBuilder.remove(p.getUniqueId());
                 p.closeInventory();

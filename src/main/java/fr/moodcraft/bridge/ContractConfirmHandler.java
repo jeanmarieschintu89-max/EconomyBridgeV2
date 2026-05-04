@@ -19,6 +19,11 @@ public class ContractConfirmHandler implements GUIHandler {
 
             case 15 -> {
 
+                if (b.item == null || b.amount <= 0 || b.price <= 0) {
+                    p.sendMessage("§cContrat invalide.");
+                    return;
+                }
+
                 ContractManager.create(
                         p.getUniqueId(),
                         b.item,
@@ -27,8 +32,11 @@ public class ContractConfirmHandler implements GUIHandler {
                 );
 
                 p.sendMessage("§a✔ Contrat créé !");
+
                 ContractBuilder.remove(p.getUniqueId());
-                p.closeInventory();
+
+                // 🔥 OUVRE DIRECT LE MARCHÉ
+                ContractListGUI.open(p);
             }
         }
     }

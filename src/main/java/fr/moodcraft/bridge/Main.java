@@ -53,23 +53,23 @@ public class Main extends JavaPlugin {
         );
 
         // =========================
-        // 🧠 GUI MANAGER
+        // 🧠 GUI MANAGER (FIX ICI)
         // =========================
-        // 🔥 IMPORTANT : toujours register AVANT utilisation
 
         GUIManager.register("main_menu", new MainMenuHandler());
 
         // 💰 BANQUE
-        GUIManager.register("bank_target", new TargetPlayerHandler());
         GUIManager.register("bank_main", new BankHandler());
+        GUIManager.register("bank_target", new TargetPlayerHandler());
         GUIManager.register("bank_deposit", new DepositHandler());
         GUIManager.register("bank_withdraw", new WithdrawHandler());
+        GUIManager.register("bank_history", new BankHistoryHandler());
 
+        // 💸 VIREMENTS
         GUIManager.register("transfer_type", new TransferTypeHandler());
         GUIManager.register("transfer_target", new TargetPlayerHandler());
         GUIManager.register("transfer_amount", new TransferAmountHandler());
         GUIManager.register("transfer_confirm", new TransferConfirmHandler());
-        GUIManager.register("bank_history", new BankHistoryHandler());
         GUIManager.register("iban_gui", new IbanHandler());
 
         // 📊 BOURSE
@@ -81,16 +81,21 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_price", new ContractPriceHandler());
         GUIManager.register("contract_amount", new ContractAmountHandler());
         GUIManager.register("contract_market", new ContractMarketHandler());
-        GUIManager.register("contract_player", new ContractDeliverHandler());
+
+        // 🔥 FIX CRITIQUE
+        GUIManager.register("contract_player", new ContractPlayerHandler());
+
         GUIManager.register("contract_confirm", new ContractConfirmHandler());
         GUIManager.register("contract_list", new ContractListHandler());
 
         // 🏆 CLASSEMENT
         GUIManager.register("top_rep", new TopRepHandler());
 
+        // 👤 PROFIL
+        GUIManager.register("profile_gui", new ProfileHandler());
+
         // 🧭 AUTRES
         GUIManager.register("teleport", new TeleportHandler());
-        GUIManager.register("profile_gui", new ProfileHandler());
 
         // =========================
         // 📜 COMMANDES
@@ -139,9 +144,7 @@ public class Main extends JavaPlugin {
                 20L * 45
         );
 
-        // =========================
         // 🏆 RÉCOMPENSE HEBDO
-        // =========================
         Bukkit.getScheduler().runTaskTimer(this,
                 new WeeklyRewardTask(),
                 20L * 60 * 60 * 24 * 7,

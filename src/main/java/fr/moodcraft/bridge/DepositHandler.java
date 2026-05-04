@@ -25,7 +25,7 @@ public class DepositHandler implements GUIHandler {
                 p.closeInventory();
 
                 // 🔥 ACTIVE INPUT (clé du système)
-                p.setMetadata("input_active", new FixedMetadataValue(Main.getInstance(), true));
+                InputManager.wait(p, "amount_input");
 
                 AmountInputManager.wait(p, AmountInputManager.Type.DEPOSIT);
 

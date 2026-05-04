@@ -14,30 +14,34 @@ public class TopRepHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
+        // 🔒 sécurité slot
         if (slot < 0 || slot >= 27) return;
 
         ItemStack item = p.getOpenInventory().getTopInventory().getItem(slot);
 
+        // 🔒 ignore tout sauf les têtes
         if (item == null || item.getType().isAir()) return;
         if (!item.hasItemMeta()) return;
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
+        // 🔒 vérifie qu’on a bien une cible
         String uuidStr = meta.getPersistentDataContainer().get(
                 new NamespacedKey(Main.getInstance(), "target"),
                 PersistentDataType.STRING
         );
 
-        if (uuidStr == null) return;
+        if (uuidStr == null) return; // ← très important
 
         UUID targetUUID = UUID.fromString(uuidStr);
 
-        // 🔥 FIX ICI
+        // 🔥 ouverture safe (évite bugs inventaire)
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
             ProfileGUI.open(p, targetUUID);
         });
 
-        p.sendMessage("§6➜ §7Ouverture du profil...");
+        // ❌ optionnel → tu peux enlever
+        // p.sendMessage("§6➜ §7Ouverture du profil...");
     }
 }

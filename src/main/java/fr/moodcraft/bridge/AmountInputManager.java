@@ -13,21 +13,21 @@ public class AmountInputManager {
         WITHDRAW
     }
 
-    private static final Map<UUID, Type> waiting = new HashMap<>();
+    private static final Map<UUID, Type> inputs = new HashMap<>();
 
     public static void wait(Player p, Type type) {
-        waiting.put(p.getUniqueId(), type);
+        inputs.put(p.getUniqueId(), type);
     }
 
-    public static Type get(Player p) {
-        return waiting.get(p.getUniqueId());
+    public static boolean has(Player p) {
+        return inputs.containsKey(p.getUniqueId());
     }
 
-    public static void remove(Player p) {
-        waiting.remove(p.getUniqueId());
+    public static Type getType(Player p) {
+        return inputs.get(p.getUniqueId());
     }
 
-    public static boolean isWaiting(Player p) {
-        return waiting.containsKey(p.getUniqueId());
+    public static void clear(Player p) {
+        inputs.remove(p.getUniqueId());
     }
 }

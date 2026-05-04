@@ -1,10 +1,9 @@
-
 name: EconomyBridge
 main: fr.moodcraft.bridge.Main
 version: 1.0
 api-version: 1.20
 
-depend: [Vault]
+depend: [Vault, MoodCraftReputation]
 softdepend: [Jobs]
 
 commands:
@@ -46,29 +45,6 @@ commands:
     description: Voir historique contrats
     usage: /contractlog [joueur]
     permission: econ.admin
-
-  # =========================
-  # ⭐ RÉPUTATION
-  # =========================
-
-  rep:
-    description: Modifier la réputation
-    usage: /rep <joueur> <valeur>
-    permission: econ.admin
-
-  resetrep:
-    description: Reset réputation joueur
-    usage: /resetrep <joueur>
-    permission: econ.admin
-
-  toprep:
-    description: Voir le classement réputation
-    usage: /toprep
-    permission: econ.use
-
-  topgui:
-    description: Classement GUI
-    permission: econ.use
 
   # =========================
   # 💰 MARCHÉ

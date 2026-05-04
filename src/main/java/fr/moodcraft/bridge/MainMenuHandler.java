@@ -15,36 +15,40 @@ public class MainMenuHandler implements GUIHandler {
             }
 
             case 10 -> {
-                Bukkit.getScheduler().runTask(Main.getInstance(), () -> BankGUI.open(p));
+                openNext(() -> BankGUI.open(p));
             }
 
             case 12 -> {
-                Bukkit.getScheduler().runTask(Main.getInstance(), () -> ContractGUI.open(p));
+                openNext(() -> ContractGUI.open(p));
             }
 
             case 14 -> {
-                Bukkit.getScheduler().runTask(Main.getInstance(), () -> PriceGUI.open(p));
+                openNext(() -> PriceGUI.open(p));
             }
 
             case 16 -> {
-                Bukkit.getScheduler().runTask(Main.getInstance(), () -> TeleportGUI.open(p));
+                openNext(() -> TeleportGUI.open(p));
             }
 
             case 19 -> {
-                Bukkit.getScheduler().runTask(Main.getInstance(), () -> p.performCommand("townmenu"));
+                openNext(() -> p.performCommand("townmenu"));
             }
 
             case 21 -> {
-                Bukkit.getScheduler().runTask(Main.getInstance(), () -> p.performCommand("jobs join"));
+                openNext(() -> p.performCommand("jobs join"));
             }
 
             case 23 -> {
-                Bukkit.getScheduler().runTask(Main.getInstance(), () -> TopRepGUI.open(p));
+                openNext(() -> TopRepGUI.open(p)); // 👈 TON BUG FIX ICI
             }
 
             case 26 -> {
                 p.closeInventory();
             }
         }
+    }
+
+    private void openNext(Runnable action) {
+        Bukkit.getScheduler().runTask(Main.getInstance(), action);
     }
 }

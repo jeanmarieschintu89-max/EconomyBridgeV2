@@ -16,7 +16,7 @@ public class MainMenuGUI {
         Inventory inv = Bukkit.createInventory(null, 27, "Menu");
 
         double bank = BankStorage.get(p.getUniqueId().toString());
-        double cash = 0;
+        double cash = VaultHook.getBalance(p);
         double total = bank + cash;
 
         double rep = ReputationManager.get(p.getUniqueId().toString());

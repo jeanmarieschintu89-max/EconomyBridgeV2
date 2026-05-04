@@ -15,15 +15,11 @@ public class ContractCreateGUI {
         Inventory inv = Bukkit.createInventory(null, 27, "§fCréer contrat");
 
         // =========================
-        // 📦 ITEM (ICÔNE)
+        // 📦 ITEM
         // =========================
-        ItemStack display;
-
-        if (b.itemStack != null) {
-            display = b.itemStack.clone();
-        } else {
-            display = new ItemStack(Material.BARRIER);
-        }
+        ItemStack display = (b.itemStack != null)
+                ? b.itemStack.clone()
+                : new ItemStack(Material.BARRIER);
 
         SafeGUI.safeSet(inv, 10, SafeGUI.item(
                 display,
@@ -32,7 +28,10 @@ public class ContractCreateGUI {
                 "§7Actuel:",
                 "§f" + (b.item == null ? "Aucun" : b.item),
                 "",
-                "§8Clique avec un item"
+                "§7Tiens un objet dans ta main",
+                "§7puis clique ici",
+                "",
+                "§e▶ Sélectionner"
         ));
 
         // =========================
@@ -56,26 +55,17 @@ public class ContractCreateGUI {
                 "§8Clique pour modifier"));
 
         // =========================
-        // 📜 PREVIEW CONTRAT (AVEC RÉPUTATION)
+        // 📜 PREVIEW
         // =========================
         double total = b.amount * b.price;
-
         double rep = ReputationManager.get(p.getUniqueId().toString());
         double bonusPercent = rep * 0.01;
-
         double tax = total * 0.05;
         double gain = (total - tax) * (1 + bonusPercent);
 
-        ItemStack preview;
-
-        if (b.itemStack != null) {
-            preview = b.itemStack.clone();
-            preview.setAmount(Math.min(b.amount, 64));
-        } else {
-            preview = new ItemStack(Material.BARRIER);
-        }
-
-        String repColor = rep >= 50 ? "§6" : rep >= 20 ? "§a" : "§7";
+        ItemStack preview = (b.itemStack != null)
+                ? b.itemStack.clone()
+                : new ItemStack(Material.BARRIER);
 
         SafeGUI.safeSet(inv, 16, SafeGUI.item(
                 preview,
@@ -88,35 +78,20 @@ public class ContractCreateGUI {
                 "§7Total: §a" + total + "€",
                 "§7Taxe: §c-" + tax + "€",
                 "",
-                "§7Réputation: " + repColor + rep,
                 "§7Bonus: §a+" + (int)(bonusPercent * 100) + "%",
-                "",
-                "§7Gain final: §6" + (int) gain + "€",
-                "",
-                "§e✔ Prêt à être créé"
+                "§7Gain: §6" + (int) gain + "€"
         ));
 
         // =========================
-        // ✅ VALIDER
+        // VALIDATION
         // =========================
         SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.LIME_CONCRETE,
-                "§aValider",
-                "§8────────────",
-                "§7Créer le contrat"));
+                "§aValider"));
 
-        // =========================
-        // ❌ ANNULER
-        // =========================
         SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.BARRIER,
-                "§cAnnuler",
-                "§8────────────",
-                "§7Retour menu"));
+                "§cAnnuler"));
 
-        // =========================
-        // 🚀 OUVERTURE
-        // =========================
-        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-            GUIManager.open(p, "contract_create", inv);
-        });
+        Bukkit.getScheduler().runTask(Main.getInstance(), () ->
+                GUIManager.open(p, "contract_create", inv));
     }
 }

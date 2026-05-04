@@ -11,49 +11,33 @@ public class GlobalGUIListener implements Listener {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
 
-        // 🔍 Vérifie si un GUI est actif
         String id = GUIManager.get(p);
         if (id == null) return;
 
+        // 🔥 bloque TOUT par défaut
+        e.setCancelled(true);
+
         // ❌ sécurité
-        if (e.getClickedInventory() == null) {
-            e.setCancelled(true);
-            return;
-        }
+        if (e.getClickedInventory() == null) return;
 
         int slot = e.getSlot();
 
-        // =========================
         // 🔒 bloque inventaire joueur
-        // =========================
-        if (slot >= e.getView().getTopInventory().getSize()) {
-            e.setCancelled(true);
+        if (slot >= e.getView().getTopInventory().getSize()) return;
+
+        // 🔒 bloque TOUS les clics spéciaux
+        if (e.isShiftClick()
+                || e.isRightClick()
+                || e.getClick().isKeyboardClick()
+                || e.getClick().isCreativeAction()
+                || e.getClick().name().contains("DROP")
+                || e.getClick().name().contains("DOUBLE_CLICK")) {
             return;
         }
 
         // =========================
-        // 🔒 bloque tous les clics spéciaux
+        // 🎯 HANDLER
         // =========================
-        if (e.isShiftClick() || e.isRightClick() || e.getClick().isKeyboardClick()) {
-            e.setCancelled(true);
-            return;
-        }
-
-        // =========================
-        // 🔒 CONTRACT CREATE (spécial)
-        // =========================
-        if (id.equals("contract_create")) {
-            e.setCancelled(true);
-            GUIManager.handle(p, slot);
-            return;
-        }
-
-        // =========================
-        // 🔒 GLOBAL GUI
-        // =========================
-        e.setCancelled(true);
-
-        // 🔥 appel handler
         GUIManager.handle(p, slot);
     }
 }

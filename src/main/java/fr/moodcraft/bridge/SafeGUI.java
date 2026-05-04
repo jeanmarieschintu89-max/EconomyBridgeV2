@@ -7,45 +7,33 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SafeGUI {
+
+    private static final DecimalFormat MONEY_FORMAT = new DecimalFormat("#,##0.00");
 
     // =========================
     // 🎯 ITEM VIA MATERIAL
     // =========================
     public static ItemStack item(Material mat, String name, String... lore) {
 
+        if (mat == null) mat = Material.BARRIER;
+
         ItemStack it = new ItemStack(mat);
         ItemMeta meta = it.getItemMeta();
 
-        if (meta != null) {
+        if (meta == null) return it;
 
-            meta.setDisplayName("§r" + name);
+        meta.setDisplayName("§r" + (name == null ? "" : name));
 
-            List<String> fixed = new ArrayList<>();
-            if (lore != null) {
-                for (String line : lore) {
-                    fixed.add(line == null ? "" : "§7" + line); // ❌ retiré §r inutile
-                }
-            }
+        meta.setLore(formatLore(lore));
 
-            meta.setLore(fixed);
+        hideAll(meta);
 
-            // 🔥 FIX IMPORTANT (SUPPRIME +2 ARMURE ETC)
-            meta.addItemFlags(
-                    ItemFlag.HIDE_ATTRIBUTES,
-                    ItemFlag.HIDE_ENCHANTS,
-                    ItemFlag.HIDE_UNBREAKABLE,
-                    ItemFlag.HIDE_DESTROYS,
-                    ItemFlag.HIDE_PLACED_ON,
-                    ItemFlag.HIDE_POTION_EFFECTS
-            );
-
-            it.setItemMeta(meta);
-        }
-
+        it.setItemMeta(meta);
         return it;
     }
 
@@ -54,52 +42,69 @@ public class SafeGUI {
     // =========================
     public static ItemStack item(ItemStack base, String name, String... lore) {
 
+        if (base == null) return item(Material.BARRIER, " ");
+
         ItemStack it = base.clone();
         ItemMeta meta = it.getItemMeta();
 
-        if (meta != null) {
+        if (meta == null) return it;
 
-            meta.setDisplayName("§r" + name);
+        meta.setDisplayName("§r" + (name == null ? "" : name));
 
-            List<String> fixed = new ArrayList<>();
-            if (lore != null) {
-                for (String line : lore) {
-                    fixed.add(line == null ? "" : "§7" + line);
-                }
-            }
+        meta.setLore(formatLore(lore));
 
-            meta.setLore(fixed);
+        hideAll(meta);
 
-            // 🔥 FIX ATTRIBUTS
-            meta.addItemFlags(
-                    ItemFlag.HIDE_ATTRIBUTES,
-                    ItemFlag.HIDE_ENCHANTS,
-                    ItemFlag.HIDE_UNBREAKABLE,
-                    ItemFlag.HIDE_DESTROYS,
-                    ItemFlag.HIDE_PLACED_ON,
-                    ItemFlag.HIDE_POTION_EFFECTS
-            );
-
-            it.setItemMeta(meta);
-        }
-
+        it.setItemMeta(meta);
         return it;
     }
 
     // =========================
-    // ✨ GLOW (propre)
+    // 🧠 FORMAT LORE
+    // =========================
+    private static List<String> formatLore(String... lore) {
+
+        List<String> fixed = new ArrayList<>();
+
+        if (lore != null) {
+            for (String line : lore) {
+                fixed.add(line == null ? "" : "§7" + line);
+            }
+        }
+
+        return fixed;
+    }
+
+    // =========================
+    // 🔒 HIDE ALL FLAGS
+    // =========================
+    private static void hideAll(ItemMeta meta) {
+        meta.addItemFlags(
+                ItemFlag.HIDE_ATTRIBUTES,
+                ItemFlag.HIDE_ENCHANTS,
+                ItemFlag.HIDE_UNBREAKABLE,
+                ItemFlag.HIDE_DESTROYS,
+                ItemFlag.HIDE_PLACED_ON,
+                ItemFlag.HIDE_POTION_EFFECTS
+        );
+    }
+
+    // =========================
+    // ✨ GLOW
     // =========================
     public static ItemStack glow(ItemStack item) {
+
+        if (item == null) return null;
 
         ItemStack clone = item.clone();
         ItemMeta meta = clone.getItemMeta();
 
-        if (meta != null) {
-            meta.addEnchant(Enchantment.DURABILITY, 1, true);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            clone.setItemMeta(meta);
-        }
+        if (meta == null) return clone;
 
+        meta.addEnchant(Enchantment.DURABILITY, 1, true);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+        clone.setItemMeta(meta);
         return clone;
     }
 
@@ -108,14 +113,16 @@ public class SafeGUI {
     // =========================
     public static ItemStack removeGlow(ItemStack item) {
 
+        if (item == null) return null;
+
         ItemStack clone = item.clone();
         ItemMeta meta = clone.getItemMeta();
 
-        if (meta != null) {
-            meta.getEnchants().keySet().forEach(meta::removeEnchant);
-            clone.setItemMeta(meta);
-        }
+        if (meta == null) return clone;
 
+        meta.getEnchants().keySet().forEach(meta::removeEnchant);
+
+        clone.setItemMeta(meta);
         return clone;
     }
 
@@ -123,8 +130,11 @@ public class SafeGUI {
     // 🛡️ SAFE SET SLOT
     // =========================
     public static void safeSet(Inventory inv, int slot, ItemStack item) {
+
+        if (inv == null) return;
+
         try {
-            inv.setItem(slot, item);
+            inv.setItem(slot, item == null ? new ItemStack(Material.BARRIER) : item);
         } catch (Exception e) {
             inv.setItem(slot, new ItemStack(Material.BARRIER));
         }
@@ -134,6 +144,8 @@ public class SafeGUI {
     // 🧱 BORDURES
     // =========================
     public static void fillBorders(Inventory inv, Material mat) {
+
+        if (inv == null) return;
 
         ItemStack pane = item(mat, " ");
 
@@ -150,6 +162,6 @@ public class SafeGUI {
     // 💰 FORMAT ARGENT
     // =========================
     public static String money(double v) {
-        return String.format("%.2f", v);
+        return MONEY_FORMAT.format(v);
     }
 }

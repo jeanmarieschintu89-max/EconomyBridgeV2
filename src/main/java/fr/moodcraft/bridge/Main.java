@@ -47,7 +47,7 @@ public class Main extends JavaPlugin {
                 new MineListener(),
                 new PayListener(),
                 new InventoryGuardListener(),
-                new InventoryCloseListener(),
+                new InventoryCloseListener(), // 🔥 important pour GUIManager
                 new GlobalGUIListener()
         );
 
@@ -77,7 +77,10 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_market", new ContractMarketHandler());
         GUIManager.register("contract_player", new ContractDeliverHandler());
         GUIManager.register("contract_confirm", new ContractConfirmHandler());
-        GUIManager.register("top_gui", new TopGUIHandler());
+
+        // 🏆 CLASSEMENT (🔥 FIX ICI)
+        GUIManager.register("top_rep", new TopRepHandler()); // ✔ TON GUI classement
+        GUIManager.register("top_gui", new TopGUIHandler()); // ✔ autre GUI si utilisé
 
         // 🧭 AUTRES
         GUIManager.register("teleport", new TeleportHandler());
@@ -131,7 +134,7 @@ public class Main extends JavaPlugin {
         );
 
         // =========================
-        // 🏆 RÉCOMPENSE HEBDO TOP 3
+        // 🏆 RÉCOMPENSE HEBDO
         // =========================
         Bukkit.getScheduler().runTaskTimer(this,
                 new WeeklyRewardTask(),
@@ -145,11 +148,11 @@ public class Main extends JavaPlugin {
         getLogger().info("=================================");
         getLogger().info("✅ EconomyBridge chargé");
         getLogger().info("🏦 Banque: OK");
-        getLogger().info("💸 Transactions: PERSISTANTES");
+        getLogger().info("💸 Transactions: OK");
         getLogger().info("📊 Marché: OK");
         getLogger().info("📜 Contrats: OK");
-        getLogger().info("🏆 Classement + récompenses: ACTIF");
-        getLogger().info("🧠 GUI Manager: ACTIF");
+        getLogger().info("🏆 Classement: FIX & ACTIF");
+        getLogger().info("🧠 GUI Manager: STABLE");
         getLogger().info("=================================");
     }
 

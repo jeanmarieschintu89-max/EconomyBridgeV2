@@ -11,6 +11,7 @@ public class AmountInputManager {
     public enum Type {
         DEPOSIT,
         WITHDRAW
+        PLAYER_TRANSFER
     }
 
     private static final Map<UUID, Type> inputs = new HashMap<>();

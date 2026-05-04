@@ -35,7 +35,7 @@ public class ContractConfirmHandler implements GUIHandler {
 
                 ContractBuilder.remove(p.getUniqueId());
 
-                // 🔥 OUVRE DIRECT LE MARCHÉ
+                // 🔥 ouvre le marché
                 ContractListGUI.open(p);
             }
         }

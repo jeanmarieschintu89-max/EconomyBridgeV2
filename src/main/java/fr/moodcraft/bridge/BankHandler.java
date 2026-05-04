@@ -12,19 +12,30 @@ public class BankHandler implements GUIHandler {
 
             case 10 -> {
                 p.closeInventory();
-                Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-                    Bukkit.dispatchCommand(p, "iban");
-                });
+                Bukkit.getScheduler().runTask(Main.getInstance(), () ->
+                        Bukkit.dispatchCommand(p, "iban")
+                );
             }
 
-            case 11 -> DepositGUI.open(p);
+            // 💰 DÉPÔT
+            case 11 -> {
+                TransferBuilder.get(p).action = TransferBuilder.Action.DEPOSIT;
+                TransferAmountGUI.open(p);
+            }
 
-            case 15 -> WithdrawGUI.open(p);
+            // 💸 RETRAIT
+            case 15 -> {
+                TransferBuilder.get(p).action = TransferBuilder.Action.WITHDRAW;
+                TransferAmountGUI.open(p);
+            }
 
+            // 🔁 TRANSFERT
             case 16 -> TransferTypeGUI.open(p);
 
+            // 📜 HISTORIQUE
             case 22 -> BankHistoryGUI.open(p, 0);
 
+            // 🔙 MENU
             case 26 -> MainMenuGUI.open(p);
         }
     }

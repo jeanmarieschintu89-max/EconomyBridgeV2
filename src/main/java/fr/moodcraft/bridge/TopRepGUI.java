@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Map;
@@ -22,15 +22,20 @@ public class TopRepGUI {
 
         for (Map.Entry<String, Integer> entry : ReputationManager.getTop(10).entrySet()) {
 
-            String uuid = entry.getKey();
+            String uuidStr = entry.getKey();
             int rep = entry.getValue();
 
-            String name = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
+            UUID uuid = UUID.fromString(uuidStr);
+
+            String name = Bukkit.getOfflinePlayer(uuid).getName();
+            if (name == null) name = "Inconnu";
 
             ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-            ItemMeta meta = item.getItemMeta();
 
-            if (meta != null) {
+            if (item.getItemMeta() instanceof SkullMeta meta) {
+
+                // 🔥 skin du joueur
+                meta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
 
                 meta.setDisplayName("§e#" + i + " §f" + name);
 
@@ -41,11 +46,11 @@ public class TopRepGUI {
                         "§e▶ Voir profil"
                 ));
 
-                // 🔥 STOCK UUID
+                // 🔥 stock UUID (IMPORTANT pour le handler)
                 meta.getPersistentDataContainer().set(
                         new NamespacedKey(Main.getInstance(), "target"),
                         PersistentDataType.STRING,
-                        uuid
+                        uuidStr
                 );
 
                 item.setItemMeta(meta);
@@ -57,7 +62,10 @@ public class TopRepGUI {
             i++;
         }
 
-        // ⚠️ IMPORTANT
+        // ✨ bordures (optionnel mais recommandé)
+        SafeGUI.fillBorders(inv, Material.BLACK_STAINED_GLASS_PANE);
+
+        // 🔥 ouverture via GUIManager
         GUIManager.open(p, "top_rep", inv);
     }
 }

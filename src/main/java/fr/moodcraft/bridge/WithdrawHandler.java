@@ -1,6 +1,7 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Bukkit;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class WithdrawHandler implements GUIHandler {
@@ -20,13 +21,25 @@ public class WithdrawHandler implements GUIHandler {
 
     private void withdraw(Player p, int amount) {
 
-        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+        Economy eco = VaultHook.getEconomy();
+        if (eco == null) return;
 
-            Bukkit.dispatchCommand(p, "bank " + p.getName() + " -" + amount);
+        double bank = BankStorage.get(p.getUniqueId().toString());
 
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                WithdrawGUI.open(p);
-            }, 2L);
-        });
+        if (bank < amount) {
+            p.sendMessage("§cPas assez d'argent en banque.");
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            return;
+        }
+
+        // 💰 TRANSFERT DIRECT
+        BankStorage.remove(p.getUniqueId().toString(), amount);
+        eco.depositPlayer(p, amount);
+
+        p.sendMessage("§aRetrait de §f" + SafeGUI.money(amount) + " §aeffectué !");
+        p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+
+        // 🔄 refresh GUI
+        WithdrawGUI.open(p);
     }
 }

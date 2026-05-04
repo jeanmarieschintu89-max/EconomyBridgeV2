@@ -15,6 +15,8 @@ public class TopRepGUI {
 
     public static void open(org.bukkit.entity.Player p) {
 
+        System.out.println("[TopRepGUI] Ouverture GUI");
+
         Inventory inv = Bukkit.createInventory(null, 27, "§6Classement Réputation");
 
         int slot = 10;
@@ -22,10 +24,19 @@ public class TopRepGUI {
 
         for (Map.Entry<String, Integer> entry : ReputationManager.getTop(10).entrySet()) {
 
+            if (slot >= inv.getSize()) break; // 🔥 sécurité
+
             String uuidStr = entry.getKey();
             int rep = entry.getValue();
 
-            UUID uuid = UUID.fromString(uuidStr);
+            UUID uuid;
+
+            try {
+                uuid = UUID.fromString(uuidStr);
+            } catch (Exception e) {
+                System.out.println("[TopRepGUI] UUID invalide: " + uuidStr);
+                continue; // 🔥 skip au lieu de crash
+            }
 
             String name = Bukkit.getOfflinePlayer(uuid).getName();
             if (name == null) name = "Inconnu";
@@ -34,7 +45,6 @@ public class TopRepGUI {
 
             if (item.getItemMeta() instanceof SkullMeta meta) {
 
-                // 🔥 skin du joueur
                 meta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
 
                 meta.setDisplayName("§e#" + i + " §f" + name);
@@ -46,7 +56,6 @@ public class TopRepGUI {
                         "§e▶ Voir profil"
                 ));
 
-                // 🔥 stock UUID (IMPORTANT pour le handler)
                 meta.getPersistentDataContainer().set(
                         new NamespacedKey(Main.getInstance(), "target"),
                         PersistentDataType.STRING,
@@ -62,10 +71,10 @@ public class TopRepGUI {
             i++;
         }
 
-        // ✨ bordures (optionnel mais recommandé)
+        // 🔳 bordures
         SafeGUI.fillBorders(inv, Material.BLACK_STAINED_GLASS_PANE);
 
-        // 🔥 ouverture via GUIManager
+        // 🔥 ouverture
         GUIManager.open(p, "top_rep", inv);
     }
 }

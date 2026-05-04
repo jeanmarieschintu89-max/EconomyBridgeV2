@@ -12,12 +12,21 @@ public class WeeklyRewardTask implements Runnable {
     @Override
     public void run() {
 
+        var top = ReputationManager.getTop(3);
+
+        // =========================
+        // 📢 HEADER UNIQUE
+        // =========================
+        Bukkit.broadcastMessage("");
+        Bukkit.broadcastMessage("§8╔════════════════════════════╗");
+        Bukkit.broadcastMessage("§8║   §6🏆 Classement Hebdomadaire");
+        Bukkit.broadcastMessage("§8╠════════════════════════════╣");
+
         int i = 1;
 
-        for (Map.Entry<String, Integer> entry : ReputationManager.getTop(3).entrySet()) {
+        for (Map.Entry<String, Integer> entry : top.entrySet()) {
 
             UUID uuid = UUID.fromString(entry.getKey());
-
             String name = Bukkit.getOfflinePlayer(uuid).getName();
             if (name == null) name = "Inconnu";
 
@@ -27,28 +36,48 @@ public class WeeklyRewardTask implements Runnable {
             else if (i == 2) reward = 5000;
             else reward = 2500;
 
-            // 💰 ajout argent
+            // 💰 ARGENT
             BankStorage.add(uuid.toString(), reward);
 
-            // 🎨 couleur podium
+            // ⭐ BONUS RÉPUTATION
+            ReputationManager.add(uuid.toString(), i == 1 ? 20 : i == 2 ? 10 : 5);
+
+            // 🎨 STYLE PODIUM
             String color = i == 1 ? "§6" : i == 2 ? "§7" : "§c";
 
-            // 📢 message global propre
-            Bukkit.broadcastMessage("§8╔════════════════════════════╗");
-            Bukkit.broadcastMessage("§8║   §a§lMood§e§lCraft §8• §6Classement");
-            Bukkit.broadcastMessage("§8╠════════════════════════════╣");
-            Bukkit.broadcastMessage("§8║ " + color + "🏆 #" + i + " §f" + name);
-            Bukkit.broadcastMessage("§8║ §eRécompense: §6" + (int) reward + "€");
-            Bukkit.broadcastMessage("§8╚════════════════════════════╝");
+            Bukkit.broadcastMessage("§8║ " + color + "🏆 #" + i + " §f" + name + " §7(+"
+                    + entry.getValue() + " rep)");
 
-            // 🔔 notification joueur si connecté
+            Bukkit.broadcastMessage("§8║ §eRécompense: §6" + (int) reward + "€");
+
+            // 🔔 PLAYER ONLINE
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) {
-                player.sendMessage("§a✔ Tu as reçu §6" + (int) reward + "€ §apour ton classement !");
+
+                player.sendMessage("");
+                player.sendMessage("§8╔════════════════════════════╗");
+                player.sendMessage("§8║   §6🏆 Récompense Hebdo");
+                player.sendMessage("§8╠════════════════════════════╣");
+                player.sendMessage("§8║ §7Position: " + color + "#" + i);
+                player.sendMessage("§8║ §7Gain: §6" + (int) reward + "€");
+                player.sendMessage("§8╚════════════════════════════╝");
+
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
             }
 
             i++;
         }
+
+        Bukkit.broadcastMessage("§8╚════════════════════════════╝");
+        Bukkit.broadcastMessage("");
+
+        // =========================
+        // 🔄 RESET HEBDO (OPTION)
+        // =========================
+        // 🔥 À activer si tu veux un vrai système compétitif
+
+        // for (String uuid : ReputationManager.getTop(100).keySet()) {
+        //     ReputationManager.reset(uuid);
+        // }
     }
 }

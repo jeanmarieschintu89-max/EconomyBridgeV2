@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -57,6 +58,28 @@ public class ContractDeliverHandler implements GUIHandler {
             return;
         }
 
-        p.sendMessage("§a✔ Livraison effectuée !");
-    }
-}
+        // =========================
+        // ⭐ RÉPUTATION (AJOUT ICI)
+        // =========================
+
+        int rep = (int) (c.price / 1000);
+        rep = Math.max(1, rep);
+
+        // 👷 livreur
+        ReputationManager.addRepStyled(p, rep, "Contrat livré");
+
+        // 👤 client
+        Player owner = Bukkit.getPlayer(c.owner);
+        if (owner != null) {
+            ReputationManager.addRepStyled(owner, 1, "Contrat complété");
+        }
+
+        // =========================
+        // 💬 MESSAGE FINAL PROPRE
+        // =========================
+
+        p.sendMessage("");
+        p.sendMessage("§8╔════════════════════════════╗");
+        p.sendMessage("§8║   §a✔ Livraison réussie");
+        p.sendMessage("§8╠════════════════════════════╣");
+        p

@@ -1,39 +1,49 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.UUID;
 
 public class TargetPlayerHandler implements GUIHandler {
 
     @Override
     public void onClick(Player p, int slot) {
 
-        // 🔒 sécurité slot
-        if (slot >= p.getOpenInventory().getTopInventory().getSize()) return;
-
-        // 📦 item
         ItemStack item = p.getOpenInventory().getTopInventory().getItem(slot);
 
-        if (item == null || item.getItemMeta() == null) return;
+        if (item == null || !item.hasItemMeta()) return;
 
-        String name = item.getItemMeta().getDisplayName();
-        if (name == null) return;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
 
-        // 🧼 clean couleur
-        String clean = name.replaceAll("§.", "");
+        // 🔥 récup UUID (SAFE)
+        String uuidStr = meta.getPersistentDataContainer().get(
+                new NamespacedKey(Main.getInstance(), "target"),
+                PersistentDataType.STRING
+        );
 
-        Player target = Bukkit.getPlayerExact(clean);
-
-        if (target == null) {
-            p.sendMessage("§cJoueur introuvable");
+        if (uuidStr == null) {
+            p.sendMessage("§cErreur: joueur invalide");
             return;
         }
 
-        // 💾 stockage cible
-        TransferBuilder.get(p).target = target.getUniqueId();
+        UUID uuid = UUID.fromString(uuidStr);
+        Player target = Bukkit.getPlayer(uuid);
 
-        // 🔥 NOUVEAU FLOW → montant
+        if (target == null) {
+            p.sendMessage("§cJoueur hors ligne");
+            return;
+        }
+
+        // 💾 stockage
+        TransferBuilder.get(p).target = uuid;
+
+        // 🔥 ouvrir GUI suivant
         TransferAmountGUI.open(p);
     }
 }

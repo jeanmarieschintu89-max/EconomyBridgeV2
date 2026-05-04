@@ -126,6 +126,7 @@ public class InputListener implements Listener {
 
                 // 🔥 ensuite montant
                 AmountInputManager.wait(p, AmountInputManager.Type.WITHDRAW);
+                InputManager.wait(p, "amount_input");
                 p.sendMessage("§eEntre le montant à envoyer.");
 
                 InputManager.clear(p);

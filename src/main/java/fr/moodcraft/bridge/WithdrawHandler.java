@@ -3,6 +3,7 @@ package fr.moodcraft.bridge;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class WithdrawHandler implements GUIHandler {
 
@@ -21,11 +22,17 @@ public class WithdrawHandler implements GUIHandler {
             // 💬 CUSTOM
             case 24 -> {
                 p.closeInventory();
+
+                // 🔥 ACTIVE INPUT (indispensable pour l’Auth)
+                p.setMetadata("input_active", new FixedMetadataValue(Main.getInstance(), true));
+
                 AmountInputManager.wait(p, AmountInputManager.Type.WITHDRAW);
+
                 p.sendMessage("§eEntre le montant à retirer dans le chat.");
+                p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
             }
 
-            case 22 -> new BankGUI().open(p); // ✅ FIX
+            case 22 -> new BankGUI().open(p);
         }
     }
 
@@ -51,7 +58,7 @@ public class WithdrawHandler implements GUIHandler {
         p.sendMessage("§aRetrait de §f" + SafeGUI.money(amount) + " §aeffectué !");
         p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 
-        new WithdrawGUI().open(p); // ✅ FIX
+        new WithdrawGUI().open(p);
     }
 
     // =========================
@@ -76,6 +83,6 @@ public class WithdrawHandler implements GUIHandler {
         p.sendMessage("§aTu as tout retiré : §f" + SafeGUI.money(bank));
         p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 
-        new WithdrawGUI().open(p); // ✅ FIX
+        new WithdrawGUI().open(p);
     }
 }

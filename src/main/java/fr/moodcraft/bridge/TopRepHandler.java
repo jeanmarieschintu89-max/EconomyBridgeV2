@@ -6,12 +6,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.UUID;
+
 public class TopRepHandler implements GUIHandler {
 
     @Override
     public void onClick(Player p, int slot) {
 
-        // ❌ sécurité
         if (slot < 0 || slot >= 27) return;
 
         ItemStack item = p.getOpenInventory().getTopInventory().getItem(slot);
@@ -22,21 +23,22 @@ public class TopRepHandler implements GUIHandler {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        // 🔥 récup UUID stocké
-        String uuid = meta.getPersistentDataContainer().get(
+        // 🔥 récup STRING
+        String uuidStr = meta.getPersistentDataContainer().get(
                 new NamespacedKey(Main.getInstance(), "target"),
                 PersistentDataType.STRING
         );
 
-        if (uuid == null) return;
+        if (uuidStr == null) return;
 
-        // 🎯 ACTION
+        // ✅ CONVERSION FIX
+        UUID targetUUID = UUID.fromString(uuidStr);
+
         p.closeInventory();
 
-        // 👉 ouvre profil joueur
-        ProfileGUI.open(p, uuid);
+        // 👉 maintenant OK
+        ProfileGUI.open(p, targetUUID);
 
-        // 💬 feedback stylé
         p.sendMessage("§6➜ §7Ouverture du profil...");
     }
 }

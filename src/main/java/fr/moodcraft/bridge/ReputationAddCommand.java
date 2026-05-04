@@ -22,11 +22,11 @@ public class ReputationAddCommand implements CommandExecutor {
             return true;
         }
 
-        // 🔍 récup joueur (online OU offline)
+        // 🔍 joueur online/offline
         OfflinePlayer offline = Bukkit.getOfflinePlayer(args[0]);
 
-        if (offline.getUniqueId() == null) {
-            sender.sendMessage("§c❌ Joueur introuvable");
+        if (!offline.hasPlayedBefore() && !offline.isOnline()) {
+            sender.sendMessage("§c❌ Joueur inconnu");
             return true;
         }
 
@@ -42,8 +42,8 @@ public class ReputationAddCommand implements CommandExecutor {
             return true;
         }
 
-        int current = ReputationManager.get(id);
-        int newValue = Math.max(0, current + value);
+        int old = ReputationManager.get(id);
+        int newValue = Math.max(0, old + value);
 
         // =========================
         // 💾 UPDATE
@@ -51,23 +51,29 @@ public class ReputationAddCommand implements CommandExecutor {
         ReputationManager.set(id, newValue);
 
         // =========================
-        // 💬 ADMIN
+        // 💬 ADMIN (stylé)
         // =========================
-        sender.sendMessage("§8────────────");
-        sender.sendMessage("§a✔ Réputation modifiée");
-        sender.sendMessage("§7Joueur: §f" + offline.getName());
-        sender.sendMessage("§7Ajout: §e" + value);
-        sender.sendMessage("§7Total: §a" + newValue);
-        sender.sendMessage("§8────────────");
+        sender.sendMessage("");
+        sender.sendMessage("§8╔════════════════════════════╗");
+        sender.sendMessage("§8║   §a✔ Réputation modifiée");
+        sender.sendMessage("§8╠════════════════════════════╣");
+        sender.sendMessage("§8║ §7Joueur: §f" + offline.getName());
+        sender.sendMessage("§8║ §7Variation: §e" + (value >= 0 ? "+" : "") + value);
+        sender.sendMessage("§8║");
+        sender.sendMessage("§8║ §7Ancienne: §c" + old);
+        sender.sendMessage("§8║ §7Nouvelle: §a" + newValue);
+        sender.sendMessage("§8╚════════════════════════════╝");
+        sender.sendMessage("");
 
         // =========================
-        // 💬 JOUEUR SI CONNECTÉ
+        // 💬 JOUEUR SI ONLINE
         // =========================
         if (offline.isOnline()) {
 
             Player target = offline.getPlayer();
 
             if (target != null) {
+                // 🔥 utilise ton système stylé complet
                 ReputationManager.addRepStyled(target, value, "Modification admin");
             }
         }

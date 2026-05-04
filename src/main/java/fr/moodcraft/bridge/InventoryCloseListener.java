@@ -11,6 +11,9 @@ public class InventoryCloseListener implements Listener {
 
         if (!(e.getPlayer() instanceof Player p)) return;
 
+        // 🔥 ignore la fermeture déclenchée par une ouverture en cours
+        if (GUIManager.isOpening(p)) return;
+
         GUIManager.close(p);
     }
 }

@@ -1,9 +1,7 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.text.DecimalFormat;
@@ -39,9 +37,8 @@ public class IbanPayCommand implements CommandExecutor {
         }
 
         String senderId = p.getUniqueId().toString();
-        double senderBank = BankStorage.get(senderId);
 
-        if (senderBank < amount) {
+        if (BankStorage.get(senderId) < amount) {
             p.sendMessage("§c❌ Pas assez d'argent en banque");
             return true;
         }
@@ -60,27 +57,44 @@ public class IbanPayCommand implements CommandExecutor {
 
         UUID targetUUID = UUID.fromString(targetUUIDStr);
 
-        // 💸 TRANSFERT PROPRE
-        BankStorage.remove(senderId, amount);
-        BankStorage.add(targetUUIDStr, amount);
+        // =========================
+        // 💸 TRANSFERT CENTRALISÉ
+        // =========================
+        boolean success = BankStorage.transfer(senderId, targetUUIDStr, amount);
 
-        // 📊 LOGS AMÉLIORÉS
-        TransactionLogger.log(p.getName(), "Virement envoyé vers " + iban, amount);
+        if (!success) {
+            p.sendMessage("§c❌ Erreur lors du virement");
+            return true;
+        }
 
         Player target = Bukkit.getPlayer(targetUUID);
 
-        if (target != null && target.isOnline()) {
+        // =========================
+        // 💬 EXPÉDITEUR
+        // =========================
+        p.sendMessage("");
+        p.sendMessage("§8╔════════════════════════════╗");
+        p.sendMessage("§8║   §a✔ Virement envoyé");
+        p.sendMessage("§8╠════════════════════════════╣");
+        p.sendMessage("§8║ §7Montant: §c-" + format.format(amount) + "€");
+        p.sendMessage("§8║ §7IBAN: §e" + iban);
+        p.sendMessage("§8╚════════════════════════════╝");
+        p.sendMessage("");
 
-            target.sendMessage("§a💸 Virement reçu !");
-            target.sendMessage("§7De: §e" + p.getName());
-            target.sendMessage("§7Montant: §e" + format.format(amount) + "€");
+        // =========================
+        // 💬 DESTINATAIRE (ONLINE)
+        // =========================
+        if (target != null) {
 
-            TransactionLogger.log(target.getName(), "Virement reçu de " + p.getName(), amount);
+            target.sendMessage("");
+            target.sendMessage("§8╔════════════════════════════╗");
+            target.sendMessage("§8║   §a💸 Virement reçu");
+            target.sendMessage("§8╠════════════════════════════╣");
+            target.sendMessage("§8║ §7De: §e" + p.getName());
+            target.sendMessage("§8║ §7Montant: §a+" + format.format(amount) + "€");
+            target.sendMessage("§8╚════════════════════════════╝");
+            target.sendMessage("");
         }
-
-        p.sendMessage("§a✔ Virement envoyé !");
-        p.sendMessage("§7Montant: §e" + format.format(amount) + "€");
-        p.sendMessage("§7Vers IBAN: §e" + iban);
 
         return true;
     }

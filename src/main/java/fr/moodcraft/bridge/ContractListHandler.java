@@ -11,12 +11,14 @@ public class ContractListHandler implements GUIHandler {
         if (c == null) return;
 
         if (c.owner.equals(p.getUniqueId())) {
-            p.sendMessage("§cTu ne peux pas prendre ton propre contrat.");
+            p.sendMessage("§cTu ne peux pas accepter ton propre contrat.");
             return;
         }
 
         c.acceptor = p.getUniqueId();
         c.status = Contract.Status.IN_PROGRESS;
+
+        ContractStorage.update(c);
 
         p.sendMessage("§a✔ Contrat accepté !");
     }

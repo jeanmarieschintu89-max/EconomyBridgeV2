@@ -1,5 +1,7 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -18,11 +20,56 @@ public class TransferBuilder {
         IBAN_TRANSFER
     }
 
-    public static TransferBuilder get(org.bukkit.entity.Player p) {
+    // =========================
+    // 📦 GET
+    // =========================
+    public static TransferBuilder get(Player p) {
         return cache.computeIfAbsent(p.getUniqueId(), k -> new TransferBuilder());
     }
 
-    public static void clear(org.bukkit.entity.Player p) {
+    // =========================
+    // 🎯 TARGET
+    // =========================
+    public static void setTarget(Player p, UUID target) {
+        TransferBuilder b = get(p);
+        b.target = target;
+    }
+
+    public static UUID getTarget(Player p) {
+        TransferBuilder b = cache.get(p.getUniqueId());
+        return b != null ? b.target : null;
+    }
+
+    // =========================
+    // 💰 AMOUNT
+    // =========================
+    public static void setAmount(Player p, double amount) {
+        TransferBuilder b = get(p);
+        b.amount = amount;
+    }
+
+    public static double getAmount(Player p) {
+        TransferBuilder b = cache.get(p.getUniqueId());
+        return b != null ? b.amount : 0;
+    }
+
+    // =========================
+    // ⚙ ACTION
+    // =========================
+    public static void setAction(Player p, Action action) {
+        TransferBuilder b = get(p);
+        b.action = action;
+    }
+
+    public static Action getAction(Player p) {
+        TransferBuilder b = cache.get(p.getUniqueId());
+        return b != null ? b.action : null;
+    }
+
+    // =========================
+    // 🧹 CLEAR
+    // =========================
+    public static void clear(Player p) {
         cache.remove(p.getUniqueId());
     }
 }

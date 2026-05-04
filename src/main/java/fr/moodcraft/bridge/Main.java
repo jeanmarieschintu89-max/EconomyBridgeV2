@@ -26,9 +26,11 @@ public class Main extends JavaPlugin {
         // =========================
         BankStorage.init();
         TransactionStorage.init();
-        ReputationManager.init();
         ContractHistoryManager.init();
         MarketStorage.init();
+
+        // ❌ SUPPRIMÉ
+        // ReputationManager.init();
 
         // =========================
         // 📊 CONFIG MARCHÉ
@@ -84,8 +86,8 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_confirm", new ContractConfirmHandler());
         GUIManager.register("contract_list", new ContractListHandler());
 
-        // 🏆 CLASSEMENT
-        GUIManager.register("top_rep", new TopRepHandler());
+        // ❌ SUPPRIMÉ (réputation maintenant externe)
+        // GUIManager.register("top_rep", new TopRepHandler());
 
         // 👤 PROFIL
         GUIManager.register("profile_gui", new ProfileHandler());
@@ -118,12 +120,11 @@ public class Main extends JavaPlugin {
         registerCommand("delcontrat", new ContractDeleteCommand());
         registerCommand("contrats", new ContractMenuCommand());
 
-        // 🔥 FIX ICI (IMPORTANT)
-        registerCommand("rep", new ReputationCommand());
-        registerCommand("resetrep", new ReputationResetCommand());
-
-        registerCommand("toprep", new TopRepCommand());
-        registerCommand("topgui", new TopGUICommand());
+        // ❌ SUPPRIMÉ
+        // registerCommand("rep", new ReputationCommand());
+        // registerCommand("resetrep", new ReputationResetCommand());
+        // registerCommand("toprep", new TopRepCommand());
+        // registerCommand("topgui", new TopGUICommand());
 
         // =========================
         // 🔁 TASKS
@@ -142,7 +143,7 @@ public class Main extends JavaPlugin {
                 20L * 45
         );
 
-        // 🏆 RÉCOMPENSE HEBDO
+        // ❌ OPTIONNEL (si dépend de rep → à déplacer plus tard)
         Bukkit.getScheduler().runTaskTimer(this,
                 new WeeklyRewardTask(),
                 20L * 60 * 60 * 24 * 7,
@@ -158,7 +159,6 @@ public class Main extends JavaPlugin {
         getLogger().info("💸 Transactions: OK");
         getLogger().info("📊 Marché: OK");
         getLogger().info("📜 Contrats: OK");
-        getLogger().info("🏆 Classement: OK");
         getLogger().info("🧠 GUI Manager: OPERATIONNEL");
         getLogger().info("=================================");
     }
@@ -167,8 +167,10 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         BankStorage.save();
         TransactionStorage.save();
-        ReputationManager.save();
         MarketStorage.save();
+
+        // ❌ SUPPRIMÉ
+        // ReputationManager.save();
     }
 
     // =========================

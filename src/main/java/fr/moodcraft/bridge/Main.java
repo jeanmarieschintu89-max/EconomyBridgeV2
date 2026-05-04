@@ -47,24 +47,27 @@ public class Main extends JavaPlugin {
                 new MineListener(),
                 new PayListener(),
                 new InventoryGuardListener(),
-                new InventoryCloseListener(), // 🔥 important pour GUIManager
+                new InventoryCloseListener(),
                 new GlobalGUIListener()
         );
 
         // =========================
         // 🧠 GUI MANAGER
         // =========================
+        // 🔥 IMPORTANT : toujours register AVANT utilisation
+
         GUIManager.register("main_menu", new MainMenuHandler());
 
         // 💰 BANQUE
         GUIManager.register("bank_main", new BankHandler());
+        GUIManager.register("bank_deposit", new DepositHandler());
+        GUIManager.register("bank_withdraw", new WithdrawHandler());
+
         GUIManager.register("transfer_type", new TransferTypeHandler());
         GUIManager.register("transfer_target", new TargetPlayerHandler());
         GUIManager.register("transfer_amount", new TransferAmountHandler());
         GUIManager.register("transfer_confirm", new TransferConfirmHandler());
         GUIManager.register("bank_history", new BankHistoryHandler());
-        GUIManager.register("bank_deposit", new DepositHandler());
-        GUIManager.register("bank_withdraw", new WithdrawHandler());
 
         // 📊 BOURSE
         GUIManager.register("minerais", new PriceHandler());
@@ -78,8 +81,8 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_player", new ContractDeliverHandler());
         GUIManager.register("contract_confirm", new ContractConfirmHandler());
 
-        // 🏆 CLASSEMENT (🔥 FIX ICI)
-        GUIManager.register("top_rep", new TopRepHandler()); // ✔ TON GUI classement
+        // 🏆 CLASSEMENT
+        GUIManager.register("top_rep", new TopRepHandler());
 
         // 🧭 AUTRES
         GUIManager.register("teleport", new TeleportHandler());
@@ -109,7 +112,6 @@ public class Main extends JavaPlugin {
         registerCommand("delcontrat", new ContractDeleteCommand());
         registerCommand("contrats", new ContractMenuCommand());
 
-        // 🔥 réputation + classement
         registerCommand("rep", new RepCommand());
         registerCommand("resetrep", new ResetRepCommand());
         registerCommand("toprep", new TopRepCommand());
@@ -150,8 +152,8 @@ public class Main extends JavaPlugin {
         getLogger().info("💸 Transactions: OK");
         getLogger().info("📊 Marché: OK");
         getLogger().info("📜 Contrats: OK");
-        getLogger().info("🏆 Classement: FIX & ACTIF");
-        getLogger().info("🧠 GUI Manager: STABLE");
+        getLogger().info("🏆 Classement: OK");
+        getLogger().info("🧠 GUI Manager: OPERATIONNEL");
         getLogger().info("=================================");
     }
 

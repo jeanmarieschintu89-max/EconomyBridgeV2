@@ -121,6 +121,7 @@ public class WithdrawGUI implements GUIHandler {
         if (slot == 24) {
             p.closeInventory();
             AmountInputManager.wait(p, AmountInputManager.Type.WITHDRAW);
+            InputManager.wait(p, "amount_input");
             p.sendMessage("§eEntre le montant à retirer dans le chat.");
             return;
         }

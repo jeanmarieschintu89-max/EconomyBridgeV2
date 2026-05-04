@@ -20,13 +20,13 @@ public class BankHandler implements GUIHandler {
             // 💰 DÉPÔT
             case 11 -> {
                 TransferBuilder.get(p).action = TransferBuilder.Action.DEPOSIT;
-                TransferAmountGUI.open(p);
+                DepositGUI.open(p);
             }
 
             // 💸 RETRAIT
             case 15 -> {
                 TransferBuilder.get(p).action = TransferBuilder.Action.WITHDRAW;
-                TransferAmountGUI.open(p);
+                WithdrawGui.open(p);
             }
 
             // 🔁 TRANSFERT

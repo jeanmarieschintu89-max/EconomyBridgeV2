@@ -12,40 +12,17 @@ public class ContractBuilder {
     // 📦 DONNÉES CONTRAT
     // =========================
     public String item;
-    public ItemStack itemStack; // 🔥 NOUVEAU (icone réelle)
+    public ItemStack itemStack; // icône réelle
     public int amount = 1;
     public double price = 100;
 
     private static final Map<UUID, ContractBuilder> map = new HashMap<>();
 
     // =========================
-    // 📥 GET (safe)
+    // 🔥 GET SAFE (TOUJOURS UTILISER CELUI-CI)
     // =========================
     public static ContractBuilder get(UUID uuid) {
-        return map.get(uuid);
-    }
-
-    // =========================
-    // 🔥 GET OR CREATE (RECOMMANDÉ)
-    // =========================
-    public static ContractBuilder getOrCreate(UUID uuid) {
         return map.computeIfAbsent(uuid, u -> new ContractBuilder());
-    }
-
-    // =========================
-    // ➕ CREATE (manuel)
-    // =========================
-    public static ContractBuilder create(UUID uuid) {
-        ContractBuilder b = new ContractBuilder();
-        map.put(uuid, b);
-        return b;
-    }
-
-    // =========================
-    // ➕ SET (FIX ERREUR)
-    // =========================
-    public static void set(UUID uuid, ContractBuilder builder) {
-        map.put(uuid, builder);
     }
 
     // =========================
@@ -60,5 +37,12 @@ public class ContractBuilder {
     // =========================
     public static boolean has(UUID uuid) {
         return map.containsKey(uuid);
+    }
+
+    // =========================
+    // 🧹 RESET (optionnel propre)
+    // =========================
+    public static void reset(UUID uuid) {
+        map.put(uuid, new ContractBuilder());
     }
 }

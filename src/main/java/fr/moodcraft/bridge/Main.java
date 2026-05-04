@@ -43,6 +43,7 @@ public class Main extends JavaPlugin {
         // 📦 LISTENERS
         // =========================
         registerEvents(
+                new InputListener(),
                 new AmountChatListener(),
                 new ShopListener(),
                 new MineListener(),

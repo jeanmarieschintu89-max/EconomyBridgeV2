@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,9 +11,17 @@ public class TopGUICommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        if (!(sender instanceof Player p)) return true;
+        if (!(sender instanceof Player p)) {
+            sender.sendMessage("§cCommande uniquement en jeu");
+            return true;
+        }
 
+        // 🔥 feedback sonore (optionnel mais stylé)
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
+
+        // 🔥 ouverture GUI
         TopRepGUI.open(p);
+
         return true;
     }
 }

@@ -1,4 +1,3 @@
-
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
@@ -16,7 +15,7 @@ public class MainMenuGUI {
 
     public static void open(Player p) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§6Menu");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6MoodCraft");
 
         double bank = BankStorage.get(p.getUniqueId().toString());
         double cash = VaultHook.getBalance(p);
@@ -30,7 +29,7 @@ public class MainMenuGUI {
                 : "§7Débutant";
 
         // =========================
-        // 👑 TOP 1
+        // 👑 TOP
         // =========================
         String topName = "Aucun";
 
@@ -43,12 +42,12 @@ public class MainMenuGUI {
         int pos = ReputationManager.getPosition(p.getUniqueId().toString());
 
         // =========================
-        // 🔲 BORDURES
+        // 🔲 BORDURE
         // =========================
-        SafeGUI.fillBorders(inv, Material.GRAY_STAINED_GLASS_PANE);
+        SafeGUI.fillBorders(inv, Material.BLACK_STAINED_GLASS_PANE);
 
         // =========================
-        // 👤 PROFIL (skin réel)
+        // 👤 PROFIL
         // =========================
         List<String> lore = new ArrayList<>();
 
@@ -57,7 +56,6 @@ public class MainMenuGUI {
         lore.add("§7Banque: §6" + (int) bank + "€");
         lore.add("§7Total: §e" + (int) total + "€");
         lore.add("");
-
         lore.add("§7Réputation: " + repColor + (int) rep);
         lore.add("§7Statut: " + rank);
         lore.add("");
@@ -74,10 +72,10 @@ public class MainMenuGUI {
         inv.setItem(4, head);
 
         // =========================
-        // 💰 BANQUE
+        // 💰 BANQUE (pièce)
         // =========================
         SafeGUI.safeSet(inv, 10, SafeGUI.item(
-                Material.CHEST,
+                Material.GOLD_NUGGET,
                 "§6Banque",
                 "§7Gérer ton argent",
                 "",
@@ -90,22 +88,20 @@ public class MainMenuGUI {
         // 📜 CONTRATS
         // =========================
         SafeGUI.safeSet(inv, 12, SafeGUI.item(
-                Material.BOOK,
+                Material.WRITABLE_BOOK,
                 "§aContrats",
-                "§7Marché entre joueurs",
-                "",
-                "§7Créer / accepter",
+                "§7Accords entre joueurs",
                 "",
                 "§e▶ Accéder"
         ));
 
         // =========================
-        // 📊 BOURSE
+        // 💼 BOURSE (sac)
         // =========================
         SafeGUI.safeSet(inv, 14, SafeGUI.item(
-                Material.AMETHYST_SHARD,
-                "§dBourse",
-                "§7Prix dynamiques",
+                Material.BUNDLE,
+                "§6Bourse",
+                "§7Marché dynamique",
                 "",
                 "§7Minerais & ressources",
                 "",
@@ -116,33 +112,33 @@ public class MainMenuGUI {
         // 🧭 TELEPORT
         // =========================
         SafeGUI.safeSet(inv, 16, SafeGUI.item(
-                Material.ENDER_PEARL,
+                Material.COMPASS,
                 "§dTéléportation",
-                "§7Se déplacer rapidement",
-                "",
-                "§7Spawn & lieux",
+                "§7Se déplacer",
                 "",
                 "§e▶ Ouvrir"
         ));
 
         // =========================
-        // 🏙️ VILLE
+        // 🗺️ VILLE
         // =========================
         SafeGUI.safeSet(inv, 19, SafeGUI.item(
-                Material.OAK_DOOR,
+                Material.FILLED_MAP,
                 "§6Ville",
-                "§7Gestion territoriale",
+                "§7Gestion du territoire",
                 "",
                 "§e▶ Accéder"
         ));
 
         // =========================
-        // 🛠️ MÉTIERS
+        // ⛏ MÉTIERS
         // =========================
+        ItemStack pick = new ItemStack(Material.DIAMOND_PICKAXE);
+
         SafeGUI.safeSet(inv, 21, SafeGUI.item(
-                Material.DIAMOND_PICKAXE,
+                pick.getType(),
                 "§aMétiers",
-                "§7Progression jobs",
+                "§7Progression & jobs",
                 "",
                 "§e▶ Ouvrir"
         ));
@@ -153,7 +149,7 @@ public class MainMenuGUI {
         SafeGUI.safeSet(inv, 23, SafeGUI.item(
                 Material.NETHER_STAR,
                 "§6Classement",
-                "§7Top commerçants",
+                "§7Top joueurs",
                 "",
                 "§6👑 " + topName,
                 pos > 0 ? "§7Position: §e#" + pos : "",

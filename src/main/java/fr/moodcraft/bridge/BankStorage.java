@@ -29,14 +29,14 @@ public class BankStorage {
     }
 
     // =========================
-    // 💰 GET BALANCE
+    // 💰 GET
     // =========================
     public static double get(String uuid) {
         return config.getDouble(uuid + ".balance", 0.0);
     }
 
     // =========================
-    // 💰 SET BALANCE
+    // 💰 SET
     // =========================
     public static void set(String uuid, double value) {
 
@@ -103,6 +103,7 @@ public class BankStorage {
         if (!withdraw(uuid, amount)) return false;
 
         log(uuid, "PURCHASE", amount, target, "shop");
+
         return true;
     }
 
@@ -136,7 +137,7 @@ public class BankStorage {
     }
 
     // =========================
-    // 📜 GET LOGS
+    // 📜 LOGS
     // =========================
     public static Set<String> getLogs() {
 
@@ -223,5 +224,16 @@ public class BankStorage {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // =========================
+    // ⚡ COMPATIBILITÉ ANCIEN CODE
+    // =========================
+    public static void add(String uuid, double amount) {
+        deposit(uuid, amount);
+    }
+
+    public static boolean remove(String uuid, double amount) {
+        return withdraw(uuid, amount);
     }
 }

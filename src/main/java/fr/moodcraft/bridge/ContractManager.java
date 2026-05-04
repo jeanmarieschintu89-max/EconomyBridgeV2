@@ -1,5 +1,8 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -13,9 +16,6 @@ public class ContractManager {
         c.status = Contract.Status.OPEN;
 
         ContractStorage.add(c);
-
-        System.out.println("✔ Contrat créé: " + item + " x" + amount + " price=" + price);
-
         return c;
     }
 
@@ -38,7 +38,53 @@ public class ContractManager {
                 .collect(Collectors.toList());
     }
 
-    public static void remove(int id) {
-        ContractStorage.remove(id);
+    // =========================
+    // 💸 PAIEMENT AUTO
+    // =========================
+    public static boolean pay(Contract c) {
+
+        if (c.paid) return false;
+
+        String ownerId = c.owner.toString();
+        String workerId = c.acceptor.toString();
+
+        double ownerBank = BankStorage.get(ownerId);
+
+        if (ownerBank < c.price) {
+            return false; // pas assez d'argent
+        }
+
+        // 💸 transfert
+        BankStorage.set(ownerId, ownerBank - c.price);
+        BankStorage.set(workerId, BankStorage.get(workerId) + c.price);
+
+        c.paid = true;
+        c.status = Contract.Status.COMPLETED;
+
+        ContractStorage.update(c);
+
+        // 💬 messages stylés
+        Player owner = Bukkit.getPlayer(c.owner);
+        Player worker = Bukkit.getPlayer(c.acceptor);
+
+        if (worker != null) {
+            worker.sendMessage("");
+            worker.sendMessage("§8╔════════════════════════════╗");
+            worker.sendMessage("§8║   §a✔ Contrat terminé");
+            worker.sendMessage("§8╠════════════════════════════╣");
+            worker.sendMessage("§8║ §7Gain: §a+" + (int) c.price + "€");
+            worker.sendMessage("§8╚════════════════════════════╝");
+        }
+
+        if (owner != null) {
+            owner.sendMessage("");
+            owner.sendMessage("§8╔════════════════════════════╗");
+            owner.sendMessage("§8║   §6📦 Livraison reçue");
+            owner.sendMessage("§8╠════════════════════════════╣");
+            owner.sendMessage("§8║ §7Paiement: §c-" + (int) c.price + "€");
+            owner.sendMessage("§8╚════════════════════════════╝");
+        }
+
+        return true;
     }
 }

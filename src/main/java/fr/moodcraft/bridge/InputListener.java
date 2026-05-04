@@ -19,42 +19,7 @@ public class InputListener implements Listener {
         Player p = e.getPlayer();
 
         // =========================
-        // 💳 IBAN INPUT
-        // =========================
-        if (InputManager.has(p)) {
-
-            e.setCancelled(true);
-
-            String type = InputManager.get(p);
-            String msg = e.getMessage();
-
-            Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-
-                if (type.equals("iban_input")) {
-
-                    if (msg.length() < 6) {
-                        p.sendMessage("§cIBAN invalide.");
-                        return;
-                    }
-
-                    ibanCache.put(p.getUniqueId(), msg);
-
-                    p.sendMessage("§a✔ IBAN enregistré: §e" + msg);
-
-                    // 👉 maintenant montant
-                    AmountInputManager.wait(p, AmountInputManager.Type.WITHDRAW);
-
-                    p.sendMessage("§eEntre le montant à envoyer.");
-                }
-
-                InputManager.clear(p);
-            });
-
-            return;
-        }
-
-        // =========================
-        // 💰 AMOUNT INPUT
+        // 💰 AMOUNT INPUT (PRIORITÉ)
         // =========================
         if (AmountInputManager.has(p)) {
 
@@ -75,9 +40,6 @@ public class InputListener implements Listener {
 
                     switch (type) {
 
-                        // =========================
-                        // 💰 DÉPÔT
-                        // =========================
                         case DEPOSIT -> {
 
                             double cash = VaultHook.getBalance(p);
@@ -93,12 +55,9 @@ public class InputListener implements Listener {
                             p.sendMessage("§a✔ Déposé: §e" + (int) amount + "€");
                         }
 
-                        // =========================
-                        // 💸 RETRAIT
-                        // =========================
                         case WITHDRAW -> {
 
-                            // 🔥 cas IBAN actif
+                            // 🔥 si IBAN actif → virement
                             if (ibanCache.containsKey(p.getUniqueId())) {
 
                                 String iban = ibanCache.get(p.getUniqueId());
@@ -140,6 +99,36 @@ public class InputListener implements Listener {
                 } catch (Exception ex) {
                     p.sendMessage("§cNombre invalide.");
                 }
+            });
+
+            return;
+        }
+
+        // =========================
+        // 💳 IBAN INPUT
+        // =========================
+        if (InputManager.has(p)) {
+
+            e.setCancelled(true);
+
+            String msg = e.getMessage();
+
+            Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+
+                if (msg.length() < 6) {
+                    p.sendMessage("§cIBAN invalide.");
+                    return;
+                }
+
+                ibanCache.put(p.getUniqueId(), msg);
+
+                p.sendMessage("§a✔ IBAN enregistré: §e" + msg);
+
+                // 🔥 ensuite montant
+                AmountInputManager.wait(p, AmountInputManager.Type.WITHDRAW);
+                p.sendMessage("§eEntre le montant à envoyer.");
+
+                InputManager.clear(p);
             });
         }
     }

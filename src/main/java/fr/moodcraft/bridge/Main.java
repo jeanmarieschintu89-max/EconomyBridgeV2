@@ -53,9 +53,8 @@ public class Main extends JavaPlugin {
         );
 
         // =========================
-        // 🧠 GUI MANAGER (FIX ICI)
+        // 🧠 GUI MANAGER
         // =========================
-
         GUIManager.register("main_menu", new MainMenuHandler());
 
         // 💰 BANQUE
@@ -81,10 +80,7 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_price", new ContractPriceHandler());
         GUIManager.register("contract_amount", new ContractAmountHandler());
         GUIManager.register("contract_market", new ContractMarketHandler());
-
-        // 🔥 FIX CRITIQUE
         GUIManager.register("contract_player", new ContractPlayerHandler());
-
         GUIManager.register("contract_confirm", new ContractConfirmHandler());
         GUIManager.register("contract_list", new ContractListHandler());
 
@@ -122,8 +118,10 @@ public class Main extends JavaPlugin {
         registerCommand("delcontrat", new ContractDeleteCommand());
         registerCommand("contrats", new ContractMenuCommand());
 
-        registerCommand("rep", new RepCommand());
-        registerCommand("resetrep", new ResetRepCommand());
+        // 🔥 FIX ICI (IMPORTANT)
+        registerCommand("rep", new ReputationCommand());
+        registerCommand("resetrep", new ReputationResetCommand());
+
         registerCommand("toprep", new TopRepCommand());
         registerCommand("topgui", new TopGUICommand());
 
@@ -167,7 +165,6 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
         BankStorage.save();
         TransactionStorage.save();
         ReputationManager.save();

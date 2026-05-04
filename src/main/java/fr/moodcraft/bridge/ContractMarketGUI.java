@@ -11,62 +11,36 @@ public class ContractMarketGUI {
 
     public static void open(Player p) {
 
-        // 🔥 IMPORTANT
+        Inventory inv = Bukkit.createInventory(null, 54, "§f📜 Marché des contrats");
+
         ContractStorage.clearSlots();
 
-        Inventory inv = Bukkit.createInventory(null, 54, "§fMarché des contrats");
-
-        List<Contract> list = ContractManager.getOpenContracts();
+        List<Contract> contracts = ContractManager.getOpenContracts();
 
         int slot = 0;
 
-        for (Contract c : list) {
+        for (Contract c : contracts) {
 
             if (slot >= 45) break;
-
-            String ownerName = Bukkit.getOfflinePlayer(c.owner).getName();
-            double total = c.amount * c.price;
-
-            // 🔗 mapping slot → contrat
-            ContractStorage.setSlot(slot, c);
 
             SafeGUI.safeSet(inv, slot, SafeGUI.item(
                     Material.PAPER,
                     "§eContrat #" + c.id,
-                    "§8────────────",
-                    "§7Objet demandé",
-                    "§f" + c.item,
-                    "",
-                    "§7Quantité: §a" + c.amount,
-                    "§7Prix unité: §6" + c.price + "€",
-                    "§7Total: §a" + total + "€",
-                    "",
-                    "§7Client: §e" + ownerName,
+                    "§7Objet: §f" + c.item,
+                    "§7Quantité: §f" + c.amount,
+                    "§7Prix: §a" + (int)c.price + "€",
                     "",
                     "§aClique pour accepter"
             ));
 
+            ContractStorage.setSlot(slot, c);
             slot++;
         }
 
-        // 💡 aucun contrat
-        if (list.isEmpty()) {
-            SafeGUI.safeSet(inv, 22, SafeGUI.item(
-                    Material.BARRIER,
-                    "§cAucun contrat",
-                    "§8────────────",
-                    "§7Aucune demande active",
-                    "",
-                    "§7Reviens plus tard"
-            ));
-        }
-
-        // 🔙 RETOUR
+        // retour
         SafeGUI.safeSet(inv, 49, SafeGUI.item(
                 Material.ARROW,
-                "§cRetour",
-                "§8────────────",
-                "§7Retour au menu contrats"
+                "§c⬅ Retour"
         ));
 
         GUIManager.open(p, "contract_market", inv);

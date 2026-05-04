@@ -11,7 +11,7 @@ public class ContractListHandler implements GUIHandler {
         if (c == null) return;
 
         if (c.owner.equals(p.getUniqueId())) {
-            p.sendMessage("§cTu ne peux pas accepter ton propre contrat.");
+            p.sendMessage("§cTu ne peux pas prendre ton propre contrat.");
             return;
         }
 

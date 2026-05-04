@@ -80,6 +80,7 @@ public class Main extends JavaPlugin {
 
         // 🏆 CLASSEMENT (🔥 FIX ICI)
         GUIManager.register("top_rep", new TopRepHandler()); // ✔ TON GUI classement
+        GUIManager.register("profile_gui", new ProfileHandler());
 
         // 🧭 AUTRES
         GUIManager.register("teleport", new TeleportHandler());

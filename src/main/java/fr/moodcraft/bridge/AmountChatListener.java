@@ -61,7 +61,10 @@ public class AmountChatListener implements Listener {
                     }
                 }
 
+                // 🔥 TRÈS IMPORTANT
                 AmountInputManager.clear(p);
+                p.removeMetadata("input_active", Main.getInstance());
+
                 BankGUI.open(p);
 
             } catch (Exception ex) {

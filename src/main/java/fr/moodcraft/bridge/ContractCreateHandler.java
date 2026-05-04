@@ -9,7 +9,7 @@ public class ContractCreateHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
-        ContractBuilder b = ContractBuilder.getOrCreate(p.getUniqueId());
+        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
 
         switch (slot) {
 

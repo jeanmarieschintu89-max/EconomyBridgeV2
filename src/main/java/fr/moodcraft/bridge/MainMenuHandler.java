@@ -9,7 +9,9 @@ public class MainMenuHandler implements GUIHandler {
 
         switch (slot) {
 
-            case 4 -> p.sendMessage("§7Profil joueur");
+            case 4 -> {
+                p.sendMessage("§7Profil joueur");
+            }
 
             case 10 -> {
                 p.closeInventory();
@@ -41,12 +43,14 @@ public class MainMenuHandler implements GUIHandler {
                 p.performCommand("jobs join");
             }
 
-            // 👑 CLASSEMENT FIX
             case 23 -> {
-                TopRepGUI.open(p); // ✔ PAS DE CLOSE
+                p.closeInventory();
+                TopRepGUI.open(p);
             }
 
-            case 26 -> p.closeInventory();
+            case 26 -> {
+                p.closeInventory();
+            }
         }
     }
 }

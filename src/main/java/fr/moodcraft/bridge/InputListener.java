@@ -44,7 +44,7 @@ public class InputListener implements Listener {
 
                         p.sendMessage("§a✔ IBAN enregistré: §e" + msg);
 
-                        // 👉 maintenant on demande le montant
+                        // 👉 on enchaîne sur le montant
                         AmountInputManager.wait(p, AmountInputManager.Type.WITHDRAW);
 
                         p.sendMessage("§eEntre maintenant le montant à envoyer.");
@@ -69,7 +69,6 @@ public class InputListener implements Listener {
             e.setCancelled(true);
 
             String msg = e.getMessage();
-            AmountInputManager.Type type = AmountInputManager.getType(p);
 
             Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
 
@@ -81,7 +80,6 @@ public class InputListener implements Listener {
                         return;
                     }
 
-                    // 🔥 récupérer IBAN
                     String iban = ibanCache.get(p.getUniqueId());
 
                     if (iban == null) {
@@ -89,9 +87,6 @@ public class InputListener implements Listener {
                         return;
                     }
 
-                    // =========================
-                    // 💸 VIREMENT
-                    // =========================
                     double bank = BankStorage.get(p.getUniqueId().toString());
 
                     if (bank < amount) {
@@ -99,16 +94,17 @@ public class InputListener implements Listener {
                         return;
                     }
 
+                    // 💸 VIREMENT
                     BankStorage.remove(p.getUniqueId().toString(), amount);
 
-                    // 👉 ici tu peux ajouter ton système IBAN réel
                     p.sendMessage("§a✔ Virement envoyé !");
                     p.sendMessage("§7Montant: §e" + (int) amount + "€");
                     p.sendMessage("§7Vers IBAN: §e" + iban);
 
-                    // nettoyage
+                    // 🔥 nettoyage complet
                     ibanCache.remove(p.getUniqueId());
                     AmountInputManager.clear(p);
+                    p.removeMetadata("input_active", Main.getInstance());
 
                     BankGUI.open(p);
 

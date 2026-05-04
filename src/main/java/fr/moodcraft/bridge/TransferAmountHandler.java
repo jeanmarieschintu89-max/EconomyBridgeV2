@@ -19,8 +19,12 @@ public class TransferAmountHandler implements GUIHandler {
         TransferBuilder data = TransferBuilder.get(p);
         data.amount = amount;
 
-        // 🔥 ICI LA MAGIE
-        switch (data.type) {
+        if (data.action == null) {
+            p.sendMessage("§cErreur: action inconnue");
+            return;
+        }
+
+        switch (data.action) {
 
             case DEPOSIT -> {
                 BankStorage.add(p.getUniqueId().toString(), amount);
@@ -30,7 +34,10 @@ public class TransferAmountHandler implements GUIHandler {
             }
 
             case WITHDRAW -> {
-                if (BankStorage.get(p.getUniqueId().toString()) < amount) {
+
+                double bank = BankStorage.get(p.getUniqueId().toString());
+
+                if (bank < amount) {
                     p.sendMessage("§cFonds insuffisants");
                     return;
                 }
@@ -41,7 +48,7 @@ public class TransferAmountHandler implements GUIHandler {
                 BankGUI.open(p);
             }
 
-            case TRANSFER -> {
+            case PLAYER_TRANSFER, IBAN_TRANSFER -> {
                 p.closeInventory();
                 TransferConfirmGUI.open(p);
             }

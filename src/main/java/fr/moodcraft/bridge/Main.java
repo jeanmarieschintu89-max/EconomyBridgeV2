@@ -44,7 +44,6 @@ public class Main extends JavaPlugin {
         // =========================
         registerEvents(
                 new InputListener(),
-                new AmountChatListener(),
                 new ShopListener(),
                 new MineListener(),
                 new PayListener(),

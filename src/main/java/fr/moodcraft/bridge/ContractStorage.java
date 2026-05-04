@@ -17,29 +17,35 @@ public class ContractStorage {
         contracts.put(c.id, c);
     }
 
+    public static Contract get(int id) {
+        return contracts.get(id);
+    }
+
     public static List<Contract> getAll() {
         return new ArrayList<>(contracts.values());
     }
 
     public static List<Contract> getOpen() {
         List<Contract> list = new ArrayList<>();
-
         for (Contract c : contracts.values()) {
             if (c.status == Contract.Status.OPEN) {
                 list.add(c);
             }
         }
-
         return list;
+    }
+
+    public static void update(Contract contract) {
+        contracts.put(contract.id, contract);
     }
 
     public static void remove(int id) {
         contracts.remove(id);
     }
 
-    // 🔗 GUI mapping
-    public static void setSlot(int slot, Contract c) {
-        slotMap.put(slot, c);
+    // GUI mapping
+    public static void setSlot(int slot, Contract contract) {
+        slotMap.put(slot, contract);
     }
 
     public static Contract getBySlot(int slot) {

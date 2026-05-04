@@ -3,6 +3,8 @@ package fr.moodcraft.bridge;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +14,10 @@ public class ProfileGUI {
 
     public static void open(org.bukkit.entity.Player viewer, UUID targetUUID) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "Profil");
+        Inventory inv = Bukkit.createInventory(null, 27, "§6Profil");
 
         String name = Bukkit.getOfflinePlayer(targetUUID).getName();
+        if (name == null) name = "Inconnu";
 
         double bank = BankStorage.get(targetUUID.toString());
         int rep = ReputationManager.get(targetUUID.toString());
@@ -52,12 +55,30 @@ public class ProfileGUI {
         lore.add("§7Métiers:");
         lore.addAll(jobsLore);
 
-        SafeGUI.safeSet(inv, 13, SafeGUI.item(
-                Material.PLAYER_HEAD,
-                "§e" + name,
-                lore.toArray(new String[0])
-        ));
+        // 🔥 tête avec skin
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        if (head.getItemMeta() instanceof SkullMeta meta) {
+            meta.setOwningPlayer(Bukkit.getOfflinePlayer(targetUUID));
+            meta.setDisplayName("§e" + name);
+            meta.setLore(lore);
+            head.setItemMeta(meta);
+        }
 
-        viewer.openInventory(inv);
+        inv.setItem(13, head);
+
+        // =========================
+        // 🔥 BORDURES
+        // =========================
+        SafeGUI.fillBorders(inv, Material.BLACK_STAINED_GLASS_PANE);
+
+        // =========================
+        // 🔙 RETOUR
+        // =========================
+        SafeGUI.safeSet(inv, 26,
+                SafeGUI.item(Material.BARRIER, "§cRetour")
+        );
+
+        // 🔥 IMPORTANT (sinon pas de handler)
+        GUIManager.open(viewer, "profile_gui", inv);
     }
 }

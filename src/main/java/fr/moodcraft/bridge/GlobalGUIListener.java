@@ -6,7 +6,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class GlobalGUIListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void click(InventoryClickEvent e) {
 
         if (!(e.getWhoClicked() instanceof Player p)) return;
@@ -14,31 +14,33 @@ public class GlobalGUIListener implements Listener {
         String id = GUIManager.get(p);
         if (id == null) return;
 
+        if (e.getClickedInventory() == null) return;
+
+        // 🔥 IMPORTANT → slot du GUI UNIQUEMENT
+        int slot = e.getSlot();
+
         // =========================
-        // 🔒 CONTRACT CREATE (LOCK TOTAL)
+        // ❌ bloque inventaire joueur
         // =========================
-        if (id.equals("contract_create")) {
-
-            e.setCancelled(true); // 💣 bloque tout
-
-            int slot = e.getRawSlot();
-
-            if (slot < e.getView().getTopInventory().getSize()) {
-                GUIManager.handle(p, slot);
-            }
-
+        if (e.getClickedInventory() != e.getView().getTopInventory()) {
+            e.setCancelled(true);
             return;
         }
 
         // =========================
-        // 🔒 GLOBAL BLOCK
+        // 🔒 CONTRACT CREATE (SPECIAL)
+        // =========================
+        if (id.equals("contract_create")) {
+            e.setCancelled(true);
+            GUIManager.handle(p, slot);
+            return;
+        }
+
+        // =========================
+        // 🔒 GLOBAL GUI
         // =========================
         e.setCancelled(true);
 
-        int slot = e.getRawSlot();
-
-        if (slot < e.getView().getTopInventory().getSize()) {
-            GUIManager.handle(p, slot);
-        }
+        GUIManager.handle(p, slot);
     }
 }

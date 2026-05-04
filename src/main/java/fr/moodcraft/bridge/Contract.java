@@ -12,6 +12,8 @@ public class Contract {
     public int amount;
     public double price;
 
+    public boolean paid = false;
+
     public Status status;
 
     public enum Status {

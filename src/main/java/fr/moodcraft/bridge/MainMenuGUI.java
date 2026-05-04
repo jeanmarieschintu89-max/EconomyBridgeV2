@@ -17,11 +17,25 @@ public class MainMenuGUI {
 
         Inventory inv = Bukkit.createInventory(null, 27, "§6MoodCraft");
 
+        // =========================
+        // 💰 ARGENT (SAFE)
+        // =========================
         double bank = BankStorage.get(p.getUniqueId().toString());
-        double cash = VaultHook.getBalance(p);
+
+        double cash = 0;
+        try {
+            cash = VaultHook.getBalance(p);
+        } catch (Exception ignored) {}
+
         double total = bank + cash;
 
-        double rep = ReputationManager.get(p.getUniqueId().toString());
+        // =========================
+        // ⭐ RÉPUTATION (SAFE)
+        // =========================
+        double rep = 0;
+        try {
+            rep = ReputationManager.get(p.getUniqueId().toString());
+        } catch (Exception ignored) {}
 
         String repColor = rep >= 50 ? "§6" : rep >= 20 ? "§a" : "§7";
         String rank = rep >= 50 ? "§6Elite"
@@ -29,17 +43,38 @@ public class MainMenuGUI {
                 : "§7Débutant";
 
         // =========================
-        // 👑 TOP
+        // 👑 TOP (SAFE)
         // =========================
         String topName = "Aucun";
 
-        var top = ReputationManager.getTop(1);
-        if (!top.isEmpty()) {
-            String uuid = top.keySet().iterator().next();
-            topName = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
-        }
+        try {
+            var top = ReputationManager.getTop(1);
 
-        int pos = ReputationManager.getPosition(p.getUniqueId().toString());
+            if (!top.isEmpty()) {
+
+                String uuidStr = top.keySet().iterator().next();
+
+                try {
+                    UUID uuid = UUID.fromString(uuidStr);
+
+                    String name = Bukkit.getOfflinePlayer(uuid).getName();
+                    if (name != null) {
+                        topName = name;
+                    }
+
+                } catch (Exception e) {
+                    System.out.println("[MENU] UUID invalide: " + uuidStr);
+                }
+            }
+        } catch (Exception ignored) {}
+
+        // =========================
+        // 📍 POSITION (SAFE)
+        // =========================
+        int pos = 0;
+        try {
+            pos = ReputationManager.getPosition(p.getUniqueId().toString());
+        } catch (Exception ignored) {}
 
         // =========================
         // 🔲 BORDURE
@@ -72,7 +107,7 @@ public class MainMenuGUI {
         inv.setItem(4, head);
 
         // =========================
-        // 💰 BANQUE (pièce)
+        // 💰 BANQUE
         // =========================
         SafeGUI.safeSet(inv, 10, SafeGUI.item(
                 Material.GOLD_NUGGET,
@@ -96,7 +131,7 @@ public class MainMenuGUI {
         ));
 
         // =========================
-        // 💼 BOURSE (sac)
+        // 💼 BOURSE
         // =========================
         SafeGUI.safeSet(inv, 14, SafeGUI.item(
                 Material.CHEST,
@@ -133,10 +168,8 @@ public class MainMenuGUI {
         // =========================
         // ⛏ MÉTIERS
         // =========================
-        ItemStack pick = new ItemStack(Material.DIAMOND_PICKAXE);
-
         SafeGUI.safeSet(inv, 21, SafeGUI.item(
-                pick.getType(),
+                Material.DIAMOND_PICKAXE,
                 "§aMétiers",
                 "§7Progression & jobs",
                 "",

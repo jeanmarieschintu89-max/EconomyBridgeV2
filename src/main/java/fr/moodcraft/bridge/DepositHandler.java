@@ -1,6 +1,7 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Bukkit;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class DepositHandler implements GUIHandler {
@@ -20,13 +21,25 @@ public class DepositHandler implements GUIHandler {
 
     private void deposit(Player p, int amount) {
 
-        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+        Economy eco = VaultHook.getEconomy();
+        if (eco == null) return;
 
-            Bukkit.dispatchCommand(p, "bank " + p.getName() + " " + amount);
+        double cash = eco.getBalance(p);
 
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                DepositGUI.open(p);
-            }, 2L);
-        });
+        if (cash < amount) {
+            p.sendMessage("§cPas assez d'argent liquide.");
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            return;
+        }
+
+        // 💰 TRANSFERT DIRECT
+        eco.withdrawPlayer(p, amount);
+        BankStorage.add(p.getUniqueId().toString(), amount);
+
+        p.sendMessage("§aDépôt de §f" + SafeGUI.money(amount) + " §aeffectué !");
+        p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+
+        // 🔄 refresh GUI
+        DepositGUI.open(p);
     }
 }

@@ -58,6 +58,6 @@ public class TopRepGUI {
         }
 
         // ⚠️ IMPORTANT
-        GUIManager.open(p, "top_rep", inv);
+        GUIManager.open(p, "top_gui", inv);
     }
 }

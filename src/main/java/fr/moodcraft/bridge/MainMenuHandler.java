@@ -1,54 +1,41 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.*;
+import org.bukkit.event.inventory.*;
 
-public class MainMenuHandler implements GUIHandler {
+public class GlobalGUIListener implements Listener {
 
-    @Override
-    public void onClick(Player p, int slot) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void click(InventoryClickEvent e) {
 
-        switch (slot) {
+        if (!(e.getWhoClicked() instanceof Player p)) return;
 
-            case 4 -> {
-                p.sendMessage("§7Profil joueur");
-            }
+        String id = GUIManager.get(p);
+        if (id == null) return;
 
-            case 10 -> {
-                openNext(() -> BankGUI.open(p));
-            }
+        // 🔥 bloque tout
+        e.setCancelled(true);
 
-            case 12 -> {
-                openNext(() -> ContractGUI.open(p));
-            }
+        if (e.getClickedInventory() == null) return;
 
-            case 14 -> {
-                openNext(() -> PriceGUI.open(p));
-            }
+        int slot = e.getSlot();
 
-            case 16 -> {
-                openNext(() -> TeleportGUI.open(p));
-            }
+        if (slot >= e.getView().getTopInventory().getSize()) return;
 
-            case 19 -> {
-                openNext(() -> p.performCommand("townmenu"));
-            }
+        // 🔒 anti bypass
+        if (e.isShiftClick() || e.getClick().isKeyboardClick()) return;
 
-            case 21 -> {
-                openNext(() -> p.performCommand("jobs join"));
-            }
-
-            case 23 -> {
-                openNext(() -> TopRepGUI.open(p)); // 👈 TON BUG FIX ICI
-            }
-
-            case 26 -> {
-                p.closeInventory();
-            }
-        }
+        GUIManager.handle(p, slot);
     }
 
-    private void openNext(Runnable action) {
-        Bukkit.getScheduler().runTask(Main.getInstance(), action);
+    @EventHandler
+    public void drag(InventoryDragEvent e) {
+
+        if (!(e.getWhoClicked() instanceof Player p)) return;
+
+        if (GUIManager.get(p) != null) {
+            e.setCancelled(true);
+        }
     }
 }

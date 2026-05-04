@@ -3,6 +3,7 @@ package fr.moodcraft.bridge;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class DepositHandler implements GUIHandler {
 
@@ -23,7 +24,9 @@ public class DepositHandler implements GUIHandler {
             case 24 -> {
                 p.closeInventory();
 
-                // 🔥 on enregistre l’input
+                // 🔥 ACTIVE INPUT (clé du système)
+                p.setMetadata("input_active", new FixedMetadataValue(Main.getInstance(), true));
+
                 AmountInputManager.wait(p, AmountInputManager.Type.DEPOSIT);
 
                 p.sendMessage("§eEntre le montant à déposer dans le chat.");

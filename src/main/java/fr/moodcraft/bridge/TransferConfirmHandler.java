@@ -18,6 +18,19 @@ public class TransferConfirmHandler implements GUIHandler {
 
             case 5 -> {
 
+                // 🔥 FIX CRITIQUE
+                if (data.target == null) {
+                    p.sendMessage("§cErreur: aucun joueur sélectionné.");
+                    TransferBuilder.clear(p);
+                    p.closeInventory();
+                    return;
+                }
+
+                if (data.amount <= 0) {
+                    p.sendMessage("§cMontant invalide.");
+                    return;
+                }
+
                 Player target = Bukkit.getPlayer(data.target);
 
                 if (target == null) {
@@ -40,7 +53,7 @@ public class TransferConfirmHandler implements GUIHandler {
                     return;
                 }
 
-                // 💸 TRANSFERT (version compatible)
+                // 💸 TRANSFERT
                 BankStorage.set(senderId, senderBank - data.amount);
                 BankStorage.set(targetId, BankStorage.get(targetId) + data.amount);
 

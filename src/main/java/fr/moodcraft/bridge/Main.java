@@ -88,6 +88,7 @@ public class Main extends JavaPlugin {
 
         // 🧭 AUTRES
         GUIManager.register("teleport", new TeleportHandler());
+        GUIManager.register("profile_gui", new ProfileHandler());
 
         // =========================
         // 📜 COMMANDES

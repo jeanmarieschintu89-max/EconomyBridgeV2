@@ -99,7 +99,7 @@ public class MainMenuGUI {
         // 💼 BOURSE (sac)
         // =========================
         SafeGUI.safeSet(inv, 14, SafeGUI.item(
-                Material.BUNDLE,
+                Material.CHEST,
                 "§6Bourse",
                 "§7Marché dynamique",
                 "",

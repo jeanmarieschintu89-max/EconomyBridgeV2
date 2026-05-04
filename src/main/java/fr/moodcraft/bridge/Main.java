@@ -69,6 +69,7 @@ public class Main extends JavaPlugin {
         GUIManager.register("transfer_amount", new TransferAmountHandler());
         GUIManager.register("transfer_confirm", new TransferConfirmHandler());
         GUIManager.register("bank_history", new BankHistoryHandler());
+        GUIManager.register("iban_gui", new IbanHandler());
 
         // 📊 BOURSE
         GUIManager.register("minerais", new PriceHandler());

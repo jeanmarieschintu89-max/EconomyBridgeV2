@@ -16,19 +16,18 @@ public class GlobalGUIListener implements Listener {
 
         if (e.getClickedInventory() == null) return;
 
-        // 🔥 IMPORTANT → slot du GUI UNIQUEMENT
         int slot = e.getSlot();
 
         // =========================
-        // ❌ bloque inventaire joueur
+        // 🔒 ignore inventaire joueur (SAFE VERSION)
         // =========================
-        if (e.getClickedInventory() != e.getView().getTopInventory()) {
+        if (slot >= e.getView().getTopInventory().getSize()) {
             e.setCancelled(true);
             return;
         }
 
         // =========================
-        // 🔒 CONTRACT CREATE (SPECIAL)
+        // 🔒 CONTRACT CREATE
         // =========================
         if (id.equals("contract_create")) {
             e.setCancelled(true);

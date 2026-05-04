@@ -1,6 +1,7 @@
 package fr.moodcraft.bridge;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +22,6 @@ public class AmountChatListener implements Listener {
         String msg = e.getMessage().replace(",", ".").trim();
 
         double amount;
-
         try {
             amount = Double.parseDouble(msg);
         } catch (Exception ex) {
@@ -55,8 +55,7 @@ public class AmountChatListener implements Listener {
             p.sendMessage("§aDépôt de §f" + SafeGUI.money(amount));
 
             Bukkit.getScheduler().runTask(Main.getInstance(), () ->
-                    DepositGUI.open(p));
-
+                    new DepositGUI().open(p)); // ✅ FIX
         } else {
 
             double bank = BankStorage.get(p.getUniqueId().toString());
@@ -72,7 +71,7 @@ public class AmountChatListener implements Listener {
             p.sendMessage("§aRetrait de §f" + SafeGUI.money(amount));
 
             Bukkit.getScheduler().runTask(Main.getInstance(), () ->
-                    WithdrawGUI.open(p));
+                    new WithdrawGUI().open(p)); // ✅ FIX
         }
 
         p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);

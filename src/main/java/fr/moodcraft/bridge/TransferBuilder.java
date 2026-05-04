@@ -1,31 +1,28 @@
 package fr.moodcraft.bridge;
 
-import org.bukkit.entity.Player;
+import java.util.HashMap;
+import java.util.UUID;
 
-public class TransferTypeHandler implements GUIHandler {
+public class TransferBuilder {
 
-    @Override
-    public void onClick(Player p, int slot) {
+    private static final HashMap<UUID, TransferBuilder> cache = new HashMap<>();
 
-        TransferBuilder data = TransferBuilder.get(p);
+    public Action action;
+    public UUID target;
+    public double amount;
 
-        switch (slot) {
+    public enum Action {
+        DEPOSIT,
+        WITHDRAW,
+        PLAYER_TRANSFER,
+        IBAN_TRANSFER
+    }
 
-            case 11 -> { // 👤 Joueur
-                data.action = TransferBuilder.Action.PLAYER_TRANSFER;
-                TransferTargetGUI.open(p);
-            }
+    public static TransferBuilder get(org.bukkit.entity.Player p) {
+        return cache.computeIfAbsent(p.getUniqueId(), k -> new TransferBuilder());
+    }
 
-            case 15 -> { // 🏦 IBAN
-                data.action = TransferBuilder.Action.IBAN_TRANSFER;
-                p.closeInventory();
-                p.performCommand("ibanpay");
-            }
-
-            case 26 -> { // 🔙 Retour
-                p.closeInventory();
-                BankGUI.open(p);
-            }
-        }
+    public static void clear(org.bukkit.entity.Player p) {
+        cache.remove(p.getUniqueId());
     }
 }

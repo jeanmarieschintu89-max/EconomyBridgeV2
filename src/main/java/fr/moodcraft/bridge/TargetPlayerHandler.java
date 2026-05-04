@@ -24,10 +24,13 @@ public class TargetPlayerHandler implements GUIHandler {
         // 🔥 feedback
         p.sendMessage("§a✔ Joueur sélectionné: §e" + target.getName());
 
-        // 👉 enregistre la cible (FIX ICI)
+        // 🔥 IMPORTANT : définir l'action
+        TransferBuilder.setAction(p, TransferBuilder.Action.PLAYER_TRANSFER);
+
+        // 🔥 enregistrer la cible
         TransferBuilder.setTarget(p, targetUUID);
 
-        // 👉 ouvre le menu suivant (montant)
+        // 👉 menu montant
         TransferAmountGUI.open(p);
     }
 }

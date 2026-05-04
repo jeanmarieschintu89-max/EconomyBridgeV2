@@ -25,9 +25,9 @@ public class DepositHandler implements GUIHandler {
                 p.closeInventory();
 
                 // 🔥 ACTIVE INPUT (clé du système)
-                InputManager.wait(p, "amount_input");
 
                 AmountInputManager.wait(p, AmountInputManager.Type.DEPOSIT);
+                InputManager.wait(p, "amount_input");
 
                 p.sendMessage("§eEntre le montant à déposer dans le chat.");
                 p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);

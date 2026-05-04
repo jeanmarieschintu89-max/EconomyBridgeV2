@@ -3,6 +3,7 @@ package fr.moodcraft.bridge;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -15,6 +16,9 @@ import java.util.UUID;
 public class TopRepGUI {
 
     public static void open(Player p) {
+
+        // 🔊 SON À L'OUVERTURE
+        p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
 
         Inventory inv = Bukkit.createInventory(null, 27, "§6🏆 Classement Réputation");
 
@@ -47,7 +51,7 @@ public class TopRepGUI {
 
                 meta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
 
-                // 🎨 couleurs podium
+                // 🎨 PODIUM
                 String prefix = switch (i) {
                     case 1 -> "§6👑 ";
                     case 2 -> "§7🥈 ";
@@ -55,7 +59,7 @@ public class TopRepGUI {
                     default -> "§e#" + i + " ";
                 };
 
-                // ⭐ highlight du joueur
+                // ⭐ SURBRILLANCE DU JOUEUR
                 boolean isSelf = uuidStr.equals(viewerUUID);
 
                 meta.setDisplayName(prefix + "§f" + name + (isSelf ? " §a(TOI)" : ""));
@@ -85,10 +89,10 @@ public class TopRepGUI {
             i++;
         }
 
-        // 🔳 bordures stylées
+        // 🔳 BORDURES
         SafeGUI.fillBorders(inv, Material.GRAY_STAINED_GLASS_PANE);
 
-        // 📊 info joueur en bas
+        // 📊 INFO JOUEUR
         int myRep = ReputationManager.get(viewerUUID);
         int pos = ReputationManager.getPosition(viewerUUID);
 
@@ -102,9 +106,10 @@ public class TopRepGUI {
                 "§7Statut: " + ReputationManager.getRank(myRep)
         ));
 
-        // ❌ fermer
+        // ❌ FERMER
         SafeGUI.safeSet(inv, 26, SafeGUI.item(Material.BARRIER, "§cFermer"));
 
+        // 🔥 OUVERTURE GUI
         GUIManager.open(p, "top_rep", inv);
     }
 }

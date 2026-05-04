@@ -29,9 +29,6 @@ public class Main extends JavaPlugin {
         ContractHistoryManager.init();
         MarketStorage.init();
 
-        // ❌ SUPPRIMÉ
-        // ReputationManager.init();
-
         // =========================
         // 📊 CONFIG MARCHÉ
         // =========================
@@ -86,9 +83,6 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_confirm", new ContractConfirmHandler());
         GUIManager.register("contract_list", new ContractListHandler());
 
-        // ❌ SUPPRIMÉ (réputation maintenant externe)
-        // GUIManager.register("top_rep", new TopRepHandler());
-
         // 👤 PROFIL
         GUIManager.register("profile_gui", new ProfileHandler());
 
@@ -120,12 +114,6 @@ public class Main extends JavaPlugin {
         registerCommand("delcontrat", new ContractDeleteCommand());
         registerCommand("contrats", new ContractMenuCommand());
 
-        // ❌ SUPPRIMÉ
-        // registerCommand("rep", new ReputationCommand());
-        // registerCommand("resetrep", new ReputationResetCommand());
-        // registerCommand("toprep", new TopRepCommand());
-        // registerCommand("topgui", new TopGUICommand());
-
         // =========================
         // 🔁 TASKS
         // =========================
@@ -143,12 +131,7 @@ public class Main extends JavaPlugin {
                 20L * 45
         );
 
-        // ❌ OPTIONNEL (si dépend de rep → à déplacer plus tard)
-        Bukkit.getScheduler().runTaskTimer(this,
-                new WeeklyRewardTask(),
-                20L * 60 * 60 * 24 * 7,
-                20L * 60 * 60 * 24 * 7
-        );
+        // ❌ Weekly supprimé (géré plus tard dans plugin réputation)
 
         // =========================
         // 🚀 LOG
@@ -168,9 +151,6 @@ public class Main extends JavaPlugin {
         BankStorage.save();
         TransactionStorage.save();
         MarketStorage.save();
-
-        // ❌ SUPPRIMÉ
-        // ReputationManager.save();
     }
 
     // =========================

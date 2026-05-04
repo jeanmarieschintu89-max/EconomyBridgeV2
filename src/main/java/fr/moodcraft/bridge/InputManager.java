@@ -2,6 +2,7 @@ package fr.moodcraft.bridge;
 
 import java.util.HashMap;
 import java.util.UUID;
+import org.bukkit.entity.Player;
 
 public class InputManager {
 

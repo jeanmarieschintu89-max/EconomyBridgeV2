@@ -11,14 +11,38 @@ public class TransferConfirmGUI {
 
         TransferBuilder data = TransferBuilder.get(p);
 
-        Inventory inv = Bukkit.createInventory(null, 9, "§6Confirmer");
+        Inventory inv = Bukkit.createInventory(null, 9, "§6Confirmer le virement");
 
+        String targetName = "Inconnu";
+
+        if (data.target != null) {
+            var offline = Bukkit.getOfflinePlayer(data.target);
+            if (offline.getName() != null) {
+                targetName = offline.getName();
+            }
+        }
+
+        int amount = (int) data.amount;
+
+        // ❌ ANNULER
         SafeGUI.safeSet(inv, 3,
-                SafeGUI.item(Material.REDSTONE, "§cAnnuler"));
+                SafeGUI.item(Material.REDSTONE,
+                        "§c✖ Annuler",
+                        "§8────────────",
+                        "§7Retour au menu"));
 
+        // ✅ CONFIRMER
         SafeGUI.safeSet(inv, 5,
-                SafeGUI.item(Material.LIME_DYE, "§aConfirmer",
-                        "§7Montant: §f" + data.amount));
+                SafeGUI.item(Material.LIME_DYE,
+                        "§a✔ Confirmer",
+                        "§8────────────",
+                        "§7Destinataire: §e" + targetName,
+                        "§7Montant: §6" + amount + "€",
+                        "",
+                        "§e▶ Clique pour valider"));
+
+        // 🔊 petit feedback
+        p.playSound(p.getLocation(), org.bukkit.Sound.UI_BUTTON_CLICK, 1f, 1.2f);
 
         GUIManager.open(p, "transfer_confirm", inv);
     }

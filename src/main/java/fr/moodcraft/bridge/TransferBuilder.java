@@ -7,9 +7,16 @@ public class TransferBuilder {
 
     private static final HashMap<UUID, TransferBuilder> cache = new HashMap<>();
 
-    public String type; // "player" ou "iban"
+    public Action action;
     public UUID target;
     public double amount;
+
+    public enum Action {
+        DEPOSIT,
+        WITHDRAW,
+        PLAYER_TRANSFER,
+        IBAN_TRANSFER
+    }
 
     public static TransferBuilder get(org.bukkit.entity.Player p) {
         return cache.computeIfAbsent(p.getUniqueId(), k -> new TransferBuilder());

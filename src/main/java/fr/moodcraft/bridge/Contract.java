@@ -5,8 +5,8 @@ import java.util.UUID;
 public class Contract {
 
     public int id;
-    public UUID owner;
-    public UUID acceptor;
+    public UUID owner;      // celui qui paie
+    public UUID acceptor;   // celui qui livre
 
     public String item;
     public int amount;

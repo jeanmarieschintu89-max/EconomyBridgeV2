@@ -10,7 +10,7 @@ public class ContractCreateGUI {
 
     public static void open(Player p) {
 
-        ContractBuilder b = ContractBuilder.getOrCreate(p.getUniqueId());
+        ContractBuilder b = ContractBuilder.get(p.getUniqueId());
 
         Inventory inv = Bukkit.createInventory(null, 27, "§fCréer contrat");
 

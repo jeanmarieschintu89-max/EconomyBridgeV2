@@ -24,9 +24,9 @@ public class WithdrawHandler implements GUIHandler {
                 p.closeInventory();
 
                 // 🔥 ACTIVE INPUT (indispensable pour l’Auth)
-                p.setMetadata("input_active", new FixedMetadataValue(Main.getInstance(), true));
 
                 AmountInputManager.wait(p, AmountInputManager.Type.WITHDRAW);
+                InputManager.wait(p, "amount_input");
 
                 p.sendMessage("§eEntre le montant à retirer dans le chat.");
                 p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);

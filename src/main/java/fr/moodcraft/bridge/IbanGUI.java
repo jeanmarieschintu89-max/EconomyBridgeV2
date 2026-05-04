@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class IbanGUI {
 
@@ -19,7 +20,9 @@ public class IbanGUI {
 
         GUIManager.open(p, "iban_gui", inv);
 
-        // 🔥 active input chat
+        // 🔥 ACTIVE INPUT (clé pour bypass l'auth)
+        p.setMetadata("input_active", new FixedMetadataValue(Main.getInstance(), true));
+
         InputManager.wait(p, "iban_input");
     }
 }

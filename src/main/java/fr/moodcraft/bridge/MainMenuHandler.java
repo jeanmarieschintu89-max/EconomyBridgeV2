@@ -1,12 +1,16 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class MainMenuHandler implements GUIHandler {
 
     @Override
     public void onClick(Player p, int slot) {
+
+        // 🔥 petit feedback propre
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
 
         switch (slot) {
 
@@ -55,7 +59,7 @@ public class MainMenuHandler implements GUIHandler {
         }
     }
 
-    // 🔥 ouverture safe (évite bug inventaire)
+    // 🔥 évite les bugs d'inventaire (ultra important)
     private void openNext(Runnable action) {
         Bukkit.getScheduler().runTask(Main.getInstance(), action);
     }

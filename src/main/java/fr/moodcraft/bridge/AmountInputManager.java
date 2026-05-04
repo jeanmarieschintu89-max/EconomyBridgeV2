@@ -10,7 +10,7 @@ public class AmountInputManager {
 
     public enum Type {
         DEPOSIT,
-        WITHDRAW
+        WITHDRAW,
         PLAYER_TRANSFER
     }
 

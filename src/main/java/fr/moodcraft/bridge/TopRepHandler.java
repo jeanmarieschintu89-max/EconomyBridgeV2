@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +24,6 @@ public class TopRepHandler implements GUIHandler {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        // 🔥 récup STRING
         String uuidStr = meta.getPersistentDataContainer().get(
                 new NamespacedKey(Main.getInstance(), "target"),
                 PersistentDataType.STRING
@@ -31,13 +31,12 @@ public class TopRepHandler implements GUIHandler {
 
         if (uuidStr == null) return;
 
-        // ✅ CONVERSION FIX
         UUID targetUUID = UUID.fromString(uuidStr);
 
-        p.closeInventory();
-
-        // 👉 maintenant OK
-        ProfileGUI.open(p, targetUUID);
+        // 🔥 FIX ICI
+        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+            ProfileGUI.open(p, targetUUID);
+        });
 
         p.sendMessage("§6➜ §7Ouverture du profil...");
     }

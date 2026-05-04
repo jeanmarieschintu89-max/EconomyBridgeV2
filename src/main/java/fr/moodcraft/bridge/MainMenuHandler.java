@@ -1,41 +1,62 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.*;
-import org.bukkit.event.inventory.*;
 
-public class GlobalGUIListener implements Listener {
+public class MainMenuHandler implements GUIHandler {
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void click(InventoryClickEvent e) {
+    @Override
+    public void onClick(Player p, int slot) {
 
-        if (!(e.getWhoClicked() instanceof Player p)) return;
+        switch (slot) {
 
-        String id = GUIManager.get(p);
-        if (id == null) return;
+            // 👤 PROFIL
+            case 4 -> openNext(() ->
+                    ProfileGUI.open(p, p.getUniqueId())
+            );
 
-        // 🔥 bloque tout
-        e.setCancelled(true);
+            // 💰 BANQUE
+            case 10 -> openNext(() ->
+                    BankGUI.open(p)
+            );
 
-        if (e.getClickedInventory() == null) return;
+            // 📜 CONTRATS
+            case 12 -> openNext(() ->
+                    ContractGUI.open(p)
+            );
 
-        int slot = e.getSlot();
+            // 💼 BOURSE
+            case 14 -> openNext(() ->
+                    PriceGUI.open(p)
+            );
 
-        if (slot >= e.getView().getTopInventory().getSize()) return;
+            // 🧭 TELEPORT
+            case 16 -> openNext(() ->
+                    TeleportGUI.open(p)
+            );
 
-        // 🔒 anti bypass
-        if (e.isShiftClick() || e.getClick().isKeyboardClick()) return;
+            // 🗺️ VILLE
+            case 19 -> openNext(() ->
+                    p.performCommand("townmenu")
+            );
 
-        GUIManager.handle(p, slot);
+            // ⛏ MÉTIERS
+            case 21 -> openNext(() ->
+                    p.performCommand("jobs join")
+            );
+
+            // 🏆 CLASSEMENT
+            case 23 -> openNext(() ->
+                    TopRepGUI.open(p)
+            );
+
+            // ❌ FERMER
+            case 26 -> p.closeInventory();
+        }
     }
 
-    @EventHandler
-    public void drag(InventoryDragEvent e) {
-
-        if (!(e.getWhoClicked() instanceof Player p)) return;
-
-        if (GUIManager.get(p) != null) {
-            e.setCancelled(true);
-        }
+    // 🔥 ouverture safe (évite bug inventaire)
+    private void openNext(Runnable action) {
+        Bukkit.getScheduler().runTask(Main.getInstance(), action);
     }
 }

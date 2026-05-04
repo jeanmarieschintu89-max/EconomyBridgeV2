@@ -1,5 +1,6 @@
 package fr.moodcraft.bridge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class MainMenuHandler implements GUIHandler {
@@ -14,38 +15,31 @@ public class MainMenuHandler implements GUIHandler {
             }
 
             case 10 -> {
-                p.closeInventory();
-                BankGUI.open(p);
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> BankGUI.open(p));
             }
 
             case 12 -> {
-                p.closeInventory();
-                ContractGUI.open(p);
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> ContractGUI.open(p));
             }
 
             case 14 -> {
-                p.closeInventory();
-                PriceGUI.open(p);
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> PriceGUI.open(p));
             }
 
             case 16 -> {
-                p.closeInventory();
-                TeleportGUI.open(p);
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> TeleportGUI.open(p));
             }
 
             case 19 -> {
-                p.closeInventory();
-                p.performCommand("townmenu");
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> p.performCommand("townmenu"));
             }
 
             case 21 -> {
-                p.closeInventory();
-                p.performCommand("jobs join");
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> p.performCommand("jobs join"));
             }
 
             case 23 -> {
-                p.closeInventory();
-                TopRepGUI.open(p);
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> TopRepGUI.open(p));
             }
 
             case 26 -> {

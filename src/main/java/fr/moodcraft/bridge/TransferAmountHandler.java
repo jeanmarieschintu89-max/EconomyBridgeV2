@@ -7,6 +7,13 @@ public class TransferAmountHandler implements GUIHandler {
     @Override
     public void onClick(Player p, int slot) {
 
+        // 🔙 RETOUR
+        if (slot == 8) {
+            p.closeInventory();
+            BankGUI.open(p);
+            return;
+        }
+
         double amount = switch (slot) {
             case 1 -> 100;
             case 3 -> 1000;
@@ -14,7 +21,9 @@ public class TransferAmountHandler implements GUIHandler {
             default -> 0;
         };
 
-        if (amount == 0) return;
+        if (amount == 0) {
+            return; // silence volontaire (slots inutiles)
+        }
 
         TransferBuilder data = TransferBuilder.get(p);
         data.amount = amount;
@@ -53,5 +62,8 @@ public class TransferAmountHandler implements GUIHandler {
                 TransferConfirmGUI.open(p);
             }
         }
+
+        // 🧹 CLEAN après action
+        TransferBuilder.clear(p);
     }
 }

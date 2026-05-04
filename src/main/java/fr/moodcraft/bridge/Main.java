@@ -60,6 +60,7 @@ public class Main extends JavaPlugin {
         GUIManager.register("main_menu", new MainMenuHandler());
 
         // 💰 BANQUE
+        GUIManager.register("bank_target", new TargetPlayerHandler());
         GUIManager.register("bank_main", new BankHandler());
         GUIManager.register("bank_deposit", new DepositHandler());
         GUIManager.register("bank_withdraw", new WithdrawHandler());

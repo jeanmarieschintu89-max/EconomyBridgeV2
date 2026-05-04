@@ -4,14 +4,7 @@ import java.util.UUID;
 
 public class Contract {
 
-    public enum Status {
-        OPEN,
-        IN_PROGRESS,
-        COMPLETED
-    }
-
     public int id;
-
     public UUID owner;
     public UUID acceptor;
 
@@ -19,18 +12,18 @@ public class Contract {
     public int amount;
     public double price;
 
-    public Status status = Status.OPEN;
+    public Status status;
 
-    public boolean paid = false;
+    public enum Status {
+        OPEN,
+        IN_PROGRESS,
+        COMPLETED
+    }
 
-    // ✅ CONSTRUCTEUR PRINCIPAL
     public Contract(UUID owner, String item, int amount, double price) {
         this.owner = owner;
         this.item = item;
         this.amount = amount;
         this.price = price;
     }
-
-    // ✅ CONSTRUCTEUR VIDE (IMPORTANT)
-    public Contract() {}
 }

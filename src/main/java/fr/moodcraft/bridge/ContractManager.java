@@ -39,6 +39,23 @@ public class ContractManager {
     }
 
     // =========================
+    // ❌ REMOVE (FIX ICI)
+    // =========================
+    public static boolean remove(int id) {
+
+        Contract c = get(id);
+        if (c == null) return false;
+
+        // 🔒 sécurité : éviter suppression après paiement
+        if (c.status == Contract.Status.COMPLETED) {
+            return false;
+        }
+
+        ContractStorage.remove(id);
+        return true;
+    }
+
+    // =========================
     // 💸 PAIEMENT AUTO
     // =========================
     public static boolean pay(Contract c) {
@@ -51,7 +68,7 @@ public class ContractManager {
         double ownerBank = BankStorage.get(ownerId);
 
         if (ownerBank < c.price) {
-            return false; // pas assez d'argent
+            return false;
         }
 
         // 💸 transfert
@@ -63,7 +80,6 @@ public class ContractManager {
 
         ContractStorage.update(c);
 
-        // 💬 messages stylés
         Player owner = Bukkit.getPlayer(c.owner);
         Player worker = Bukkit.getPlayer(c.acceptor);
 

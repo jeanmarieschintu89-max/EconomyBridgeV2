@@ -26,7 +26,7 @@ public class BankHandler implements GUIHandler {
             // 💸 RETRAIT
             case 15 -> {
                 TransferBuilder.get(p).action = TransferBuilder.Action.WITHDRAW;
-                WithdrawGui.open(p);
+                WithdrawGUI.open(p);
             }
 
             // 🔁 TRANSFERT

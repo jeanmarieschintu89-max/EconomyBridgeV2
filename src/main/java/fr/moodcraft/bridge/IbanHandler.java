@@ -10,11 +10,10 @@ public class IbanHandler implements GUIHandler {
 
         switch (slot) {
 
-            // 💳 saisir IBAN
             case 4 -> {
                 p.closeInventory();
 
-                // 🔥 ACTIVE INPUT
+                // 🔥 activation input
                 p.setMetadata("input_active", new FixedMetadataValue(Main.getInstance(), true));
 
                 InputManager.wait(p, "iban_input");
@@ -22,10 +21,7 @@ public class IbanHandler implements GUIHandler {
                 p.sendMessage("§eEntre l'IBAN dans le chat.");
             }
 
-            // 🔙 retour
-            case 8 -> {
-                BankGUI.open(p);
-            }
+            case 8 -> BankGUI.open(p);
         }
     }
 }

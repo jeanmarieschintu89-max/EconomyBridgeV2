@@ -123,7 +123,7 @@ public class MainMenuGUI {
         // 🗺️ VILLE
         // =========================
         SafeGUI.safeSet(inv, 19, SafeGUI.item(
-                Material.FILLED_MAP,
+                Material.MAP,
                 "§6Ville",
                 "§7Gestion du territoire",
                 "",

@@ -24,19 +24,19 @@ public class GUIManager {
 
         UUID uuid = p.getUniqueId();
 
-        // 🔥 debug
         System.out.println("[GUI] OPEN " + id + " for " + p.getName());
 
-        // 🔥 flag anti fermeture
-        opening.add(uuid);
+        // 🔥 sécurité : éviter overwrite bizarre
+        if (id == null) {
+            System.out.println("[GUI] ❌ ID NULL");
+            return;
+        }
 
-        // 💾 stock GUI
+        opening.add(uuid);
         open.put(uuid, id);
 
-        // 🎯 ouverture
         p.openInventory(inv);
 
-        // ⏱️ retire protection après 1 tick
         Bukkit.getScheduler().runTask(Main.getInstance(), () ->
                 opening.remove(uuid)
         );
@@ -70,12 +70,10 @@ public class GUIManager {
 
         UUID uuid = p.getUniqueId();
 
-        // 🔥 ignore fermeture si ouverture en cours
         if (opening.contains(uuid)) {
             return;
         }
 
-        // 🔥 debug
         System.out.println("[GUI] CLOSE for " + p.getName());
 
         open.remove(uuid);
@@ -85,6 +83,10 @@ public class GUIManager {
     // ➕ REGISTER HANDLER
     // =========================
     public static void register(String id, GUIHandler handler) {
+
+        if (handlers.containsKey(id)) {
+            System.out.println("[GUI] ⚠ Déjà enregistré: " + id);
+        }
 
         System.out.println("[GUI] REGISTER " + id);
 
@@ -98,10 +100,12 @@ public class GUIManager {
 
         String id = get(p);
 
-        // 🔍 debug
         System.out.println("[GUI] CLICK " + id + " slot " + slot);
 
-        if (id == null) return;
+        if (id == null) {
+            System.out.println("[GUI] ❌ Aucun GUI actif pour " + p.getName());
+            return;
+        }
 
         GUIHandler handler = handlers.get(id);
 
@@ -110,6 +114,19 @@ public class GUIManager {
             return;
         }
 
-        handler.onClick(p, slot);
+        try {
+            handler.onClick(p, slot);
+        } catch (Exception e) {
+            System.out.println("[GUI] ❌ ERREUR dans " + id);
+            e.printStackTrace();
+        }
+    }
+
+    // =========================
+    // 🧹 CLEAN PLAYER (important)
+    // =========================
+    public static void forceClose(Player p) {
+        open.remove(p.getUniqueId());
+        opening.remove(p.getUniqueId());
     }
 }

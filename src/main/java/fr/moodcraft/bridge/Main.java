@@ -78,6 +78,7 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_player", new ContractDeliverHandler());
         GUIManager.register("contract_confirm", new ContractConfirmHandler());
         GUIManager.register("top_gui", new TopGUIHandler());
+        GUIManager.register("top_rep", new TopRepHandler());
 
         // 🧭 AUTRES
         GUIManager.register("teleport", new TeleportHandler());

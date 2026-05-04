@@ -1,31 +1,44 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class TransferAmountHandler implements GUIHandler {
 
     @Override
     public void onClick(Player p, int slot) {
 
+        TransferBuilder data = TransferBuilder.get(p);
+
         // 🔙 RETOUR
-        if (slot == 8) {
+        if (slot == 22) {
             p.closeInventory();
             BankGUI.open(p);
             return;
         }
 
         double amount = switch (slot) {
-            case 1 -> 100;
-            case 3 -> 1000;
-            case 5 -> 10000;
+            case 10 -> 100;
+            case 11 -> 1000;
+            case 12 -> 10000;
+            case 14 -> 50000;
+            case 15 -> 100000;
             default -> 0;
         };
 
-        if (amount == 0) {
-            return; // silence volontaire (slots inutiles)
+        // ✏️ MONTANT PERSONNALISÉ
+        if (slot == 16) {
+            p.closeInventory();
+
+            p.setMetadata("input_active", new FixedMetadataValue(Main.getInstance(), true));
+            AmountInputManager.wait(p, AmountInputManager.Type.PLAYER_TRANSFER);
+
+            p.sendMessage("§eEntre le montant à envoyer dans le chat.");
+            return;
         }
 
-        TransferBuilder data = TransferBuilder.get(p);
+        if (amount <= 0) return;
+
         data.amount = amount;
 
         if (data.action == null) {
@@ -38,6 +51,8 @@ public class TransferAmountHandler implements GUIHandler {
             case DEPOSIT -> {
                 BankStorage.add(p.getUniqueId().toString(), amount);
                 p.sendMessage("§a✔ Déposé: §e" + (int) amount + "€");
+
+                TransferBuilder.clear(p);
                 p.closeInventory();
                 BankGUI.open(p);
             }
@@ -52,7 +67,10 @@ public class TransferAmountHandler implements GUIHandler {
                 }
 
                 BankStorage.remove(p.getUniqueId().toString(), amount);
+
                 p.sendMessage("§a✔ Retiré: §e" + (int) amount + "€");
+
+                TransferBuilder.clear(p);
                 p.closeInventory();
                 BankGUI.open(p);
             }
@@ -60,10 +78,8 @@ public class TransferAmountHandler implements GUIHandler {
             case PLAYER_TRANSFER, IBAN_TRANSFER -> {
                 p.closeInventory();
                 TransferConfirmGUI.open(p);
+                // ❗ PAS DE CLEAR ICI
             }
         }
-
-        // 🧹 CLEAN après action
-        TransferBuilder.clear(p);
     }
 }

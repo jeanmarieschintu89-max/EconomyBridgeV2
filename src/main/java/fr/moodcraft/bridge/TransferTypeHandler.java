@@ -11,19 +11,20 @@ public class TransferTypeHandler implements GUIHandler {
 
         switch (slot) {
 
-            case 11 -> { // 👤 joueur
+            // 👤 VIREMENT JOUEUR
+            case 11 -> {
                 data.action = TransferBuilder.Action.PLAYER_TRANSFER;
-                TransferTargetGUI.open(p);
+                TargetPlayerGUI.open(p);
             }
 
-            case 15 -> { // 🏦 IBAN
+            // 🏦 VIREMENT IBAN
+            case 15 -> {
                 data.action = TransferBuilder.Action.IBAN_TRANSFER;
-                p.closeInventory();
-                p.performCommand("ibanpay");
+                IbanGUI.open(p);
             }
 
-            case 26 -> { // 🔙 retour
-                p.closeInventory();
+            // 🔙 RETOUR
+            case 26 -> {
                 BankGUI.open(p);
             }
         }

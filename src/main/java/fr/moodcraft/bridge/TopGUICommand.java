@@ -18,6 +18,8 @@ public class TopGUICommand implements CommandExecutor {
 
         // 🔥 feedback sonore (optionnel mais stylé)
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
+        p.sendMessage("§aDEBUG: /topgui OK");
+TopRepGUI.open(p);
 
         // 🔥 ouverture GUI
         TopRepGUI.open(p);

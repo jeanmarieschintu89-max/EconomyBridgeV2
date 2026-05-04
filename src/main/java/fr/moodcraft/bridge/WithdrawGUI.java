@@ -9,6 +9,13 @@ import org.bukkit.inventory.Inventory;
 
 public class WithdrawGUI implements GUIHandler {
 
+    private static final String ID = "bank_withdraw";
+
+    // 🔥 constructeur = enregistrement automatique
+    public WithdrawGUI() {
+        GUIManager.register(ID, this);
+    }
+
     public void open(Player p) {
 
         Inventory inv = Bukkit.createInventory(null, 27, "§cRetrait");
@@ -47,7 +54,7 @@ public class WithdrawGUI implements GUIHandler {
 
         SafeGUI.safeSet(inv, 22, SafeGUI.item(Material.BARRIER, "§cRetour"));
 
-        GUIManager.open(p, this, inv); // 🔥 LIAISON HANDLER
+        GUIManager.open(p, ID, inv); // ✅ utilise ton système ID
     }
 
     @Override
@@ -76,14 +83,13 @@ public class WithdrawGUI implements GUIHandler {
             return;
         }
 
-        // 💰 TRANSFERT
+        // 💰 retrait
         BankStorage.remove(p.getUniqueId().toString(), amount);
         eco.depositPlayer(p, amount);
 
-        p.sendMessage("§aRetrait de §f" + SafeGUI.money(amount) + " §aeffectué !");
+        p.sendMessage("§aRetrait de §f" + SafeGUI.money(amount));
         p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 
-        // 🔄 refresh GUI
-        open(p);
+        open(p); // 🔄 refresh
     }
 }

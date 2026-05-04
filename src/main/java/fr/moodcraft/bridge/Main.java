@@ -83,6 +83,7 @@ public class Main extends JavaPlugin {
         GUIManager.register("contract_market", new ContractMarketHandler());
         GUIManager.register("contract_player", new ContractDeliverHandler());
         GUIManager.register("contract_confirm", new ContractConfirmHandler());
+        GUIManager.register("contract_list", new ContractListHandler());
 
         // 🏆 CLASSEMENT
         GUIManager.register("top_rep", new TopRepHandler());

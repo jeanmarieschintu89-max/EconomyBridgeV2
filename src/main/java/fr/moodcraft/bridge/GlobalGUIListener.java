@@ -2,7 +2,7 @@ package fr.moodcraft.bridge;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.*;
 
 public class GlobalGUIListener implements Listener {
 
@@ -14,30 +14,28 @@ public class GlobalGUIListener implements Listener {
         String id = GUIManager.get(p);
         if (id == null) return;
 
-        // 🔥 bloque TOUT par défaut
+        // 🔥 bloque tout
         e.setCancelled(true);
 
-        // ❌ sécurité
         if (e.getClickedInventory() == null) return;
 
         int slot = e.getSlot();
 
-        // 🔒 bloque inventaire joueur
         if (slot >= e.getView().getTopInventory().getSize()) return;
 
-        // 🔒 bloque TOUS les clics spéciaux
-        if (e.isShiftClick()
-                || e.isRightClick()
-                || e.getClick().isKeyboardClick()
-                || e.getClick().isCreativeAction()
-                || e.getClick().name().contains("DROP")
-                || e.getClick().name().contains("DOUBLE_CLICK")) {
-            return;
-        }
+        // 🔒 anti bypass
+        if (e.isShiftClick() || e.getClick().isKeyboardClick()) return;
 
-        // =========================
-        // 🎯 HANDLER
-        // =========================
         GUIManager.handle(p, slot);
+    }
+
+    @EventHandler
+    public void drag(InventoryDragEvent e) {
+
+        if (!(e.getWhoClicked() instanceof Player p)) return;
+
+        if (GUIManager.get(p) != null) {
+            e.setCancelled(true);
+        }
     }
 }

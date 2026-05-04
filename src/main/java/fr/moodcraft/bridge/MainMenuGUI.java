@@ -42,8 +42,6 @@ public class MainMenuGUI {
         // =========================
         int pos = ReputationManager.getPosition(p.getUniqueId().toString());
 
-        boolean isTop3 = pos > 0 && pos <= 3;
-
         // =========================
         // 👤 PROFIL
         // =========================
@@ -151,27 +149,19 @@ public class MainMenuGUI {
         ));
 
         // =========================
-        // 👑 CLASSEMENT
+        // 👑 CLASSEMENT (FIX CLEAN)
         // =========================
-        var classementItem = SafeGUI.item(
+        SafeGUI.safeSet(inv, 23, SafeGUI.item(
                 Material.GOLDEN_HELMET,
-                "§6Classement",
+                "§6✦ Classement",
                 "§8────────────",
                 "§7Top commerçants",
                 "",
                 "§6👑 Leader: §f" + topName,
-                "",
                 pos > 0 ? "§7Ta position: §e#" + pos : "",
                 "",
-                "§e▶ Voir"
-        );
-
-        // ✨ glow si top 3
-        if (isTop3) {
-            classementItem = SafeGUI.glow(classementItem);
-        }
-
-        SafeGUI.safeSet(inv, 23, classementItem);
+                "§e▶ Consulter"
+        ));
 
         // =========================
         // ❌ FERMER
@@ -181,6 +171,7 @@ public class MainMenuGUI {
                 "§cFermer"
         ));
 
+        // 🔥 IMPORTANT
         GUIManager.open(p, "main_menu", inv);
     }
 }

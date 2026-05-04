@@ -1,30 +1,26 @@
-package fr.moodcraft.bridge;
+@Override
+public void onClick(Player p, int slot) {
 
-import org.bukkit.Bukkit;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
+    TransferBuilder data = TransferBuilder.get(p);
 
-public class TransferConfirmHandler implements GUIHandler {
+    switch (slot) {
 
-    @Override
-    public void onClick(Player p, int slot) {
+        case 3 -> {
+            BankGUI.open(p);
+        }
 
-        TransferBuilder data = TransferBuilder.get(p);
+        case 5 -> {
 
-        switch (slot) {
+            // 🔒 anti double clic
+            if (p.hasMetadata("transfer_processing")) return;
 
-            case 3 -> {
-                BankGUI.open(p);
-            }
+            p.setMetadata("transfer_processing",
+                    new org.bukkit.metadata.FixedMetadataValue(Main.getInstance(), true));
 
-            case 5 -> {
+            try {
 
-                // 🔥 sécurité
                 if (data.target == null) {
                     p.sendMessage("§cErreur: aucun joueur sélectionné.");
-                    TransferBuilder.clear(p);
-                    p.closeInventory();
                     return;
                 }
 
@@ -55,29 +51,13 @@ public class TransferConfirmHandler implements GUIHandler {
                     return;
                 }
 
-                // 💸 TRANSFERT
-                BankStorage.set(senderId, senderBank - data.amount);
-                BankStorage.set(targetId, BankStorage.get(targetId) + data.amount);
+                // 💸 TRANSFERT PROPRE
+                BankStorage.transfer(senderId, targetId, data.amount);
 
                 double newBalanceSender = BankStorage.get(senderId);
                 double newBalanceTarget = BankStorage.get(targetId);
 
-                // 🧾 LOG
-                TransactionLogger.log(
-                        senderId,
-                        "Virement envoyé à " + target.getName(),
-                        -data.amount
-                );
-
-                TransactionLogger.log(
-                        targetId,
-                        "Virement reçu de " + p.getName(),
-                        data.amount
-                );
-
-                // =========================
-                // 💬 MESSAGE EXPÉDITEUR
-                // =========================
+                // 💬 EXPÉDITEUR
                 p.sendMessage("");
                 p.sendMessage("§8╔════════════════════════════╗");
                 p.sendMessage("§8║   §a✔ Virement effectué");
@@ -91,9 +71,7 @@ public class TransferConfirmHandler implements GUIHandler {
 
                 p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
 
-                // =========================
-                // 💬 MESSAGE RÉCEPTION
-                // =========================
+                // 💬 RÉCEPTION
                 target.sendMessage("");
                 target.sendMessage("§8╔════════════════════════════╗");
                 target.sendMessage("§8║   §a💸 Virement reçu");
@@ -113,9 +91,12 @@ public class TransferConfirmHandler implements GUIHandler {
                         20
                 );
 
-                // 🔚 clean
+                // 🧹 clean
                 TransferBuilder.clear(p);
                 p.closeInventory();
+
+            } finally {
+                p.removeMetadata("transfer_processing", Main.getInstance());
             }
         }
     }

@@ -25,7 +25,7 @@ public class WithdrawHandler implements GUIHandler {
                 p.sendMessage("§eEntre le montant à retirer dans le chat.");
             }
 
-            case 22 -> BankGUI.open(p);
+            case 22 -> new BankGUI().open(p); // ✅ FIX
         }
     }
 
@@ -51,7 +51,7 @@ public class WithdrawHandler implements GUIHandler {
         p.sendMessage("§aRetrait de §f" + SafeGUI.money(amount) + " §aeffectué !");
         p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 
-        WithdrawGUI.open(p);
+        new WithdrawGUI().open(p); // ✅ FIX
     }
 
     // =========================
@@ -76,6 +76,6 @@ public class WithdrawHandler implements GUIHandler {
         p.sendMessage("§aTu as tout retiré : §f" + SafeGUI.money(bank));
         p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 
-        WithdrawGUI.open(p);
+        new WithdrawGUI().open(p); // ✅ FIX
     }
 }

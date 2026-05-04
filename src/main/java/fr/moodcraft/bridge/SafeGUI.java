@@ -27,11 +27,22 @@ public class SafeGUI {
             List<String> fixed = new ArrayList<>();
             if (lore != null) {
                 for (String line : lore) {
-                    fixed.add(line == null ? "" : "§r§7" + line);
+                    fixed.add(line == null ? "" : "§7" + line); // ❌ retiré §r inutile
                 }
             }
 
             meta.setLore(fixed);
+
+            // 🔥 FIX IMPORTANT (SUPPRIME +2 ARMURE ETC)
+            meta.addItemFlags(
+                    ItemFlag.HIDE_ATTRIBUTES,
+                    ItemFlag.HIDE_ENCHANTS,
+                    ItemFlag.HIDE_UNBREAKABLE,
+                    ItemFlag.HIDE_DESTROYS,
+                    ItemFlag.HIDE_PLACED_ON,
+                    ItemFlag.HIDE_POTION_EFFECTS
+            );
+
             it.setItemMeta(meta);
         }
 
@@ -53,11 +64,22 @@ public class SafeGUI {
             List<String> fixed = new ArrayList<>();
             if (lore != null) {
                 for (String line : lore) {
-                    fixed.add(line == null ? "" : "§r§7" + line);
+                    fixed.add(line == null ? "" : "§7" + line);
                 }
             }
 
             meta.setLore(fixed);
+
+            // 🔥 FIX ATTRIBUTS
+            meta.addItemFlags(
+                    ItemFlag.HIDE_ATTRIBUTES,
+                    ItemFlag.HIDE_ENCHANTS,
+                    ItemFlag.HIDE_UNBREAKABLE,
+                    ItemFlag.HIDE_DESTROYS,
+                    ItemFlag.HIDE_PLACED_ON,
+                    ItemFlag.HIDE_POTION_EFFECTS
+            );
+
             it.setItemMeta(meta);
         }
 
@@ -65,7 +87,7 @@ public class SafeGUI {
     }
 
     // =========================
-    // ✨ GLOW
+    // ✨ GLOW (propre)
     // =========================
     public static ItemStack glow(ItemStack item) {
 
@@ -125,7 +147,7 @@ public class SafeGUI {
     }
 
     // =========================
-    // 💰 FORMAT ARGENT (FIX)
+    // 💰 FORMAT ARGENT
     // =========================
     public static String money(double v) {
         return String.format("%.2f", v);

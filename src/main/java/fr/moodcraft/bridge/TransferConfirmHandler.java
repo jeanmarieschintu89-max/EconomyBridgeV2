@@ -1,6 +1,8 @@
 package fr.moodcraft.bridge;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class TransferConfirmHandler implements GUIHandler {
@@ -18,7 +20,7 @@ public class TransferConfirmHandler implements GUIHandler {
 
             case 5 -> {
 
-                // 🔥 FIX CRITIQUE
+                // 🔥 sécurité
                 if (data.target == null) {
                     p.sendMessage("§cErreur: aucun joueur sélectionné.");
                     TransferBuilder.clear(p);
@@ -57,6 +59,9 @@ public class TransferConfirmHandler implements GUIHandler {
                 BankStorage.set(senderId, senderBank - data.amount);
                 BankStorage.set(targetId, BankStorage.get(targetId) + data.amount);
 
+                double newBalanceSender = BankStorage.get(senderId);
+                double newBalanceTarget = BankStorage.get(targetId);
+
                 // 🧾 LOG
                 TransactionLogger.log(
                         senderId,
@@ -70,9 +75,45 @@ public class TransferConfirmHandler implements GUIHandler {
                         data.amount
                 );
 
-                p.sendMessage("§aVirement effectué !");
-                target.sendMessage("§aTu as reçu " + data.amount + "€");
+                // =========================
+                // 💬 MESSAGE EXPÉDITEUR
+                // =========================
+                p.sendMessage("");
+                p.sendMessage("§8╔════════════════════════════╗");
+                p.sendMessage("§8║   §a✔ Virement effectué");
+                p.sendMessage("§8╠════════════════════════════╣");
+                p.sendMessage("§8║ §7Vers: §e" + target.getName());
+                p.sendMessage("§8║ §7Montant: §c-" + (int) data.amount + "€");
+                p.sendMessage("§8║");
+                p.sendMessage("§8║ §7Solde: §6" + (int) newBalanceSender + "€");
+                p.sendMessage("§8╚════════════════════════════╝");
+                p.sendMessage("");
 
+                p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+
+                // =========================
+                // 💬 MESSAGE RÉCEPTION
+                // =========================
+                target.sendMessage("");
+                target.sendMessage("§8╔════════════════════════════╗");
+                target.sendMessage("§8║   §a💸 Virement reçu");
+                target.sendMessage("§8╠════════════════════════════╣");
+                target.sendMessage("§8║ §7Expéditeur: §e" + p.getName());
+                target.sendMessage("§8║ §7Montant: §a+" + (int) data.amount + "€");
+                target.sendMessage("§8║");
+                target.sendMessage("§8║ §7Solde: §6" + (int) newBalanceTarget + "€");
+                target.sendMessage("§8╚════════════════════════════╝");
+                target.sendMessage("");
+
+                target.playSound(target.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.2f);
+
+                target.getWorld().spawnParticle(
+                        Particle.VILLAGER_HAPPY,
+                        target.getLocation().add(0, 1, 0),
+                        20
+                );
+
+                // 🔚 clean
                 TransferBuilder.clear(p);
                 p.closeInventory();
             }

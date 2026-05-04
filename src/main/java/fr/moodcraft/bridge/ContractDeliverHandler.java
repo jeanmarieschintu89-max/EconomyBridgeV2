@@ -82,4 +82,12 @@ public class ContractDeliverHandler implements GUIHandler {
         p.sendMessage("§8╔════════════════════════════╗");
         p.sendMessage("§8║   §a✔ Livraison réussie");
         p.sendMessage("§8╠════════════════════════════╣");
-        p
+        p.sendMessage("§8║ §7Objet: §e" + c.item);
+        p.sendMessage("§8║ §7Quantité: §e" + c.amount);
+        p.sendMessage("§8║");
+        p.sendMessage("§8║ §a+ " + c.price + "€");
+        p.sendMessage("§8║ §b+ " + rep + " réputation");
+        p.sendMessage("§8╚════════════════════════════╝");
+        p.sendMessage("");
+    }
+}
